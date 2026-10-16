@@ -42,11 +42,15 @@ Aucun Invariant.
 
 **205.2.5** [ACTÉ] L'action normale d'une Unit vise une case adjacente à cette Unit (décisions 0042 et 0086).
 
+**205.2.6** [ACTÉ] À l'annonce de l'action normale d'une Unit, la case visée est libre ou occupée par une pièce ennemie (décision 0181 ; voir 205.2.5 et 205.4.5).
+
 ## 205.3 Déplacement
 
 **205.3.1** [ACTÉ] L'action normale du Hero le déplace sur une case libre adjacente (décision 0043).
 
 **205.3.2** [ACTÉ] Le Hero ne quitte jamais les deux rangées les plus proches de son joueur (décision 0043).
+
+**205.3.3** [ACTÉ] À l'annonce de l'action normale du Hero, la case visée est libre (décision 0182 ; voir 205.3.1 et 205.2.6).
 
 ## 205.4 Échecs d'une action
 

@@ -296,3 +296,10 @@
 - Garder sa main, dans [204-tour.md](20-regles-completes/204-tour.md), section 204.2 Mulligan : un joueur qui n'écarte aucune carte garde sa main, ce qui n'est pas un mulligan et ne mélange pas son deck. Identifiants ajoutés : 204.2.12, 204.2.13, 204.2.14. Terme ajouté au glossaire : Garder sa main ; renvoi ajouté à Mulligan. Question ouverte Q-078 tranchée. Décision associée : [0180](40-decisions/0180-garder-sa-main-n-est-pas-un-mulligan.md).
 - Aucun identifiant modifié ni supprimé. Les cinq questions Q-075 à Q-079 sont déplacées dans Tranchées de [02-questions-ouvertes.md](02-questions-ouvertes.md) ; aucune question ouverte ne reste.
 - [README.md](README.md) : édition courante passée à 0.30.
+
+## 0.31 · 17 octobre 2026 · majeure · réponses aux questions Q-080 et Q-081
+
+- Case visée à l'annonce de l'action normale, dans [205-actions.md](20-regles-completes/205-actions.md), section 205.2 Action normale : à l'annonce de l'action normale d'une Unit, la case visée est libre ou occupée par une pièce ennemie ; 205.4.5 continue de s'appliquer à la résolution. Identifiant ajouté : 205.2.6. Aucun terme ajouté ni modifié au glossaire. Question ouverte Q-080 créée puis tranchée. Décision associée : [0181](40-decisions/0181-case-visee-a-l-annonce-de-l-action-normale.md).
+- Case visée à l'annonce de l'action normale du Hero, dans [205-actions.md](20-regles-completes/205-actions.md), section 205.3 Déplacement : à l'annonce de l'action normale du Hero, la case visée est libre ; le cas d'une case qui n'est plus libre à la résolution relève de 200.4.1 et de 205.4.1, sans sous-règle. Identifiant ajouté : 205.3.3. Aucun terme ajouté ni modifié au glossaire. Question ouverte Q-081 créée puis tranchée. Décision associée : [0182](40-decisions/0182-case-visee-a-l-annonce-du-deplacement-du-hero.md).
+- Aucun identifiant modifié ni supprimé. Aucune question ouverte ne reste.
+- [README.md](README.md) : édition courante passée à 0.31.
