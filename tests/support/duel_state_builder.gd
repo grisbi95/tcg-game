@@ -157,6 +157,9 @@ func add_to_set_aside(side: DuelState.PlayerSide, definition_id: StringName) -> 
 static func place_unit_in(
 	state: DuelState, side: DuelState.PlayerSide, definition_id: StringName, cell_name: String
 ) -> int:
+	if state.piece_at(cell(cell_name)) != null:
+		push_error("DuelStateBuilder : case %s occupée (201.0.1)" % cell_name)
+		return DuelState.NO_ID
 	var card := CardInstance.new()
 	card.card_instance_id = state.allocate_card_instance_id()
 	card.definition_id = definition_id

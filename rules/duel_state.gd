@@ -156,8 +156,7 @@ func allocate_active_effect_id() -> int:
 
 
 ## Copie indépendante pour l'IA. Seuls la configuration et le catalogue, en lecture seule, sont
-## partagés ; le
-## RNG repart du même `seed` et du même `state`.
+## partagés ; le RNG repart du même `seed` et du même `state`.
 func clone() -> DuelState:
 	var copy := DuelState.new()
 	copy.config = config

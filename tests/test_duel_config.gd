@@ -76,16 +76,13 @@ func test_204_3_6_cards_drawn_per_turn() -> void:
 	assert_int(_config.cards_drawn_per_turn).is_equal(CARDS_PER_TURN)
 
 
-func test_206_3_3a_tied_attacker_does_not_take_the_cell() -> void:
-	assert_bool(_config.tie_attacker_takes_cell).is_false()
-
-
-func test_206_3_4a_tied_defender_does_not_stay() -> void:
-	assert_bool(_config.tie_defender_stays).is_false()
-
-
 func test_206_3_6_tie_destroys_both() -> void:
 	assert_bool(_config.tie_destroys_both).is_true()
+
+
+func test_206_3_6_tie_without_destruction_is_undefined() -> void:
+	_config.tie_destroys_both = false
+	assert_bool(CatalogSamples.mentions(_config.find_errors(), "206.3.6")).is_true()
 
 
 func test_209_4_3_clock_duration() -> void:

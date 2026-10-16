@@ -20,9 +20,9 @@ var opening_hand_size: int = 5  # 204.1.15
 var sources_received_per_turn: int = 1  # 204.3.1
 var first_player_receives_source_on_first_turn: bool = false  # 204.3.4
 var cards_drawn_per_turn: int = 2  # 204.3.6
-var tie_attacker_takes_cell: bool = false  # 206.3.3a
-var tie_defender_stays: bool = false  # 206.3.4a
-var tie_destroys_both: bool = true  # 206.3.6
+## 206.3.6, dont 206.3.3a et 206.3.4a portent le statut : option A de la décision 0053 du
+## ruleset, seule définie par les règles ; `find_errors()` refuse toute autre valeur.
+var tie_destroys_both: bool = true
 var clock_duration_msec: int = 600_000  # 209.4.3 : 10 minutes
 var clock_bonus_msec: int = 0  # 209.4.3a
 var starting_fatigue: int = 0  # 209.5.1
@@ -31,7 +31,8 @@ var fatigue_damage_per_counter_point: int = 1  # 209.5.3
 
 
 ## Renvoie les incohérences entre valeurs qui se recoupent (203.5.7, 204.1.2, 204.1.12,
-## 204.1.13) ; vide si la configuration est cohérente.
+## 204.1.13) et les valeurs que les règles ne définissent pas (206.3.6) ; vide si la
+## configuration est cohérente.
 func find_errors() -> PackedStringArray:
 	var errors := PackedStringArray()
 	var setup_total := setup_sources_in_play + setup_sources_in_reserve
@@ -41,4 +42,6 @@ func find_errors() -> PackedStringArray:
 		errors.append(
 			"204.1.12 + 204.1.13 = %d, 203.5.7 = %d" % [setup_total, total_sources_per_player]
 		)
+	if not tie_destroys_both:
+		errors.append("206.3.6 : seule l'option A de la décision 0053 est définie par les règles")
 	return errors

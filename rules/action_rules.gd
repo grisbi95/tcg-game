@@ -38,7 +38,7 @@ static func announce_deploy(state: DuelState, intent: DeployCard, events: Array[
 	StackRules.add_to_stack(state, entry, events)
 
 
-## 205.1.2 à 205.1.10, 205.4.1 : résout le déploiement `entry` selon le plateau du moment.
+## 205.1.2 à 205.1.10 : résout le déploiement `entry` selon le plateau du moment.
 static func resolve_deploy(state: DuelState, entry: StackEntry, events: Array[DuelEvent]) -> void:
 	var cell := entry.target_cells[0]
 	var occupant := state.piece_at(cell)
@@ -89,7 +89,8 @@ static func announce_normal_action(
 
 
 ## 205.4.1 : l'action se résout selon le plateau du moment ; 205.4.3, 205.4.4 : elle échoue si
-## sa pièce a quitté le plateau ou n'est plus adjacente à la case visée.
+## sa pièce a quitté le plateau ou n'est plus adjacente à la case visée. Le Hero ne se déplace
+## que vers une case encore libre (205.3.1, 200.4.1).
 static func resolve_normal_action(
 	state: DuelState, entry: StackEntry, events: Array[DuelEvent]
 ) -> void:
@@ -190,15 +191,16 @@ static func _enter_attacking(
 
 # 205.1.7, 205.1.8, 205.1.9, 205.1.10, 201.3.6a : l'Essence payée reste dépensée.
 static func _return_to_hand(state: DuelState, card: CardInstance, events: Array[DuelEvent]) -> void:
-	var owner := state.get_player(card.owner)
+	var owner_player := state.get_player(card.owner)
 	if ZoneRules.has_room_in_hand(state, card.owner):
-		owner.hand.append(card)
+		owner_player.hand.append(card)
 		events.append(CardReturnedToHand.new(card.owner, card.card_instance_id))
 	else:
-		owner.discard.append(card)
+		owner_player.discard.append(card)
 		events.append(CardDiscarded.new(card.owner, card.card_instance_id))
 
 
+# 202.2.2, 202.2.3, 201.5.2 : une Unit ou un Building, contrôlé par le joueur de sa carte.
 static func _make_piece(state: DuelState, card: CardInstance, definition: CardDefinition) -> Piece:
 	var piece := Piece.new()
 	piece.piece_id = state.allocate_piece_id()

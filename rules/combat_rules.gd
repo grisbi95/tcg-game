@@ -22,9 +22,10 @@ static func resolve_attack(
 	var defender_destroyed := _is_defender_destroyed(state, attacker_force, defender_force)
 	if defender_destroyed:
 		destroy_piece(state, defender, events)
+	# 206.3.3 ; 206.3.3a : à l'égalité, l'attaquant est détruit lui aussi (206.3.6).
 	if _is_attacker_destroyed(state, attacker_force, defender_force):
 		destroy_piece(state, attacker, events)
-	elif defender_destroyed and _attacker_takes_cell(state, attacker_force, defender_force):
+	elif defender_destroyed:
 		ActionRules.move_piece(attacker, defender_cell, events)
 
 
@@ -34,9 +35,11 @@ static func destroy_piece(state: DuelState, piece: Piece, events: Array[DuelEven
 	state.pieces.erase(piece)
 	if piece.card != null:
 		state.get_player(piece.card.owner).discard.append(piece.card)
-	if piece.attached_gear != null:
-		state.get_player(piece.attached_gear.owner).discard.append(piece.attached_gear)
 	events.append(PieceDestroyed.new(piece.owner, piece.piece_id))
+	if piece.attached_gear != null:
+		var gear := piece.attached_gear
+		state.get_player(gear.owner).discard.append(gear)
+		events.append(CardDiscarded.new(gear.owner, gear.card_instance_id))
 
 
 # 206.2.1a, 206.4.2 à 206.4.5 : aucune Force comparée, rien de détruit, l'attaquant reste.
@@ -47,26 +50,19 @@ static func _attack_hero(
 	StateCheckRules.lose_health(state, hero.owner, attacker_force, events)
 
 
-# 206.3.1 ; égalité : 206.3.6 et 206.3.4a, valeurs PROVISOIRE de DuelConfig.
+# 206.3.1 ; égalité : 206.3.6 et 206.3.4a (DuelConfig.tie_destroys_both).
 static func _is_defender_destroyed(
 	state: DuelState, attacker_force: int, defender_force: int
 ) -> bool:
 	if attacker_force != defender_force:
 		return attacker_force > defender_force
-	return state.config.tie_destroys_both and not state.config.tie_defender_stays
+	return state.config.tie_destroys_both
 
 
-# 206.3.1, 206.3.4 ; égalité : 206.3.6, valeur PROVISOIRE de DuelConfig.
+# 206.3.1, 206.3.4 ; égalité : 206.3.6 (DuelConfig.tie_destroys_both).
 static func _is_attacker_destroyed(
 	state: DuelState, attacker_force: int, defender_force: int
 ) -> bool:
 	if attacker_force != defender_force:
 		return attacker_force < defender_force
 	return state.config.tie_destroys_both
-
-
-# 206.3.3, 206.3.3a
-static func _attacker_takes_cell(
-	state: DuelState, attacker_force: int, defender_force: int
-) -> bool:
-	return attacker_force != defender_force or state.config.tie_attacker_takes_cell

@@ -1,6 +1,7 @@
 class_name CardDiscarded
 extends PlayerEvent
-## 205.1.10, 201.3.6a : la carte va dans la défausse du joueur, faute de place dans sa main.
+## Une carte va dans la défausse du joueur sans passer par une pièce détruite : carte qui ne
+## revient pas dans une main pleine (205.1.10, 201.3.6a), Gear d'une Unit détruite (202.2.13).
 
 var card_instance_id: int = DuelState.NO_ID
 

@@ -18,8 +18,11 @@ static func apply_concede(state: DuelState, intent: Concede, events: Array[DuelE
 
 
 ## 201.1.2, 201.1.2a, 209.2.1, 209.2.2, 209.3.1 : arrête la partie si un Hero a 0 PV et
-## renvoie vrai ; sinon ne change rien et renvoie faux.
+## renvoie vrai ; sinon ne change rien et renvoie faux. Une partie déjà arrêtée le reste, sans
+## nouvel événement.
 static func check_victory(state: DuelState, events: Array[DuelEvent]) -> bool:
+	if state.is_ended():
+		return true
 	var a_down := state.find_hero(DuelState.PlayerSide.A).health == 0
 	var b_down := state.find_hero(DuelState.PlayerSide.B).health == 0
 	if not a_down and not b_down:

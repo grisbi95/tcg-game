@@ -48,7 +48,7 @@ func test_206_5_1_modifiers_on_same_piece_add_up() -> void:
 	assert_int(_force_of(piece_id)).is_equal(UNIT_FORCE + 2 - 1)
 
 
-func test_modifiers_of_other_pieces_ignored() -> void:
+func test_209_1_1_modifiers_of_other_pieces_ignored() -> void:
 	var piece_id := _place(Piece.PieceKind.UNIT, UNIT_ID)
 	var other_id := _builder.place_piece(
 		B, Piece.PieceKind.UNIT, DuelStateBuilder.cell("D3"), UNIT_ID

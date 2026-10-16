@@ -10,7 +10,8 @@ const WALL_ID: StringName = &"wall_building"
 const GEAR_ID: StringName = &"GEAR_TEST"
 const STRONG_FORCE: int = 5
 const WEAK_FORCE: int = 2
-const HERO_HEALTH: int = 15
+const HERO_HEALTH: int = DuelStateBuilder.DEFAULT_HERO_HEALTH
+const HERO_COUNT: int = 2
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
 const B: DuelState.PlayerSide = DuelState.PlayerSide.B
@@ -35,7 +36,7 @@ func test_206_2_1_combat_compares_both_forces() -> void:
 	var combat := _events[0] as CombatResolved
 	assert_int(combat.attacker_force).is_equal(STRONG_FORCE)
 	assert_int(combat.defender_force).is_equal(WEAK_FORCE)
-	assert_int(state.pieces.size()).is_equal(3)
+	assert_int(state.pieces.size()).is_equal(HERO_COUNT + 1)
 
 
 func test_206_3_1_weaker_defender_destroyed() -> void:
@@ -47,7 +48,7 @@ func test_206_3_1_weaker_defender_destroyed() -> void:
 
 func test_206_3_3_attacker_takes_destroyed_defender_cell() -> void:
 	var state := _fight(STRONG_ID, WEAK_ID)
-	var attacker := state.find_piece(_attacker_id())
+	var attacker := state.find_piece(_last_attacker_id)
 	assert_str(BoardGeometry.cell_name(attacker.cell)).is_equal("B4")
 	assert_object(state.piece_at(DuelStateBuilder.cell("B3"))).is_null()
 
@@ -65,7 +66,7 @@ func test_206_3_6_tie_destroys_both() -> void:
 	assert_array(EventLog.describe(_events)).contains_exactly(
 		["CombatResolved", "PieceDestroyed:B", "PieceDestroyed:A"]
 	)
-	assert_int(state.pieces.size()).is_equal(2)
+	assert_int(state.pieces.size()).is_equal(HERO_COUNT)
 
 
 func test_206_3_3a_tie_attacker_does_not_take_cell() -> void:
@@ -127,7 +128,7 @@ func test_206_2_3_force_at_combat_includes_modifiers() -> void:
 
 func test_206_3_5_surviving_piece_keeps_its_force() -> void:
 	var state := _fight(STRONG_ID, WEAK_ID)
-	var attacker := state.find_piece(_attacker_id())
+	var attacker := state.find_piece(_last_attacker_id)
 	assert_int(ForceRules.current_force(state, attacker)).is_equal(STRONG_FORCE)
 
 
@@ -157,12 +158,12 @@ func test_206_4_3_attacked_hero_not_destroyed() -> void:
 
 func test_206_4_4_hero_attacker_not_destroyed() -> void:
 	var state := _attack_hero_of_b()
-	assert_object(state.find_piece(_attacker_id())).is_not_null()
+	assert_object(state.find_piece(_last_attacker_id)).is_not_null()
 
 
 func test_206_4_5_hero_attacker_stays_on_its_cell() -> void:
 	var state := _attack_hero_of_b()
-	assert_str(BoardGeometry.cell_name(state.find_piece(_attacker_id()).cell)).is_equal("C4")
+	assert_str(BoardGeometry.cell_name(state.find_piece(_last_attacker_id).cell)).is_equal("C4")
 
 
 func test_206_4_6_player_loses_when_attacked_hero_reaches_zero() -> void:
@@ -194,10 +195,6 @@ func _attack(attacker_id: int, defender_id: int) -> DuelState:
 		state, state.find_piece(attacker_id), state.find_piece(defender_id), _events
 	)
 	return state
-
-
-func _attacker_id() -> int:
-	return _last_attacker_id
 
 
 func _place(side: DuelState.PlayerSide, definition_id: StringName, cell_name: String) -> int:

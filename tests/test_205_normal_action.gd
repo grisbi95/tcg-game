@@ -9,7 +9,8 @@ const WEAK_ID: StringName = &"weak_unit"
 const BUILDING_ID: StringName = &"still_building"
 const SPELL_ID: StringName = &"sample_spell"
 const UNIT_FORCE: int = 4
-const HERO_HEALTH: int = 15
+const HERO_HEALTH: int = DuelStateBuilder.DEFAULT_HERO_HEALTH
+const MISSING_PIECE_ID: int = 9999
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
 const B: DuelState.PlayerSide = DuelState.PlayerSide.B
@@ -76,6 +77,18 @@ func test_206_4_1_unit_attacks_enemy_hero() -> void:
 	assert_array(_resolve_stack()).contains(["HeroAttacked:B", "HeroLostHealth:B"])
 	assert_int(_engine.get_state().find_hero(B).health).is_equal(HERO_HEALTH - UNIT_FORCE)
 	assert_str(_cell_of(unit_id)).is_equal("C4")
+
+
+func test_209_2_2_lethal_attack_through_stack_ends_duel_once() -> void:
+	_builder.with_hero_health(B, UNIT_FORCE)
+	var unit_id := _place(A, UNIT_ID, "C4")
+	_start()
+	_engine.submit(_act(unit_id, "C5"))
+	var labels := _resolve_stack()
+	assert_int(labels.count("DuelEnded")).is_equal(1)
+	assert_str(labels.back()).is_equal("DuelEnded")
+	assert_array(labels).not_contains(["StackEntryResolved:A"])
+	assert_int(_engine.get_state().result).is_equal(DuelState.DuelResult.PLAYER_A_WINS)
 
 
 func test_205_2_5_target_must_be_adjacent() -> void:
@@ -180,7 +193,7 @@ func test_204_4_5_player_acts_only_with_own_piece() -> void:
 	var enemy_id := _place(B, WEAK_ID, "B3")
 	_start()
 	_assert_rejected(_act(enemy_id, "B2"), REASON.PIECE_NOT_YOURS)
-	_assert_rejected(_act(9999, "B2"), REASON.PIECE_NOT_YOURS)
+	_assert_rejected(_act(MISSING_PIECE_ID, "B2"), REASON.PIECE_NOT_YOURS)
 
 
 func test_202_4_10_unit_token_takes_normal_action() -> void:

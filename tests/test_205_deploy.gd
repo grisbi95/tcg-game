@@ -13,6 +13,7 @@ const UNIT_COST: int = 2  # CatalogSamples.unit()
 const BUILDING_COST: int = 3  # CatalogSamples.building()
 const UNIT_FORCE: int = 3
 const HAND_LIMIT: int = 7  # 201.3.4
+const HERO_COUNT: int = 2
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
 const B: DuelState.PlayerSide = DuelState.PlayerSide.B
@@ -203,7 +204,7 @@ func test_205_1_1_player_deploys_as_many_cards_as_he_can_pay() -> void:
 	assert_int(_engine.validate(_deploy(second_id, "B1"))).is_equal(REASON.NONE)
 	_engine.submit(_deploy(second_id, "B1"))
 	_resolve_stack()
-	assert_int(_engine.get_state().pieces.size()).is_equal(4)
+	assert_int(_engine.get_state().pieces.size()).is_equal(HERO_COUNT + 2)
 
 
 func test_208_1_8_deploy_only_during_own_main_phase() -> void:
@@ -222,7 +223,7 @@ func test_208_1_9_deploy_only_with_empty_stack() -> void:
 	_assert_rejected(_deploy(card_id, "B1"), REASON.STACK_NOT_EMPTY)
 
 
-func test_deploy_card_must_be_in_hand() -> void:
+func test_205_1_1_deployed_card_comes_from_hand() -> void:
 	_builder.add_to_deck(A, UNIT_ID)
 	_start()
 	var deck_card_id := _engine.get_state().get_player(A).deck[0].card_instance_id

@@ -6,7 +6,8 @@ extends RefCounted
 
 
 ## 209.1.1, 209.1.1a, 209.1.2, 206.2.3, 206.5.1 : Force imprimée (ou donnée au jeton) plus
-## les modificateurs en cours, jamais sous 0. Un Hero n'a pas de Force (202.3.9) : 0.
+## les modificateurs en cours, jamais sous 0. Un Hero n'a pas de Force (202.3.9) : le moteur
+## rend 0 par convention, aucune règle ne compare encore la Force d'un Hero (206.2.1a).
 static func current_force(state: DuelState, piece: Piece) -> int:
 	if piece.kind == Piece.PieceKind.HERO:
 		return 0

@@ -58,4 +58,6 @@ static func _resolve_entry(state: DuelState, entry: StackEntry, events: Array[Du
 			ActionRules.resolve_deploy(state, entry, events)
 		StackEntry.StackEntryKind.NORMAL_ACTION:
 			ActionRules.resolve_normal_action(state, entry, events)
-	events.append(StackEntryResolved.new(entry.owner, entry.stack_entry_id))
+	# 209.2.2 : une partie arrêtée pendant la résolution s'arrête aussitôt.
+	if not state.is_ended():
+		events.append(StackEntryResolved.new(entry.owner, entry.stack_entry_id))
