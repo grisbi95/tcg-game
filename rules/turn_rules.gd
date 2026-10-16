@@ -187,7 +187,8 @@ static func _start_turn(
 	_untap_sources(state, side, events)
 	_receive_sources(state, side, events)
 	_draw_cards(state, side, state.config.cards_drawn_per_turn, events)
-	state.phase = DuelState.DuelPhase.MAIN
+	if state.phase != DuelState.DuelPhase.ENDED:
+		state.phase = DuelState.DuelPhase.MAIN
 
 
 # 202.3.14, 203.4.2, 204.4.6 : décomptes « par tour » des deux joueurs, remis à zéro au début
@@ -226,13 +227,15 @@ static func _receive_sources(
 		events.append(SourceReceived.new(side))
 
 
-# 201.3.5, 209.5.2, 209.5.4 : chaque carte se pioche séparément.
+# 201.3.5, 209.5.2, 209.5.4 : chaque carte se pioche séparément ; 209.2.2 : rien après la fin.
 static func _draw_cards(
 	state: DuelState, side: DuelState.PlayerSide, count: int, events: Array[DuelEvent]
 ) -> void:
 	for index: int in count:
 		if ZoneRules.draw_card(state, side, events) == ZoneRules.DrawOutcome.DECK_EMPTY:
 			StateCheckRules.apply_fatigue(state, side, events)
+		if state.phase == DuelState.DuelPhase.ENDED:
+			return
 
 
 # 204.5.7

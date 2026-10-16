@@ -43,7 +43,7 @@ func test_209_2_4_fatigue_never_takes_health_below_zero() -> void:
 	for event: DuelEvent in events:
 		if event is HeroLostHealth:
 			losses.append((event as HeroLostHealth).amount)
-	assert_array(losses).contains_exactly([2, 0])
+	assert_array(losses).contains_exactly([2])
 
 
 func test_209_5_2_each_draw_from_empty_deck_increases_fatigue() -> void:
