@@ -84,6 +84,15 @@ func _route_play_validation(intent: DuelIntent) -> IntentRejected.RejectReason:
 		return TurnRules.validate_end_turn(_state, intent as EndTurn)
 	if intent is PassPriority:
 		return StackRules.validate_pass(_state, intent as PassPriority)
+	if intent is AttachGear:
+		return CardRules.validate_attach_gear(_state, intent as AttachGear)
+	if intent is UseHeroPower:
+		return CardRules.validate_hero_power(_state, intent as UseHeroPower)
+	return _route_announcement_validation(intent)
+
+
+# Annonces des chapitres 205 et 207.
+func _route_announcement_validation(intent: DuelIntent) -> IntentRejected.RejectReason:
 	if intent is DeployCard:
 		return ActionRules.validate_deploy(_state, intent as DeployCard)
 	if intent is TakeNormalAction:
@@ -108,3 +117,7 @@ func _apply(intent: DuelIntent, events: Array[DuelEvent]) -> void:
 		ActionRules.announce_normal_action(_state, intent as TakeNormalAction, events)
 	elif intent is CastSpell:
 		EffectRules.announce_spell(_state, intent as CastSpell, events)
+	elif intent is AttachGear:
+		CardRules.announce_gear(_state, intent as AttachGear, events)
+	elif intent is UseHeroPower:
+		CardRules.announce_hero_power(_state, intent as UseHeroPower, events)
