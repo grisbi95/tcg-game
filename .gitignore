@@ -18,3 +18,7 @@ CLAUDE.local.md
 
 # Outillage Python local (gdtoolkit)
 /.venv/
+
+# Godot AI : fichiers de mise à jour du plugin ; serveur MCP inscrit en scope local
+/addons/.godot_ai_update/
+/.mcp.json
