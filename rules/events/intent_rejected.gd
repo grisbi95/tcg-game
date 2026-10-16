@@ -12,6 +12,11 @@ enum RejectReason {
 	NOT_YOUR_TURN,  # 204.4.2 : intention réservée au joueur actif
 	DECISION_PENDING,  # 209.4.4 : un choix est attendu, une autre intention est refusée
 	UNKNOWN_INTENT,  # classe d'intention que le moteur n'aiguille pas
+	NEGATIVE_PAYMENT,  # 203.2.1, 203.2.2 : nombre de Sources négatif
+	PAYMENT_DOES_NOT_MATCH_COST,  # 203.3.1, décision 0003 : Essence produite différente du coût
+	NOT_ENOUGH_UPRIGHT_SOURCES,  # 203.2.1
+	NOT_ENOUGH_TILTED_SOURCES,  # 203.2.2, 203.2.6, 203.2.7
+	RECYCLE_LIMIT_REACHED,  # 203.4.2
 }
 
 ## Intention refusée, telle que soumise ; null si le refus ne vient pas d'une intention.
