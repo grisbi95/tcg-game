@@ -86,6 +86,8 @@ func _route_play_validation(intent: DuelIntent) -> IntentRejected.RejectReason:
 		return StackRules.validate_pass(_state, intent as PassPriority)
 	if intent is DeployCard:
 		return ActionRules.validate_deploy(_state, intent as DeployCard)
+	if intent is TakeNormalAction:
+		return ActionRules.validate_normal_action(_state, intent as TakeNormalAction)
 	return IntentRejected.RejectReason.UNKNOWN_INTENT
 
 
@@ -100,3 +102,5 @@ func _apply(intent: DuelIntent, events: Array[DuelEvent]) -> void:
 		StackRules.apply_pass(_state, intent as PassPriority, events)
 	elif intent is DeployCard:
 		ActionRules.announce_deploy(_state, intent as DeployCard, events)
+	elif intent is TakeNormalAction:
+		ActionRules.announce_normal_action(_state, intent as TakeNormalAction, events)

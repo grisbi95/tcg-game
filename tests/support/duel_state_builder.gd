@@ -152,6 +152,25 @@ func add_to_set_aside(side: DuelState.PlayerSide, definition_id: StringName) -> 
 	return _add_card(_state.get_player(side).set_aside, side, definition_id)
 
 
+## Place une Unit de `definition_id` dans un état déjà construit et renvoie son `piece_id` :
+## simule une pièce arrivée entre une annonce et sa résolution (Spell de l'étape 1.6).
+static func place_unit_in(
+	state: DuelState, side: DuelState.PlayerSide, definition_id: StringName, cell_name: String
+) -> int:
+	var card := CardInstance.new()
+	card.card_instance_id = state.allocate_card_instance_id()
+	card.definition_id = definition_id
+	card.owner = side
+	var piece := Piece.new()
+	piece.piece_id = state.allocate_piece_id()
+	piece.kind = Piece.PieceKind.UNIT
+	piece.owner = side
+	piece.cell = cell(cell_name)
+	piece.card = card
+	state.pieces.append(piece)
+	return piece.piece_id
+
+
 ## Crée une instance hors zone, destinée à une pièce ou à une entrée de pile.
 func make_card_instance(side: DuelState.PlayerSide, definition_id: StringName) -> CardInstance:
 	var card := CardInstance.new()

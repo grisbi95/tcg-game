@@ -165,7 +165,7 @@ func test_205_1_9_essence_of_returned_deploy_is_lost() -> void:
 	var card_id := _builder.add_to_hand(A, UNIT_ID)
 	_start()
 	_engine.submit(_deploy(card_id, "B1"))
-	_place_on_live_state(A, WEAK_ENEMY_ID, "B1")
+	DuelStateBuilder.place_unit_in(_engine.get_state(), A, WEAK_ENEMY_ID, "B1")
 	_resolve_stack()
 	var player := _engine.get_state().get_player(A)
 	assert_object(player.find_card_in_hand(card_id)).is_not_null()
@@ -176,7 +176,7 @@ func test_203_3_3_essence_stays_spent_when_deploy_does_not_happen() -> void:
 	var card_id := _builder.add_to_hand(A, BUILDING_ID)
 	_start()
 	_engine.submit(_deploy(card_id, "B2", BUILDING_COST))
-	_place_on_live_state(B, WEAK_ENEMY_ID, "B2")
+	DuelStateBuilder.place_unit_in(_engine.get_state(), B, WEAK_ENEMY_ID, "B2")
 	_resolve_stack()
 	assert_int(_engine.get_state().get_player(A).sources_upright).is_equal(0)
 
@@ -262,24 +262,6 @@ func _place(side: DuelState.PlayerSide, definition_id: StringName, cell_name: St
 	return _builder.place_piece(
 		side, Piece.PieceKind.UNIT, DuelStateBuilder.cell(cell_name), definition_id
 	)
-
-
-## Simule une pièce arrivée entre l'annonce et la résolution (Spell de l'étape 1.6).
-func _place_on_live_state(
-	side: DuelState.PlayerSide, definition_id: StringName, cell_name: String
-) -> void:
-	var state := _engine.get_state()
-	var card := CardInstance.new()
-	card.card_instance_id = state.allocate_card_instance_id()
-	card.definition_id = definition_id
-	card.owner = side
-	var piece := Piece.new()
-	piece.piece_id = state.allocate_piece_id()
-	piece.kind = Piece.PieceKind.UNIT
-	piece.owner = side
-	piece.cell = DuelStateBuilder.cell(cell_name)
-	piece.card = card
-	state.pieces.append(piece)
 
 
 func _assert_rejected(intent: DuelIntent, expected: IntentRejected.RejectReason) -> void:

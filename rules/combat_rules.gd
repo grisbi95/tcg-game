@@ -25,7 +25,7 @@ static func resolve_attack(
 	if _is_attacker_destroyed(state, attacker_force, defender_force):
 		destroy_piece(state, attacker, events)
 	elif defender_destroyed and _attacker_takes_cell(state, attacker_force, defender_force):
-		_move_piece(attacker, defender_cell, events)
+		ActionRules.move_piece(attacker, defender_cell, events)
 
 
 ## 206.3.2, 206.3.2a, 202.2.13 : retire `piece` du plateau ; sa carte et son Gear vont dans la
@@ -70,8 +70,3 @@ static func _attacker_takes_cell(
 	state: DuelState, attacker_force: int, defender_force: int
 ) -> bool:
 	return attacker_force != defender_force or state.config.tie_attacker_takes_cell
-
-
-static func _move_piece(piece: Piece, to_cell: Vector2i, events: Array[DuelEvent]) -> void:
-	events.append(PieceMoved.new(piece.owner, piece.piece_id, piece.cell, to_cell))
-	piece.cell = to_cell

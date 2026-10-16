@@ -27,7 +27,13 @@ enum RejectReason {
 	NOT_YOUR_PRIORITY,  # 208.2.2, 208.2.4 : ce n'est pas à ce joueur de répondre ou de passer
 	NOT_DEPLOYABLE,  # 202.2.5, 202.2.7 : ni Unit ni Building
 	CELL_NOT_IN_DEPLOY_ZONE,  # 205.1.2, 205.1.3, 205.1.4
-	CELL_NOT_FREE,  # 205.1.2, 205.1.3 : case de déploiement occupée à l'annonce
+	CELL_NOT_FREE,  # 205.1.2, 205.1.3, 205.3.3 : case visée occupée à l'annonce
+	NORMAL_ACTION_ALREADY_USED,  # 204.4.6, 205.4.7
+	PIECE_NOT_YOURS,  # 204.4.5 : pièce absente du plateau ou d'un autre joueur
+	NO_NORMAL_ACTION,  # 202.2.17 : un Building ne fait jamais d'action normale
+	CELL_NOT_ADJACENT,  # 205.2.5, 205.3.1
+	CELL_OCCUPIED_BY_ALLY,  # 205.2.6
+	CELL_OUTSIDE_HERO_ROWS,  # 205.3.2
 }
 
 ## Intention refusée, telle que soumise ; null si le refus ne vient pas d'une intention.

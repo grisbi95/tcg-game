@@ -1,6 +1,6 @@
 class_name ActionRules
 extends RefCounted
-## Actions (205) : déploiement à l'étape 1.5, bloc 2 ; action normale et Hero au bloc 3.
+## Actions (205) : déploiement, action normale d'une Unit, déplacement du Hero, échecs.
 
 
 ## 208.1.1, 208.1.8, 208.1.9, 205.1.2 à 205.1.4, 203.3.2 : raison du refus de `intent`, ou
@@ -49,6 +49,89 @@ static func resolve_deploy(state: DuelState, entry: StackEntry, events: Array[Du
 		_enter_attacking(state, entry.card, occupant, events)
 	else:
 		_return_to_hand(state, entry.card, events)
+
+
+## 204.4.5, 204.4.6, 208.1.2, 208.1.10, 208.1.11, 205.2.5, 205.2.6, 205.3.1 à 205.3.3,
+## 202.2.17 : raison du refus de `intent`, ou NONE. L'attente est contrôlée par DuelEngine. Pur.
+static func validate_normal_action(
+	state: DuelState, intent: TakeNormalAction
+) -> IntentRejected.RejectReason:
+	var reason := _validate_main_phase_with_empty_stack(state, intent.player)
+	if reason != IntentRejected.RejectReason.NONE:
+		return reason
+	if state.get_player(intent.player).normal_action_used_this_turn:
+		return IntentRejected.RejectReason.NORMAL_ACTION_ALREADY_USED
+	var piece := state.find_piece(intent.piece_id)
+	if piece == null or piece.owner != intent.player:
+		return IntentRejected.RejectReason.PIECE_NOT_YOURS
+	if piece.kind == Piece.PieceKind.BUILDING:
+		return IntentRejected.RejectReason.NO_NORMAL_ACTION
+	if not BoardGeometry.are_adjacent(piece.cell, intent.cell):
+		return IntentRejected.RejectReason.CELL_NOT_ADJACENT
+	if piece.kind == Piece.PieceKind.HERO:
+		return _validate_hero_target(state, piece, intent.cell)
+	return _validate_unit_target(state, piece, intent.cell)
+
+
+## 205.4.7, 208.4.1 : l'action compte pour 204.4.6 dès l'annonce ; elle va sur la pile avec sa
+## case. Suppose l'intention validée.
+static func announce_normal_action(
+	state: DuelState, intent: TakeNormalAction, events: Array[DuelEvent]
+) -> void:
+	state.get_player(intent.player).normal_action_used_this_turn = true
+	events.append(NormalActionAnnounced.new(intent.player, intent.piece_id, intent.cell))
+	var entry := StackEntry.new()
+	entry.kind = StackEntry.StackEntryKind.NORMAL_ACTION
+	entry.owner = intent.player
+	entry.source_piece_id = intent.piece_id
+	entry.target_cells.append(intent.cell)
+	StackRules.add_to_stack(state, entry, events)
+
+
+## 205.4.1 : l'action se résout selon le plateau du moment ; 205.4.3, 205.4.4 : elle échoue si
+## sa pièce a quitté le plateau ou n'est plus adjacente à la case visée.
+static func resolve_normal_action(
+	state: DuelState, entry: StackEntry, events: Array[DuelEvent]
+) -> void:
+	var piece := state.find_piece(entry.source_piece_id)
+	var cell := entry.target_cells[0]
+	if piece == null or not BoardGeometry.are_adjacent(piece.cell, cell):
+		events.append(NormalActionFailed.new(entry.owner, entry.source_piece_id))
+		return
+	var occupant := state.piece_at(cell)
+	if occupant == null:
+		move_piece(piece, cell, events)
+	elif piece.kind == Piece.PieceKind.UNIT and occupant.owner != piece.owner:
+		CombatRules.resolve_attack(state, piece, occupant, events)
+	else:
+		events.append(NormalActionFailed.new(entry.owner, entry.source_piece_id))
+
+
+## 205.2.2, 205.3.1, 206.3.3 : `piece` passe sur `to_cell`.
+static func move_piece(piece: Piece, to_cell: Vector2i, events: Array[DuelEvent]) -> void:
+	events.append(PieceMoved.new(piece.owner, piece.piece_id, piece.cell, to_cell))
+	piece.cell = to_cell
+
+
+# 205.3.2, 205.3.3 ; 202.3.10 : le Hero n'attaque jamais, sa case visée est libre.
+static func _validate_hero_target(
+	state: DuelState, hero: Piece, cell: Vector2i
+) -> IntentRejected.RejectReason:
+	if not BoardGeometry.is_in_near_rows(hero.owner, cell):
+		return IntentRejected.RejectReason.CELL_OUTSIDE_HERO_ROWS
+	if state.piece_at(cell) != null:
+		return IntentRejected.RejectReason.CELL_NOT_FREE
+	return IntentRejected.RejectReason.NONE
+
+
+# 205.2.6 : la case visée est libre ou occupée par une pièce ennemie.
+static func _validate_unit_target(
+	state: DuelState, unit: Piece, cell: Vector2i
+) -> IntentRejected.RejectReason:
+	var occupant := state.piece_at(cell)
+	if occupant != null and occupant.owner == unit.owner:
+		return IntentRejected.RejectReason.CELL_OCCUPIED_BY_ALLY
+	return IntentRejected.RejectReason.NONE
 
 
 # 208.1.8, 208.1.9, 208.1.10, 208.1.11 : annonce du joueur actif, phase principale, pile vide.
