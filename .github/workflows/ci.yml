@@ -19,6 +19,8 @@ jobs:
           include-templates: false
       - name: Import du projet
         run: godot --headless --path . --import
+      - name: Contrôle du typage
+        run: GODOT_BIN="$(which godot)" bash tools/check_typing.sh
       - name: Suites GdUnit4
         run: GODOT_BIN="$(which godot)" bash addons/gdUnit4/runtest.sh --headless -a res://tests --ignoreHeadlessMode
       - uses: actions/upload-artifact@v4

@@ -4,7 +4,7 @@
 
 - **Le ruleset fait foi.** Il vit dans `docs/ruleset/` (édition dans son `README.md`, décision 0014) et ne s'édite que par l'agent `ruleset-editor`. Un point non tranché par le ruleset ne devient jamais un comportement implicite : arrêter, et le signaler comme question ouverte du ruleset.
 - **Une décision avant un système nouveau** : 2 ou 3 options avec compromis, choix du créateur, consignation dans `docs/decisions/`. Décisions acceptées : `0001` à `0016` ; les respecter.
-- **GDScript typé partout** : paramètres, retours, variables, collections. Les warnings `untyped_declaration` et `unsafe_*` sont des erreurs à corriger.
+- **GDScript typé partout** : paramètres, retours, variables, collections. Les warnings `untyped_declaration` et `unsafe_*` sont des erreurs à corriger ; `tools/check_typing.sh` les contrôle.
 - **Un identifiant de règle sur chaque fonction de règle et chaque test** : `# 206.3.6`, `test_206_3_6_tie_destroys_both`.
 
 ## 1. Projet
@@ -63,7 +63,7 @@ Créer un dossier au premier fichier qui y entre ; tout autre dossier racine se 
 
 ## 6. Fichiers Godot
 
-- Éditer les `.gd` avec `Edit` ou `Write` : le hook reformate puis analyse. Après une édition par terminal, lancer `bash .claude/hooks/check_changed_gdscript.sh` et `tools/lint.sh`.
+- Éditer les `.gd` avec `Edit` ou `Write` : le hook reformate puis analyse. Après une édition par terminal, lancer `bash .claude/hooks/check_changed_gdscript.sh`, `tools/lint.sh` et `tools/check_typing.sh`.
 - Ne jamais inventer un `uid://` ; ne jamais éditer `.uid`, `.import`, `.godot/`, `addons/` ; `docs/ruleset/` ne s'édite que par `ruleset-editor`, selon sa `CHARTE.md`. Une règle modifiée sans le code qui l'applique se signale dans « État actuel ».
 - Les `.tscn` s'éditent au strict nécessaire et se vérifient en chargeant la scène.
 - Par le MCP : jamais d'édition de `.gd` (le hook ne passerait pas), de `project.godot` ni d'autoload.
@@ -76,6 +76,7 @@ Définir `GODOT_BIN` comme indiqué dans `CLAUDE.local.md`.
 tools/run_tests.sh                          # toutes les suites, échecs et résumé seulement
 tools/run_tests.sh res://tests/test_x.gd    # une suite
 tools/lint.sh                               # gdformat --check puis gdlint ; --fix pour reformater
+tools/check_typing.sh                       # warnings de typage traités en erreurs, tous les .gd
 python3 .claude/hooks/check_gdscript.py chemin.gd
 "$GODOT_BIN" --headless --path . --import   # après un ajout de ressource ou de classe
 ```
@@ -84,7 +85,7 @@ Code de sortie des tests : 0 tout passe, 100 au moins un échec, autre erreur d'
 
 ## 8. Définition de terminé
 
-- [ ] `.gd` modifiés passés par le hook ou `check_changed_gdscript.sh`, `tools/lint.sh` propre.
+- [ ] `.gd` modifiés passés par le hook ou `check_changed_gdscript.sh`, `tools/lint.sh` et `tools/check_typing.sh` propres.
 - [ ] Suites pertinentes exécutées et vertes ; une règle nouvelle ou modifiée a son test nommé par identifiant.
 - [ ] Pour la vue, scène lancée et comportement vérifié ; pour le moteur, la suite tient ce rôle.
 - [ ] Diff relu contre `docs/code-guidelines.md` §8 ; rien hors périmètre.

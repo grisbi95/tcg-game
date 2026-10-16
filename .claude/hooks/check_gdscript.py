@@ -107,7 +107,7 @@ def main():
     except (OSError, ValueError, subprocess.TimeoutExpired) as exc:
         return fail(f"analyse impossible : {exc}")
 
-    message = f"Analyse --check-only réussie : {relative.as_posix()}. Les warnings de typage restent à vérifier dans l'éditeur."
+    message = f"Analyse --check-only réussie : {relative.as_posix()}. Les warnings de typage se contrôlent par tools/check_typing.sh."
     if hook_mode:
         print(json.dumps({"hookSpecificOutput": {
             "hookEventName": "PostToolUse", "additionalContext": message,
