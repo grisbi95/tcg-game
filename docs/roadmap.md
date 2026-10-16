@@ -2,7 +2,7 @@
 
 > **Rôle** : plan unique du projet : périmètre, jalons, étapes et état. Les règles font foi dans [ruleset/](ruleset/README.md) ; l'architecture dans [decisions/](decisions/).
 
-**État actuel (16 octobre 2026)** : jalon J0 terminé ; J1 étape 1.1 terminée sur la branche `feat/1.1-state` (non fusionnée, aucun commit) : `DuelState`, `PlayerState`, `Piece` (décision 0008), `CardInstance`, `StackEntry`, `ActiveEffect`, `PendingDecision` (décision 0009), `DuelConfig` (une valeur par règle PROVISOIRE), `BoardGeometry`, bases `DuelIntent`, `DuelEvent`, `PlayerEvent`, `IntentRejected`, outils `DeepCompare`, `EventLog`, `DuelStateBuilder`, 58 tests verts, lint propre. Décisions 0001 à 0009. Prochaine action : J1 étape 1.2, catalogue JSON (`CardDefinition`, `HeroDefinition`, `EffectDefinition`, `TargetSpec`, `CatalogLoader`).
+**État actuel (16 octobre 2026)** : jalon J0 terminé ; J1 étapes 1.1 (commit `680235c`, branche `feat/1.1-state`) et 1.2 terminées. La 1.2 est sur la branche `feat/1.2-catalog`, issue de la 1.1, aucun commit, rien de fusionné dans `main` : `rules/catalog/` (`CardDefinition`, `HeroDefinition`, `EffectDefinition` avec `EffectKind` MODIFY_FORCE, DESTROY, COUNTER_SPELL, CREATE_TOKEN, `TargetSpec`, `Catalog`, `CatalogLoader`, `CatalogReader`, chacun avec `find_errors()`), outil de test `CatalogSamples`, 155 tests verts dont les suites `test_catalog*.gd`, lint propre. `data/cards/` reste vide : les cartes de test viennent à l'étape 1.9, après le code des `kind` (1.6, 1.7). Décisions 0001 à 0010. Prochaine action : J1 étape 1.3, zones, Essence, tour (201, 203, 204).
 
 ## Périmètre
 
@@ -31,7 +31,7 @@
 Chaque étape : règles lues, décision si système nouveau, implémentation par identifiants, tests nommés par identifiants, lint vert.
 
 - [x] **1.1 Fondations** : `DuelState`, `PlayerState`, `Piece`, `CardInstance`, `StackEntry`, `ActiveEffect`, `PendingDecision`, `DuelConfig` (une valeur par règle PROVISOIRE), `BoardGeometry` (201.2), identifiants, `clone()` et son test par réflexion, bases `DuelIntent`, `DuelEvent`, `IntentRejected`. `DeepCompare`, `EventLog`, `DuelStateBuilder` repris du prototype et adaptés.
-- [ ] **1.2 Catalogue JSON** : `CardDefinition`, `HeroDefinition`, `EffectDefinition`, `TargetSpec`, `CatalogLoader`, `find_errors()`, test du catalogue (201.6, 202.1, 202.2).
+- [x] **1.2 Catalogue JSON** : `CardDefinition`, `HeroDefinition`, `EffectDefinition`, `TargetSpec`, `CatalogLoader`, `find_errors()`, test du catalogue (201.6, 202.1, 202.2). Forme du schéma : décision 0010 ; s'y ajoutent `Catalog` et `CatalogReader`.
 - [ ] **1.3 Zones, Essence, tour** : 201, 203, 204 : préparation, Sources et Fonte, paiement `{incliner, recycler}`, mulligan simultané avec Écart, début de tour, pioche et fatigue (209.5), fin de tour sans déclencheur.
 - [ ] **1.4 Pile et priorité** : 208 sans déclencheurs : annonce, 208.2.4, passes, bloc LIFO, retour au joueur actif ; 209.2 victoire après chaque effet ; `Concede`.
 - [ ] **1.5 Actions et combat** : 205 et 206 : déploiement (annonce et résolution), action normale, déplacement du Hero, échecs, combat, égalité, Hero défenseur, auras lues avant l'avance, `ForceRules`.

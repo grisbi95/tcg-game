@@ -1,6 +1,6 @@
 # Moteur de duel — consignes locales
 
-Complète le `CLAUDE.md` racine pour `rules/`. Les décisions 0001, 0003, 0004, 0007, 0008 et 0009 priment ; `docs/ruleset/20-regles-completes/` fait foi.
+Complète le `CLAUDE.md` racine pour `rules/`. Les décisions 0001, 0003, 0004, 0007, 0008, 0009 et 0010 priment ; `docs/ruleset/20-regles-completes/` fait foi.
 
 ## Carte des modules (cible du jalon J1)
 
@@ -21,7 +21,7 @@ Complète le `CLAUDE.md` racine pour `rules/`. Les décisions 0001, 0003, 0004, 
 | `board_geometry.gd` | 201.2, 205 | adjacence, rangées, zones de déploiement, notation A1 à E5 |
 | `duel_state.gd`, `player_state.gd`, `piece.gd`, `card_instance.gd`, `stack_entry.gd`, `active_effect.gd`, `pending_decision.gd` | — | État mutable, `clone()` complet |
 | `duel_config.gd` | règles PROVISOIRE | une valeur par règle PROVISOIRE, lecture seule |
-| `catalog/` | 202 | `CardDefinition`, `HeroDefinition`, `EffectDefinition`, `TargetSpec`, `CatalogLoader` (JSON), chacun avec `find_errors()` |
+| `catalog/` | 202 | `CardDefinition`, `HeroDefinition`, `EffectDefinition`, `TargetSpec`, chacun avec `find_errors()` ; `Catalog` (résolution par id, contrôle de deck 201.6), `CatalogLoader` (JSON), `CatalogReader` (lecture typée) |
 | `intents/`, `events/` | — | une classe par intention et par événement ; bases `DuelIntent`, `DuelEvent`, `PlayerEvent` |
 
 ## Ajouter une intention
@@ -35,7 +35,7 @@ Complète le `CLAUDE.md` racine pour `rules/`. Les décisions 0001, 0003, 0004, 
 
 ## Ajouter un `kind` d'effet
 
-1. Valeur à la fin de `EffectKind` ; champs exigés déclarés dans `EffectDefinition.find_errors()`.
+1. Valeur à la fin de `EffectKind` ; champs exigés déclarés dans `EffectDefinition.find_errors()` (timings admis, cible attendue, paramètres) ; test dans `tests/test_catalog_effects.gd`.
 2. Code et tests dans le module du chapitre **avant** toute carte JSON qui l'emploie (0002). Les cibles exigées passent par `TargetSpec`, validées à l'ajout à la pile et à la résolution (207.5).
 3. Carte JSON ensuite ; le test du catalogue passe.
 
