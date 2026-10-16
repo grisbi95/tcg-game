@@ -36,6 +36,12 @@ Un joueur qui garde sa main, soit qui écarte 0 carte, fait-il un mulligan au se
 - Option B : écarter 0 carte est un mulligan vide. Le deck est mélangé ; une seule définition couvre tous les choix, mais le mélange n'a aucun effet visible sur le jeu et change l'ordre des tirages au hasard d'une partie rejouée à l'identique.
 Manque pour trancher : 204.2.1 donne à chaque joueur un mulligan à faire une seule fois, 204.2.4 à 204.2.7 décrivent ce que fait « le joueur qui fait un mulligan », et aucune règle ne traite le choix d'écarter 0 carte ; le glossaire définit le mulligan comme le remplacement de cartes de sa main. L'enjeu de jeu est faible, l'enjeu est surtout de définition : décision du créateur sur le sens de « faire un mulligan ».
 
+**Q-079 · Incliner puis recycler la même Source dans un même paiement** · chapitre 203 · ouverte le 16 octobre 2026
+Un joueur peut-il recycler, dans un paiement, une Source qu'il vient d'incliner pour ce même paiement ?
+- Option A : seules les Sources déjà inclinées avant le paiement peuvent être recyclées dans ce paiement. Un joueur ne tire d'un coup au plus qu'une Essence par Source redressée ; le recyclage sert surtout à réutiliser des Sources déjà dépensées, par exemple pour répondre pendant le tour adverse (203.2.5) ; les retournements soudains restent bornés.
+- Option B : une Source inclinée pendant le paiement peut y être recyclée aussitôt. Chaque Source en jeu vaut jusqu'à 2 Essence d'un coup ; retournements plus brutaux, dans l'esprit de la décision 0027 (recyclage sans limite) ; le coût maximal payable en un tour double presque.
+Manque pour trancher : 203.2.1 permet d'incliner une Source redressée pour produire 1 Essence, 203.2.2 de recycler une Source inclinée pour produire 1 Essence, et 203.2.4 ne fait produire de l'Essence qu'au moment de payer un coût ; la décision 0021 dit qu'une Source inclinée peut être recyclée pour 1 Essence de plus. Aucune règle ne dit si la Source recyclée doit être inclinée avant le paiement, ou si une Source inclinée pendant ce paiement peut y être recyclée aussitôt ; un joueur qui a 2 Sources redressées et aucune inclinée ne peut payer un coût de 4 Essence que si la réponse est oui. Décision du créateur sur l'ampleur des retournements. À observer en playtest : nombre de Sources recyclées par tour et tours décisifs après un recyclage massif (mesures déjà prévues par 203.4.2).
+
 ## Tranchées
 
 | Question | Décision |
