@@ -18,7 +18,7 @@
 ## 3. Communication par événements
 
 - Un signal est un observateur : l'émetteur annonce un fait sans savoir qui écoute. Objets proches : connexion directe établie par leur parent commun. Déconnecter un écouteur devenu inutile.
-- Objets éloignés : l'article recommande un bus d'événements en autoload. Le projet en a **un seul**, `AppEvents` (décision 0006), qui ne porte que des signals d'application : changement d'écran, demande de son, réglages. Il n'a ni variable, ni fonction, ni référence : c'est ce qui le distingue d'un objet dieu.
+- Objets éloignés : l'article recommande un bus d'événements en autoload. Le projet en a **un seul**, `AppEvents` (décision 0006), qui ne porte que des signals d'application : changement d'écran, demande de son, réglages. Il n'a ni variable, ni fonction, ni référence : c'est ce qui le distingue d'un objet dieu. L'autoload `_mcp_game_helper` du plugin Godot AI est de l'outillage de l'éditeur, retiré des exports, que le code du jeu ne référence jamais (décision 0011).
 - Les faits de jeu ne passent jamais par ce bus : le flux `Array[DuelEvent]` renvoyé par `submit()` est leur canal unique, joué par `EventPlayer`. Deux canaux pour une même vérité feraient dériver la vue.
 - Une vue se met à jour sur événement, jamais en relisant un état distant dans `_process()`.
 
