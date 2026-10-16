@@ -12,7 +12,29 @@ Manque pour trancher : ce qu'il faut observer ou décider.
 
 ## Ouvertes
 
-Aucune question ouverte au 16 octobre 2026.
+**Q-075 · Ordre des étapes de la préparation** · chapitre 204 · ouverte le 16 octobre 2026
+Dans quel ordre se déroulent les étapes de la préparation, et en particulier le premier joueur est-il désigné avant ou après le mulligan ?
+- Option A : le premier joueur est désigné avant la pioche de 5 cartes et le mulligan. Chaque joueur décide de son mulligan en sachant s'il joue en premier, alors que le premier joueur ne reçoit pas de Source à son premier tour (204.3.4) ; la main de départ s'adapte au rôle, mais le mulligan perd une part d'incertitude.
+- Option B : le premier joueur est désigné après le mulligan. Chaque joueur décide de son mulligan sans connaître son rôle, ce qui garde le mulligan indépendant de l'ordre de jeu ; la main de départ ne peut pas s'adapter au rôle.
+Manque pour trancher : les règles 204.1.12, 204.1.13, 204.1.14 et 204.1.15 disent ce qui a lieu pendant la préparation et 204.1.10 y place le mulligan, mais aucune ne fixe l'ordre entre la mise en jeu des Sources, la désignation du premier joueur, la pioche et le mulligan ; seuls sont ordonnés le mélange avant la première pioche (204.1.6) et la pioche avant le choix des cartes écartées (204.2.4, qui part de la main de départ). Le choix du créateur sur le degré d'information du mulligan, puis l'ordre des autres étapes : la mise en jeu des Sources (204.1.12, 204.1.13), le placement des Heroes (204.1.1) et leurs PV (204.1.8) n'interagissent avec aucune autre étape, mais l'ordre des étapes qui font appel au hasard (204.1.6, 204.1.14, 204.2.7) fixe le déroulement d'une partie rejouée à l'identique.
+
+**Q-076 · État des Sources mises en jeu pendant la préparation** · chapitres 203 et 204 · ouverte le 16 octobre 2026
+Les 2 Sources que chaque joueur met en jeu pendant la préparation (204.1.12) arrivent-elles redressées ou inclinées ?
+- Option A : redressées. Cohérent avec 204.3.3, qui fait arriver redressée une Source reçue ; le second joueur peut payer une réponse pendant le premier tour du premier joueur (203.2.5), alors qu'il n'a encore rien redressé.
+- Option B : inclinées. Aucun joueur ne dispose d'Essence avant son premier tour, 204.3.2 redressant alors ses Sources ; le second joueur ne peut pas répondre pendant le premier tour du premier joueur, et une règle de plus distingue l'état d'une Source mise en jeu de celui d'une Source reçue.
+Manque pour trancher : 204.3.3 donne l'état d'une Source reçue, verbe employé par 204.3.1, 204.3.4 et 204.3.5, alors que 204.1.12 dit que le joueur met des Sources en jeu ; aucune règle ne donne l'état d'une Source mise en jeu pendant la préparation. L'écart ne touche pas le premier joueur, qui ne peut rien payer avant son premier tour et dont les Sources sont redressées au début de ce tour (204.3.2) ; il ne touche que le second joueur, pendant le premier tour du premier joueur. Décision du créateur : le second joueur peut-il payer une réponse pendant ce tour.
+
+**Q-077 · Fatigue avec un deck vide et une main pleine** · chapitre 209 · ouverte le 16 octobre 2026
+Le compteur de fatigue d'un joueur augmente-t-il quand il doit piocher alors que son deck est vide et que sa main est pleine ?
+- Option A : il augmente. Le deck vide prime et la limite de main ne protège pas de la fatigue (209.5.2) ; la fatigue garde sa fonction de fin des parties bloquées (décision 0059), mais un joueur à main pleine perd des PV pour une carte qu'il n'aurait pas pu garder.
+- Option B : il n'augmente pas. 209.5.4 prime et une main pleine protège de la fatigue ; aucun joueur ne perd de PV pour une carte qu'il n'aurait pas pu garder, mais la fin des parties longues, enjeu de la décision 0059, peut être retardée.
+Manque pour trancher : 209.5.2 fait augmenter le compteur quand un joueur doit piocher alors que son deck est vide ; 209.5.4 ne l'augmente pas pour une carte non piochée à cause de la limite de main (201.3.5) ; aucune règle ne dit laquelle des deux s'applique quand les deux conditions sont réunies, et la décision 0059 précise que seul un deck vide fait perdre des PV sans traiter ce cas. À observer en playtest : tours passés à main pleine (201.3.4) et tour de la première augmentation d'un compteur de fatigue (209.5.1), pour mesurer la fréquence du cas.
+
+**Q-078 · Garder sa main et mélange du deck** · chapitre 204 · ouverte le 16 octobre 2026
+Un joueur qui garde sa main, soit qui écarte 0 carte, fait-il un mulligan au sens de 204.2.1 à 204.2.9, et mélange-t-il donc son deck (204.2.7) ?
+- Option A : écarter 0 carte n'est pas un mulligan. Aucun mélange ; la définition du mulligan reste celle d'un remplacement de cartes (glossaire), mais la règle doit alors dire que garder sa main est un choix distinct du mulligan.
+- Option B : écarter 0 carte est un mulligan vide. Le deck est mélangé ; une seule définition couvre tous les choix, mais le mélange n'a aucun effet visible sur le jeu et change l'ordre des tirages au hasard d'une partie rejouée à l'identique.
+Manque pour trancher : 204.2.1 donne à chaque joueur un mulligan à faire une seule fois, 204.2.4 à 204.2.7 décrivent ce que fait « le joueur qui fait un mulligan », et aucune règle ne traite le choix d'écarter 0 carte ; le glossaire définit le mulligan comme le remplacement de cartes de sa main. L'enjeu de jeu est faible, l'enjeu est surtout de définition : décision du créateur sur le sens de « faire un mulligan ».
 
 ## Tranchées
 

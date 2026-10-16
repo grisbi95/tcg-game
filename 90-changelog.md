@@ -281,3 +281,8 @@
 - Note sur Dernier souffle, dans [70-playtest/protocole.md](70-playtest/protocole.md), sections Fiche de relevé et Cibles et seuils : à chaque déclenchement de Dernier souffle, on relève s'il a changé l'issue d'un combat ou de la partie ; modèle de fiche complété ; la note n'a ni cible ni seuil d'alerte ; Dernier souffle et Martyr restent tels quels pour la première série ; décisions 0080 et 0091 non remplacées. Décision associée : [0175](40-decisions/0175-dernier-souffle-observe-en-playtest.md).
 - Aucune règle de jeu ajoutée, modifiée ni supprimée ; aucun identifiant ajouté, modifié ou supprimé. Aucun terme ajouté ni modifié au glossaire. Aucune question ouverte créée ni tranchée.
 - [README.md](README.md) : ligne de `70-playtest/` mise à jour, édition courante passée à 0.28.
+
+## 0.29 · 16 octobre 2026 · mineure · questions ouvertes issues du moteur
+
+- Questions ouvertes issues de l'implémentation du moteur (étape 1.3), dans [02-questions-ouvertes.md](02-questions-ouvertes.md), section Ouvertes : ordre des étapes de la préparation (Q-075, chapitre 204), état des Sources mises en jeu pendant la préparation (Q-076, chapitres 203 et 204), fatigue avec un deck vide et une main pleine (Q-077, chapitre 209), garder sa main et mélange du deck (Q-078, chapitre 204). Aucune règle de jeu ajoutée, modifiée ni supprimée ; aucun identifiant ajouté, modifié ou supprimé. Aucun terme ajouté ni modifié au glossaire. Aucune question ouverte tranchée. Aucune décision associée.
+- [README.md](README.md) : édition courante passée à 0.29.
