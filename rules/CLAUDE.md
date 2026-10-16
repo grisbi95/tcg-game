@@ -1,6 +1,6 @@
 # Moteur de duel — consignes locales
 
-Complète le `CLAUDE.md` racine pour `rules/`. Les décisions 0001, 0003, 0004, 0007, 0008, 0009, 0010, 0012, 0013 et 0015 priment ; `docs/ruleset/20-regles-completes/` fait foi.
+Complète le `CLAUDE.md` racine pour `rules/`. Les décisions 0001, 0003, 0004, 0007, 0008, 0009, 0010, 0012, 0013, 0015 et 0016 priment ; `docs/ruleset/20-regles-completes/` fait foi.
 
 ## Carte des modules (cible du jalon J1)
 
@@ -51,4 +51,4 @@ Le champ **et** sa copie dans `clone()` de la même classe, puis une valeur non 
 - Pile vide ⇒ passes consécutives à zéro ; phase `ENDED` ⇒ toute intention refusée ; `state.pending_decision` non null ⇒ seule l'intention qui y répond est acceptée, et `Concede` (209.2.5 : à tout moment).
 - Un Hero ne perd de PV que par `StateCheckRules.lose_health()`, qui vérifie la victoire (209.2.1).
 - Les pendules ne bougent que par `advance_clock()`, jamais pendant un `submit()`.
-- Les modules ne lisent que `state` ; aucune injection, aucun Node, aucun accès à la vue.
+- Les modules ne lisent que `state`, le catalogue compris par `state.catalog`, en lecture seule (0016) ; aucune injection, aucun Node, aucun accès à la vue.

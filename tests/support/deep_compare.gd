@@ -2,7 +2,7 @@ class_name DeepCompare
 extends RefCounted
 ## Comparaison par réflexion des objets d'état, pour vérifier `clone()` (décisions 0001 et 0008).
 ##
-## Les objets en lecture seule (Resources, DuelConfig) doivent être partagés ; tout autre
+## Les objets en lecture seule (Resources, DuelConfig, Catalog) doivent être partagés ; tout autre
 ## objet doit être copié. Le RNG se compare par `seed` et `state`.
 
 
@@ -145,7 +145,7 @@ static func _script_fields(object: Object) -> Array[String]:
 
 
 static func _is_shared_read_only(object: Object) -> bool:
-	return object is Resource or object is DuelConfig
+	return object is Resource or object is DuelConfig or object is Catalog
 
 
 static func _class_name_of(object: Object) -> String:

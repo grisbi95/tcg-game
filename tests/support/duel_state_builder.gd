@@ -19,8 +19,9 @@ const HERO_DEFINITION_ID: StringName = &"HERO_TEST"
 var _state: DuelState
 
 
-func _init(config: DuelConfig = DuelConfig.new()) -> void:
-	_state = DuelState.create(config)
+## Décision 0016 : `catalog` porte les définitions que lisent les règles (Force, coût, type).
+func _init(config: DuelConfig = DuelConfig.new(), catalog: Catalog = null) -> void:
+	_state = DuelState.create(config, catalog)
 	_state.rng.seed = DEFAULT_SEED
 	_state.phase = DuelState.DuelPhase.MAIN
 	_state.turn_number = FIRST_TURN

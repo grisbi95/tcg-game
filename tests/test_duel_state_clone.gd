@@ -35,10 +35,11 @@ func test_clone_copies_every_field() -> void:
 	assert_array(DeepCompare.find_clone_defects(state, state.clone())).is_empty()
 
 
-func test_clone_shares_only_the_read_only_config() -> void:
+func test_clone_shares_only_read_only_config_and_catalog() -> void:
 	var state := _build_full_state()
 	var copy := state.clone()
 	assert_object(copy.config).is_same(state.config)
+	assert_object(copy.catalog).is_same(state.catalog)
 	assert_object(copy.rng).is_not_same(state.rng)
 	assert_object(copy.pieces[0]).is_not_same(state.pieces[0])
 	assert_object(copy.pieces[0].card).is_not_same(state.pieces[0].card)
