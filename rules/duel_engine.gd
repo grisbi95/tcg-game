@@ -42,17 +42,10 @@ func get_state() -> DuelState:
 
 ## Raison du refus de `intent`, ou NONE si elle est légale. Pur.
 func validate(intent: DuelIntent) -> IntentRejected.RejectReason:
-	if _state == null or _state.phase == DuelState.DuelPhase.NOT_STARTED:
-		return IntentRejected.RejectReason.DUEL_NOT_STARTED
-	if _state.phase == DuelState.DuelPhase.ENDED:
-		return IntentRejected.RejectReason.DUEL_ENDED
-	if intent is ChooseMulligan:
-		return TurnRules.validate_mulligan(_state, intent as ChooseMulligan)
-	if _state.pending_decision != null:
-		return IntentRejected.RejectReason.DECISION_PENDING
-	if intent is EndTurn:
-		return TurnRules.validate_end_turn(_state, intent as EndTurn)
-	return IntentRejected.RejectReason.UNKNOWN_INTENT
+	var reason := _validate_duel_running()
+	if reason != IntentRejected.RejectReason.NONE:
+		return reason
+	return _route_validation(intent)
 
 
 ## Applique `intent` si elle est légale et renvoie les événements, dans l'ordre.
@@ -66,6 +59,29 @@ func submit(intent: DuelIntent) -> Array[DuelEvent]:
 	return events
 
 
+func _validate_duel_running() -> IntentRejected.RejectReason:
+	if _state == null or _state.phase == DuelState.DuelPhase.NOT_STARTED:
+		return IntentRejected.RejectReason.DUEL_NOT_STARTED
+	if _state.is_ended():
+		return IntentRejected.RejectReason.DUEL_ENDED
+	return IntentRejected.RejectReason.NONE
+
+
+# Décision 0009 : pendant une attente, seule sa réponse passe, avec Concede (209.2.5).
+func _route_validation(intent: DuelIntent) -> IntentRejected.RejectReason:
+	if intent is Concede:
+		return StateCheckRules.validate_concede(_state, intent as Concede)
+	if intent is ChooseMulligan:
+		return TurnRules.validate_mulligan(_state, intent as ChooseMulligan)
+	if _state.pending_decision != null:
+		return IntentRejected.RejectReason.DECISION_PENDING
+	if intent is EndTurn:
+		return TurnRules.validate_end_turn(_state, intent as EndTurn)
+	if intent is PassPriority:
+		return StackRules.validate_pass(_state, intent as PassPriority)
+	return IntentRejected.RejectReason.UNKNOWN_INTENT
+
+
 ## Définitions des Heroes de `setup`, indexées par PlayerSide.
 func _resolve_heroes(setup: DuelSetup) -> Array[HeroDefinition]:
 	var heroes: Array[HeroDefinition] = []
@@ -75,7 +91,11 @@ func _resolve_heroes(setup: DuelSetup) -> Array[HeroDefinition]:
 
 
 func _apply(intent: DuelIntent, events: Array[DuelEvent]) -> void:
-	if intent is ChooseMulligan:
+	if intent is Concede:
+		StateCheckRules.apply_concede(_state, intent as Concede, events)
+	elif intent is ChooseMulligan:
 		TurnRules.apply_mulligan(_state, intent as ChooseMulligan, events)
 	elif intent is EndTurn:
 		TurnRules.apply_end_turn(_state, intent as EndTurn, events)
+	elif intent is PassPriority:
+		StackRules.apply_pass(_state, intent as PassPriority, events)

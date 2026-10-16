@@ -89,6 +89,11 @@ static func opponent_of(side: PlayerSide) -> PlayerSide:
 	return PlayerSide.B if side == PlayerSide.A else PlayerSide.A
 
 
+# 209.2.2 : la partie est arrêtée.
+func is_ended() -> bool:
+	return phase == DuelPhase.ENDED
+
+
 func get_player(side: PlayerSide) -> PlayerState:
 	return players[side]
 
