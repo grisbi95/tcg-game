@@ -2,7 +2,7 @@
 
 > **Rôle** : plan unique du projet : périmètre, jalons, étapes et état. Les règles font foi dans [ruleset/](ruleset/README.md) ; l'architecture dans [decisions/](decisions/).
 
-**État actuel (16 octobre 2026)** : jalon J0 amorcé : dépôt créé, `project.godot` Godot 4.7.2 GL Compatibility, GdUnit4 6.2.1 et hook repris du prototype et vérifiés en headless (smoke test vert, 14 tests du hook verts), gdtoolkit 4.5.0 dans `.venv`, ruleset 0.28 synchronisé, consignes, 7 agents, 7 skills, décisions 0001 à 0007, CI écrite mais non exécutée (aucun remote). Prochaine action : créer le remote GitHub et pousser pour valider la CI, puis J1 étape 1.1.
+**État actuel (16 octobre 2026)** : jalon J0 terminé : dépôt `grisbi95/tcg-game` poussé, CI verte (tests GdUnit4 et lint), Godot 4.7.2 GL Compatibility, GdUnit4 6.2.1 et hooks vérifiés en headless, gdtoolkit 4.5.0 dans `.venv`, ruleset 0.28 épinglé, consignes, 7 agents, 7 skills, décisions 0001 à 0007. Prochaine action : J1 étape 1.1, classes d'état et `clone()`, sur une branche `feat/1.1-state`.
 
 ## Périmètre
 
@@ -24,7 +24,7 @@
 - [x] Agents : `rules-implementer`, `test-writer`, `verifier`, `card-author`, `ui-builder`, `reviewer`, `adr-writer`. Skills : `implement`, `tests`, `check`, `decision`, `sync-ruleset`, `close-step`, `cards`.
 - [x] Décisions 0001 à 0007 consignées.
 - [x] CI GitHub Actions écrite (tests, lint).
-- [ ] Remote GitHub créé, premier push, CI verte (vérifier la chaîne de version de `setup-godot`).
+- [x] Remote GitHub `grisbi95/tcg-game` (privé) créé, premier push, CI verte le 16 octobre 2026 (`setup-godot` accepte `4.7.2`).
 
 ## J1 — Moteur vérifiable
 
