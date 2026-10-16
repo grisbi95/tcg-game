@@ -2,7 +2,7 @@
 
 > **Rôle** : plan unique du projet : périmètre, jalons, étapes et état. Les règles font foi dans [ruleset/](ruleset/README.md) ; l'architecture dans [decisions/](decisions/).
 
-**État actuel (16 octobre 2026)** : jalon J0 terminé ; J1 étapes 1.1 (commit `680235c`, branche `feat/1.1-state`) et 1.2 terminées. La 1.2 est sur la branche `feat/1.2-catalog`, issue de la 1.1, aucun commit, rien de fusionné dans `main` : `rules/catalog/` (`CardDefinition`, `HeroDefinition`, `EffectDefinition` avec `EffectKind` MODIFY_FORCE, DESTROY, COUNTER_SPELL, CREATE_TOKEN, `TargetSpec`, `Catalog`, `CatalogLoader`, `CatalogReader`, chacun avec `find_errors()`), outil de test `CatalogSamples`, 155 tests verts dont les suites `test_catalog*.gd`, lint propre. `data/cards/` reste vide : les cartes de test viennent à l'étape 1.9, après le code des `kind` (1.6, 1.7). Décisions 0001 à 0011. Prochaine action : J1 étape 1.3, zones, Essence, tour (201, 203, 204).
+**État actuel (16 octobre 2026)** : jalon J0 terminé ; J1 étapes 1.1 et 1.2 terminées, fusionnées dans `main` par la PR 1 avec l'outillage Godot AI (0011), CI verte. 1.2 : `rules/catalog/` (`CardDefinition`, `HeroDefinition`, `EffectDefinition` avec `EffectKind` MODIFY_FORCE, DESTROY, COUNTER_SPELL, CREATE_TOKEN, `TargetSpec`, `Catalog`, `CatalogLoader`, `CatalogReader`, chacun avec `find_errors()`), outil de test `CatalogSamples`, 155 tests verts dont les suites `test_catalog*.gd`, lint propre. `data/cards/` ne contient que `.gitkeep` : les cartes de test viennent à l'étape 1.9, après le code des `kind` (1.6, 1.7). Décisions 0001 à 0011. Prochaine action : J1 étape 1.3, zones, Essence, tour (201, 203, 204), sur une branche issue de `main`.
 
 ## Périmètre
 
