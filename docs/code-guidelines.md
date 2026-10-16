@@ -67,7 +67,7 @@
 
 ## 9. Juste assez de conception
 
-- Concevoir pour ce qui est **requis** : le ruleset épinglé et l'étape en cours de `roadmap.md`. Rien pour le hors périmètre.
+- Concevoir pour ce qui est **requis** : le ruleset et l'étape en cours de `roadmap.md`. Rien pour le hors périmètre.
 - Ce qui est **raisonnablement probable** se prépare par un choix peu coûteux : un paramètre, une valeur d'`enum`. Pas une infrastructure.
 - Proportionner le soin à l'**impact** : moteur, état et `clone()` méritent de la rigueur ; un callback de bouton, non.
 - Itérer : refactoriser au premier point de douleur réel, protégé par les tests, plutôt que viser une architecture parfaite.

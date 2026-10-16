@@ -6,7 +6,6 @@
       "Bash(bash addons/gdUnit4/runtest.sh:*)",
       "Bash(tools/run_tests.sh:*)",
       "Bash(tools/lint.sh:*)",
-      "Bash(tools/sync_ruleset.sh:*)",
       "Bash(.venv/bin/gdlint:*)",
       "Bash(.venv/bin/gdformat:*)",
       "Bash(git status:*)",
@@ -26,7 +25,6 @@
       "Edit(/addons/**)",
       "Edit(/.godot/**)",
       "Edit(/.venv/**)",
-      "Edit(/docs/ruleset/**)",
       "Edit(/**/*.uid)",
       "Edit(/**/*.import)"
     ]

@@ -1,6 +1,6 @@
 # Ruleset du TCG tactique
 
-> Dossier de conception des règles, tenu à part du projet Godot `tactical_tcg`. Édition courante : **0.29** (questions ouvertes issues du moteur, 16 octobre 2026). Historique dans [90-changelog.md](90-changelog.md).
+> Dossier de conception des règles, intégré au dépôt du jeu `tcg-game`, dans `docs/ruleset/` (décision 0014 du projet). Édition courante : **0.29** (questions ouvertes issues du moteur, 16 octobre 2026). Historique dans [90-changelog.md](90-changelog.md).
 
 ## Quel document pour quel lecteur
 

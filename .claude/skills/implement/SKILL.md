@@ -7,7 +7,7 @@ description: Brief type pour faire implémenter une liste d'identifiants du rule
 
 Arguments : une section (`206.3`) ou une liste d'identifiants.
 
-1. Lis les règles visées dans `docs/ruleset/20-regles-completes/<chapitre>.md` et vérifie qu'aucune n'est À ARBITRER ni supprimée. Si une règle manque ou est ambiguë, arrête-toi : propose la question pour `tcg-ruleset` au lieu de coder.
+1. Lis les règles visées dans `docs/ruleset/20-regles-completes/<chapitre>.md` et vérifie qu'aucune n'est À ARBITRER ni supprimée. Si une règle manque ou est ambiguë, arrête-toi : propose la question ouverte du ruleset au lieu de coder.
 2. Si les règles exigent un système nouveau (nouvelle sorte d'entrée de pile, nouveau `kind`, nouveau champ d'état structurant), présente 2 ou 3 options et attends le choix avant toute implémentation ; consigne ensuite avec `adr-writer`.
 3. Lance **un seul** agent `rules-implementer` avec ce brief :
    - identifiants exacts et chapitre ; module cible selon `rules/CLAUDE.md` ; suite de tests cible ;

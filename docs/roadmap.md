@@ -2,7 +2,7 @@
 
 > **Rôle** : plan unique du projet : périmètre, jalons, étapes et état. Les règles font foi dans [ruleset/](ruleset/README.md) ; l'architecture dans [decisions/](decisions/).
 
-**État actuel (16 octobre 2026)** : jalon J0 terminé ; J1 étapes 1.1 et 1.2 terminées, fusionnées dans `main` par la PR 1 avec l'outillage Godot AI (0011), CI verte. 1.2 : `rules/catalog/` (`CardDefinition`, `HeroDefinition`, `EffectDefinition` avec `EffectKind` MODIFY_FORCE, DESTROY, COUNTER_SPELL, CREATE_TOKEN, `TargetSpec`, `Catalog`, `CatalogLoader`, `CatalogReader`, chacun avec `find_errors()`), outil de test `CatalogSamples`, 155 tests verts dont les suites `test_catalog*.gd`, lint propre. `data/cards/` ne contient que `.gitkeep` : les cartes de test viennent à l'étape 1.9, après le code des `kind` (1.6, 1.7). Décisions 0001 à 0014 : 0012 (`DuelSetup`, premier joueur imposé) et 0013 (mulligans à la dernière réponse) consignées pour 1.3 ; 0014 (ruleset fusionné dans `docs/ruleset/`, fusion pas encore faite) consignée. Étape 1.3 en cours sur `feat/1.3-turn` : bloc 201 fait (`ZoneRules` : création du deck, pioche avec limite de main, Écart ; `test_201_zones.gd`, 169 tests verts) ; puis 203, puis 204 quand Q-075 (ordre de la préparation) et Q-076 (Sources de la préparation) sont tranchées par le ruleset. Q-077 (fatigue à main pleine) et Q-078 (garder sa main et mélange) sont ouvertes dans le ruleset 0.29 ; copie `docs/ruleset/` encore en 0.28.
+**État actuel (16 octobre 2026)** : jalon J0 terminé ; J1 étapes 1.1 et 1.2 terminées, fusionnées dans `main` par la PR 1 avec l'outillage Godot AI (0011), CI verte. 1.2 : `rules/catalog/` (`CardDefinition`, `HeroDefinition`, `EffectDefinition` avec `EffectKind` MODIFY_FORCE, DESTROY, COUNTER_SPELL, CREATE_TOKEN, `TargetSpec`, `Catalog`, `CatalogLoader`, `CatalogReader`, chacun avec `find_errors()`), outil de test `CatalogSamples`, 155 tests verts dont les suites `test_catalog*.gd`, lint propre. `data/cards/` ne contient que `.gitkeep` : les cartes de test viennent à l'étape 1.9, après le code des `kind` (1.6, 1.7). Décisions 0001 à 0014 : 0012 (`DuelSetup`, premier joueur imposé) et 0013 (mulligans à la dernière réponse) consignées pour 1.3 ; 0014 : ruleset fusionné dans `docs/ruleset/` avec son historique sur `chore/ruleset-merge`, édition 0.29, plus de copie ni de synchronisation. Étape 1.3 en cours sur `feat/1.3-turn` : bloc 201 fait (`ZoneRules` : création du deck, pioche avec limite de main, Écart ; `test_201_zones.gd`, 169 tests verts) ; puis 203, puis 204 quand Q-075 (ordre de la préparation) et Q-076 (Sources de la préparation) sont tranchées par le ruleset. Q-077 (fatigue à main pleine), Q-078 (garder sa main et mélange) et Q-079 (incliner puis recycler dans un même paiement) sont ouvertes dans le ruleset 0.29.
 
 ## Périmètre
 
@@ -52,7 +52,7 @@ Chaque étape : règles lues, décision si système nouveau, implémentation par
 
 ## J3 — Premier playtest
 
-- [ ] 20 parties selon `ruleset/70-playtest/protocole.md`, fiches automatiques, bilan contre le tableau des cibles et seuils, questions pour `tcg-ruleset`.
+- [ ] 20 parties selon `ruleset/70-playtest/protocole.md`, fiches automatiques, bilan contre le tableau des cibles et seuils, questions ouvertes du ruleset.
 
 ## J4 — IA et catalogue
 

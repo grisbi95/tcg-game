@@ -2,7 +2,7 @@
 
 ## IMPORTANT
 
-- **Le ruleset fait foi.** Copie épinglée dans `docs/ruleset/` (édition dans `RULESET_EDITION`). Un point non tranché par le ruleset ne devient jamais un comportement implicite : arrêter, et le signaler comme question pour `tcg-ruleset`.
+- **Le ruleset fait foi.** Il vit dans `docs/ruleset/` (édition dans son `README.md`, décision 0014) et ne s'édite que par l'agent `ruleset-editor`. Un point non tranché par le ruleset ne devient jamais un comportement implicite : arrêter, et le signaler comme question ouverte du ruleset.
 - **Une décision avant un système nouveau** : 2 ou 3 options avec compromis, choix du créateur, consignation dans `docs/decisions/`. Décisions acceptées : `0001` à `0014` ; les respecter.
 - **GDScript typé partout** : paramètres, retours, variables, collections. Les warnings `untyped_declaration` et `unsafe_*` sont des erreurs à corriger.
 - **Un identifiant de règle sur chaque fonction de règle et chaque test** : `# 206.3.6`, `test_206_3_6_tie_destroys_both`.
@@ -54,8 +54,8 @@ ai/              agents de jeu (J4)
 app/             DuelHost, horloge, journal, AppEvents (J2)
 ui/              scènes ; ui/components/ ; ui/CLAUDE.md
 tests/           suites GdUnit4 ; tests/support/ ; tests/CLAUDE.md
-docs/            README (carte), roadmap, decisions/, code-guidelines, ruleset/ (copie)
-tools/           run_tests.sh, lint.sh, sync_ruleset.sh, setup_gdtoolkit.sh
+docs/            README (carte), roadmap, decisions/, code-guidelines, ruleset/ (règles, 0014)
+tools/           run_tests.sh, lint.sh, setup_gdtoolkit.sh
 .claude/         settings, hooks, agents, skills
 ```
 
@@ -64,7 +64,7 @@ Créer un dossier au premier fichier qui y entre ; tout autre dossier racine se 
 ## 6. Fichiers Godot
 
 - Éditer les `.gd` avec `Edit` ou `Write` : le hook reformate puis analyse. Après une édition par terminal, lancer `bash .claude/hooks/check_changed_gdscript.sh` et `tools/lint.sh`.
-- Ne jamais inventer un `uid://` ; ne jamais éditer `.uid`, `.import`, `.godot/`, `addons/`, `docs/ruleset/` (copie : passer par `tcg-ruleset` puis `tools/sync_ruleset.sh`).
+- Ne jamais inventer un `uid://` ; ne jamais éditer `.uid`, `.import`, `.godot/`, `addons/` ; `docs/ruleset/` ne s'édite que par `ruleset-editor`, selon sa `CHARTE.md`. Une règle modifiée sans le code qui l'applique se signale dans « État actuel ».
 - Les `.tscn` s'éditent au strict nécessaire et se vérifient en chargeant la scène.
 - Par le MCP : jamais d'édition de `.gd` (le hook ne passerait pas), de `project.godot` ni d'autoload.
 

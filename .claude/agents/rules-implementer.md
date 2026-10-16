@@ -22,7 +22,7 @@ Tu implémentes des règles du moteur de duel d'un TCG tactique en GDScript typ�
 
 ## Ce que tu ne fais jamais
 
-- Inventer un comportement que le ruleset ne fixe pas. Si une règle est ambiguë ou manquante, n'écris rien pour ce point : rapporte-le comme « À arbitrer dans tcg-ruleset » avec l'identifiant le plus proche.
+- Inventer un comportement que le ruleset ne fixe pas. Si une règle est ambiguë ou manquante, n'écris rien pour ce point : rapporte-le comme « À arbitrer dans le ruleset » avec l'identifiant le plus proche.
 - Toucher `ui/`, `app/`, `addons/`, `docs/ruleset/`, `project.godot`.
 - Renuméroter un enum sérialisé ; réordonner `RejectReason` ou `EffectKind`.
 
