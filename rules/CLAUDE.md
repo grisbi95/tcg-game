@@ -1,6 +1,6 @@
 # Moteur de duel — consignes locales
 
-Complète le `CLAUDE.md` racine pour `rules/`. Les décisions 0001, 0003, 0004, 0007, 0008, 0009 et 0010 priment ; `docs/ruleset/20-regles-completes/` fait foi.
+Complète le `CLAUDE.md` racine pour `rules/`. Les décisions 0001, 0003, 0004, 0007, 0008, 0009, 0010, 0012 et 0013 priment ; `docs/ruleset/20-regles-completes/` fait foi.
 
 ## Carte des modules (cible du jalon J1)
 
@@ -10,7 +10,7 @@ Complète le `CLAUDE.md` racine pour `rules/`. Les décisions 0001, 0003, 0004, 
 | `zone_rules.gd` | 201 | zones, limite de main, appartenance, construction du deck |
 | `card_rules.gd` | 202 | Gear (attacher, remplacer, détacher), jetons, pouvoir du Hero |
 | `essence_rules.gd` | 203 | paiement à l'annonce, incliner, recycler, Fonte, redressement |
-| `turn_rules.gd` | 204 | préparation, mulligan simultané et Écart, début de tour (204.3.8), fin de tour (204.5) |
+| `turn_rules.gd` | 204 | préparation par `DuelSetup` (0012), mulligan simultané exécuté à la dernière réponse (0013) et Écart, début de tour (204.3.8), fin de tour (204.5) |
 | `action_rules.gd` | 205 | déploiement (annonce, résolution), action normale, déplacement du Hero, échecs |
 | `combat_rules.gd` | 206 | comparaison, égalité, Hero défenseur, avance, auras lues avant l'avance |
 | `effect_rules.gd` | 207 | vitesses, statiques, déclenchés, durées, cibles et validité, Contrecarrer |
