@@ -1,6 +1,6 @@
 # Moteur de duel — consignes locales
 
-Complète le `CLAUDE.md` racine pour `rules/`. Les décisions 0001, 0003, 0004 et 0007 priment ; `docs/ruleset/20-regles-completes/` fait foi.
+Complète le `CLAUDE.md` racine pour `rules/`. Les décisions 0001, 0003, 0004, 0007, 0008 et 0009 priment ; `docs/ruleset/20-regles-completes/` fait foi.
 
 ## Carte des modules (cible du jalon J1)
 
@@ -48,6 +48,6 @@ Le champ **et** sa copie dans `clone()` de la même classe, puis une valeur non 
 - Tout aléa passe par `state.rng` ; jamais `randi()`, `Array.shuffle()` ni l'heure.
 - Une `CardInstance` est dans une seule zone à la fois : la déplacer, jamais la copier. Une pièce qui revient sur le plateau reçoit un nouveau `piece_id`.
 - La Force actuelle se calcule par `ForceRules`, jamais ne se stocke.
-- Pile vide ⇒ passes consécutives à zéro ; phase `ENDED` ⇒ toute intention refusée ; `PendingDecision` ≠ NONE ⇒ seule l'intention qui y répond est acceptée.
+- Pile vide ⇒ passes consécutives à zéro ; phase `ENDED` ⇒ toute intention refusée ; `state.pending_decision` non null ⇒ seule l'intention qui y répond est acceptée.
 - Les pendules ne bougent que par `advance_clock()`, jamais pendant un `submit()`.
 - Les modules ne lisent que `state` ; aucune injection, aucun Node, aucun accès à la vue.

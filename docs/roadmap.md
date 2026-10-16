@@ -2,7 +2,7 @@
 
 > **Rôle** : plan unique du projet : périmètre, jalons, étapes et état. Les règles font foi dans [ruleset/](ruleset/README.md) ; l'architecture dans [decisions/](decisions/).
 
-**État actuel (16 octobre 2026)** : jalon J0 terminé : dépôt `grisbi95/tcg-game` poussé, CI verte (tests GdUnit4 et lint), Godot 4.7.2 GL Compatibility, GdUnit4 6.2.1 et hooks vérifiés en headless, gdtoolkit 4.5.0 dans `.venv`, ruleset 0.28 épinglé, consignes, 7 agents, 7 skills, décisions 0001 à 0007. Prochaine action : J1 étape 1.1, classes d'état et `clone()`, sur une branche `feat/1.1-state`.
+**État actuel (16 octobre 2026)** : jalon J0 terminé ; J1 étape 1.1 terminée sur la branche `feat/1.1-state` (non fusionnée, aucun commit) : `DuelState`, `PlayerState`, `Piece` (décision 0008), `CardInstance`, `StackEntry`, `ActiveEffect`, `PendingDecision` (décision 0009), `DuelConfig` (une valeur par règle PROVISOIRE), `BoardGeometry`, bases `DuelIntent`, `DuelEvent`, `PlayerEvent`, `IntentRejected`, outils `DeepCompare`, `EventLog`, `DuelStateBuilder`, 58 tests verts, lint propre. Décisions 0001 à 0009. Prochaine action : J1 étape 1.2, catalogue JSON (`CardDefinition`, `HeroDefinition`, `EffectDefinition`, `TargetSpec`, `CatalogLoader`).
 
 ## Périmètre
 
@@ -30,7 +30,7 @@
 
 Chaque étape : règles lues, décision si système nouveau, implémentation par identifiants, tests nommés par identifiants, lint vert.
 
-- [ ] **1.1 Fondations** : `DuelState`, `PlayerState`, `Piece`, `CardInstance`, `StackEntry`, `ActiveEffect`, `PendingDecision`, `DuelConfig` (une valeur par règle PROVISOIRE), `BoardGeometry` (201.2), identifiants, `clone()` et son test par réflexion, bases `DuelIntent`, `DuelEvent`, `IntentRejected`. `DeepCompare`, `EventLog`, `DuelStateBuilder` repris du prototype et adaptés.
+- [x] **1.1 Fondations** : `DuelState`, `PlayerState`, `Piece`, `CardInstance`, `StackEntry`, `ActiveEffect`, `PendingDecision`, `DuelConfig` (une valeur par règle PROVISOIRE), `BoardGeometry` (201.2), identifiants, `clone()` et son test par réflexion, bases `DuelIntent`, `DuelEvent`, `IntentRejected`. `DeepCompare`, `EventLog`, `DuelStateBuilder` repris du prototype et adaptés.
 - [ ] **1.2 Catalogue JSON** : `CardDefinition`, `HeroDefinition`, `EffectDefinition`, `TargetSpec`, `CatalogLoader`, `find_errors()`, test du catalogue (201.6, 202.1, 202.2).
 - [ ] **1.3 Zones, Essence, tour** : 201, 203, 204 : préparation, Sources et Fonte, paiement `{incliner, recycler}`, mulligan simultané avec Écart, début de tour, pioche et fatigue (209.5), fin de tour sans déclencheur.
 - [ ] **1.4 Pile et priorité** : 208 sans déclencheurs : annonce, 208.2.4, passes, bloc LIFO, retour au joueur actif ; 209.2 victoire après chaque effet ; `Concede`.

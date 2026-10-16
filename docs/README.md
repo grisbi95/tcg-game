@@ -8,7 +8,7 @@
 | --- | --- | --- |
 | [ruleset/](ruleset/README.md) | Copie épinglée du ruleset (`RULESET_EDITION`) : règles complètes 200 à 210, glossaire, charte, protocole et decks de test. **Fait foi sur les règles.** Lecture seule ici. | Avant tout travail de gameplay ; pour nommer tests et fonctions. |
 | [roadmap.md](roadmap.md) | Jalons, étapes et **État actuel**. Seul plan. | Au début de chaque session. |
-| [decisions/](decisions/) | Décisions d'architecture acceptées (`0001` à `0007`) et modèle `0000`. | Avant de créer ou modifier un système. |
+| [decisions/](decisions/) | Décisions d'architecture acceptées (`0001` à `0009`) et modèle `0000`. | Avant de créer ou modifier un système. |
 | [code-guidelines.md](code-guidelines.md) | Pourquoi et comment des consignes de code ; signaux d'alerte en relecture. Synthèse des articles de The Shaggy Dev. | Pour concevoir ou relire du code. |
 | [../CLAUDE.md](../CLAUDE.md) | Consignes impératives de développement, courtes. Compléments : `rules/CLAUDE.md`, `ui/CLAUDE.md`, `tests/CLAUDE.md`, `.claude/README.md`. | Toujours chargé. |
 
