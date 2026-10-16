@@ -1,0 +1,20 @@
+# Godot 4
+.godot/
+/android/
+
+# Exports
+/build/
+
+# Système et éditeurs
+.DS_Store
+*.tmp
+
+# Claude Code : réglages et consignes personnels
+.claude/settings.local.json
+CLAUDE.local.md
+
+# GdUnit4 : rapports
+/reports/
+
+# Outillage Python local (gdtoolkit)
+/.venv/

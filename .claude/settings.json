@@ -1,0 +1,59 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 .claude/hooks/check_gdscript.py:*)",
+      "Bash(bash .claude/hooks/check_changed_gdscript.sh:*)",
+      "Bash(bash addons/gdUnit4/runtest.sh:*)",
+      "Bash(tools/run_tests.sh:*)",
+      "Bash(tools/lint.sh:*)",
+      "Bash(tools/sync_ruleset.sh:*)",
+      "Bash(.venv/bin/gdlint:*)",
+      "Bash(.venv/bin/gdformat:*)",
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git branch:*)",
+      "Bash(git show:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(wc:*)"
+    ],
+    "deny": [
+      "Edit(/addons/**)",
+      "Edit(/.godot/**)",
+      "Edit(/.venv/**)",
+      "Edit(/docs/ruleset/**)",
+      "Edit(/**/*.uid)",
+      "Edit(/**/*.import)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/session_start.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/post_edit_gdscript.sh\"",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
+  }
+}

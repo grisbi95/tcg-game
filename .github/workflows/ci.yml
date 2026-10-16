@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  tests:
+    name: Tests GdUnit4
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Version à confirmer au premier lancement : l'action attend la chaîne publiée par godotengine/godot-builds.
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.2
+          use-dotnet: false
+          include-templates: false
+      - name: Import du projet
+        run: godot --headless --path . --import
+      - name: Suites GdUnit4
+        run: GODOT_BIN="$(which godot)" bash addons/gdUnit4/runtest.sh --headless -a res://tests --ignoreHeadlessMode
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rapports-gdunit4
+          path: reports/
+          if-no-files-found: ignore
+
+  lint:
+    name: gdformat et gdlint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install "gdtoolkit==4.*"
+      - name: Vérification
+        run: |
+          files=$(find rules ai app ui tests -name '*.gd' 2>/dev/null)
+          if [ -z "$files" ]; then echo "Aucun .gd"; exit 0; fi
+          gdformat --check $files
+          gdlint $files
+
+  # export-web : ajouté au jalon J2 avec export_presets.cfg (décision 0005).
