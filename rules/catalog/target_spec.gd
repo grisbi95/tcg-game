@@ -1,0 +1,112 @@
+class_name TargetSpec
+extends RefCounted
+## Cible que choisit un effet (207.5, décisions 0002 et 0010) : ce qui se vise et les filtres.
+##
+## Un effet statique ne cible pas (207.2.1, 207.5.1) : il a une portée, voir StaticScope. La
+## validité à l'ajout à la pile et à la résolution est jugée par le module du chapitre 207.
+
+## 207.5.11, 207.5.14 : ce qu'un effet peut cibler. Enum journalisable : ajouter à la fin.
+enum TargetWhat {
+	PIECE,  # 207.5.11 : Hero, jeton compris (207.5.11a, 207.5.11b)
+	CELL,  # 207.5.11, 202.4.12
+	SPELL_ON_STACK,  # 207.5.14
+}
+
+## Côté de la pièce visée, relatif au joueur à qui appartient l'effet (glossaire : Allié, Ennemi).
+enum TargetSide {
+	ANY,
+	ALLY,
+	ENEMY,
+}
+
+## Rangée admise pour une case ciblée, relative au joueur à qui appartient l'effet.
+enum CellRow {
+	ANY,
+	OWN_FIRST,  # 205.1.3 : sa première rangée
+}
+
+## Valeur de `max_force` quand la Force de la cible n'est pas bornée.
+const NO_FORCE_LIMIT: int = -1
+const MIN_TARGET_COUNT: int = 1  # 207.5.10
+
+var what: TargetWhat = TargetWhat.PIECE
+var side: TargetSide = TargetSide.ANY
+var piece_kinds: Array[Piece.PieceKind] = []
+## Borne haute de la Force actuelle de la cible (« de Force 3 ou moins »).
+var max_force: int = NO_FORCE_LIMIT
+var row: CellRow = CellRow.ANY
+var count_min: int = MIN_TARGET_COUNT
+var count_max: int = MIN_TARGET_COUNT
+## Erreurs de lecture du JSON, reprises par `find_errors()`.
+var parse_errors: PackedStringArray = PackedStringArray()
+
+
+## Lit une cible depuis un objet JSON ; les erreurs de lecture vont dans `parse_errors`.
+static func from_dict(data: Dictionary) -> TargetSpec:
+	var spec := TargetSpec.new()
+	var reader := CatalogReader.new(data)
+	reader.require("what", "207.5.11")
+	var what_value := reader.read_enum("what", TargetWhat)
+	if what_value != CatalogReader.NOT_SET:
+		spec.what = what_value as TargetWhat
+	var side_value := reader.read_enum("side", TargetSide)
+	if side_value != CatalogReader.NOT_SET:
+		spec.side = side_value as TargetSide
+	var row_value := reader.read_enum("row", CellRow)
+	if row_value != CatalogReader.NOT_SET:
+		spec.row = row_value as CellRow
+	spec._read_piece_kinds(reader)
+	spec.max_force = reader.read_int("max_force", 0, NO_FORCE_LIMIT)
+	spec.count_min = reader.read_int("count_min", 0, MIN_TARGET_COUNT)
+	spec.count_max = reader.read_int("count_max", 0, spec.count_min)
+	spec.parse_errors = reader.finish()
+	return spec
+
+
+# 207.5.10 : le nombre de cibles est borné par la carte ; chaque filtre ne vaut que pour ce qu'il
+# filtre (207.5.11, 202.3.9).
+func find_errors() -> PackedStringArray:
+	var errors := parse_errors.duplicate()
+	match what:
+		TargetWhat.PIECE:
+			_check_piece(errors)
+		TargetWhat.CELL:
+			_check_cell(errors)
+		TargetWhat.SPELL_ON_STACK:
+			_check_spell_on_stack(errors)
+	if count_min < MIN_TARGET_COUNT or count_max < count_min:
+		errors.append("207.5.10 : count_min au moins 1 et count_max au moins count_min")
+	return errors
+
+
+func _read_piece_kinds(reader: CatalogReader) -> void:
+	for entry: Variant in reader.read_array("piece_kinds"):
+		var text: String = entry if typeof(entry) == TYPE_STRING else ""
+		var value := CatalogReader.enum_value(Piece.PieceKind, text)
+		if value == CatalogReader.NOT_SET:
+			reader.fail("« piece_kinds » : %s inconnu" % str(entry))
+		else:
+			piece_kinds.append(value as Piece.PieceKind)
+
+
+func _check_piece(errors: PackedStringArray) -> void:
+	if piece_kinds.is_empty():
+		errors.append("207.5.11 : une cible pièce nomme au moins un genre dans piece_kinds")
+	if row != CellRow.ANY:
+		errors.append("207.5.11 : row ne vaut que pour une case")
+	if max_force < NO_FORCE_LIMIT:
+		errors.append("207.5.11 : max_force est au moins 0")
+	if max_force != NO_FORCE_LIMIT and piece_kinds.has(Piece.PieceKind.HERO):
+		errors.append("202.3.9 : un Hero n'a pas de Force, max_force l'exclut des genres")
+
+
+func _check_cell(errors: PackedStringArray) -> void:
+	if side != TargetSide.ANY or not piece_kinds.is_empty() or max_force != NO_FORCE_LIMIT:
+		errors.append("207.5.11 : une case n'a ni side, ni piece_kinds, ni max_force")
+
+
+func _check_spell_on_stack(errors: PackedStringArray) -> void:
+	if side != TargetSide.ANY or not piece_kinds.is_empty() or max_force != NO_FORCE_LIMIT:
+		errors.append("207.5.14 : un Spell de la pile n'a ni side, ni piece_kinds, ni max_force")
+	if row != CellRow.ANY:
+		errors.append("207.5.14 : row ne vaut que pour une case")
