@@ -17,6 +17,12 @@ enum RejectReason {
 	NOT_ENOUGH_UPRIGHT_SOURCES,  # 203.2.1
 	NOT_ENOUGH_TILTED_SOURCES,  # 203.2.2, 203.2.6, 203.2.7
 	RECYCLE_LIMIT_REACHED,  # 203.4.2
+	DUEL_ENDED,  # 209.2 : aucune intention après la fin du duel
+	NOT_THE_PENDING_DECISION,  # décision 0009 : réponse à une attente absente ou d'un autre genre
+	PLAYER_NOT_AWAITED,  # 204.2.1, décision 0013 : joueur non attendu ou ayant déjà répondu
+	CARD_NOT_IN_HAND,  # 204.2.4 : carte écartée hors de la main du joueur
+	DUPLICATE_CARD,  # décision 0013 : même carte citée deux fois
+	STACK_NOT_EMPTY,  # 204.4.7 : terminer son tour exige une pile vide (convention 1.3)
 }
 
 ## Intention refusée, telle que soumise ; null si le refus ne vient pas d'une intention.

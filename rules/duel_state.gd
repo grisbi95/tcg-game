@@ -42,6 +42,8 @@ var phase: DuelPhase = DuelPhase.NOT_STARTED
 var result: DuelResult = DuelResult.NONE
 ## 204.1.14, 204.3.4 : joueur du premier tour.
 var first_player: PlayerSide = PlayerSide.A
+## Décision 0012 : premier joueur imposé par DuelSetup, sans tirage après le mulligan.
+var first_player_imposed: bool = false
 ## Unique source d'aléa du duel, initialisée par la graine.
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 ## Indexé par PlayerSide.
@@ -148,6 +150,7 @@ func clone() -> DuelState:
 	copy.phase = phase
 	copy.result = result
 	copy.first_player = first_player
+	copy.first_player_imposed = first_player_imposed
 	copy.rng = _clone_rng()
 	for player: PlayerState in players:
 		copy.players.append(player.clone())

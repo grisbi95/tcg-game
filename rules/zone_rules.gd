@@ -66,6 +66,20 @@ static func set_aside_cards(
 		events.append(CardSetAside.new(side, card_instance_id))
 
 
+## 204.1.6, 204.2.7 : mélange le deck de `side` par `state.rng`, seul aléa du duel
+## (Fisher-Yates).
+static func shuffle_deck(
+	state: DuelState, side: DuelState.PlayerSide, events: Array[DuelEvent]
+) -> void:
+	var deck := state.get_player(side).deck
+	for index: int in range(deck.size() - 1, 0, -1):
+		var other_index := state.rng.randi_range(0, index)
+		var card := deck[index]
+		deck[index] = deck[other_index]
+		deck[other_index] = card
+	events.append(DeckShuffled.new(side))
+
+
 ## 201.3.10, 204.2.6, 204.2.11 : remet toutes les cartes de l'Écart de `side` au sommet de
 ## son deck, qui est mélangé ensuite (204.2.7) ; l'Écart est vide après l'appel.
 static func return_set_aside_to_deck(

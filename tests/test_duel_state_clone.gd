@@ -153,6 +153,7 @@ func _build_full_state() -> DuelState:
 	builder.push_stack_entry(_make_trigger(builder, token_id, spell_entry_id))
 	builder.with_pending_decision(_make_decision(spell_entry_id, unit_id))
 	var state := builder.build()
+	state.first_player_imposed = true
 	_draw(state.rng)
 	return state
 
@@ -207,6 +208,7 @@ func _make_decision(entry_id: int, piece_id: int) -> PendingDecision:
 	decision.subject_stack_entry_id = entry_id
 	decision.candidate_ids.append(piece_id)
 	decision.candidate_cells.append(DuelStateBuilder.cell("A3"))
+	decision.chosen_ids.append(piece_id)
 	return decision
 
 
