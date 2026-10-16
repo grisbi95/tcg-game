@@ -4,7 +4,7 @@ extends GdUnitTestSuite
 const HAND_LIMIT: int = 7  # 201.3.4
 const CARDS_PER_TURN: int = 2  # 204.3.6
 const STARTING_FATIGUE: int = 0  # 209.5.1
-const HERO_HEALTH: int = 15
+const HERO_HEALTH: int = DuelStateBuilder.DEFAULT_HERO_HEALTH
 const CARD: StringName = &"CARD_TEST"
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A

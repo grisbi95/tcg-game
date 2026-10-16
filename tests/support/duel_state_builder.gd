@@ -19,8 +19,9 @@ const HERO_DEFINITION_ID: StringName = &"HERO_TEST"
 var _state: DuelState
 
 
-func _init(config: DuelConfig = DuelConfig.new()) -> void:
-	_state = DuelState.create(config)
+## Décision 0016 : `catalog` porte les définitions que lisent les règles (Force, coût, type).
+func _init(config: DuelConfig = DuelConfig.new(), catalog: Catalog = null) -> void:
+	_state = DuelState.create(config, catalog)
 	_state.rng.seed = DEFAULT_SEED
 	_state.phase = DuelState.DuelPhase.MAIN
 	_state.turn_number = FIRST_TURN
@@ -149,6 +150,28 @@ func add_to_discard(side: DuelState.PlayerSide, definition_id: StringName) -> in
 ## 201.3.9 : ajoute une carte à l'Écart de `side`.
 func add_to_set_aside(side: DuelState.PlayerSide, definition_id: StringName) -> int:
 	return _add_card(_state.get_player(side).set_aside, side, definition_id)
+
+
+## Place une Unit de `definition_id` dans un état déjà construit et renvoie son `piece_id` :
+## simule une pièce arrivée entre une annonce et sa résolution (Spell de l'étape 1.6).
+static func place_unit_in(
+	state: DuelState, side: DuelState.PlayerSide, definition_id: StringName, cell_name: String
+) -> int:
+	if state.piece_at(cell(cell_name)) != null:
+		push_error("DuelStateBuilder : case %s occupée (201.0.1)" % cell_name)
+		return DuelState.NO_ID
+	var card := CardInstance.new()
+	card.card_instance_id = state.allocate_card_instance_id()
+	card.definition_id = definition_id
+	card.owner = side
+	var piece := Piece.new()
+	piece.piece_id = state.allocate_piece_id()
+	piece.kind = Piece.PieceKind.UNIT
+	piece.owner = side
+	piece.cell = cell(cell_name)
+	piece.card = card
+	state.pieces.append(piece)
+	return piece.piece_id
 
 
 ## Crée une instance hors zone, destinée à une pièce ou à une entrée de pile.

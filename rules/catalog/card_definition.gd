@@ -156,7 +156,7 @@ func _check_speed(errors: PackedStringArray) -> void:
 
 func _check_keywords(errors: PackedStringArray) -> void:
 	for keyword: Keyword in keywords:
-		var keyword_name := String(Keyword.find_key(keyword))
+		var keyword_name := str(Keyword.find_key(keyword))
 		if not _allowed_types(keyword).has(card_type):
 			errors.append("210 : %s est refusé pour ce type de carte" % keyword_name)
 		var has_value := keywords[keyword] != 0
@@ -174,7 +174,7 @@ func _check_trigger_keyword(
 	var has_effect := false
 	for effect: EffectDefinition in effects:
 		has_effect = has_effect or effect.trigger == event
-	var keyword_name := String(Keyword.find_key(keyword))
+	var keyword_name := str(Keyword.find_key(keyword))
 	if has_keyword(keyword) and not has_effect:
 		errors.append("210.3 : %s exige un effet déclenché par ce mot-clé" % keyword_name)
 	if has_effect and not has_keyword(keyword):
@@ -188,7 +188,7 @@ func _check_effects(errors: PackedStringArray) -> void:
 		for message: String in effect.find_errors():
 			errors.append("effet %d : %s" % [index + 1, message])
 		if not allowed.has(effect.timing):
-			var type_name := String(CardType.find_key(card_type)).to_lower()
+			var type_name := str(CardType.find_key(card_type)).to_lower()
 			errors.append("effet %d : timing refusé pour %s" % [index + 1, type_name])
 
 

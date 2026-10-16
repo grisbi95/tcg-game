@@ -40,6 +40,8 @@ const NO_TURN: int = 0
 
 ## Configuration partagée, en lecture seule.
 var config: DuelConfig
+## Décision 0016 : définitions des cartes et des Heroes, partagées en lecture seule.
+var catalog: Catalog
 var phase: DuelPhase = DuelPhase.NOT_STARTED
 ## Fixé quand la phase passe à ENDED.
 var result: DuelResult = DuelResult.NONE
@@ -74,9 +76,11 @@ var next_active_effect_id: int = FIRST_ID
 
 
 ## Crée un état vide avec ses deux joueurs ; les valeurs de départ relèvent de la préparation.
-static func create(duel_config: DuelConfig) -> DuelState:
+## Sans catalogue, l'état en reçoit un vide.
+static func create(duel_config: DuelConfig, card_catalog: Catalog = null) -> DuelState:
 	var state := DuelState.new()
 	state.config = duel_config
+	state.catalog = card_catalog if card_catalog != null else Catalog.new()
 	for side: PlayerSide in SIDES:
 		var player := PlayerState.new()
 		player.side = side
@@ -151,11 +155,12 @@ func allocate_active_effect_id() -> int:
 	return next_active_effect_id - 1
 
 
-## Copie indépendante pour l'IA. Seule la configuration, en lecture seule, est partagée ; le
-## RNG repart du même `seed` et du même `state`.
+## Copie indépendante pour l'IA. Seuls la configuration et le catalogue, en lecture seule, sont
+## partagés ; le RNG repart du même `seed` et du même `state`.
 func clone() -> DuelState:
 	var copy := DuelState.new()
 	copy.config = config
+	copy.catalog = catalog
 	copy.phase = phase
 	copy.result = result
 	copy.first_player = first_player

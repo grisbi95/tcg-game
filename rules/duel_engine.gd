@@ -24,9 +24,9 @@ func start_new_duel(setup: DuelSetup) -> Array[DuelEvent]:
 	if not errors.is_empty():
 		events.append(DuelSetupRejected.new(errors))
 		return events
-	_state = DuelState.create(_config)
+	_state = DuelState.create(_config, _catalog)
 	_state.rng.seed = setup.rng_seed
-	TurnRules.start_preparation(_state, setup, _resolve_heroes(setup), events)
+	TurnRules.start_preparation(_state, setup, events)
 	return events
 
 
@@ -75,19 +75,20 @@ func _route_validation(intent: DuelIntent) -> IntentRejected.RejectReason:
 		return TurnRules.validate_mulligan(_state, intent as ChooseMulligan)
 	if _state.pending_decision != null:
 		return IntentRejected.RejectReason.DECISION_PENDING
+	return _route_play_validation(intent)
+
+
+# Intentions de jeu, hors attente.
+func _route_play_validation(intent: DuelIntent) -> IntentRejected.RejectReason:
 	if intent is EndTurn:
 		return TurnRules.validate_end_turn(_state, intent as EndTurn)
 	if intent is PassPriority:
 		return StackRules.validate_pass(_state, intent as PassPriority)
+	if intent is DeployCard:
+		return ActionRules.validate_deploy(_state, intent as DeployCard)
+	if intent is TakeNormalAction:
+		return ActionRules.validate_normal_action(_state, intent as TakeNormalAction)
 	return IntentRejected.RejectReason.UNKNOWN_INTENT
-
-
-## Définitions des Heroes de `setup`, indexées par PlayerSide.
-func _resolve_heroes(setup: DuelSetup) -> Array[HeroDefinition]:
-	var heroes: Array[HeroDefinition] = []
-	for side: DuelState.PlayerSide in DuelState.SIDES:
-		heroes.append(_catalog.get_hero(setup.hero_of(side)))
-	return heroes
 
 
 func _apply(intent: DuelIntent, events: Array[DuelEvent]) -> void:
@@ -99,3 +100,7 @@ func _apply(intent: DuelIntent, events: Array[DuelEvent]) -> void:
 		TurnRules.apply_end_turn(_state, intent as EndTurn, events)
 	elif intent is PassPriority:
 		StackRules.apply_pass(_state, intent as PassPriority, events)
+	elif intent is DeployCard:
+		ActionRules.announce_deploy(_state, intent as DeployCard, events)
+	elif intent is TakeNormalAction:
+		ActionRules.announce_normal_action(_state, intent as TakeNormalAction, events)

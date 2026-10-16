@@ -3,8 +3,7 @@ extends RefCounted
 ## Pile et priorité (208), sans effet déclenché : ceux-ci viennent à l'étape 1.7.
 ##
 ## Une annonce s'ajoute par `add_to_stack`, appelée par le module de son chapitre. Ce qu'une
-## entrée fait en se résolvant appartient à son genre (étapes 1.5 et 1.6) ; à l'étape 1.4, la
-## résolution retire seulement l'entrée de la pile.
+## entrée fait en se résolvant appartient au module de son genre.
 
 
 ## 208.4.1, 208.2.4 : ajoute `entry` au sommet de la pile ; l'adversaire du joueur à qui elle
@@ -45,12 +44,20 @@ static func _resolve_stack(state: DuelState, events: Array[DuelEvent]) -> void:
 	state.consecutive_passes = 0
 	while not state.stack.is_empty():
 		var entry: StackEntry = state.stack.pop_back()
-		_resolve_entry(entry, events)
+		_resolve_entry(state, entry, events)
 		if StateCheckRules.check_victory(state, events):
 			return
 	state.priority_player = state.active_player
 
 
-# 208.3.2 : ce que fait chaque genre en se résolvant arrive avec son chapitre (1.5 et 1.6).
-static func _resolve_entry(entry: StackEntry, events: Array[DuelEvent]) -> void:
-	events.append(StackEntryResolved.new(entry.owner, entry.stack_entry_id))
+# 208.3.2 : chaque genre se résout par le module de son chapitre ; les genres de l'étape 1.6
+# (Spell, pouvoir du Hero, Gear) et 1.7 (effet déclenché) ne font encore rien.
+static func _resolve_entry(state: DuelState, entry: StackEntry, events: Array[DuelEvent]) -> void:
+	match entry.kind:
+		StackEntry.StackEntryKind.DEPLOY:
+			ActionRules.resolve_deploy(state, entry, events)
+		StackEntry.StackEntryKind.NORMAL_ACTION:
+			ActionRules.resolve_normal_action(state, entry, events)
+	# 209.2.2 : une partie arrêtée pendant la résolution s'arrête aussitôt.
+	if not state.is_ended():
+		events.append(StackEntryResolved.new(entry.owner, entry.stack_entry_id))

@@ -39,5 +39,21 @@ static func setup(rng_seed: int = DEFAULT_SEED) -> DuelSetup:
 	return duel_setup
 
 
+## Ajoute à `catalog` une Unit de Force `force`, nommée d'après `id`.
+static func add_unit(catalog: Catalog, id: StringName, force: int) -> void:
+	catalog.add_card(CardDefinition.from_dict(_with_identity(CatalogSamples.unit(), id, force)))
+
+
+## Ajoute à `catalog` un Building de Force `force`, nommé d'après `id`.
+static func add_building(catalog: Catalog, id: StringName, force: int) -> void:
+	catalog.add_card(CardDefinition.from_dict(_with_identity(CatalogSamples.building(), id, force)))
+
+
+static func _with_identity(data: Dictionary, id: StringName, force: int) -> Dictionary:
+	var named := CatalogSamples.with_field(data, "id", String(id))
+	named = CatalogSamples.with_field(named, "name", "Carte %s" % id)
+	return CatalogSamples.with_field(named, "force", force)
+
+
 static func _card_id(index: int) -> StringName:
 	return StringName("sample_unit_%d" % index)

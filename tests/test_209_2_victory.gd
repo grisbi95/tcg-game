@@ -31,7 +31,9 @@ func test_209_2_2_hero_at_zero_ends_duel_at_once() -> void:
 func test_201_1_2_player_wins_when_opposing_hero_reaches_zero() -> void:
 	_builder.with_hero_health(B, 1)
 	var events := _end_turn_of_a()
-	assert_int((events.back() as DuelEnded).result).is_equal(DuelState.DuelResult.PLAYER_A_WINS)
+	assert_int((events[events.size() - 1] as DuelEnded).result).is_equal(
+		DuelState.DuelResult.PLAYER_A_WINS
+	)
 	assert_int(_engine.get_state().result).is_equal(DuelState.DuelResult.PLAYER_A_WINS)
 
 
@@ -100,7 +102,9 @@ func test_209_2_6_conceding_player_loses() -> void:
 func test_201_1_3a_opponent_of_conceding_player_wins() -> void:
 	_engine.start_from_state(_builder.build())
 	var events := _engine.submit(Concede.new(B))
-	assert_int((events.back() as DuelEnded).result).is_equal(DuelState.DuelResult.PLAYER_A_WINS)
+	assert_int((events[events.size() - 1] as DuelEnded).result).is_equal(
+		DuelState.DuelResult.PLAYER_A_WINS
+	)
 
 
 func test_209_2_7_concede_ends_duel_and_leaves_stack_unresolved() -> void:

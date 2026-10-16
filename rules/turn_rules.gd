@@ -10,11 +10,8 @@ const FIRST_TURN: int = 1
 
 
 ## 204.1.9, 204.1.16 : préparation jusqu'à l'attente des mulligans. Suppose `setup` valide
-## (`DuelSetup.find_errors()` vide) ; `heroes` porte la définition de chaque Hero, indexée
-## par PlayerSide.
-static func start_preparation(
-	state: DuelState, setup: DuelSetup, heroes: Array[HeroDefinition], events: Array[DuelEvent]
-) -> void:
+## (`DuelSetup.find_errors()` vide) pour le catalogue de `state`.
+static func start_preparation(state: DuelState, setup: DuelSetup, events: Array[DuelEvent]) -> void:
 	state.phase = DuelState.DuelPhase.PREPARATION
 	state.first_player_imposed = setup.is_first_player_imposed
 	state.first_player = setup.imposed_first_player
@@ -22,7 +19,7 @@ static func start_preparation(
 		_set_starting_values(state, side)
 		ZoneRules.create_deck(state, side, setup.deck_of(side))
 	for side: DuelState.PlayerSide in DuelState.SIDES:
-		_place_hero(state, side, heroes[side], events)
+		_place_hero(state, side, state.catalog.get_hero(setup.hero_of(side)), events)
 	for side: DuelState.PlayerSide in DuelState.SIDES:
 		_put_setup_sources_into_play(state, side, events)
 	for side: DuelState.PlayerSide in DuelState.SIDES:
