@@ -9,8 +9,8 @@ Complète le `CLAUDE.md` racine pour `rules/`. Les décisions 0001, 0003, 0004, 
 | `duel_engine.gd` | — | Façade : `start_new_duel`, `start_from_state` (tests), `validate`, `submit`, `advance_clock`, `clock_owner`, requêtes en lecture pour la vue, aiguillage par classe d'intention. Aucune règle. |
 | `zone_rules.gd` | 201 | zones, limite de main, appartenance, construction du deck |
 | `card_rules.gd` | 202 | Gear (attacher, remplacer, détacher), jetons, pouvoir du Hero |
-| `essence_rules.gd` | 203 | paiement à l'annonce, incliner, recycler, Fonte, redressement |
-| `turn_rules.gd` | 204 | préparation par `DuelSetup` (0012), mulligan simultané exécuté à la dernière réponse, joueur A puis B (0013, 0015) et Écart, début de tour (204.3.8), fin de tour (204.5) |
+| `essence_rules.gd` | 203 | paiement à l'annonce, incliner, recycler, Fonte |
+| `turn_rules.gd` | 204 | préparation par `DuelSetup` (0012), mulligan simultané exécuté à la dernière réponse, joueur A puis B (0013, 0015) et Écart, début de tour (204.3.8, redressement compris), fin de tour (204.5) |
 | `action_rules.gd` | 205 | déploiement (annonce, résolution), action normale, déplacement du Hero, échecs |
 | `combat_rules.gd` | 206 | comparaison, égalité, Hero défenseur, avance, auras lues avant l'avance |
 | `effect_rules.gd` | 207 | vitesses, statiques, déclenchés, durées, cibles et validité, Contrecarrer |

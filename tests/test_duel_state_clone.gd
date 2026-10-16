@@ -208,7 +208,7 @@ func _make_decision(entry_id: int, piece_id: int) -> PendingDecision:
 	decision.subject_stack_entry_id = entry_id
 	decision.candidate_ids.append(piece_id)
 	decision.candidate_cells.append(DuelStateBuilder.cell("A3"))
-	decision.chosen_ids.append(piece_id)
+	decision.set_aside_card_ids.append(piece_id)
 	return decision
 
 

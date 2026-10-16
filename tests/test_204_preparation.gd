@@ -107,6 +107,17 @@ func test_204_1_16_first_player_designated_after_mulligan() -> void:
 	assert_array(EventLog.describe(events)).contains_exactly(expected)
 
 
+func test_204_1_16_first_player_drawn_after_mulligan_shuffles() -> void:
+	_start()
+	_engine.submit(ChooseMulligan.new(A, _hand_ids(A, 1)))
+	var labels := EventLog.describe(_engine.submit(ChooseMulligan.new(B, _hand_ids(B, 1))))
+	var chosen_index := labels.find("FirstPlayerChosen:A")
+	if chosen_index < 0:
+		chosen_index = labels.find("FirstPlayerChosen:B")
+	assert_int(chosen_index).is_greater(labels.rfind("DeckShuffled:B"))
+	assert_int(labels.rfind("DeckShuffled:B")).is_greater(labels.rfind("DeckShuffled:A"))
+
+
 func test_204_1_11_first_turn_follows_preparation() -> void:
 	_start()
 	_keep_both_hands()
@@ -146,6 +157,15 @@ func test_imposed_first_player_a_or_b() -> void:
 		_keep_both_hands()
 		assert_int(_engine.get_state().first_player).is_equal(side)
 		assert_int(_engine.get_state().active_player).is_equal(side)
+
+
+func test_inconsistent_config_does_not_start_duel() -> void:
+	var config := DuelConfig.new()
+	config.setup_sources_in_reserve += 1
+	_engine = DuelEngine.new(_catalog, config)
+	var events := _start()
+	assert_array(EventLog.describe(events)).contains_exactly(["DuelSetupRejected"])
+	assert_object(_engine.get_state()).is_null()
 
 
 func test_invalid_setup_does_not_start_duel() -> void:
@@ -221,13 +241,13 @@ func test_204_2_9_mulligan_steps_in_order() -> void:
 
 
 func test_204_2_5_draws_as_many_cards_as_set_aside() -> void:
-	_start()
-	var set_aside_ids := _hand_ids(A, 3)
-	_engine.submit(ChooseMulligan.new(A, set_aside_ids))
-	_engine.submit(ChooseMulligan.new(B))
-	var state := _engine.get_state()
-	var first_turn_draws := CARDS_PER_TURN if state.first_player == A else 0
-	assert_int(state.get_player(A).hand.size()).is_equal(OPENING_HAND_SIZE + first_turn_draws)
+	var setup := SetupSamples.setup()
+	setup.impose_first_player(B)
+	_start(setup)
+	var events := _engine.submit(ChooseMulligan.new(A, _hand_ids(A, 3)))
+	events.append_array(_engine.submit(ChooseMulligan.new(B)))
+	assert_int(EventLog.describe(events).count("CardDrawn:A")).is_equal(3)
+	assert_int(_engine.get_state().get_player(A).hand.size()).is_equal(OPENING_HAND_SIZE)
 
 
 func test_204_2_6_set_aside_cards_return_to_deck() -> void:
@@ -281,6 +301,17 @@ func test_204_2_12_empty_answer_keeps_hand() -> void:
 	assert_array(hand_after.slice(0, OPENING_HAND_SIZE)).is_equal(hand_before)
 
 
+func test_204_2_13_keeping_hand_is_not_a_mulligan() -> void:
+	var setup := SetupSamples.setup()
+	setup.impose_first_player(A)
+	_start(setup)
+	_engine.submit(ChooseMulligan.new(A))
+	var labels := EventLog.describe(_engine.submit(ChooseMulligan.new(B)))
+	for label: String in ["CardSetAside:A", "CardReturnedToDeck:A", "DeckShuffled:A"]:
+		assert_array(labels).not_contains([label])
+	assert_int(labels.find("CardDrawn:A")).is_greater(labels.find("TurnStarted:A"))
+
+
 func test_204_2_14_player_who_keeps_hand_does_not_shuffle() -> void:
 	_start()
 	_engine.submit(ChooseMulligan.new(A))
@@ -325,9 +356,7 @@ func _keep_both_hands() -> void:
 
 
 func _assert_rejected(intent: DuelIntent, expected: IntentRejected.RejectReason) -> void:
-	var snapshot := _engine.get_state().clone()
-	assert_int(EventLog.rejection_reason(_engine.submit(intent))).is_equal(expected)
-	assert_array(DeepCompare.find_clone_defects(snapshot, _engine.get_state())).is_empty()
+	assert_array(DuelChecks.rejection_defects(_engine, intent, expected)).is_empty()
 
 
 func _hand_ids(side: DuelState.PlayerSide, count: int) -> Array[int]:
@@ -335,10 +364,7 @@ func _hand_ids(side: DuelState.PlayerSide, count: int) -> Array[int]:
 
 
 func _ids(cards: Array[CardInstance]) -> Array[int]:
-	var identifiers: Array[int] = []
-	for card: CardInstance in cards:
-		identifiers.append(card.card_instance_id)
-	return identifiers
+	return DuelChecks.card_ids(cards)
 
 
 func _definition_ids(cards: Array[CardInstance]) -> Array[StringName]:

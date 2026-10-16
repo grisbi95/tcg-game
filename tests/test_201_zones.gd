@@ -1,5 +1,5 @@
 extends GdUnitTestSuite
-## ZoneRules : deck, main, limite de main, Écart, appartenance (ruleset 0.28, chapitre 201).
+## ZoneRules : deck, main, limite de main, Écart, appartenance (ruleset 0.30, chapitre 201).
 
 const HAND_LIMIT: int = 7  # 201.3.4
 const CARD: StringName = &"CARD_TEST"
@@ -169,7 +169,4 @@ func _fill_hand(side: DuelState.PlayerSide, count: int) -> void:
 
 
 func _card_ids(cards: Array[CardInstance]) -> Array[int]:
-	var identifiers: Array[int] = []
-	for card: CardInstance in cards:
-		identifiers.append(card.card_instance_id)
-	return identifiers
+	return DuelChecks.card_ids(cards)

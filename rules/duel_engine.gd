@@ -15,17 +15,18 @@ func _init(catalog: Catalog, config: DuelConfig = DuelConfig.new()) -> void:
 	_config = config
 
 
-## Décision 0012 : démarre un duel par sa préparation (204.1.9). Un setup invalide produit un
-## unique DuelSetupRejected, et aucun duel ne démarre.
+## Décision 0012 : démarre un duel par sa préparation (204.1.9). Un setup ou une configuration
+## invalide produit un unique DuelSetupRejected, et aucun duel ne démarre.
 func start_new_duel(setup: DuelSetup) -> Array[DuelEvent]:
 	var events: Array[DuelEvent] = []
 	var errors := setup.find_errors(_catalog, _config)
+	errors.append_array(_config.find_errors())
 	if not errors.is_empty():
 		events.append(DuelSetupRejected.new(errors))
 		return events
 	_state = DuelState.create(_config)
 	_state.rng.seed = setup.rng_seed
-	TurnRules.start_preparation(_state, setup, _catalog, events)
+	TurnRules.start_preparation(_state, setup, _resolve_heroes(setup), events)
 	return events
 
 
@@ -63,6 +64,14 @@ func submit(intent: DuelIntent) -> Array[DuelEvent]:
 		return events
 	_apply(intent, events)
 	return events
+
+
+## Définitions des Heroes de `setup`, indexées par PlayerSide.
+func _resolve_heroes(setup: DuelSetup) -> Array[HeroDefinition]:
+	var heroes: Array[HeroDefinition] = []
+	for side: DuelState.PlayerSide in DuelState.SIDES:
+		heroes.append(_catalog.get_hero(setup.hero_of(side)))
+	return heroes
 
 
 func _apply(intent: DuelIntent, events: Array[DuelEvent]) -> void:

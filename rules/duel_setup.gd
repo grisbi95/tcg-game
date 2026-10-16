@@ -31,7 +31,7 @@ func hero_of(side: DuelState.PlayerSide) -> StringName:
 ## 201.6, 202.3 : raisons qui empêchent le duel de démarrer ; vide si le setup est valide.
 func find_errors(catalog: Catalog, config: DuelConfig) -> PackedStringArray:
 	var errors := PackedStringArray()
-	for side: DuelState.PlayerSide in [DuelState.PlayerSide.A, DuelState.PlayerSide.B]:
+	for side: DuelState.PlayerSide in DuelState.SIDES:
 		var label := "Joueur %s" % DuelState.PlayerSide.find_key(side)
 		if catalog.get_hero(hero_of(side)) == null:
 			errors.append("%s : Hero « %s » absent du catalogue" % [label, hero_of(side)])

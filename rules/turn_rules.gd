@@ -7,27 +7,27 @@ extends RefCounted
 ## tour (convention de l'étape 1.3).
 
 const FIRST_TURN: int = 1
-## Décision 0015 : ordre d'exécution des mulligans.
-const SIDES: Array[DuelState.PlayerSide] = [DuelState.PlayerSide.A, DuelState.PlayerSide.B]
 
 
 ## 204.1.9, 204.1.16 : préparation jusqu'à l'attente des mulligans. Suppose `setup` valide
-## (`DuelSetup.find_errors()` vide).
+## (`DuelSetup.find_errors()` vide) ; `heroes` porte la définition de chaque Hero, indexée
+## par PlayerSide.
 static func start_preparation(
-	state: DuelState, setup: DuelSetup, catalog: Catalog, events: Array[DuelEvent]
+	state: DuelState, setup: DuelSetup, heroes: Array[HeroDefinition], events: Array[DuelEvent]
 ) -> void:
 	state.phase = DuelState.DuelPhase.PREPARATION
 	state.first_player_imposed = setup.is_first_player_imposed
 	state.first_player = setup.imposed_first_player
-	for side: DuelState.PlayerSide in SIDES:
+	for side: DuelState.PlayerSide in DuelState.SIDES:
+		_set_starting_values(state, side)
 		ZoneRules.create_deck(state, side, setup.deck_of(side))
-	for side: DuelState.PlayerSide in SIDES:
-		_place_hero(state, side, catalog.get_hero(setup.hero_of(side)), events)
-	for side: DuelState.PlayerSide in SIDES:
+	for side: DuelState.PlayerSide in DuelState.SIDES:
+		_place_hero(state, side, heroes[side], events)
+	for side: DuelState.PlayerSide in DuelState.SIDES:
 		_put_setup_sources_into_play(state, side, events)
-	for side: DuelState.PlayerSide in SIDES:
+	for side: DuelState.PlayerSide in DuelState.SIDES:
 		ZoneRules.shuffle_deck(state, side, events)
-	for side: DuelState.PlayerSide in SIDES:
+	for side: DuelState.PlayerSide in DuelState.SIDES:
 		_draw_cards(state, side, state.config.opening_hand_size, events)
 	state.pending_decision = _make_mulligan_decision()
 
@@ -58,17 +58,11 @@ static func apply_mulligan(
 	state: DuelState, intent: ChooseMulligan, events: Array[DuelEvent]
 ) -> void:
 	var decision := state.pending_decision
-	decision.chosen_ids.append_array(intent.set_aside_card_ids)
+	decision.set_aside_card_ids.append_array(intent.set_aside_card_ids)
 	decision.awaited_players.erase(intent.player)
 	events.append(MulliganDecided.new(intent.player))
-	if not decision.awaited_players.is_empty():
-		return
-	var chosen_ids := decision.chosen_ids
-	state.pending_decision = null
-	for side: DuelState.PlayerSide in SIDES:
-		_execute_mulligan(state, side, _ids_in_hand(state, side, chosen_ids), events)
-	_designate_first_player(state, events)
-	_start_turn(state, state.first_player, events)
+	if decision.awaited_players.is_empty():
+		_finish_preparation(state, decision.set_aside_card_ids, events)
 
 
 ## 204.4.7, convention 1.3 : raison du refus de `intent`, ou NONE. L'attente est contrôlée
@@ -90,6 +84,24 @@ static func apply_end_turn(state: DuelState, intent: EndTurn, events: Array[Duel
 	events.append(TurnEnded.new(intent.player))
 	_end_until_end_of_turn_effects(state, events)
 	_start_turn(state, DuelState.opponent_of(intent.player), events)
+
+
+# 204.1.16, décision 0015 : mulligans joueur A puis B, tirage du premier joueur, premier tour.
+static func _finish_preparation(
+	state: DuelState, set_aside_card_ids: Array[int], events: Array[DuelEvent]
+) -> void:
+	state.pending_decision = null
+	for side: DuelState.PlayerSide in DuelState.SIDES:
+		_execute_mulligan(state, side, _ids_in_hand(state, side, set_aside_card_ids), events)
+	_designate_first_player(state, events)
+	_start_turn(state, state.first_player, events)
+
+
+# 209.4.3, 209.5.1
+static func _set_starting_values(state: DuelState, side: DuelState.PlayerSide) -> void:
+	var player := state.get_player(side)
+	player.clock_remaining_msec = state.config.clock_duration_msec
+	player.fatigue_counter = state.config.starting_fatigue
 
 
 # 204.1.1, 204.1.8 ; 201.5.1 : la carte Hero appartient à son joueur.
@@ -125,7 +137,7 @@ static func _put_setup_sources_into_play(
 static func _make_mulligan_decision() -> PendingDecision:
 	var decision := PendingDecision.new()
 	decision.kind = PendingDecision.DecisionKind.MULLIGAN
-	decision.awaited_players.assign(SIDES)
+	decision.awaited_players.assign(DuelState.SIDES)
 	return decision
 
 
@@ -158,7 +170,7 @@ static func _execute_mulligan(
 # 204.1.14, 204.1.16 ; décision 0012 : aucun tirage si le premier joueur est imposé.
 static func _designate_first_player(state: DuelState, events: Array[DuelEvent]) -> void:
 	if not state.first_player_imposed:
-		state.first_player = SIDES[state.rng.randi_range(0, SIDES.size() - 1)]
+		state.first_player = DuelState.SIDES[state.rng.randi_range(0, DuelState.SIDES.size() - 1)]
 	events.append(FirstPlayerChosen.new(state.first_player))
 
 
@@ -178,6 +190,8 @@ static func _start_turn(
 	state.phase = DuelState.DuelPhase.MAIN
 
 
+# 202.3.14, 203.4.2, 204.4.6 : décomptes « par tour » des deux joueurs, remis à zéro au début
+# de chaque tour (convention de l'étape 1.3).
 static func _reset_turn_counters(state: DuelState) -> void:
 	for player: PlayerState in state.players:
 		player.sources_recycled_this_turn = 0
@@ -197,7 +211,7 @@ static func _untap_sources(
 	player.sources_tilted = 0
 
 
-# 204.3.1, 204.3.3, 204.3.4, 204.3.5 ; 200.4.2 : une réserve trop petite donne ce qu'elle a.
+# 204.3.1, 204.3.3, 204.3.4, 204.3.5 ; 200.4.1, 200.4.2 : la réserve donne ce qu'elle a.
 static func _receive_sources(
 	state: DuelState, side: DuelState.PlayerSide, events: Array[DuelEvent]
 ) -> void:

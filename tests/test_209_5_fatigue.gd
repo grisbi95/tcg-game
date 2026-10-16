@@ -26,6 +26,26 @@ func test_209_5_1_fatigue_starts_at_zero() -> void:
 		assert_int(player.fatigue_counter).is_equal(STARTING_FATIGUE)
 
 
+func test_209_5_1_starting_fatigue_read_from_config() -> void:
+	var config := DuelConfig.new()
+	config.starting_fatigue = 1
+	_engine = DuelEngine.new(SetupSamples.catalog(), config)
+	_engine.start_new_duel(SetupSamples.setup())
+	for player: PlayerState in _engine.get_state().players:
+		assert_int(player.fatigue_counter).is_equal(1)
+
+
+func test_209_2_4_fatigue_never_takes_health_below_zero() -> void:
+	_builder.with_hero_health(B, 2).with_fatigue(B, 4)
+	var events := _end_turn_of_a()
+	assert_int(_engine.get_state().find_hero(B).health).is_equal(0)
+	var losses: Array[int] = []
+	for event: DuelEvent in events:
+		if event is HeroLostHealth:
+			losses.append((event as HeroLostHealth).amount)
+	assert_array(losses).contains_exactly([2, 0])
+
+
 func test_209_5_2_each_draw_from_empty_deck_increases_fatigue() -> void:
 	var events := _end_turn_of_a()
 	var expected: Array[String] = []

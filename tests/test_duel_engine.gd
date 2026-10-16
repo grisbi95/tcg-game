@@ -1,5 +1,5 @@
 extends GdUnitTestSuite
-## DuelEngine : façade, refus généraux et déterminisme (décisions 0001 et 0012).
+## DuelEngine : façade, refus généraux et déterminisme (ruleset 0.30, décisions 0001 et 0012).
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
 const B: DuelState.PlayerSide = DuelState.PlayerSide.B
@@ -66,6 +66,4 @@ func _engine_on(builder: DuelStateBuilder) -> DuelEngine:
 func _assert_rejected(
 	engine: DuelEngine, intent: DuelIntent, expected: IntentRejected.RejectReason
 ) -> void:
-	var snapshot := engine.get_state().clone()
-	assert_int(EventLog.rejection_reason(engine.submit(intent))).is_equal(expected)
-	assert_array(DeepCompare.find_clone_defects(snapshot, engine.get_state())).is_empty()
+	assert_array(DuelChecks.rejection_defects(engine, intent, expected)).is_empty()

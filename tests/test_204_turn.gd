@@ -1,3 +1,5 @@
+# gdlint: disable=max-public-methods
+
 extends GdUnitTestSuite
 ## Début, phase principale et fin du tour par DuelEngine (ruleset 0.30, sections 204.3 à 204.5).
 
@@ -39,6 +41,14 @@ func test_204_5_2_opponent_starts_next_turn() -> void:
 	assert_int((events[1] as TurnStarted).turn_number).is_equal(TurnRules.FIRST_TURN + 1)
 
 
+func test_204_3_9_turn_start_runs_in_one_block() -> void:
+	var events := _end_turn_of_a()
+	for event: DuelEvent in events:
+		assert_bool(event is IntentRejected).is_false()
+	assert_int(_engine.get_state().phase).is_equal(DuelState.DuelPhase.MAIN)
+	assert_int(_engine.validate(EndTurn.new(A))).is_equal(REASON.NOT_YOUR_TURN)
+
+
 func test_204_4_1_main_phase_follows_turn_start() -> void:
 	_end_turn_of_a()
 	assert_int(_engine.get_state().phase).is_equal(DuelState.DuelPhase.MAIN)
@@ -47,7 +57,7 @@ func test_204_4_1_main_phase_follows_turn_start() -> void:
 func test_204_3_2_turn_start_untaps_sources() -> void:
 	_builder.with_sources_in_play(B, 1, 3)
 	var events := _end_turn_of_a()
-	var untapped := events[2] as SourcesUntapped
+	var untapped := _first_event_of(events, "SourcesUntapped:B") as SourcesUntapped
 	assert_int(untapped.count).is_equal(3)
 	var player := _engine.get_state().get_player(B)
 	assert_int(player.sources_tilted).is_equal(0)
@@ -136,7 +146,7 @@ func test_204_5_7_until_end_of_turn_effects_end() -> void:
 		_make_effect(piece_id, ActiveEffect.EffectDuration.WHILE_PIECE_IN_PLAY)
 	)
 	var events := _end_turn_of_a()
-	var ended := events[1] as ActiveEffectEnded
+	var ended := _first_event_of(events, "ActiveEffectEnded") as ActiveEffectEnded
 	assert_int(ended.effect_id).is_equal(ending_id)
 	var effects := _engine.get_state().active_effects
 	assert_int(effects.size()).is_equal(1)
@@ -154,7 +164,7 @@ func test_204_4_7_end_turn_outside_main_phase_rejected() -> void:
 	_assert_rejected(EndTurn.new(A), REASON.WRONG_PHASE)
 
 
-func test_204_4_7_end_turn_with_stack_not_empty_rejected() -> void:
+func test_end_turn_requires_empty_stack() -> void:
 	_builder.push_spell(_builder.make_card_instance(B, CARD))
 	_engine.start_from_state(_builder.build())
 	_assert_rejected(EndTurn.new(A), REASON.STACK_NOT_EMPTY)
@@ -174,6 +184,10 @@ func _end_turn_of_a() -> Array[DuelEvent]:
 	return _engine.submit(EndTurn.new(A))
 
 
+func _first_event_of(events: Array[DuelEvent], description: String) -> DuelEvent:
+	return events[EventLog.describe(events).find(description)]
+
+
 func _start_full_duel(first_player: DuelState.PlayerSide) -> void:
 	var setup := SetupSamples.setup()
 	setup.impose_first_player(first_player)
@@ -190,6 +204,4 @@ func _make_effect(piece_id: int, duration: ActiveEffect.EffectDuration) -> Activ
 
 
 func _assert_rejected(intent: DuelIntent, expected: IntentRejected.RejectReason) -> void:
-	var snapshot := _engine.get_state().clone()
-	assert_int(EventLog.rejection_reason(_engine.submit(intent))).is_equal(expected)
-	assert_array(DeepCompare.find_clone_defects(snapshot, _engine.get_state())).is_empty()
+	assert_array(DuelChecks.rejection_defects(_engine, intent, expected)).is_empty()

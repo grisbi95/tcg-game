@@ -112,7 +112,7 @@ func test_203_3_1_payment_must_produce_exactly_the_cost() -> void:
 	_assert_rejected(state, EssencePayment.new(2, 1), 2, REASON.PAYMENT_DOES_NOT_MATCH_COST)
 
 
-func test_203_3_1_negative_payment_rejected() -> void:
+func test_negative_payment_rejected() -> void:
 	var state := _with_sources(3, 0, 7)
 	_assert_rejected(state, EssencePayment.new(3, -1), 2, REASON.NEGATIVE_PAYMENT)
 
