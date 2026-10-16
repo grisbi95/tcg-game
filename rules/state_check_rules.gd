@@ -5,8 +5,8 @@ extends RefCounted
 ## La pendule (209.4) vient à l'étape 1.8.
 
 
-## 209.2.5 : un joueur peut abandonner à tout moment ; seule une partie en cours se refuse,
-## contrôlée par DuelEngine. Pur.
+## 209.2.5 : un joueur peut abandonner à tout moment ; seule une partie non commencée ou
+## terminée se refuse, contrôlée par DuelEngine. Pur.
 static func validate_concede(_state: DuelState, _intent: Concede) -> IntentRejected.RejectReason:
 	return IntentRejected.RejectReason.NONE
 
@@ -26,10 +26,9 @@ static func check_victory(state: DuelState, events: Array[DuelEvent]) -> bool:
 		return false
 	if a_down and b_down:
 		_end_duel(state, DuelState.DuelResult.DRAW, events)
-	elif a_down:
-		_end_duel(state, _win_for(DuelState.PlayerSide.B), events)
 	else:
-		_end_duel(state, _win_for(DuelState.PlayerSide.A), events)
+		var loser := DuelState.PlayerSide.A if a_down else DuelState.PlayerSide.B
+		_end_duel(state, _win_for(DuelState.opponent_of(loser)), events)
 	return true
 
 
@@ -43,18 +42,19 @@ static func apply_fatigue(
 	player.fatigue_counter += state.config.fatigue_increase
 	events.append(FatigueIncreased.new(side, player.fatigue_counter))
 	var health_to_lose := player.fatigue_counter * state.config.fatigue_damage_per_counter_point
-	_lose_health(state, side, health_to_lose, events)
-	check_victory(state, events)
+	lose_health(state, side, health_to_lose, events)
 
 
-# 209.2.4 ; 200.4.2 : le Hero ne perd que les PV qu'il a, l'événement donne la perte réelle.
-static func _lose_health(
+## 209.2.1, 209.2.2, 209.2.4 ; 200.4.2 : seule voie de perte de PV d'un Hero. Il ne perd que les
+## PV qu'il a, l'événement donne la perte réelle, puis la victoire se vérifie.
+static func lose_health(
 	state: DuelState, side: DuelState.PlayerSide, amount: int, events: Array[DuelEvent]
 ) -> void:
 	var hero := state.find_hero(side)
 	var lost_health := mini(amount, hero.health)
 	hero.health -= lost_health
 	events.append(HeroLostHealth.new(side, lost_health))
+	check_victory(state, events)
 
 
 # 209.2.2, 209.2.3, 209.2.7 : plus rien n'est attendu ni résolu ; la pile reste en l'état.

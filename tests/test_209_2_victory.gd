@@ -73,8 +73,8 @@ func test_201_1_2a_draw_is_no_win() -> void:
 func test_209_2_2_turn_start_stops_when_duel_ends() -> void:
 	_builder.with_hero_health(B, 1)
 	var labels := EventLog.describe(_end_turn_of_a())
-	assert_int(labels.count("FatigueIncreased:B")).is_equal(1)
-	assert_int(labels.count("DuelEnded")).is_equal(1)
+	assert_str(labels.back()).is_equal("DuelEnded")
+	assert_int(labels.count("HeroLostHealth:B")).is_equal(1)
 	assert_int(_engine.get_state().phase).is_equal(DuelState.DuelPhase.ENDED)
 
 
@@ -115,8 +115,14 @@ func test_209_2_7_concede_ends_duel_and_leaves_stack_unresolved() -> void:
 func test_209_2_7_no_intent_after_duel_ended() -> void:
 	_engine.start_from_state(_builder.build())
 	_engine.submit(Concede.new(A))
-	for intent: DuelIntent in [Concede.new(B), EndTurn.new(A)]:
+	for intent: DuelIntent in [Concede.new(B), EndTurn.new(A), PassPriority.new(A)]:
 		assert_array(DuelChecks.rejection_defects(_engine, intent, REASON.DUEL_ENDED)).is_empty()
+
+
+func test_concede_before_duel_starts_rejected() -> void:
+	var events := _engine.submit(Concede.new(A))
+	assert_int(EventLog.rejection_reason(events)).is_equal(REASON.DUEL_NOT_STARTED)
+	assert_int(_engine.validate(PassPriority.new(A))).is_equal(REASON.DUEL_NOT_STARTED)
 
 
 func _end_turn_of_a() -> Array[DuelEvent]:

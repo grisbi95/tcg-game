@@ -62,7 +62,7 @@ func submit(intent: DuelIntent) -> Array[DuelEvent]:
 func _validate_duel_running() -> IntentRejected.RejectReason:
 	if _state == null or _state.phase == DuelState.DuelPhase.NOT_STARTED:
 		return IntentRejected.RejectReason.DUEL_NOT_STARTED
-	if _state.phase == DuelState.DuelPhase.ENDED:
+	if _state.is_ended():
 		return IntentRejected.RejectReason.DUEL_ENDED
 	return IntentRejected.RejectReason.NONE
 

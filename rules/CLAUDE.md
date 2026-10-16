@@ -49,5 +49,6 @@ Le champ **et** sa copie dans `clone()` de la même classe, puis une valeur non 
 - Une `CardInstance` est dans une seule zone à la fois : la déplacer, jamais la copier. Une pièce qui revient sur le plateau reçoit un nouveau `piece_id`.
 - La Force actuelle se calcule par `ForceRules`, jamais ne se stocke.
 - Pile vide ⇒ passes consécutives à zéro ; phase `ENDED` ⇒ toute intention refusée ; `state.pending_decision` non null ⇒ seule l'intention qui y répond est acceptée, et `Concede` (209.2.5 : à tout moment).
+- Un Hero ne perd de PV que par `StateCheckRules.lose_health()`, qui vérifie la victoire (209.2.1).
 - Les pendules ne bougent que par `advance_clock()`, jamais pendant un `submit()`.
 - Les modules ne lisent que `state` ; aucune injection, aucun Node, aucun accès à la vue.

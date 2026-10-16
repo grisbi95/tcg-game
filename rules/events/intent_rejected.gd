@@ -23,7 +23,7 @@ enum RejectReason {
 	CARD_NOT_IN_HAND,  # 204.2.4 : carte écartée hors de la main du joueur
 	DUPLICATE_CARD,  # décision 0013 : même carte citée deux fois
 	STACK_NOT_EMPTY,  # convention de l'étape 1.3 : terminer son tour (204.4.7) exige une pile vide
-	STACK_EMPTY,  # 208.3.1 : passer n'a de sens que pendant une pile
+	STACK_EMPTY,  # 208.2.2, 208.2.4 : on ne passe qu'après un ajout à la pile
 	NOT_YOUR_PRIORITY,  # 208.2.2, 208.2.4 : ce n'est pas à ce joueur de répondre ou de passer
 }
 

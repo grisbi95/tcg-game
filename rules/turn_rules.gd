@@ -29,7 +29,8 @@ static func start_preparation(
 		ZoneRules.shuffle_deck(state, side, events)
 	for side: DuelState.PlayerSide in DuelState.SIDES:
 		_draw_cards(state, side, state.config.opening_hand_size, events)
-	state.pending_decision = _make_mulligan_decision()
+	if not state.is_ended():
+		state.pending_decision = _make_mulligan_decision()
 
 
 ## 204.2.1, 204.2.4, décisions 0009 et 0013 : raison du refus de `intent`, ou NONE. Pur.
@@ -93,6 +94,8 @@ static func _finish_preparation(
 	state.pending_decision = null
 	for side: DuelState.PlayerSide in DuelState.SIDES:
 		_execute_mulligan(state, side, _ids_in_hand(state, side, set_aside_card_ids), events)
+		if state.is_ended():
+			return
 	_designate_first_player(state, events)
 	_start_turn(state, state.first_player, events)
 
@@ -187,7 +190,7 @@ static func _start_turn(
 	_untap_sources(state, side, events)
 	_receive_sources(state, side, events)
 	_draw_cards(state, side, state.config.cards_drawn_per_turn, events)
-	if state.phase != DuelState.DuelPhase.ENDED:
+	if not state.is_ended():
 		state.phase = DuelState.DuelPhase.MAIN
 
 
@@ -234,7 +237,7 @@ static func _draw_cards(
 	for index: int in count:
 		if ZoneRules.draw_card(state, side, events) == ZoneRules.DrawOutcome.DECK_EMPTY:
 			StateCheckRules.apply_fatigue(state, side, events)
-		if state.phase == DuelState.DuelPhase.ENDED:
+		if state.is_ended():
 			return
 
 

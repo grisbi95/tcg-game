@@ -2,7 +2,8 @@ extends GdUnitTestSuite
 ## Pile et priorité sans effet déclenché (ruleset 0.30, chapitre 208 ; 209.2.1 et 209.2.3).
 ##
 ## Les entrées sont posées par le builder ou par StackRules.add_to_stack, comme des annonces
-## déjà faites : aucune annonce n'est encore codée (étapes 1.5 et 1.6).
+## déjà faites : aucune annonce n'est encore codée (étapes 1.5 et 1.6). Le test de 209.2.3
+## part d'un Hero déjà à 0 PV, faute d'effet : à réécrire avec un Spell à l'étape 1.6.
 
 const CARD: StringName = &"CARD_TEST"
 
@@ -65,15 +66,15 @@ func test_208_3_1_two_passes_in_a_row_resolve_whole_stack() -> void:
 
 func test_208_3_1_announcement_between_passes_restarts_count() -> void:
 	_push_spell_of(A)
-	var state := _builder.with_priority_player(B).build()
-	_engine.start_from_state(state)
+	_engine.start_from_state(_builder.with_priority_player(B).build())
 	_engine.submit(PassPriority.new(B))
 	var events: Array[DuelEvent] = []
-	StackRules.add_to_stack(state, _make_entry(A), events)
-	assert_int(state.consecutive_passes).is_equal(0)
+	# Annonce simulée : les annonces arrivent avec leur chapitre (étapes 1.5 et 1.6).
+	StackRules.add_to_stack(_engine.get_state(), _make_entry(A), events)
+	assert_int(_engine.get_state().consecutive_passes).is_equal(0)
 	var labels := EventLog.describe(_engine.submit(PassPriority.new(B)))
 	assert_array(labels).contains_exactly(["PriorityPassed:B"])
-	assert_int(state.stack.size()).is_equal(2)
+	assert_int(_engine.get_state().stack.size()).is_equal(2)
 
 
 func test_208_3_2_last_added_resolves_first() -> void:
@@ -96,11 +97,9 @@ func test_208_3_3_whole_stack_resolves_within_one_submission() -> void:
 	_engine.start_from_state(_builder.with_priority_player(A).build())
 	_engine.submit(PassPriority.new(A))
 	var labels := EventLog.describe(_engine.submit(PassPriority.new(B)))
-	(
-		assert_int(labels.count("StackEntryResolved:A") + labels.count("StackEntryResolved:B"))
-		. is_equal(2)
+	assert_array(labels).contains_exactly(
+		["PriorityPassed:B", "StackEntryResolved:B", "StackEntryResolved:A"]
 	)
-	assert_int(labels.count("PriorityPassed:A") + labels.count("PriorityPassed:B")).is_equal(1)
 
 
 func test_208_5_1_active_player_acts_again_once_stack_is_empty() -> void:
@@ -131,7 +130,7 @@ func test_209_2_3_resolution_stops_when_duel_ends() -> void:
 	assert_object(state.find_stack_entry(bottom_id)).is_not_null()
 
 
-func test_pass_with_empty_stack_rejected() -> void:
+func test_208_2_4_pass_with_empty_stack_rejected() -> void:
 	_engine.start_from_state(_builder.build())
 	_assert_rejected(PassPriority.new(A), REASON.STACK_EMPTY)
 
