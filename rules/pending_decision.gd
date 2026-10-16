@@ -21,6 +21,9 @@ var subject_stack_entry_id: int = DuelState.NO_ID
 var candidate_ids: Array[int] = []
 ## Cases parmi lesquelles répondre, quand le choix porte sur une case (202.4.12a).
 var candidate_cells: Array[Vector2i] = []
+## Décision 0013 : cartes à écarter déjà choisies, tous joueurs confondus ; chaque carte est
+## dans la main de son joueur. Choix cachés : ni la vue ni l'IA ne les lisent (204.2.3).
+var set_aside_card_ids: Array[int] = []
 
 
 func clone() -> PendingDecision:
@@ -30,4 +33,5 @@ func clone() -> PendingDecision:
 	copy.subject_stack_entry_id = subject_stack_entry_id
 	copy.candidate_ids.assign(candidate_ids)
 	copy.candidate_cells.assign(candidate_cells)
+	copy.set_aside_card_ids.assign(set_aside_card_ids)
 	return copy

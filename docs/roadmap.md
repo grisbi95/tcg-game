@@ -2,7 +2,7 @@
 
 > **Rôle** : plan unique du projet : périmètre, jalons, étapes et état. Les règles font foi dans [ruleset/](ruleset/README.md) ; l'architecture dans [decisions/](decisions/).
 
-**État actuel (16 octobre 2026)** : jalon J0 terminé ; J1 étapes 1.1 et 1.2 terminées, fusionnées dans `main` par la PR 1 avec l'outillage Godot AI (0011), CI verte. 1.2 : `rules/catalog/` (`CardDefinition`, `HeroDefinition`, `EffectDefinition` avec `EffectKind` MODIFY_FORCE, DESTROY, COUNTER_SPELL, CREATE_TOKEN, `TargetSpec`, `Catalog`, `CatalogLoader`, `CatalogReader`, chacun avec `find_errors()`), outil de test `CatalogSamples`, 155 tests verts dont les suites `test_catalog*.gd`, lint propre. `data/cards/` ne contient que `.gitkeep` : les cartes de test viennent à l'étape 1.9, après le code des `kind` (1.6, 1.7). Décisions 0001 à 0011. Prochaine action : J1 étape 1.3, zones, Essence, tour (201, 203, 204), sur une branche issue de `main`.
+**État actuel (16 octobre 2026)** : jalon J0 terminé ; J1 étapes 1.1, 1.2 et 1.3 terminées. 1.1 et 1.2 sont fusionnées dans `main` (PR 1, CI verte) ; 1.3 est sur `feat/1.3-turn`, non poussée, avec la fusion du ruleset (décision 0014). Ruleset dans `docs/ruleset/`, édition 0.30 : Q-075 à Q-079 tranchées (décisions de design 0176 à 0180), aucune question ouverte. Décisions du projet 0001 à 0015. 1.3 : `DuelEngine` (façade : `start_new_duel` par `DuelSetup`, `start_from_state`, `validate`, `submit`, `get_state`), `ZoneRules` (201 : deck, pioche avec limite de main, Écart, mélange par `state.rng`), `EssenceRules` (203 : paiement `EssencePayment` {incliner, recycler}, 203.2.6 compris), `TurnRules` (204 : préparation dans l'ordre de 204.1.16, mulligan simultané exécuté A puis B, premier joueur tiré après le mulligan, début du tour, fin du tour sans déclencheur), `StateCheckRules` (209.5 fatigue, 209.2.4 plancher de PV) ; 256 tests verts, lint propre. Prochaine action : pousser `feat/1.3-turn` et ouvrir la PR, puis étape 1.4 (pile et priorité, victoire 209.2). À reprendre : un Hero à 0 PV ne termine pas encore la partie (209.2.2, étape 1.4) ; la pendule ne tourne pas (1.8) ; les conventions de 1.3 (compteurs par tour remis à zéro pour les deux joueurs, pile vide pour terminer son tour) ne sont écrites que dans le code ; le protocole de playtest impose le premier joueur d'avance, à préciser avant J3 pour respecter 204.1.16.
 
 ## Périmètre
 
@@ -32,7 +32,7 @@ Chaque étape : règles lues, décision si système nouveau, implémentation par
 
 - [x] **1.1 Fondations** : `DuelState`, `PlayerState`, `Piece`, `CardInstance`, `StackEntry`, `ActiveEffect`, `PendingDecision`, `DuelConfig` (une valeur par règle PROVISOIRE), `BoardGeometry` (201.2), identifiants, `clone()` et son test par réflexion, bases `DuelIntent`, `DuelEvent`, `IntentRejected`. `DeepCompare`, `EventLog`, `DuelStateBuilder` repris du prototype et adaptés.
 - [x] **1.2 Catalogue JSON** : `CardDefinition`, `HeroDefinition`, `EffectDefinition`, `TargetSpec`, `CatalogLoader`, `find_errors()`, test du catalogue (201.6, 202.1, 202.2). Forme du schéma : décision 0010 ; s'y ajoutent `Catalog` et `CatalogReader`.
-- [ ] **1.3 Zones, Essence, tour** : 201, 203, 204 : préparation, Sources et Fonte, paiement `{incliner, recycler}`, mulligan simultané avec Écart, début de tour, pioche et fatigue (209.5), fin de tour sans déclencheur.
+- [x] **1.3 Zones, Essence, tour** : 201, 203, 204 : préparation, Sources et Fonte, paiement `{incliner, recycler}`, mulligan simultané avec Écart, début de tour, pioche et fatigue (209.5), fin de tour sans déclencheur.
 - [ ] **1.4 Pile et priorité** : 208 sans déclencheurs : annonce, 208.2.4, passes, bloc LIFO, retour au joueur actif ; 209.2 victoire après chaque effet ; `Concede`.
 - [ ] **1.5 Actions et combat** : 205 et 206 : déploiement (annonce et résolution), action normale, déplacement du Hero, échecs, combat, égalité, Hero défenseur, auras lues avant l'avance, `ForceRules`.
 - [ ] **1.6 Effets** : 207 et 202.3, 202.4 : Spells et vitesses, statiques, Gear, pouvoir du Hero, durées, cibles et validité, Contrecarrer, jetons.
@@ -52,7 +52,7 @@ Chaque étape : règles lues, décision si système nouveau, implémentation par
 
 ## J3 — Premier playtest
 
-- [ ] 20 parties selon `ruleset/70-playtest/protocole.md`, fiches automatiques, bilan contre le tableau des cibles et seuils, questions pour `tcg-ruleset`.
+- [ ] 20 parties selon `ruleset/70-playtest/protocole.md`, fiches automatiques, bilan contre le tableau des cibles et seuils, questions ouvertes du ruleset.
 
 ## J4 — IA et catalogue
 

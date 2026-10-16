@@ -26,6 +26,10 @@
 
 **203.2.5** [ACTÉ] Un joueur peut incliner ou recycler ses Sources pendant le tour adverse (décision 0025).
 
+**203.2.6** [ACTÉ] Un joueur peut recycler, dans un même paiement, une Source qu'il a inclinée pour ce paiement (décision 0176 ; voir 203.2.1 et 203.2.2).
+
+**203.2.7** [ACTÉ] Une Source redressée produit au plus 2 Essence dans un même paiement (décision 0176 ; voir 203.2.1, 203.2.2 et 203.2.6).
+
 ## 203.3 Dépense
 
 **203.3.1** [ACTÉ] Un coût se paie en Essence (décision 0021).

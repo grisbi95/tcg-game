@@ -30,6 +30,9 @@ enum DuelResult {
 }
 
 const PLAYER_COUNT: int = 2  # 201.1.1
+## Ordre fixe des joueurs quand les deux agissent tour à tour : il fixe l'ordre des tirages de
+## `rng` (mélanges de 204.1.6, mulligans de la décision 0015).
+const SIDES: Array[PlayerSide] = [PlayerSide.A, PlayerSide.B]
 ## Les compteurs d'identifiants commencent à FIRST_ID ; NO_ID désigne une absence.
 const NO_ID: int = 0
 const FIRST_ID: int = 1
@@ -40,8 +43,11 @@ var config: DuelConfig
 var phase: DuelPhase = DuelPhase.NOT_STARTED
 ## Fixé quand la phase passe à ENDED.
 var result: DuelResult = DuelResult.NONE
-## 204.1.14, 204.3.4 : joueur du premier tour.
+## 204.1.14, 204.3.4 : joueur du premier tour ; sans premier joueur imposé, significatif
+## seulement après FirstPlayerChosen (204.1.16).
 var first_player: PlayerSide = PlayerSide.A
+## Décision 0012 : premier joueur imposé par DuelSetup, sans tirage après le mulligan.
+var first_player_imposed: bool = false
 ## Unique source d'aléa du duel, initialisée par la graine.
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 ## Indexé par PlayerSide.
@@ -71,7 +77,7 @@ var next_active_effect_id: int = FIRST_ID
 static func create(duel_config: DuelConfig) -> DuelState:
 	var state := DuelState.new()
 	state.config = duel_config
-	for side: PlayerSide in [PlayerSide.A, PlayerSide.B]:
+	for side: PlayerSide in SIDES:
 		var player := PlayerState.new()
 		player.side = side
 		state.players.append(player)
@@ -148,6 +154,7 @@ func clone() -> DuelState:
 	copy.phase = phase
 	copy.result = result
 	copy.first_player = first_player
+	copy.first_player_imposed = first_player_imposed
 	copy.rng = _clone_rng()
 	for player: PlayerState in players:
 		copy.players.append(player.clone())

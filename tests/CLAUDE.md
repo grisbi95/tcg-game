@@ -19,6 +19,7 @@ Complète le `CLAUDE.md` racine pour `tests/`. GdUnit4 6.2.1 ; commandes dans `t
 | `DuelStateBuilder` | état construit à la main ; `cell("B2")` ; `add_to_deck/hand/discard`, `place_piece`, `push_*` qui simulent une annonce déjà faite ; un builder sert une fois |
 | `TestCatalog` | cartes et decks de `docs/ruleset/70-playtest/decks-de-test.md` chargés depuis `data/cards/` |
 | `EventLog` | `describe(events)` → `["TurnEnded:A", "TurnStarted:B"]` ; `rejection_reason(events)` |
+| `SetupSamples` | catalogue en mémoire (dix Units, Hero d'essai) et `DuelSetup` valide pour `DuelEngine.start_new_duel` |
 | `DeepCompare` | `find_clone_defects(a, b)` par réflexion ; `find_fields_never_set` protège le test de `clone()` |
 
 ## Motifs

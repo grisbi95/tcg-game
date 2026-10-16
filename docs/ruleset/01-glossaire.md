@@ -26,7 +26,7 @@
 | Cible légale | Cible qui remplit, au moment où l'entrée s'ajoute à la pile, les conditions que la carte pose à ses cibles et celles de la section 207.5 ; voir 207.5.8, 207.5.9 et 207.5.10. | |
 | Colonne | Alignement de cases du plateau qui s'étend d'un joueur à l'autre. | |
 | Combat | Affrontement d'un attaquant et d'un défenseur, réglé au chapitre 206 ; voir 206.1.1, 206.1.2, 206.2.1 et 206.4.2. | |
-| Compteur de fatigue | Valeur propre à chaque joueur, qui augmente chaque fois qu'il doit piocher alors que son deck est vide et fixe les PV que perd alors son Hero ; voir 209.5.1, 209.5.2, 209.5.3 et 209.5.4. | |
+| Compteur de fatigue | Valeur propre à chaque joueur, qui augmente chaque fois qu'il doit piocher alors que son deck est vide et fixe les PV que perd alors son Hero ; voir 209.5.1, 209.5.2, 209.5.2a, 209.5.3, 209.5.4 et 209.5.4a. | |
 | Condition de fin de partie | Condition, fixée par les règles du jeu, qui fait gagner, perdre ou finir la partie sur un nul ; voir 201.0.4, 201.1.2, 201.1.2a, 201.1.2b, 201.1.3a, 201.1.3c, 209.2.8a et 209.3.1. | |
 | Contrecarrer | Effet qui fait qu'un Spell qui se trouve sur la pile n'a pas lieu ; voir 207.6.1, 207.6.2, 207.6.4 et 207.6.5. | |
 | Contrôler | Relation d'un joueur avec chaque carte et chaque jeton qui lui appartiennent ; voir 201.5.2 et 201.5.2a. | |
@@ -58,6 +58,7 @@
 | Fonte | Emplacement propre à chaque joueur, qui accueille ses Sources recyclées ; voir 203.5.2, 203.5.3, 203.5.4 et 203.5.6. | |
 | Force | Statistique de combat des Units et des Buildings ; voir 202.1.5, 202.1.6, 202.4.9, 206.2.2, 206.2.3 et 209.1.1. | |
 | Force imprimée | Force que porte la carte d'une Unit ou d'un Building, ou que l'effet qui crée un jeton donne à ce jeton ; voir 202.1.5, 202.1.6, 209.1.1 et 209.1.1a. | |
+| Garder sa main | Pour un joueur, n'écarter aucune carte de sa main pendant le mulligan, ce qui n'est pas un mulligan ; voir 204.2.12, 204.2.13 et 204.2.14. | |
 | Gear | Type de carte de deck ; voir 202.2.6 et 202.2.7. | |
 | Hero | Pièce du plateau qui représente un joueur et porte ses PV, et qui est aussi une carte hors du deck ; voir 202.3.2, 202.3.4 et 202.3.5. | |
 | Incliner | Faire passer une Source de l'état redressé à l'état incliné ; voir 203.2.1. | |
@@ -73,7 +74,7 @@
 | Mélanger | Mettre les cartes de son deck dans un ordre aléatoire ; voir 204.1.6 et 204.2.7. | |
 | Modificateur | Bonus ou malus de la Force d'une pièce ; voir 206.2.3 et 206.5.1. | |
 | Mot-clé | Terme du texte d'une carte dont la règle est au chapitre 210, et qui peut porter une valeur numérique que la carte précise ; voir 202.4.13, 202.4.13a, 210.1.1, 210.1.2 et 210.1.3. | |
-| Mulligan | Remplacement, une seule fois, de cartes de sa main par des cartes de son deck ; voir 204.2.1, 204.2.4 et 204.2.5. | |
+| Mulligan | Remplacement, une seule fois, de cartes de sa main par des cartes de son deck ; voir 204.2.1, 204.2.4, 204.2.5 et 204.2.13. | |
 | Partie | Affrontement qui oppose deux joueurs. | |
 | Partie nulle | Issue d'une partie qui s'arrête sans vainqueur ; voir 201.1.2a, 201.1.2b, 209.2.8a et 209.3.1. | |
 | Passer | Renoncer à répondre ; voir 208.2.2, 208.2.4 et 208.3.1. | |
@@ -94,8 +95,8 @@
 | Rangée | Alignement de cases du plateau dont toutes les cases sont à la même distance de chaque joueur. | |
 | Rangée centrale | Rangée 3 du plateau, à égale distance des deux joueurs ; voir 205.1.4. | |
 | Réaction (vitesse) | Vitesse d'un Spell que son joueur peut annoncer pendant sa phase principale, quand la pile est vide, et aussi chaque fois qu'il peut répondre ; voir 207.1.2, 207.1.5, 207.1.6 et 208.2.3. | |
-| Recycler | Faire quitter le jeu à une Source inclinée ; voir 203.2.2 et 203.2.3. | |
-| Redresser | Faire passer une Source de l'état incliné à l'état redressé ; une Source dans cet état est dite redressée ; voir 203.2.1. | |
+| Recycler | Faire quitter le jeu à une Source inclinée ; voir 203.2.2, 203.2.3, 203.2.6 et 203.2.7. | |
+| Redresser | Faire passer une Source de l'état incliné à l'état redressé ; une Source dans cet état est dite redressée ; voir 203.2.1 et 204.1.17. | |
 | Règle du jeu | Règle numérotée des règles complètes, par opposition au texte d'une carte ; voir 200.2.1 et 200.3.1b. | |
 | Rempart | Mot-clé de combat à valeur X, qui donne à la pièce X de Force de plus quand elle défend ; voir 210.4.2, 210.4.2a, 210.4.2b et 210.4.2c. | |
 | Répondre | Agir pendant le tour d'un autre joueur ou en réaction à une action ; voir 204.3.9, 208.2.3, 208.2.4 et 208.4.5. | |

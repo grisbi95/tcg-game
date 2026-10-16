@@ -5,7 +5,8 @@ extends GdUnitTestSuite
 ## décisions 0002 et 0010).
 
 const DATA_DIRECTORY: String = "res://data/cards"
-const EDITION_FILE: String = "res://docs/ruleset/RULESET_EDITION"
+const RULESET_README: String = "res://docs/ruleset/README.md"
+const CURRENT_EDITION_PATTERN: String = "Édition courante : \\*\\*([0-9.]+)\\*\\*"
 const EDITION: String = "0.28"
 const DECK_SIZE: int = 30  # 201.6.1
 const MAX_COPIES: int = 3  # 201.6.2
@@ -40,6 +41,13 @@ func _catalog_of(distinct_cards: int) -> Catalog:
 	for index: int in distinct_cards:
 		cards.append(_card_named("sample_%d" % index, "Carte %d" % index))
 	return _load(CatalogSamples.catalog_text(cards)).get_catalog()
+
+
+## Édition courante lue dans le README du ruleset ; vide si absente.
+func _current_ruleset_edition() -> String:
+	var pattern := RegEx.create_from_string(CURRENT_EDITION_PATTERN)
+	var found := pattern.search(FileAccess.get_file_as_string(RULESET_README))
+	return found.get_string(1) if found != null else ""
 
 
 func _deck_of(card_ids: Array[String], copies: int) -> Array[StringName]:
@@ -174,8 +182,9 @@ func test_missing_file_and_directory_are_reported() -> void:
 	)
 
 
-func test_data_cards_directory_loads_without_errors_in_the_pinned_edition() -> void:
-	var edition := FileAccess.get_file_as_string(EDITION_FILE).strip_edges()
+func test_data_cards_directory_loads_without_errors_in_the_current_edition() -> void:
+	var edition := _current_ruleset_edition()
+	assert_str(edition).is_not_empty()
 	var loader := CatalogLoader.new(edition)
 	loader.load_directory(DATA_DIRECTORY)
 	assert_array(Array(loader.find_errors())).is_empty()

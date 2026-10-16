@@ -2,8 +2,8 @@
 
 ## IMPORTANT
 
-- **Le ruleset fait foi.** Copie épinglée dans `docs/ruleset/` (édition dans `RULESET_EDITION`). Un point non tranché par le ruleset ne devient jamais un comportement implicite : arrêter, et le signaler comme question pour `tcg-ruleset`.
-- **Une décision avant un système nouveau** : 2 ou 3 options avec compromis, choix du créateur, consignation dans `docs/decisions/`. Décisions acceptées : `0001` à `0011` ; les respecter.
+- **Le ruleset fait foi.** Il vit dans `docs/ruleset/` (édition dans son `README.md`, décision 0014) et ne s'édite que par l'agent `ruleset-editor`. Un point non tranché par le ruleset ne devient jamais un comportement implicite : arrêter, et le signaler comme question ouverte du ruleset.
+- **Une décision avant un système nouveau** : 2 ou 3 options avec compromis, choix du créateur, consignation dans `docs/decisions/`. Décisions acceptées : `0001` à `0015` ; les respecter.
 - **GDScript typé partout** : paramètres, retours, variables, collections. Les warnings `untyped_declaration` et `unsafe_*` sont des erreurs à corriger.
 - **Un identifiant de règle sur chaque fonction de règle et chaque test** : `# 206.3.6`, `test_206_3_6_tie_destroys_both`.
 
@@ -22,12 +22,12 @@
 - Lint et format : gdtoolkit 4 dans `.venv/` (`tools/setup_gdtoolkit.sh`), configuration `.gdlintrc`.
 - Aucune scène principale ni preset d'export pour l'instant ; `project.godot` ne se modifie que sur demande explicite.
 
-## 3. Architecture (décisions 0001 à 0011)
+## 3. Architecture (décisions 0001 à 0015)
 
 - **Couches** : `data/` (cartes JSON) ← `rules/` (moteur pur, `RefCounted`, sans Node) ← `ai/` ← `app/` (hôte, horloge, journal) ← `ui/` (scènes). Une couche ne connaît que celles qui la précèdent. `rules/` ne lit jamais l'heure, n'importe aucun Node, ne tire au hasard que par `state.rng`.
-- **Flux** : intentions → `DuelEngine.submit(intent) -> Array[DuelEvent]` → événements. Seul le moteur et ses modules modifient `DuelState`. Une intention illégale produit un unique `IntentRejected` avec sa raison et ne change rien. `validate(intent)` est public et pur.
+- **Flux** : intentions → `DuelEngine.submit(intent) -> Array[DuelEvent]` → événements. Seul le moteur et ses modules modifient `DuelState`. Une intention illégale produit un unique `IntentRejected` avec sa raison et ne change rien. `validate(intent)` est public et pur. Un duel démarre par `start_new_duel` avec un `DuelSetup` : decks, Heroes, graine, premier joueur optionnel, sinon tiré (0012).
 - **Un module de règles par chapitre** du ruleset (`EssenceRules` 203, `ActionRules` 205, `StackRules` 208…) ; carte dans `rules/CLAUDE.md`.
-- **État** en classes typées avec `clone()` complet ; identifiants entiers jamais réutilisés ; une seule classe `Piece` pour Hero, Units, Buildings et jetons (0008) ; `PendingDecision`, objet nul hors attente (0009), quand le moteur attend un choix d'un joueur (ordre des déclencheurs, cibles) ; `DuelConfig` porte une valeur par règle PROVISOIRE.
+- **État** en classes typées avec `clone()` complet ; identifiants entiers jamais réutilisés ; une seule classe `Piece` pour Hero, Units, Buildings et jetons (0008) ; `PendingDecision`, objet nul hors attente (0009), quand le moteur attend un choix d'un joueur (ordre des déclencheurs, cibles) ; mulligans exécutés à la dernière réponse, joueur A puis B (0013, 0015) ; `DuelConfig` porte une valeur par règle PROVISOIRE.
 - **Paiement** porté par l'intention : `{incliner, recycler}` (0003). **Choix unique** pris par le moteur sans demander (0004).
 - **Cartes en JSON** (`data/cards/`), vocabulaire fermé d'`EffectKind` interprété par le moteur ; un nouveau `kind` = code et tests avant toute carte (0002, forme précisée en 0010).
 - **Vue** : le parent câble ses enfants par `setup(...)` ; les vues émettent des gestes, `DuelSelection` les traduit en intentions par `validate()`, `EventPlayer` joue la file puis chaque vue se recale sur `get_state()`. Aucune règle dans `ui/`, aucun second état faisant autorité.
@@ -54,8 +54,8 @@ ai/              agents de jeu (J4)
 app/             DuelHost, horloge, journal, AppEvents (J2)
 ui/              scènes ; ui/components/ ; ui/CLAUDE.md
 tests/           suites GdUnit4 ; tests/support/ ; tests/CLAUDE.md
-docs/            README (carte), roadmap, decisions/, code-guidelines, ruleset/ (copie)
-tools/           run_tests.sh, lint.sh, sync_ruleset.sh, setup_gdtoolkit.sh
+docs/            README (carte), roadmap, decisions/, code-guidelines, ruleset/ (règles, 0014)
+tools/           run_tests.sh, lint.sh, setup_gdtoolkit.sh
 .claude/         settings, hooks, agents, skills
 ```
 
@@ -64,7 +64,7 @@ Créer un dossier au premier fichier qui y entre ; tout autre dossier racine se 
 ## 6. Fichiers Godot
 
 - Éditer les `.gd` avec `Edit` ou `Write` : le hook reformate puis analyse. Après une édition par terminal, lancer `bash .claude/hooks/check_changed_gdscript.sh` et `tools/lint.sh`.
-- Ne jamais inventer un `uid://` ; ne jamais éditer `.uid`, `.import`, `.godot/`, `addons/`, `docs/ruleset/` (copie : passer par `tcg-ruleset` puis `tools/sync_ruleset.sh`).
+- Ne jamais inventer un `uid://` ; ne jamais éditer `.uid`, `.import`, `.godot/`, `addons/` ; `docs/ruleset/` ne s'édite que par `ruleset-editor`, selon sa `CHARTE.md`. Une règle modifiée sans le code qui l'applique se signale dans « État actuel ».
 - Les `.tscn` s'éditent au strict nécessaire et se vérifient en chargeant la scène.
 - Par le MCP : jamais d'édition de `.gd` (le hook ne passerait pas), de `project.godot` ni d'autoload.
 
