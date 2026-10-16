@@ -77,6 +77,8 @@ func _route_validation(intent: DuelIntent) -> IntentRejected.RejectReason:
 		return IntentRejected.RejectReason.DECISION_PENDING
 	if intent is EndTurn:
 		return TurnRules.validate_end_turn(_state, intent as EndTurn)
+	if intent is PassPriority:
+		return StackRules.validate_pass(_state, intent as PassPriority)
 	return IntentRejected.RejectReason.UNKNOWN_INTENT
 
 
@@ -95,3 +97,5 @@ func _apply(intent: DuelIntent, events: Array[DuelEvent]) -> void:
 		TurnRules.apply_mulligan(_state, intent as ChooseMulligan, events)
 	elif intent is EndTurn:
 		TurnRules.apply_end_turn(_state, intent as EndTurn, events)
+	elif intent is PassPriority:
+		StackRules.apply_pass(_state, intent as PassPriority, events)
