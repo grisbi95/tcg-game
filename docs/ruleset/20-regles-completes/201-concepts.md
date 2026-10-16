@@ -58,7 +58,7 @@
 
 **201.3.6** [ACTÉ] Une carte qui n'entre pas dans la main reste dans sa zone d'origine (décision 0037 ; voir 201.3.5).
 
-**201.3.6a** [ACTÉ] Une carte qui doit revenir dans la main selon 205.1.7 ou 205.1.8 et qui n'y entre pas va dans la défausse du joueur à qui elle appartient (décision 0096 ; voir 201.3.5 et 205.1.10).
+**201.3.6a** [ACTÉ] Une carte qui doit revenir dans la main selon 205.1.7, 205.1.8 ou 202.2.24a et qui n'y entre pas va dans la défausse du joueur à qui elle appartient (décisions 0096 et 0184 ; voir 201.3.5, 205.1.10 et 202.2.24b).
 
 **201.3.7** [ACTÉ] La pile est une zone commune aux deux joueurs (décision 0051).
 
