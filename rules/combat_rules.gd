@@ -30,9 +30,11 @@ static func resolve_attack(
 
 
 ## 206.3.2, 206.3.2a, 202.2.13 : retire `piece` du plateau ; sa carte et son Gear vont dans la
-## défausse de leur joueur, un jeton ne va nulle part.
+## défausse de leur joueur, un jeton ne va nulle part ; 207.4.7a : les effets à durée qui la
+## modifient cessent.
 static func destroy_piece(state: DuelState, piece: Piece, events: Array[DuelEvent]) -> void:
 	state.pieces.erase(piece)
+	_end_effects_on(state, piece, events)
 	if piece.card != null:
 		state.get_player(piece.card.owner).discard.append(piece.card)
 	events.append(PieceDestroyed.new(piece.owner, piece.piece_id))
@@ -66,3 +68,14 @@ static func _is_attacker_destroyed(
 	if attacker_force != defender_force:
 		return attacker_force < defender_force
 	return state.config.tie_destroys_both
+
+
+# 207.4.7a : un effet à durée cesse pour la pièce qui quitte le plateau.
+static func _end_effects_on(state: DuelState, piece: Piece, events: Array[DuelEvent]) -> void:
+	var remaining: Array[ActiveEffect] = []
+	for effect: ActiveEffect in state.active_effects:
+		if effect.affected_piece_id == piece.piece_id:
+			events.append(ActiveEffectEnded.new(effect.effect_id))
+		else:
+			remaining.append(effect)
+	state.active_effects = remaining

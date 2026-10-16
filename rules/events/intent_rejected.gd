@@ -34,6 +34,9 @@ enum RejectReason {
 	CELL_NOT_ADJACENT,  # 205.2.5, 205.3.1
 	CELL_OCCUPIED_BY_ALLY,  # 205.2.6
 	CELL_OUTSIDE_HERO_ROWS,  # 205.3.2
+	WRONG_TARGET_COUNT,  # 207.5.8, 207.5.10 : nombre de cibles hors des bornes de la carte
+	DUPLICATE_TARGET,  # 207.5.1 : même cible choisie deux fois
+	ILLEGAL_TARGET,  # 207.5.6, 207.5.11 à 207.5.16 : cible qui ne remplit pas les conditions
 }
 
 ## Intention refusée, telle que soumise ; null si le refus ne vient pas d'une intention.
