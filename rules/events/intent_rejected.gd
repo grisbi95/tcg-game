@@ -37,6 +37,7 @@ enum RejectReason {
 	WRONG_TARGET_COUNT,  # 207.5.8, 207.5.10 : nombre de cibles hors des bornes de la carte
 	DUPLICATE_TARGET,  # 207.5.1 : même cible choisie deux fois
 	ILLEGAL_TARGET,  # 207.5.6, 207.5.11 à 207.5.16 : cible qui ne remplit pas les conditions
+	NOT_A_SPELL,  # 208.1.3 : seule une carte Spell s'annonce comme Spell
 }
 
 ## Intention refusée, telle que soumise ; null si le refus ne vient pas d'une intention.

@@ -88,6 +88,8 @@ func _route_play_validation(intent: DuelIntent) -> IntentRejected.RejectReason:
 		return ActionRules.validate_deploy(_state, intent as DeployCard)
 	if intent is TakeNormalAction:
 		return ActionRules.validate_normal_action(_state, intent as TakeNormalAction)
+	if intent is CastSpell:
+		return EffectRules.validate_cast(_state, intent as CastSpell)
 	return IntentRejected.RejectReason.UNKNOWN_INTENT
 
 
@@ -104,3 +106,5 @@ func _apply(intent: DuelIntent, events: Array[DuelEvent]) -> void:
 		ActionRules.announce_deploy(_state, intent as DeployCard, events)
 	elif intent is TakeNormalAction:
 		ActionRules.announce_normal_action(_state, intent as TakeNormalAction, events)
+	elif intent is CastSpell:
+		EffectRules.announce_spell(_state, intent as CastSpell, events)

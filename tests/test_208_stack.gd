@@ -5,7 +5,7 @@ extends GdUnitTestSuite
 ## déjà faites : aucune annonce n'est encore codée (étapes 1.5 et 1.6). Le test de 209.2.3
 ## part d'un Hero déjà à 0 PV, faute d'effet : à réécrire avec un Spell à l'étape 1.6.
 
-const CARD: StringName = &"CARD_TEST"
+const CARD: StringName = &"plain_spell"
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
 const B: DuelState.PlayerSide = DuelState.PlayerSide.B
@@ -16,7 +16,11 @@ var _engine: DuelEngine
 
 
 func before_test() -> void:
-	_builder = DuelStateBuilder.new()
+	var catalog := Catalog.new()
+	var plain_spell := CatalogSamples.with_field(CatalogSamples.spell(), "id", String(CARD))
+	plain_spell = CatalogSamples.with_field(plain_spell, "effects", [])
+	catalog.add_card(CardDefinition.from_dict(plain_spell))
+	_builder = DuelStateBuilder.new(DuelConfig.new(), catalog)
 	_engine = DuelEngine.new(SetupSamples.catalog())
 
 
@@ -59,7 +63,8 @@ func test_208_3_1_two_passes_in_a_row_resolve_whole_stack() -> void:
 	var events := _engine.submit(PassPriority.new(B))
 	events.append_array(_engine.submit(PassPriority.new(A)))
 	var expected: Array[String] = ["PriorityPassed:B", "PriorityPassed:A"]
-	expected.append_array(["StackEntryResolved:A", "StackEntryResolved:B", "StackEntryResolved:A"])
+	for side: String in ["A", "B", "A"]:
+		expected.append_array(["CardDiscarded:" + side, "StackEntryResolved:" + side])
 	assert_array(EventLog.describe(events)).contains_exactly(expected)
 	assert_array(_engine.get_state().stack).is_empty()
 
@@ -97,8 +102,17 @@ func test_208_3_3_whole_stack_resolves_within_one_submission() -> void:
 	_engine.start_from_state(_builder.with_priority_player(A).build())
 	_engine.submit(PassPriority.new(A))
 	var labels := EventLog.describe(_engine.submit(PassPriority.new(B)))
-	assert_array(labels).contains_exactly(
-		["PriorityPassed:B", "StackEntryResolved:B", "StackEntryResolved:A"]
+	(
+		assert_array(labels)
+		. contains_exactly(
+			[
+				"PriorityPassed:B",
+				"CardDiscarded:B",
+				"StackEntryResolved:B",
+				"CardDiscarded:A",
+				"StackEntryResolved:A",
+			]
+		)
 	)
 
 

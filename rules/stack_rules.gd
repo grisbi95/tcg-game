@@ -50,14 +50,16 @@ static func _resolve_stack(state: DuelState, events: Array[DuelEvent]) -> void:
 	state.priority_player = state.active_player
 
 
-# 208.3.2 : chaque genre se résout par le module de son chapitre ; les genres de l'étape 1.6
-# (Spell, pouvoir du Hero, Gear) et 1.7 (effet déclenché) ne font encore rien.
+# 208.3.2 : chaque genre se résout par le module de son chapitre ; pouvoir du Hero et Gear
+# (bloc 3 de l'étape 1.6) et effet déclenché (1.7) ne font encore rien.
 static func _resolve_entry(state: DuelState, entry: StackEntry, events: Array[DuelEvent]) -> void:
 	match entry.kind:
 		StackEntry.StackEntryKind.DEPLOY:
 			ActionRules.resolve_deploy(state, entry, events)
 		StackEntry.StackEntryKind.NORMAL_ACTION:
 			ActionRules.resolve_normal_action(state, entry, events)
+		StackEntry.StackEntryKind.SPELL:
+			EffectRules.resolve_spell(state, entry, events)
 	# 209.2.2 : une partie arrêtée pendant la résolution s'arrête aussitôt.
 	if not state.is_ended():
 		events.append(StackEntryResolved.new(entry.owner, entry.stack_entry_id))
