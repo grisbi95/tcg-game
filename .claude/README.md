@@ -8,7 +8,8 @@ Le serveur `godot-ai==4.3.0`, lancé par `uvx`, est inscrit dans Claude Code en 
 
 ## Hooks
 
-- **SessionStart** `hooks/session_start.sh` : édition du ruleset épinglée, « État actuel » de la roadmap, branche et nombre de fichiers modifiés. Trois lignes, rien d'autre.
+- **SessionStart** `hooks/session_start.sh` : édition du ruleset épinglée, « État actuel » de la roadmap, branche et nombre de fichiers modifiés. Trois lignes, rien d'autre hors avertissements.
+  Garde-fou iCloud, sans rien bloquer : une ligne `ATTENTION` en tête si le projet est sous `~/Documents`, `~/Desktop` ou `~/Library/Mobile Documents`, et une autre si des fichiers sont retirés du disque (`find . -flags +dataless`, nombre et exemple). Le 16 octobre 2026, « Optimiser le stockage » avait retiré `.git`, `rules/` et `tests/` du disque. Le projet vit dans `~/Developer/tcg`.
 - **PostToolUse** sur `Edit`, `Write`, `MultiEdit` : `hooks/post_edit_gdscript.sh` enchaîne `format_gdscript.py` (gdformat, ignoré si `.venv` absent) puis `check_gdscript.py` (`--headless --check-only`). Un diagnostic renvoie le code 2 : l'édition reste appliquée, Claude doit corriger. `--check-only` ne remonte pas tous les warnings de typage : vérifier aussi dans l'éditeur.
 - Les éditions faites par terminal ou éditeur externe ne déclenchent pas le hook : lancer `bash .claude/hooks/check_changed_gdscript.sh` et `tools/lint.sh`.
 
