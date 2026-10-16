@@ -46,7 +46,7 @@ func read_string(key: String) -> String:
 	if typeof(value) != TYPE_STRING:
 		fail("« %s » doit être un texte" % key)
 		return ""
-	return String(value)
+	return str(value)
 
 
 ## Entier relatif de JSON (lu comme nombre) ; `fallback` si absent ou invalide.

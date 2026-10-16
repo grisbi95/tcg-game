@@ -25,6 +25,9 @@ enum RejectReason {
 	STACK_NOT_EMPTY,  # convention de l'étape 1.3 : terminer son tour (204.4.7) exige une pile vide
 	STACK_EMPTY,  # 208.2.2, 208.2.4 : on ne passe qu'après un ajout à la pile
 	NOT_YOUR_PRIORITY,  # 208.2.2, 208.2.4 : ce n'est pas à ce joueur de répondre ou de passer
+	NOT_DEPLOYABLE,  # 202.2.5, 202.2.7 : ni Unit ni Building
+	CELL_NOT_IN_DEPLOY_ZONE,  # 205.1.2, 205.1.3, 205.1.4
+	CELL_NOT_FREE,  # 205.1.2, 205.1.3 : case de déploiement occupée à l'annonce
 }
 
 ## Intention refusée, telle que soumise ; null si le refus ne vient pas d'une intention.

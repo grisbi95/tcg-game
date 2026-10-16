@@ -89,7 +89,7 @@ func test_201_3_6_card_not_drawn_stays_on_top_of_deck() -> void:
 	ZoneRules.draw_card(state, A, _events)
 	var deck := state.get_player(A).deck
 	assert_int(deck.size()).is_equal(2)
-	assert_int((deck.back() as CardInstance).card_instance_id).is_equal(top_card_id)
+	assert_int(deck[deck.size() - 1].card_instance_id).is_equal(top_card_id)
 
 
 func test_201_3_4_hand_limit_is_per_player() -> void:

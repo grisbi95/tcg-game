@@ -63,7 +63,7 @@ var parse_errors: PackedStringArray = PackedStringArray()
 
 ## Nom du `kind` tel que `ActiveEffect.effect_kind` le conserve : « modify_force ».
 static func kind_id(effect_kind: EffectKind) -> StringName:
-	return StringName(String(EffectKind.find_key(effect_kind)).to_lower())
+	return StringName(str(EffectKind.find_key(effect_kind)).to_lower())
 
 
 ## Lit un effet depuis un objet JSON ; les erreurs de lecture vont dans `parse_errors`.
@@ -131,7 +131,7 @@ func _check_timing(errors: PackedStringArray) -> void:
 	if _timings_for_kind().has(timing):
 		return
 	var kind_name := String(kind_id(kind))
-	var timing_name := String(EffectTiming.find_key(timing)).to_lower()
+	var timing_name := str(EffectTiming.find_key(timing)).to_lower()
 	if kind == EffectKind.CREATE_TOKEN and timing == EffectTiming.STATIC:
 		errors.append("202.4.7 : un effet statique ne crée pas de jeton")
 	else:
@@ -181,7 +181,7 @@ func _check_target_what(errors: PackedStringArray) -> void:
 		return
 	var expected := _expected_target_what()
 	if target.what != expected:
-		var expected_name := String(TargetSpec.TargetWhat.find_key(expected)).to_lower()
+		var expected_name := str(TargetSpec.TargetWhat.find_key(expected)).to_lower()
 		errors.append("%s : %s cible %s" % [_target_rule(), String(kind_id(kind)), expected_name])
 
 
