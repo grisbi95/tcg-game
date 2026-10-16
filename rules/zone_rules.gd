@@ -9,8 +9,7 @@ extends RefCounted
 enum DrawOutcome {
 	DRAWN,
 	BLOCKED_BY_HAND_LIMIT,  # 201.3.5, 201.3.6
-	## Aucune carte à piocher. La fatigue (209.5) relève du chapitre 209, qui lit aussi la
-	## main pleine : Q-077 n'est pas tranchée.
+	## Aucune carte à piocher, même main pleine ; la fatigue (209.5.2a) relève du chapitre 209.
 	DECK_EMPTY,
 }
 

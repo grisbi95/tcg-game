@@ -38,6 +38,10 @@ Aucun Invariant.
 
 **204.1.15** [PROVISOIRE] Chaque joueur pioche 5 cartes pendant la préparation (décisions 0032 et 0132 ; à mesurer en playtest : fréquence des mulligans).
 
+**204.1.16** [ACTÉ] La préparation se déroule dans cet ordre : 204.1.1 et 204.1.8, puis 204.1.12 et 204.1.13, puis 204.1.6, puis 204.1.15, puis le mulligan de la section 204.2, puis 204.1.14 (décision 0177 ; voir 204.1.10).
+
+**204.1.17** [ACTÉ] Une Source qu'un joueur met en jeu pendant la préparation arrive redressée (décision 0178 ; voir 204.1.12 et 204.3.3).
+
 ## 204.2 Mulligan
 
 **204.2.1** [ACTÉ] Chaque joueur peut faire un mulligan une seule fois (décision 0033).
@@ -61,6 +65,12 @@ Aucun Invariant.
 **204.2.10** [ACTÉ] Une carte écartée va dans l'Écart de son joueur (décision 0097 ; voir 201.3.9, 204.2.4 et 204.2.8).
 
 **204.2.11** [ACTÉ] Une carte écartée sort de l'Écart quand elle retourne dans le deck (décision 0097 ; voir 204.2.6 et 204.2.10).
+
+**204.2.12** [ACTÉ] Un joueur qui n'écarte aucune carte garde sa main (décision 0180 ; voir 204.2.4).
+
+**204.2.13** [ACTÉ] Garder sa main n'est pas un mulligan (décision 0180 ; voir 204.2.1 et 204.2.12).
+
+**204.2.14** [ACTÉ] Le joueur qui garde sa main ne mélange pas son deck (décision 0180 ; voir 204.2.7 et 204.2.13).
 
 ## 204.3 Début du tour
 

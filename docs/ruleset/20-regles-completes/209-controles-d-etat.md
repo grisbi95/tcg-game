@@ -78,6 +78,10 @@ Aucun Invariant.
 
 **209.5.2** [PROVISOIRE] Chaque fois qu'un joueur doit piocher une carte alors que son deck est vide, son compteur de fatigue augmente de 1 (décision 0059 ; à mesurer en playtest : tour de la première augmentation d'un compteur de fatigue, parties finies par la perte de PV de 209.5.3 ; voir 200.4.1).
 
+**209.5.2a** [ACTÉ] Le compteur de fatigue d'un joueur augmente selon 209.5.2 même si la main de ce joueur est pleine (décision 0179 ; voir 201.3.4 et 209.5.4a).
+
 **209.5.3** [PROVISOIRE] Chaque fois que le compteur de fatigue d'un joueur augmente, le Hero de ce joueur perd autant de PV que la nouvelle valeur de ce compteur (décision 0059 ; à mesurer en playtest : tour de la première augmentation d'un compteur de fatigue, parties finies par la perte de PV de 209.5.3 ; voir 209.5.2).
 
 **209.5.4** [ACTÉ] Une carte non piochée à cause de la limite de main n'augmente pas le compteur de fatigue de son joueur (décision 0059 ; voir 201.3.5 et 209.5.2).
+
+**209.5.4a** [ACTÉ] La règle 209.5.4 ne vise qu'une carte présente dans le deck de son joueur (décision 0179 ; voir 209.5.2a).
