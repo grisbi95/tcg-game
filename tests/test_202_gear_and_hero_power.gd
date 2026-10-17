@@ -15,6 +15,8 @@ const GEAR_COST: int = 1
 const POWER_COST: int = 2  # CatalogSamples.hero()
 const POWER_BONUS: int = 1
 const HAND_LIMIT: int = 7  # 201.3.4
+const BUILDING_FORCE: int = 4
+const TOKEN_FORCE: int = 1
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
 const B: DuelState.PlayerSide = DuelState.PlayerSide.B
@@ -27,7 +29,7 @@ var _engine: DuelEngine
 func before_test() -> void:
 	var catalog := Catalog.new()
 	SetupSamples.add_unit(catalog, UNIT_ID, UNIT_FORCE)
-	SetupSamples.add_building(catalog, BUILDING_ID, 4)
+	SetupSamples.add_building(catalog, BUILDING_ID, BUILDING_FORCE)
 	catalog.add_card(CardDefinition.from_dict(CatalogSamples.gear()))
 	catalog.add_card(CardDefinition.from_dict(CatalogSamples.spell()))
 	catalog.add_hero(HeroDefinition.from_dict(CatalogSamples.hero()))
@@ -134,12 +136,14 @@ func test_202_2_9_gear_never_on_the_hero() -> void:
 
 
 func test_202_4_5a_gear_can_be_attached_to_a_unit_token() -> void:
-	var token_id := _builder.place_token(A, Piece.PieceKind.UNIT, DuelStateBuilder.cell("B2"), 1)
+	var token_id := _builder.place_token(
+		A, Piece.PieceKind.UNIT, DuelStateBuilder.cell("B2"), TOKEN_FORCE
+	)
 	var gear_id := _builder.add_to_hand(A, GEAR_ID)
 	_start()
 	_engine.submit(_attach(gear_id, token_id))
 	_resolve_stack()
-	assert_int(_force(token_id)).is_equal(1 + GEAR_BONUS)
+	assert_int(_force(token_id)).is_equal(TOKEN_FORCE + GEAR_BONUS)
 
 
 func test_208_1_6_gear_only_during_own_main_phase() -> void:
@@ -150,6 +154,14 @@ func test_208_1_6_gear_only_during_own_main_phase() -> void:
 	_assert_rejected(intent, REASON.NOT_YOUR_TURN)
 
 
+func test_208_1_6_gear_outside_main_phase_rejected() -> void:
+	var unit_id := _place(A, "B2")
+	var gear_id := _builder.add_to_hand(A, GEAR_ID)
+	_builder.with_phase(DuelState.DuelPhase.TURN_END)
+	_start()
+	_assert_rejected(_attach(gear_id, unit_id), REASON.WRONG_PHASE)
+
+
 func test_208_1_7_gear_only_with_empty_stack() -> void:
 	var unit_id := _place(A, "B2")
 	var gear_id := _builder.add_to_hand(A, GEAR_ID)
@@ -158,7 +170,7 @@ func test_208_1_7_gear_only_with_empty_stack() -> void:
 	_assert_rejected(_attach(gear_id, unit_id), REASON.STACK_NOT_EMPTY)
 
 
-func test_only_a_gear_card_is_attached() -> void:
+func test_208_1_5_only_a_gear_card_is_attached() -> void:
 	var unit_id := _place(A, "B2")
 	var card_id := _builder.add_to_hand(A, UNIT_ID)
 	_start()
@@ -259,6 +271,21 @@ func test_202_3_15_hero_power_only_during_own_main_phase() -> void:
 	_assert_rejected(intent, REASON.NOT_YOUR_TURN)
 
 
+func test_202_3_15_hero_power_outside_main_phase_rejected() -> void:
+	var unit_id := _place(A, "B2")
+	_builder.with_phase(DuelState.DuelPhase.TURN_END)
+	_start_with_sample_hero()
+	_assert_rejected(_power([unit_id] as Array[int]), REASON.WRONG_PHASE)
+
+
+func test_207_5_1_hero_power_with_target_its_effect_does_not_ask_rejected() -> void:
+	var unit_id := _place(A, "B2")
+	_start_with_sample_hero()
+	var intent := _power([unit_id] as Array[int])
+	intent.target_cells.append(DuelStateBuilder.cell("B1"))
+	_assert_rejected(intent, REASON.WRONG_TARGET_COUNT)
+
+
 func test_202_3_16_hero_power_only_with_empty_stack() -> void:
 	var unit_id := _place(A, "B2")
 	_builder.push_spell(_builder.make_card_instance(B, SPELL_ID))
@@ -298,7 +325,7 @@ func test_207_5_17c_hero_power_without_target_counts_for_the_turn() -> void:
 	_assert_rejected(_power([] as Array[int]), REASON.HERO_POWER_ALREADY_USED)
 
 
-func test_hero_power_needs_a_target_when_one_is_legal() -> void:
+func test_207_5_10_hero_power_needs_a_target_when_one_is_legal() -> void:
 	_place(A, "B2")
 	_start_with_sample_hero()
 	_assert_rejected(_power([] as Array[int]), REASON.WRONG_TARGET_COUNT)
@@ -309,9 +336,9 @@ func _start() -> void:
 
 
 func _start_with_sample_hero() -> void:
-	_start()
 	for side: DuelState.PlayerSide in [A, B]:
-		_engine.get_state().find_hero(side).card.definition_id = HERO_ID
+		_builder.with_hero_definition(side, HERO_ID)
+	_start()
 
 
 func _attach(gear_id: int, unit_id: int) -> AttachGear:

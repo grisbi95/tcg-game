@@ -38,7 +38,8 @@ static func announce_spell(state: DuelState, intent: CastSpell, events: Array[Du
 
 
 ## 202.2.20, 208.3.2 : le Spell se résout une fois ; 207.1.7, 207.1.7a : sa carte va ensuite
-## dans la défausse de son joueur, que son effet ait eu lieu ou non.
+## dans la défausse de son joueur, que son effet ait eu lieu ou non. Si la partie s'arrête
+## pendant ses effets (209.2.2), la carte ne bouge plus.
 static func resolve_spell(state: DuelState, entry: StackEntry, events: Array[DuelEvent]) -> void:
 	var definition := state.catalog.get_card(entry.card.definition_id)
 	for effect: EffectDefinition in definition.effects:
@@ -55,14 +56,45 @@ static func resolve_spell(state: DuelState, entry: StackEntry, events: Array[Due
 static func validate_targets(
 	state: DuelState, entry: StackEntry, spec: TargetSpec
 ) -> IntentRejected.RejectReason:
-	var chosen_count := _chosen_count(entry, spec)
+	var chosen_count := chosen_count(entry, spec)
 	if chosen_count < spec.count_min or chosen_count > spec.count_max:
 		return IntentRejected.RejectReason.WRONG_TARGET_COUNT
-	if _has_duplicate_target(entry, spec):
-		return IntentRejected.RejectReason.DUPLICATE_TARGET
 	if not _all_targets_legal(state, entry, spec):
 		return IntentRejected.RejectReason.ILLEGAL_TARGET
 	return IntentRejected.RejectReason.NONE
+
+
+## 207.5.1 : une entrée ne porte que les cibles qu'exigent ses effets ; tout autre genre de
+## cible fait refuser l'annonce. Pur.
+static func validate_no_extra_targets(
+	entry: StackEntry, effects: Array[EffectDefinition]
+) -> IntentRejected.RejectReason:
+	var aimed: Array[TargetSpec.TargetWhat] = []
+	for effect: EffectDefinition in effects:
+		if effect.target != null:
+			aimed.append(effect.target.what)
+	var extra_pieces := not entry.target_piece_ids.is_empty()
+	extra_pieces = extra_pieces and not aimed.has(TargetSpec.TargetWhat.PIECE)
+	var extra_cells := not entry.target_cells.is_empty()
+	extra_cells = extra_cells and not aimed.has(TargetSpec.TargetWhat.CELL)
+	var extra_spells := not entry.target_stack_entry_ids.is_empty()
+	extra_spells = extra_spells and not aimed.has(TargetSpec.TargetWhat.SPELL_ON_STACK)
+	if extra_pieces or extra_cells or extra_spells:
+		return IntentRejected.RejectReason.WRONG_TARGET_COUNT
+	return IntentRejected.RejectReason.NONE
+
+
+## 207.4.7a : un effet « tant que la pièce est en jeu » cesse pour `piece`, qui quitte le
+## plateau ; un effet « jusqu'à la fin du tour » attend 207.4.3.
+static func end_effects_on_piece(state: DuelState, piece: Piece, events: Array[DuelEvent]) -> void:
+	var remaining: Array[ActiveEffect] = []
+	for effect: ActiveEffect in state.active_effects:
+		var lasting := effect.duration == ActiveEffect.EffectDuration.WHILE_PIECE_IN_PLAY
+		if lasting and effect.affected_piece_id == piece.piece_id:
+			events.append(ActiveEffectEnded.new(effect.effect_id))
+		else:
+			remaining.append(effect)
+	state.active_effects = remaining
 
 
 ## 207.5.8, 207.5.10, 207.5.17 : nombre de cibles légales pour `spec` d'une entrée de `owner`.
@@ -124,31 +156,33 @@ static func is_legal_spell(spec: TargetSpec, entry: StackEntry, targeting_entry_
 
 
 ## 207.5.3 à 207.5.6, 207.4.6 : applique `effect` de `entry` à chacune de ses cibles restées
-## valides ; sans aucune, l'effet n'a pas lieu (207.5.5). Renvoie vrai si l'effet a eu lieu.
+## valides ; sans aucune, l'effet n'a pas lieu (207.5.5).
 static func resolve_effect(
 	state: DuelState, entry: StackEntry, effect: EffectDefinition, events: Array[DuelEvent]
-) -> bool:
+) -> void:
 	var spec := effect.target
 	match spec.what:
 		TargetSpec.TargetWhat.PIECE:
 			var pieces := _valid_pieces(state, entry, spec)
 			if pieces.is_empty():
-				return _lose_all_targets(entry, events)
+				_lose_all_targets(entry, events)
+				return
 			for piece: Piece in pieces:
 				_apply_to_piece(state, entry, effect, piece, events)
 		TargetSpec.TargetWhat.CELL:
 			var cells := _valid_cells(state, entry, spec)
 			if cells.is_empty():
-				return _lose_all_targets(entry, events)
+				_lose_all_targets(entry, events)
+				return
 			for cell: Vector2i in cells:
 				_create_token(state, entry, effect, cell, events)
 		TargetSpec.TargetWhat.SPELL_ON_STACK:
 			var spells := _valid_spells(state, entry, spec)
 			if spells.is_empty():
-				return _lose_all_targets(entry, events)
+				_lose_all_targets(entry, events)
+				return
 			for spell: StackEntry in spells:
 				counter_spell(state, spell, events)
-	return true
 
 
 ## 207.6.4, 207.6.5, 207.6.6 : le Spell `spell` quitte la pile sans se résoudre ; sa carte va
@@ -157,6 +191,7 @@ static func counter_spell(state: DuelState, spell: StackEntry, events: Array[Due
 	state.stack.erase(spell)
 	state.get_player(spell.card.owner).discard.append(spell.card)
 	events.append(SpellCountered.new(spell.owner, spell.stack_entry_id))
+	events.append(CardDiscarded.new(spell.card.owner, spell.card.card_instance_id))
 
 
 # 207.1.3, 207.1.4 : Action pendant sa phase principale, pile vide ; 207.1.5, 207.1.6, 208.2.3 :
@@ -188,7 +223,7 @@ static func _validate_effect_targets(
 		var reason := validate_targets(state, entry, effect.target)
 		if reason != IntentRejected.RejectReason.NONE:
 			return reason
-	return IntentRejected.RejectReason.NONE
+	return validate_no_extra_targets(entry, definition.effects)
 
 
 static func _make_spell_entry(intent: CastSpell, card: CardInstance) -> StackEntry:
@@ -202,7 +237,8 @@ static func _make_spell_entry(intent: CastSpell, card: CardInstance) -> StackEnt
 	return entry
 
 
-static func _chosen_count(entry: StackEntry, spec: TargetSpec) -> int:
+## 207.5.10 : nombre de cibles du genre que vise `spec` portées par `entry`.
+static func chosen_count(entry: StackEntry, spec: TargetSpec) -> int:
 	match spec.what:
 		TargetSpec.TargetWhat.CELL:
 			return entry.target_cells.size()
@@ -211,24 +247,8 @@ static func _chosen_count(entry: StackEntry, spec: TargetSpec) -> int:
 	return entry.target_piece_ids.size()
 
 
-static func _has_duplicate_target(entry: StackEntry, spec: TargetSpec) -> bool:
-	match spec.what:
-		TargetSpec.TargetWhat.CELL:
-			return _has_duplicate(entry.target_cells)
-		TargetSpec.TargetWhat.SPELL_ON_STACK:
-			return _has_duplicate(entry.target_stack_entry_ids)
-	return _has_duplicate(entry.target_piece_ids)
-
-
-static func _has_duplicate(values: Array) -> bool:
-	for index: int in values.size():
-		if values.find(values[index]) != index:
-			return true
-	return false
-
-
 static func _all_targets_legal(state: DuelState, entry: StackEntry, spec: TargetSpec) -> bool:
-	var chosen_count := _chosen_count(entry, spec)
+	var chosen_count := chosen_count(entry, spec)
 	match spec.what:
 		TargetSpec.TargetWhat.CELL:
 			return _valid_cells(state, entry, spec).size() == chosen_count
@@ -256,6 +276,7 @@ static func _valid_cells(state: DuelState, entry: StackEntry, spec: TargetSpec) 
 	return cells
 
 
+# 207.5.3, 207.5.14 à 207.5.16
 static func _valid_spells(
 	state: DuelState, entry: StackEntry, spec: TargetSpec
 ) -> Array[StackEntry]:
@@ -268,9 +289,8 @@ static func _valid_spells(
 
 
 # 207.5.5, 200.4.1
-static func _lose_all_targets(entry: StackEntry, events: Array[DuelEvent]) -> bool:
+static func _lose_all_targets(entry: StackEntry, events: Array[DuelEvent]) -> void:
 	events.append(EffectLostAllTargets.new(entry.owner, entry.stack_entry_id))
-	return false
 
 
 # 207.4.2, 206.5.1 : MODIFY_FORCE à durée ; 206.3.2 par DESTROY.

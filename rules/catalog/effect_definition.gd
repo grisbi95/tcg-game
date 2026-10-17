@@ -174,6 +174,7 @@ func _check_parameters(errors: PackedStringArray) -> void:
 	if not creates_token and (token_piece_kind != NO_TOKEN_KIND or token_force != NO_TOKEN_FORCE):
 		errors.append("202.4.1 : token_piece_kind et token_force ne valent que pour CREATE_TOKEN")
 	_check_target_what(errors)
+	_check_hero_target(errors)
 
 
 func _check_target_what(errors: PackedStringArray) -> void:
@@ -183,6 +184,15 @@ func _check_target_what(errors: PackedStringArray) -> void:
 	if target.what != expected:
 		var expected_name := str(TargetSpec.TargetWhat.find_key(expected)).to_lower()
 		errors.append("%s : %s cible %s" % [_target_rule(), String(kind_id(kind)), expected_name])
+
+
+# 202.3.9, 206.4.3 : ni la Force ni la destruction d'un Hero ne sont tranchées par le ruleset ;
+# un effet de Force ou de destruction ne vise donc pas de Hero.
+func _check_hero_target(errors: PackedStringArray) -> void:
+	if target == null or not target.piece_kinds.has(Piece.PieceKind.HERO):
+		return
+	if kind in [EffectKind.MODIFY_FORCE, EffectKind.DESTROY]:
+		errors.append("202.3.9 : %s ne vise pas de Hero" % String(kind_id(kind)))
 
 
 func _target_rule() -> String:

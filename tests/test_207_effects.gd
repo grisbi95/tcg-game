@@ -13,6 +13,7 @@ const BIG_FORCE: int = 6
 const BOOST: int = 2  # CatalogSamples.modify_force_resolve()
 const DESTROY_MAX_FORCE: int = 3  # CatalogSamples.destroy_effect()
 const TOKEN_FORCE: int = 2  # CatalogSamples.create_token_effect()
+const BUILDING_FORCE: int = 4
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
 const B: DuelState.PlayerSide = DuelState.PlayerSide.B
@@ -26,7 +27,7 @@ func before_test() -> void:
 	var catalog := Catalog.new()
 	SetupSamples.add_unit(catalog, UNIT_ID, UNIT_FORCE)
 	SetupSamples.add_unit(catalog, BIG_ID, BIG_FORCE)
-	SetupSamples.add_building(catalog, BUILDING_ID, 4)
+	SetupSamples.add_building(catalog, BUILDING_ID, BUILDING_FORCE)
 	catalog.add_card(CardDefinition.from_dict(CatalogSamples.spell()))
 	_builder = DuelStateBuilder.new(DuelConfig.new(), catalog)
 	_events = []
@@ -123,15 +124,6 @@ func test_207_5_8_spell_needs_a_legal_target() -> void:
 	assert_int(EffectRules.validate_targets(state, entry, spec)).is_equal(REASON.ILLEGAL_TARGET)
 
 
-func test_same_target_twice_rejected() -> void:
-	var first_id := _place(A, UNIT_ID, "B2")
-	var state := _builder.build()
-	var spec := _boost().target
-	spec.count_max = 2
-	var entry := _entry(A, [first_id, first_id] as Array[int])
-	assert_int(EffectRules.validate_targets(state, entry, spec)).is_equal(REASON.DUPLICATE_TARGET)
-
-
 func test_207_5_2_targets_are_judged_for_the_entry_owner() -> void:
 	var unit_id := _place(B, UNIT_ID, "B4")
 	var state := _builder.build()
@@ -143,10 +135,7 @@ func test_207_5_2_targets_are_judged_for_the_entry_owner() -> void:
 func test_207_4_2_force_modifier_lasts_with_its_duration() -> void:
 	var ally_id := _place(A, UNIT_ID, "B2")
 	var state := _builder.build()
-	var applied := EffectRules.resolve_effect(
-		state, _entry(A, [ally_id] as Array[int]), _boost(), _events
-	)
-	assert_bool(applied).is_true()
+	EffectRules.resolve_effect(state, _entry(A, [ally_id] as Array[int]), _boost(), _events)
 	assert_array(EventLog.describe(_events)).contains_exactly(["ForceModified:A"])
 	assert_int(ForceRules.current_force(state, state.find_piece(ally_id))).is_equal(
 		UNIT_FORCE + BOOST
@@ -173,7 +162,8 @@ func test_207_5_3_target_gone_is_lost() -> void:
 	var state := _builder.build()
 	var entry := _entry(A, [ally_id] as Array[int])
 	state.pieces.erase(state.find_piece(ally_id))
-	assert_bool(EffectRules.resolve_effect(state, entry, _boost(), _events)).is_false()
+	EffectRules.resolve_effect(state, entry, _boost(), _events)
+	assert_array(EventLog.describe(_events)).not_contains(["ForceModified:A"])
 
 
 func test_207_5_5_effect_without_any_valid_target_does_not_happen() -> void:
@@ -199,7 +189,7 @@ func test_207_5_6a_target_no_longer_meeting_conditions_is_invalid() -> void:
 	assert_array(EventLog.describe(_events)).contains_exactly(["EffectLostAllTargets:A"])
 
 
-func test_206_3_1_destroy_effect_sends_unit_to_discard() -> void:
+func test_206_3_2_destroy_effect_sends_unit_to_discard() -> void:
 	var enemy_id := _place(B, UNIT_ID, "B4")
 	var state := _builder.build()
 	EffectRules.resolve_effect(state, _entry(A, [enemy_id] as Array[int]), _destroy(), _events)
@@ -249,7 +239,9 @@ func test_207_6_4_countered_spell_does_not_happen() -> void:
 	var state := _builder.build()
 	EffectRules.resolve_effect(state, _spell_entry(A, spell_id), _counter(), _events)
 	assert_object(state.find_stack_entry(spell_id)).is_null()
-	assert_array(EventLog.describe(_events)).contains_exactly(["SpellCountered:B"])
+	assert_array(EventLog.describe(_events)).contains_exactly(
+		["SpellCountered:B", "CardDiscarded:B"]
+	)
 
 
 func test_207_6_5_countered_spell_goes_to_owner_discard() -> void:

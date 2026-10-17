@@ -50,6 +50,20 @@ static func draw_card(
 	return DrawOutcome.DRAWN
 
 
+## 205.1.7 à 205.1.10, 202.2.24a, 202.2.24b, 201.3.6a : `card` revient dans la main de son
+## joueur, ou dans sa défausse si la main est pleine ; l'Essence payée reste dépensée.
+static func return_card_to_hand(
+	state: DuelState, card: CardInstance, events: Array[DuelEvent]
+) -> void:
+	var owner_player := state.get_player(card.owner)
+	if has_room_in_hand(state, card.owner):
+		owner_player.hand.append(card)
+		events.append(CardReturnedToHand.new(card.owner, card.card_instance_id))
+	else:
+		owner_player.discard.append(card)
+		events.append(CardDiscarded.new(card.owner, card.card_instance_id))
+
+
 ## 201.3.9, 204.2.8, 204.2.10 : déplace de la main de `side` vers son Écart les cartes
 ## `card_instance_ids`, dans cet ordre.
 static func set_aside_cards(

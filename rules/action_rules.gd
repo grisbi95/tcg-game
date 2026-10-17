@@ -6,7 +6,7 @@ extends RefCounted
 ## 208.1.1, 208.1.8, 208.1.9, 205.1.2 à 205.1.4, 203.3.2 : raison du refus de `intent`, ou
 ## NONE. L'attente est contrôlée par DuelEngine. Pur.
 static func validate_deploy(state: DuelState, intent: DeployCard) -> IntentRejected.RejectReason:
-	var reason := validate_main_phase_with_empty_stack(state, intent.player)
+	var reason := StackRules.validate_main_phase_with_empty_stack(state, intent.player)
 	if reason != IntentRejected.RejectReason.NONE:
 		return reason
 	var card := state.get_player(intent.player).find_card_in_hand(intent.card_instance_id)
@@ -48,7 +48,7 @@ static func resolve_deploy(state: DuelState, entry: StackEntry, events: Array[Du
 	elif definition.card_type == CardDefinition.CardType.UNIT and occupant.owner != entry.owner:
 		_enter_attacking(state, entry.card, occupant, events)
 	else:
-		return_card_to_hand(state, entry.card, events)
+		ZoneRules.return_card_to_hand(state, entry.card, events)
 
 
 ## 204.4.5, 204.4.6, 208.1.2, 208.1.10, 208.1.11, 205.2.5, 205.2.6, 205.3.1 à 205.3.3,
@@ -56,7 +56,7 @@ static func resolve_deploy(state: DuelState, entry: StackEntry, events: Array[Du
 static func validate_normal_action(
 	state: DuelState, intent: TakeNormalAction
 ) -> IntentRejected.RejectReason:
-	var reason := validate_main_phase_with_empty_stack(state, intent.player)
+	var reason := StackRules.validate_main_phase_with_empty_stack(state, intent.player)
 	if reason != IntentRejected.RejectReason.NONE:
 		return reason
 	if state.get_player(intent.player).normal_action_used_this_turn:
@@ -112,33 +112,6 @@ static func resolve_normal_action(
 static func move_piece(piece: Piece, to_cell: Vector2i, events: Array[DuelEvent]) -> void:
 	events.append(PieceMoved.new(piece.owner, piece.piece_id, piece.cell, to_cell))
 	piece.cell = to_cell
-
-
-## 208.1.6 à 208.1.11, 202.3.15, 202.3.16 : annonce du joueur actif, phase principale, pile vide.
-static func validate_main_phase_with_empty_stack(
-	state: DuelState, side: DuelState.PlayerSide
-) -> IntentRejected.RejectReason:
-	if state.phase != DuelState.DuelPhase.MAIN:
-		return IntentRejected.RejectReason.WRONG_PHASE
-	if side != state.active_player:
-		return IntentRejected.RejectReason.NOT_YOUR_TURN
-	if not state.stack.is_empty():
-		return IntentRejected.RejectReason.STACK_NOT_EMPTY
-	return IntentRejected.RejectReason.NONE
-
-
-## 205.1.7 à 205.1.10, 202.2.24a, 202.2.24b, 201.3.6a : `card` revient dans la main de son
-## joueur, ou dans sa défausse si la main est pleine ; l'Essence payée reste dépensée.
-static func return_card_to_hand(
-	state: DuelState, card: CardInstance, events: Array[DuelEvent]
-) -> void:
-	var owner_player := state.get_player(card.owner)
-	if ZoneRules.has_room_in_hand(state, card.owner):
-		owner_player.hand.append(card)
-		events.append(CardReturnedToHand.new(card.owner, card.card_instance_id))
-	else:
-		owner_player.discard.append(card)
-		events.append(CardDiscarded.new(card.owner, card.card_instance_id))
 
 
 # 205.3.2, 205.3.3 ; 202.3.10 : le Hero n'attaque jamais, sa case visée est libre.

@@ -17,6 +17,19 @@ static func add_to_stack(state: DuelState, entry: StackEntry, events: Array[Duel
 	return entry.stack_entry_id
 
 
+## 208.1.6 à 208.1.11, 202.3.15, 202.3.16 : annonce du joueur actif, phase principale, pile vide.
+static func validate_main_phase_with_empty_stack(
+	state: DuelState, side: DuelState.PlayerSide
+) -> IntentRejected.RejectReason:
+	if state.phase != DuelState.DuelPhase.MAIN:
+		return IntentRejected.RejectReason.WRONG_PHASE
+	if side != state.active_player:
+		return IntentRejected.RejectReason.NOT_YOUR_TURN
+	if not state.stack.is_empty():
+		return IntentRejected.RejectReason.STACK_NOT_EMPTY
+	return IntentRejected.RejectReason.NONE
+
+
 ## 208.2.2, 208.2.4, 208.3.1 : raison du refus de `intent`, ou NONE. L'attente est contrôlée
 ## par DuelEngine. Pur.
 static func validate_pass(state: DuelState, intent: PassPriority) -> IntentRejected.RejectReason:

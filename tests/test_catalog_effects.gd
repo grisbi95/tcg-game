@@ -51,6 +51,15 @@ func test_effect_kind_ids_match_active_effect_kind_names() -> void:
 	)
 
 
+func test_202_3_9_force_or_destroy_effect_never_targets_a_hero() -> void:
+	for sample: Dictionary in [
+		CatalogSamples.modify_force_resolve(), CatalogSamples.destroy_effect()
+	]:
+		var target: Dictionary = sample["target"]
+		target["piece_kinds"] = ["unit", "hero"]
+		assert_bool(_mentions(_effect_errors(sample), "202.3.9")).is_true()
+
+
 func test_effect_kind_is_required_and_closed() -> void:
 	var missing := _effect_errors(
 		CatalogSamples.without_field(CatalogSamples.destroy_effect(), "kind")

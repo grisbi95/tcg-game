@@ -10,6 +10,8 @@ const GEAR_ID: StringName = &"sample_gear"
 const HERO_ID: StringName = &"sample_hero"
 const UNIT_FORCE: int = 3
 const AURA: int = 1  # CatalogSamples.modify_force_static()
+const BUILDING_FORCE: int = 4
+const TOKEN_FORCE: int = 1
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
 const B: DuelState.PlayerSide = DuelState.PlayerSide.B
@@ -21,7 +23,7 @@ func before_test() -> void:
 	var catalog := Catalog.new()
 	SetupSamples.add_unit(catalog, UNIT_ID, UNIT_FORCE)
 	SetupSamples.add_unit(catalog, ENEMY_ID, UNIT_FORCE)
-	SetupSamples.add_building(catalog, BUILDING_ID, 4)
+	SetupSamples.add_building(catalog, BUILDING_ID, BUILDING_FORCE)
 	var aura_unit := CatalogSamples.with_field(CatalogSamples.unit(), "id", String(AURA_UNIT_ID))
 	aura_unit = CatalogSamples.with_field(aura_unit, "name", "Unit à aura")
 	aura_unit = CatalogSamples.with_field(
@@ -38,14 +40,14 @@ func before_test() -> void:
 func test_202_3_18_hero_passive_boosts_adjacent_allied_units() -> void:
 	var near_id := _place(A, UNIT_ID, "B1")
 	var far_id := _place(A, UNIT_ID, "A2")
-	var state := _with_sample_hero(_builder.build())
+	var state := _builder.with_hero_definition(A, HERO_ID).build()
 	assert_int(_force(state, near_id)).is_equal(UNIT_FORCE + AURA)
 	assert_int(_force(state, far_id)).is_equal(UNIT_FORCE)
 
 
 func test_207_2_1_static_effect_applies_without_the_stack() -> void:
 	var near_id := _place(A, UNIT_ID, "B1")
-	var state := _with_sample_hero(_builder.build())
+	var state := _builder.with_hero_definition(A, HERO_ID).build()
 	assert_array(state.stack).is_empty()
 	assert_int(_force(state, near_id)).is_equal(UNIT_FORCE + AURA)
 
@@ -59,14 +61,14 @@ func test_206_5_4_aura_of_a_unit_touches_adjacent_allied_units() -> void:
 	assert_int(_force(state, enemy_id)).is_equal(UNIT_FORCE)
 
 
-func test_aura_touches_neither_its_bearer_nor_buildings() -> void:
+func test_206_5_5_aura_touches_neither_its_bearer_nor_buildings() -> void:
 	var bearer_id := _place(A, AURA_UNIT_ID, "B2")
 	var building_id := _builder.place_piece(
 		A, Piece.PieceKind.BUILDING, DuelStateBuilder.cell("B3"), BUILDING_ID
 	)
 	var state := _builder.build()
 	assert_int(_force(state, bearer_id)).is_equal(UNIT_FORCE)
-	assert_int(_force(state, building_id)).is_equal(4)
+	assert_int(_force(state, building_id)).is_equal(BUILDING_FORCE)
 
 
 func test_206_5_5_aura_stops_when_position_condition_fails() -> void:
@@ -88,9 +90,11 @@ func test_207_2_4_static_effect_stops_when_bearer_leaves() -> void:
 
 func test_202_4_5a_token_receives_an_aura() -> void:
 	_place(A, AURA_UNIT_ID, "B2")
-	var token_id := _builder.place_token(A, Piece.PieceKind.UNIT, DuelStateBuilder.cell("B3"), 1)
+	var token_id := _builder.place_token(
+		A, Piece.PieceKind.UNIT, DuelStateBuilder.cell("B3"), TOKEN_FORCE
+	)
 	var state := _builder.build()
-	assert_int(_force(state, token_id)).is_equal(1 + AURA)
+	assert_int(_force(state, token_id)).is_equal(TOKEN_FORCE + AURA)
 
 
 func test_207_2_8_gear_effect_is_carried_by_its_unit() -> void:
@@ -111,7 +115,7 @@ func test_207_2_9a_gear_effect_stops_when_detached() -> void:
 func test_206_5_3_attacker_keeps_aura_it_leaves_for_the_combat() -> void:
 	var attacker_id := _place(A, UNIT_ID, "B1")
 	var defender_id := _place(B, ENEMY_ID, "B2")
-	var state := _with_sample_hero(_builder.build())
+	var state := _builder.with_hero_definition(A, HERO_ID).build()
 	var events: Array[DuelEvent] = []
 	var attacker := state.find_piece(attacker_id)
 	CombatRules.resolve_attack(state, attacker, state.find_piece(defender_id), events)
@@ -137,11 +141,6 @@ func _place(side: DuelState.PlayerSide, definition_id: StringName, cell_name: St
 	return _builder.place_piece(
 		side, Piece.PieceKind.UNIT, DuelStateBuilder.cell(cell_name), definition_id
 	)
-
-
-func _with_sample_hero(state: DuelState) -> DuelState:
-	state.find_hero(A).card.definition_id = HERO_ID
-	return state
 
 
 func _force(state: DuelState, piece_id: int) -> int:

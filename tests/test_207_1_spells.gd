@@ -15,6 +15,7 @@ const BOOST_COST: int = 1
 const STRIKE_COST: int = 3
 const COUNTER_COST: int = 2
 const TOKEN_COST: int = 2
+const UNIT_COST: int = 2  # CatalogSamples.unit()
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
 const B: DuelState.PlayerSide = DuelState.PlayerSide.B
@@ -87,7 +88,7 @@ func test_208_2_3_response_is_only_a_reaction_spell() -> void:
 	_builder.push_spell(_builder.make_card_instance(B, BOOST_ID))
 	_builder.with_priority_player(A)
 	_start()
-	assert_int(_engine.validate(_strike(A, card_id, enemy_id))).is_not_equal(REASON.NONE)
+	assert_int(_engine.validate(_strike(A, card_id, enemy_id))).is_equal(REASON.STACK_NOT_EMPTY)
 
 
 func test_207_1_5_reaction_spell_in_own_main_phase_with_empty_stack() -> void:
@@ -108,7 +109,7 @@ func test_207_1_6_reaction_spell_in_response_during_opponent_turn() -> void:
 	assert_int(_engine.get_state().priority_player).is_equal(A)
 
 
-func test_reaction_spell_without_priority_rejected() -> void:
+func test_208_2_4_reaction_spell_without_priority_rejected() -> void:
 	var unit_id := _place(B, "B4")
 	var card_id := _builder.add_to_hand(B, BOOST_ID)
 	_builder.push_spell(_builder.make_card_instance(A, BOOST_ID))
@@ -126,10 +127,27 @@ func test_207_5_8_spell_without_legal_target_cannot_be_announced() -> void:
 	_assert_rejected(no_target, REASON.WRONG_TARGET_COUNT)
 
 
+func test_207_1_3_action_spell_outside_main_phase_rejected() -> void:
+	var enemy_id := _place(B, "B4")
+	var card_id := _builder.add_to_hand(A, STRIKE_ID)
+	_builder.with_phase(DuelState.DuelPhase.TURN_END)
+	_start()
+	_assert_rejected(_strike(A, card_id, enemy_id), REASON.WRONG_PHASE)
+
+
+func test_207_5_1_spell_with_target_its_effect_does_not_ask_rejected() -> void:
+	var unit_id := _place(A, "B2")
+	var card_id := _builder.add_to_hand(A, BOOST_ID)
+	_start()
+	var intent := _boost(A, card_id, unit_id)
+	intent.target_cells.append(DuelStateBuilder.cell("B1"))
+	_assert_rejected(intent, REASON.WRONG_TARGET_COUNT)
+
+
 func test_208_1_3_only_a_spell_card_is_announced_as_spell() -> void:
 	var card_id := _builder.add_to_hand(A, UNIT_ID)
 	_start()
-	_assert_rejected(CastSpell.new(A, card_id, EssencePayment.new(2)), REASON.NOT_A_SPELL)
+	_assert_rejected(CastSpell.new(A, card_id, EssencePayment.new(UNIT_COST)), REASON.NOT_A_SPELL)
 
 
 func test_203_3_1_spell_payment_must_match_cost() -> void:
@@ -245,13 +263,14 @@ func test_207_6_2_counter_spell_targets_only_a_spell() -> void:
 	_assert_rejected(counter, REASON.ILLEGAL_TARGET)
 
 
-func test_206_3_1_strike_destroys_enemy_unit() -> void:
+func test_206_3_2_strike_sends_enemy_unit_to_discard() -> void:
 	var enemy_id := _place(B, "B4")
 	var card_id := _builder.add_to_hand(A, STRIKE_ID)
 	_start()
 	_engine.submit(_strike(A, card_id, enemy_id))
 	assert_array(_resolve_stack()).contains(["PieceDestroyed:B"])
 	assert_object(_engine.get_state().find_piece(enemy_id)).is_null()
+	assert_int(_engine.get_state().get_player(B).discard.size()).is_equal(1)
 
 
 func test_202_4_6_token_created_by_a_spell() -> void:

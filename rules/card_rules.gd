@@ -9,7 +9,7 @@ extends RefCounted
 static func validate_attach_gear(
 	state: DuelState, intent: AttachGear
 ) -> IntentRejected.RejectReason:
-	var reason := ActionRules.validate_main_phase_with_empty_stack(state, intent.player)
+	var reason := StackRules.validate_main_phase_with_empty_stack(state, intent.player)
 	if reason != IntentRejected.RejectReason.NONE:
 		return reason
 	var card := state.get_player(intent.player).find_card_in_hand(intent.card_instance_id)
@@ -46,7 +46,7 @@ static func resolve_attach_gear(
 ) -> void:
 	var unit_id := entry.target_piece_ids[0]
 	if not _is_valid_gear_unit(state, entry.owner, unit_id):
-		ActionRules.return_card_to_hand(state, entry.card, events)
+		ZoneRules.return_card_to_hand(state, entry.card, events)
 		return
 	var unit := state.find_piece(unit_id)
 	if unit.attached_gear != null:
@@ -62,7 +62,7 @@ static func resolve_attach_gear(
 static func validate_hero_power(
 	state: DuelState, intent: UseHeroPower
 ) -> IntentRejected.RejectReason:
-	var reason := ActionRules.validate_main_phase_with_empty_stack(state, intent.player)
+	var reason := StackRules.validate_main_phase_with_empty_stack(state, intent.player)
 	if reason != IntentRejected.RejectReason.NONE:
 		return reason
 	if state.get_player(intent.player).hero_power_used_this_turn:
@@ -118,20 +118,12 @@ static func _validate_power_targets(
 		if effect.target == null:
 			continue
 		var none_legal := EffectRules.legal_target_count(state, entry.owner, effect.target) == 0
-		if none_legal and _has_no_target(entry):
+		if none_legal and EffectRules.chosen_count(entry, effect.target) == 0:
 			continue
 		var reason := EffectRules.validate_targets(state, entry, effect.target)
 		if reason != IntentRejected.RejectReason.NONE:
 			return reason
-	return IntentRejected.RejectReason.NONE
-
-
-static func _has_no_target(entry: StackEntry) -> bool:
-	return (
-		entry.target_piece_ids.is_empty()
-		and entry.target_cells.is_empty()
-		and entry.target_stack_entry_ids.is_empty()
-	)
+	return EffectRules.validate_no_extra_targets(entry, hero.power)
 
 
 static func _make_power_entry(state: DuelState, intent: UseHeroPower) -> StackEntry:

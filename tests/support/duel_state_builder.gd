@@ -14,7 +14,8 @@ const DEFAULT_SEED: int = 1
 const FIRST_TURN: int = 1
 ## 202.3.7 : les PV viennent de la carte Hero ; 15 est la valeur du Capitaine de test.
 const DEFAULT_HERO_HEALTH: int = 15
-const HERO_DEFINITION_ID: StringName = &"HERO_TEST"
+## Hero sans passif ni pouvoir, ajouté au catalogue s'il n'y est pas (décision 0016).
+const HERO_DEFINITION_ID: StringName = &"builder_hero"
 
 var _state: DuelState
 
@@ -22,6 +23,7 @@ var _state: DuelState
 ## Décision 0016 : `catalog` porte les définitions que lisent les règles (Force, coût, type).
 func _init(config: DuelConfig = DuelConfig.new(), catalog: Catalog = null) -> void:
 	_state = DuelState.create(config, catalog)
+	_register_default_hero()
 	_state.rng.seed = DEFAULT_SEED
 	_state.phase = DuelState.DuelPhase.MAIN
 	_state.turn_number = FIRST_TURN
@@ -36,6 +38,14 @@ func _init(config: DuelConfig = DuelConfig.new(), catalog: Catalog = null) -> vo
 ## Convertit la notation de 201.2.4 (`"B2"`) en case.
 static func cell(cell_name: String) -> Vector2i:
 	return BoardGeometry.parse_cell(cell_name)
+
+
+## 202.3.4 : le Hero de `side` est la carte Hero `definition_id` du catalogue.
+func with_hero_definition(
+	side: DuelState.PlayerSide, definition_id: StringName
+) -> DuelStateBuilder:
+	_state.find_hero(side).card.definition_id = definition_id
+	return self
 
 
 func with_seed(rng_seed: int) -> DuelStateBuilder:
@@ -256,6 +266,15 @@ func push_spell(card: CardInstance, target_piece_ids: Array[int] = []) -> int:
 
 func build() -> DuelState:
 	return _state
+
+
+func _register_default_hero() -> void:
+	if _state.catalog.get_hero(HERO_DEFINITION_ID) != null:
+		return
+	var data := CatalogSamples.with_field(CatalogSamples.hero(), "id", String(HERO_DEFINITION_ID))
+	data = CatalogSamples.with_field(data, "passive", [])
+	data = CatalogSamples.with_field(data, "power", [])
+	_state.catalog.add_hero(HeroDefinition.from_dict(data))
 
 
 func _place_hero(side: DuelState.PlayerSide) -> void:

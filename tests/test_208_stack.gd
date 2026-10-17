@@ -2,8 +2,8 @@ extends GdUnitTestSuite
 ## Pile et priorité sans effet déclenché (ruleset 0.30, chapitre 208 ; 209.2.1 et 209.2.3).
 ##
 ## Les entrées sont posées par le builder ou par StackRules.add_to_stack, comme des annonces
-## déjà faites : aucune annonce n'est encore codée (étapes 1.5 et 1.6). Le test de 209.2.3
-## part d'un Hero déjà à 0 PV, faute d'effet : à réécrire avec un Spell à l'étape 1.6.
+## déjà faites, avec un Spell sans effet : ces suites ne vérifient que la mécanique de la pile.
+## Le test de 209.2.3 part d'un Hero déjà à 0 PV, aucun effet ne retirant encore de PV.
 
 const CARD: StringName = &"plain_spell"
 

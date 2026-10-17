@@ -48,14 +48,11 @@ static func _static_modifiers(state: DuelState, piece: Piece) -> int:
 	return total
 
 
-# 207.2.8, 207.2.9, 202.3.18 ; 202.4.5 : un jeton ne porte aucun effet. Un Hero absent du
-# catalogue (état de test) n'a pas de passif.
+# 207.2.8, 207.2.9, 202.3.18 ; 202.4.5 : un jeton ne porte aucun effet.
 static func _static_force_effects(state: DuelState, bearer: Piece) -> Array[EffectDefinition]:
 	var carried: Array[EffectDefinition] = []
 	if bearer.kind == Piece.PieceKind.HERO:
-		var hero := state.catalog.get_hero(bearer.card.definition_id)
-		if hero != null:
-			carried.append_array(hero.passive)
+		carried.append_array(state.catalog.get_hero(bearer.card.definition_id).passive)
 	elif bearer.card != null:
 		carried.append_array(state.catalog.get_card(bearer.card.definition_id).effects)
 	if bearer.attached_gear != null:
