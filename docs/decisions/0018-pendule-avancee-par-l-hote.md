@@ -27,6 +27,7 @@ Option A, validée le 17 octobre 2026 par le créateur.
 - 209.4.3a : `DuelConfig.clock_bonus_msec` reste à 0 ; `find_errors()` refuse une autre valeur, aucune règle ne disant quand un ajout aurait lieu.
 - Tests nommés par identifiants (209.4.x, 209.2.8, 209.2.8a, 209.2.9), dont le mulligan qui fait tourner les deux pendules et une avance qui dépasse le temps d'un seul joueur.
 - À réexaminer si le ruleset ajoute du temps pendant la partie ou si le jeu passe en réseau.
+- Mise à jour du 17 octobre 2026, validée par le créateur : depuis 209.4.2d (ruleset 0.34, décision de design 0188), aucune pendule ne tourne pendant le mulligan et 209.4.4e est supprimée ; les deux pendules ne tournent donc plus jamais ensemble, ce qui corrige le Contexte, la mention de 209.4.4e et le test du mulligan ci-dessus. 209.2.8a reste gardée, sans situation actuelle (décision de design 0189). `DuelEngine.awaited_players()` donne les joueurs attendus, `clock_owners()` les pendules qui tournent.
 
 ## Références
 

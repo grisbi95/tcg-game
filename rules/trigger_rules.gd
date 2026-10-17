@@ -4,8 +4,8 @@ extends RefCounted
 ## « une fois par tour », résolution.
 ##
 ## Un effet survenu attend dans `DuelState.waiting_triggers` ; `add_waiting_triggers` l'ajoute à
-## la pile, joueur actif d'abord, et s'arrête quand un choix est attendu. StackRules décide
-## ensuite à qui revient la main (`settle_after_triggers`).
+## la pile, joueur actif d'abord, et s'arrête quand un choix est attendu. DuelEngine l'appelle
+## après chaque intention, par `StackRules.settle_after_triggers`, qui rend ensuite la main.
 
 ## 208.4.6, 208.4.7 : à partir de deux effets d'un même joueur, l'ordre est un choix.
 const MIN_EFFECTS_TO_ORDER: int = 2
@@ -65,7 +65,8 @@ static func validate_order(state: DuelState, intent: OrderTriggers) -> IntentRej
 	return IntentRejected.RejectReason.NONE
 
 
-## 208.4.6, 208.4.7 : les effets du joueur passent dans l'ordre choisi, puis l'ajout reprend.
+## 208.4.6, 208.4.7 : les effets du joueur passent dans l'ordre choisi ; l'ajout reprend par
+## DuelEngine.
 ## Suppose l'intention validée.
 static func apply_order(state: DuelState, intent: OrderTriggers, events: Array[DuelEvent]) -> void:
 	state.pending_decision = null
@@ -74,7 +75,6 @@ static func apply_order(state: DuelState, intent: OrderTriggers, events: Array[D
 		var entry := _find_waiting(state, entry_id)
 		state.waiting_triggers.erase(entry)
 		state.triggers_to_add.append(entry)
-	StackRules.settle_after_triggers(state, events)
 
 
 ## 207.5.1b, 207.5.2, 207.5.10, décision 0017 : raison du refus de `intent`, ou NONE. Pur.
@@ -96,8 +96,8 @@ static func validate_targets_choice(
 	return EffectRules.validate_no_extra_targets(entry, effects)
 
 
-## 207.5.1b : l'effet reçoit ses cibles et s'ajoute à la pile, puis l'ajout des suivants
-## reprend. Suppose l'intention validée.
+## 207.5.1b : l'effet reçoit ses cibles ; son ajout à la pile, puis celui des suivants, reprend
+## par DuelEngine. Suppose l'intention validée.
 static func apply_targets_choice(
 	state: DuelState, intent: ChooseTargets, events: Array[DuelEvent]
 ) -> void:
@@ -105,7 +105,6 @@ static func apply_targets_choice(
 	state.pending_decision = null
 	_assign_targets(entry, intent)
 	events.append(TargetsChosen.new(intent.player, entry.stack_entry_id))
-	StackRules.settle_after_triggers(state, events)
 
 
 ## 208.3.2a, 207.3.3, 207.5.3 à 207.5.5 : l'effet a lieu même si sa pièce a quitté le plateau.

@@ -80,7 +80,7 @@
 | Passer | Renoncer à répondre ; voir 208.2.2, 208.2.4 et 208.3.1. | |
 | Passif | Effet statique d'un Hero ; voir Effet statique, 202.3.11 et 202.3.18. | |
 | Payer | Fournir l'Essence qu'exige un coût ; voir 203.2.4, 203.3.1, 203.3.2 et 203.3.3. | |
-| Pendule | Temps dont dispose chaque joueur pour toute la partie, qui ne tourne que quand les règles attendent une décision de lui ; voir 209.4.1, 209.4.2, 209.4.3 et 209.4.4. | |
+| Pendule | Temps dont dispose chaque joueur pour toute la partie, qui ne tourne que quand les règles attendent une décision de lui ; voir 209.4.1, 209.4.2, 209.4.2d, 209.4.3, 209.4.4 et 209.4.4f. | |
 | Phase principale | Phase du tour qui suit le début du tour, pendant laquelle le joueur actif agit ; voir 204.4.1, 204.4.2 et 208.4.11. | |
 | Pièce | Élément qui occupe une case du plateau. | |
 | Pile | Zone commune aux deux joueurs qui forme l'ensemble ordonné des annonces et des effets déclenchés en attente de résolution ; voir 201.3.7, 201.3.8, 201.4.7, 207.3.2 et le chapitre 208. | |
@@ -110,6 +110,7 @@
 | Tour | Période de la partie attribuée à un joueur ; voir le chapitre 204. | |
 | Type | Catégorie d'une carte de deck, parmi celles de 202.2.1 ; voir 202.1.3. | |
 | Unit | Type de carte de deck, et pièce du plateau issue d'une carte de ce type ou jeton que désigne l'effet qui le crée ; voir 202.2.2, 202.4.8 et 202.4.10. | |
+| Version du jeu sur écran | Mise en œuvre du jeu où un logiciel affiche la partie sur un écran ; voir 209.4.4f. | |
 | Vide | Se dit de la pile quand aucune annonce ni aucun effet déclenché n'y attend d'être résolu ; voir 208.1.7, 208.5.1 et 208.5.1a. | |
 | Vitesse | Caractéristique que porte une carte Spell, Action ou Réaction, qui fixe les moments où son joueur peut l'annoncer ; voir 207.1.1 et 207.1.2. | |
 | Zone | Emplacement où se trouvent des cartes, sur ou hors du plateau. | |

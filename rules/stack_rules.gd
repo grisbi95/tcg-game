@@ -63,19 +63,16 @@ static func _resolve_stack(state: DuelState, events: Array[DuelEvent]) -> void:
 		_resolve_entry(state, entry, events)
 		if StateCheckRules.check_victory(state, events):
 			return
-	settle_after_triggers(state, events)
 
 
-## 208.4.3, 208.5.1, 208.5.1a ; 204.5.6, 204.5.7 : les effets en attente s'ajoutent à la pile ;
-## si elle reste vide sans choix attendu, c'est de nouveau au joueur actif d'agir, ou la fin du
-## tour se poursuit.
+## 208.4.3, 208.5.1, 208.5.1a : les effets en attente s'ajoutent à la pile ; si elle reste vide
+## sans choix attendu, c'est de nouveau au joueur actif d'agir. Appelée par DuelEngine après
+## chaque intention.
 static func settle_after_triggers(state: DuelState, events: Array[DuelEvent]) -> void:
 	TriggerRules.add_waiting_triggers(state, events)
 	if state.pending_decision != null or not state.stack.is_empty():
 		return
 	state.priority_player = state.active_player
-	if state.phase == DuelState.DuelPhase.TURN_END:
-		TurnRules.finish_end_of_turn(state, events)
 
 
 # 208.3.2 : chaque genre se résout par le module de son chapitre.

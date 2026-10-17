@@ -1,5 +1,5 @@
 class_name RandomLegalAgent
-extends RefCounted
+extends DuelAgent
 ## Agent qui joue une intention légale au hasard (décision 0019) : il fabrique des intentions
 ## candidates à partir de l'état, ne garde que celles que `DuelEngine.validate()` accepte, et en
 ## tire une par sa propre graine.
@@ -23,10 +23,10 @@ func _init(rng_seed: int) -> void:
 	_rng.seed = rng_seed
 
 
-## Une intention légale du joueur que le moteur attend (le premier dont la pendule tourne, 209.4.4),
+## Une intention légale du joueur que le moteur attend (le premier des joueurs attendus, 209.4.4),
 ## tirée au hasard ; null si le duel ne demande rien ou si aucune candidate n'est légale.
 func choose_intent(engine: DuelEngine) -> DuelIntent:
-	var owners := engine.clock_owners()
+	var owners := engine.awaited_players()
 	if owners.is_empty():
 		return null
 	var legal: Array[DuelIntent] = []

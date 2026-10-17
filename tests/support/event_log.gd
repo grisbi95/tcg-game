@@ -39,10 +39,8 @@ static func describe_intent(intent: DuelIntent) -> String:
 	var script: Script = intent.get_script()
 	var side := str(DuelState.PlayerSide.find_key(intent.player))
 	var parts := PackedStringArray(["%s:%s" % [script.get_global_name(), side]])
-	for property: Dictionary in script.get_script_property_list():
-		var field: String = property["name"]
-		var usage: int = property["usage"]
-		if field == "player" or (usage & PROPERTY_USAGE_SCRIPT_VARIABLE) == 0:
+	for field: String in ScriptFields.of(intent):
+		if field == "player":
 			continue
 		parts.append("%s=%s" % [field, _describe_value(intent.get(field))])
 	return " ".join(parts)

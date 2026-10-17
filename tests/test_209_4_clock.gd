@@ -1,7 +1,7 @@
 # gdlint: disable=max-public-methods
 
 extends GdUnitTestSuite
-## Pendule : qui la fait tourner, temps écoulé, défaite et partie nulle au temps (ruleset 0.33,
+## Pendule : qui la fait tourner, temps écoulé, défaite et partie nulle au temps (ruleset 0.34,
 ## sections 209.4, 209.2.8 à 209.2.9, 201.1.2b, 201.1.3c ; décision 0018).
 ##
 ## 209.4.2a tient à la structure : la pile se résout dans un `submit()`, et `advance_clock`
@@ -42,20 +42,22 @@ func test_209_4_3_each_clock_starts_at_ten_minutes() -> void:
 		assert_int(_remaining(side)).is_equal(CLOCK_MSEC)
 
 
-func test_209_4_4e_both_clocks_run_during_the_mulligan() -> void:
+func test_209_4_2d_no_clock_runs_during_the_mulligan() -> void:
 	_start_sample_duel()
-	assert_array(_engine.clock_owners()).contains_exactly([A, B])
+	assert_array(_engine.awaited_players()).contains_exactly([A, B])
+	assert_array(_engine.clock_owners()).is_empty()
 	_engine.submit(ChooseMulligan.new(A))
-	assert_array(_engine.clock_owners()).contains_exactly([B])
+	assert_array(_engine.awaited_players()).contains_exactly([B])
+	assert_array(_engine.clock_owners()).is_empty()
 
 
-func test_209_4_4e_mulligan_takes_time_from_each_undecided_player() -> void:
+func test_209_4_2d_mulligan_takes_no_time() -> void:
 	_start_sample_duel()
-	_engine.advance_clock(STEP_MSEC)
+	assert_array(_engine.advance_clock(CLOCK_MSEC)).is_empty()
 	_engine.submit(ChooseMulligan.new(A))
 	_engine.advance_clock(STEP_MSEC)
-	assert_int(_remaining(A)).is_equal(CLOCK_MSEC - STEP_MSEC)
-	assert_int(_remaining(B)).is_equal(CLOCK_MSEC - 2 * STEP_MSEC)
+	assert_int(_remaining(A)).is_equal(CLOCK_MSEC)
+	assert_int(_remaining(B)).is_equal(CLOCK_MSEC)
 
 
 func test_209_4_4a_active_player_clock_runs_in_main_phase_with_empty_stack() -> void:
@@ -168,32 +170,6 @@ func test_209_2_9_the_duel_stops_at_once_when_time_runs_out() -> void:
 	assert_array(_engine.clock_owners()).is_empty()
 
 
-func test_209_2_8a_both_times_out_together_is_a_draw() -> void:
-	_builder.with_clock_remaining(A, STEP_MSEC).with_clock_remaining(B, STEP_MSEC)
-	_await_mulligan()
-	var events := _engine.advance_clock(STEP_MSEC * 2)
-	assert_array(EventLog.describe(events)).contains_exactly(
-		["TimeExpired:A", "TimeExpired:B", "DuelEnded"]
-	)
-	assert_int(_engine.get_state().result).is_equal(RESULT.DRAW)
-
-
-func test_201_1_2b_both_times_out_together_is_a_draw() -> void:
-	_builder.with_clock_remaining(A, STEP_MSEC).with_clock_remaining(B, STEP_MSEC)
-	_await_mulligan()
-	_engine.advance_clock(STEP_MSEC)
-	assert_int(_engine.get_state().result).is_equal(RESULT.DRAW)
-
-
-func test_decision_0018_first_clock_at_zero_stops_the_others() -> void:
-	_builder.with_clock_remaining(A, STEP_MSEC).with_clock_remaining(B, STEP_MSEC * 5)
-	_await_mulligan()
-	var events := _engine.advance_clock(STEP_MSEC * 10)
-	assert_array(EventLog.describe(events)).contains_exactly(["TimeExpired:A", "DuelEnded"])
-	assert_int(_remaining(B)).is_equal(STEP_MSEC * 4)
-	assert_int(_engine.get_state().result).is_equal(RESULT.PLAYER_B_WINS)
-
-
 func test_decision_0018_clock_never_goes_below_zero() -> void:
 	_engine.start_from_state(_builder.with_clock_remaining(A, STEP_MSEC).build())
 	_engine.advance_clock(STEP_MSEC * 5)
@@ -227,12 +203,6 @@ func _await(
 	decision.awaited_players.assign(sides)
 	decision.subject_stack_entry_id = subject_id
 	_engine.start_from_state(_builder.with_pending_decision(decision).build())
-
-
-# 204.2.2 : les deux joueurs décident de leur mulligan pendant la préparation.
-func _await_mulligan() -> void:
-	_builder.with_phase(PHASE.PREPARATION)
-	_await(DECISION.MULLIGAN, [A, B], DuelState.NO_ID)
 
 
 func _push_spell(side: DuelState.PlayerSide) -> int:

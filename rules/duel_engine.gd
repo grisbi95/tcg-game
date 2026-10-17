@@ -2,8 +2,9 @@ class_name DuelEngine
 extends RefCounted
 ## Façade du moteur (décisions 0001 et 0012) : démarrage, validation, soumission, lecture.
 ##
-## Aucune règle ici : chaque intention est aiguillée vers le module de son chapitre. Une
-## intention illégale produit un unique IntentRejected et ne change rien.
+## Médiateur sans règle propre : chaque intention est aiguillée vers le module de son chapitre,
+## puis `_settle` enchaîne les étapes qui suivent toute intention. Une intention illégale produit
+## un unique IntentRejected et ne change rien.
 
 var _catalog: Catalog
 var _config: DuelConfig
@@ -50,8 +51,18 @@ func advance_clock(elapsed_msec: int) -> Array[DuelEvent]:
 	return events
 
 
-## 209.4.2, 209.4.4 : joueurs dont la pendule tourne, les deux pendant le mulligan ; vide avant
-## le démarrage, après la fin de la partie ou quand aucune décision n'est attendue. Pur.
+## 209.4.4, 204.2.2 : joueurs dont une décision est attendue, les deux pendant le mulligan ;
+## vide avant le démarrage, après la fin de la partie ou quand aucune décision n'est attendue.
+## Pur.
+func awaited_players() -> Array[DuelState.PlayerSide]:
+	var awaited: Array[DuelState.PlayerSide] = []
+	if _state != null:
+		awaited = StateCheckRules.awaited_players(_state)
+	return awaited
+
+
+## 209.4.2, 209.4.2d, 209.4.4 : joueurs dont la pendule tourne, aucun pendant le mulligan ; vide
+## avant le démarrage, après la fin de la partie ou quand aucune décision n'est attendue. Pur.
 func clock_owners() -> Array[DuelState.PlayerSide]:
 	var owners: Array[DuelState.PlayerSide] = []
 	if _state != null:
@@ -75,6 +86,7 @@ func submit(intent: DuelIntent) -> Array[DuelEvent]:
 		events.append(IntentRejected.new(intent, reason))
 		return events
 	_apply(intent, events)
+	_settle(events)
 	return events
 
 
@@ -123,6 +135,17 @@ func _route_announcement_validation(intent: DuelIntent) -> IntentRejected.Reject
 	if intent is CastSpell:
 		return EffectRules.validate_cast(_state, intent as CastSpell)
 	return IntentRejected.RejectReason.UNKNOWN_INTENT
+
+
+# 208.4.3, 208.5.1, 204.5.6, 204.5.7 : après chaque intention, les effets en attente s'ajoutent
+# à la pile ; une fin du tour dont la pile est vide se poursuit jusqu'au tour suivant, dont les
+# effets en attente s'ajoutent à leur tour (208.4.11).
+func _settle(events: Array[DuelEvent]) -> void:
+	while not _state.is_ended():
+		StackRules.settle_after_triggers(_state, events)
+		if not TurnRules.is_end_of_turn_ready(_state):
+			return
+		TurnRules.finish_end_of_turn(_state, events)
 
 
 func _apply(intent: DuelIntent, events: Array[DuelEvent]) -> void:

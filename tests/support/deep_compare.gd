@@ -68,7 +68,7 @@ static func _compare_arrays(
 static func _compare_objects(
 	original: Object, copy: Object, path: String, defects: PackedStringArray
 ) -> void:
-	if _is_shared_read_only(original):
+	if is_shared_read_only(original):
 		if original != copy:
 			defects.append("%s : objet en lecture seule dupliqué" % path)
 		return
@@ -83,7 +83,7 @@ static func _compare_objects(
 	if original.get_script() != copy.get_script():
 		defects.append("%s : classes différentes" % path)
 		return
-	for field: String in _script_fields(original):
+	for field: String in ScriptFields.of(original):
 		_compare_values(original.get(field), copy.get(field), "%s.%s" % [path, field], defects)
 
 
@@ -111,7 +111,7 @@ static func _visit_value(value: Variant, coverage: Dictionary[String, bool]) -> 
 			_visit_value(element, coverage)
 	elif value is Object:
 		var object: Object = value
-		if object.get_script() != null and not _is_shared_read_only(object):
+		if object.get_script() != null and not is_shared_read_only(object):
 			_visit_object(object, coverage)
 
 
@@ -119,7 +119,7 @@ static func _visit_object(object: Object, coverage: Dictionary[String, bool]) ->
 	var script: GDScript = object.get_script()
 	var default_object: Object = script.new()
 	var class_label := _class_name_of(object)
-	for field: String in _script_fields(object):
+	for field: String in ScriptFields.of(object):
 		var field_path := "%s.%s" % [class_label, field]
 		var value: Variant = object.get(field)
 		var is_set := _differs_from_default(value, default_object.get(field))
@@ -134,17 +134,8 @@ static func _differs_from_default(value: Variant, default_value: Variant) -> boo
 	return value != default_value
 
 
-static func _script_fields(object: Object) -> Array[String]:
-	var fields: Array[String] = []
-	for property: Dictionary in object.get_property_list():
-		var usage: int = property["usage"]
-		if usage & PROPERTY_USAGE_SCRIPT_VARIABLE:
-			var field_name: String = property["name"]
-			fields.append(field_name)
-	return fields
-
-
-static func _is_shared_read_only(object: Object) -> bool:
+## Objets en lecture seule partagés entre états : catalogue, configuration, ressources.
+static func is_shared_read_only(object: Object) -> bool:
 	return object is Resource or object is DuelConfig or object is Catalog
 
 

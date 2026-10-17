@@ -7,7 +7,7 @@ extends RefCounted
 
 ## Enum journalisable : ajouter à la fin, sans réordonner.
 enum DecisionKind {
-	MULLIGAN,  # 204.2.2, 209.4.4e
+	MULLIGAN,  # 204.2.2, 209.4.2d
 	ORDER_TRIGGERS,  # 208.4.6, 208.4.7, 209.4.4c
 	CHOOSE_TARGETS,  # 207.5.1b, 207.5.2, 209.4.4d
 }
