@@ -106,7 +106,14 @@ func test_204_1_16_preparation_steps_in_order() -> void:
 	expected.append_array(["DeckShuffled:A", "DeckShuffled:B"])
 	expected.append_array(EventLog.repeat("CardDrawn:A", OPENING_HAND_SIZE))
 	expected.append_array(EventLog.repeat("CardDrawn:B", OPENING_HAND_SIZE))
+	expected.append_array(["DecisionRequested:A", "DecisionRequested:B"])
 	assert_array(EventLog.describe(_start())).contains_exactly(expected)
+
+
+func test_204_2_2_mulligan_requested_from_both_players() -> void:
+	for event: DuelEvent in _start().slice(-2):
+		var request := event as DecisionRequested
+		assert_int(request.kind).is_equal(PendingDecision.DecisionKind.MULLIGAN)
 
 
 func test_204_1_16_first_player_designated_after_mulligan() -> void:

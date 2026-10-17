@@ -6,7 +6,7 @@ Complète le `CLAUDE.md` racine pour `rules/`. Les décisions 0001, 0003, 0004, 
 
 | Fichier | Chapitre | Rôle |
 | --- | --- | --- |
-| `duel_engine.gd` | — | Façade : `start_new_duel`, `start_from_state` (tests), `validate`, `submit`, `advance_clock`, `clock_owners`, requêtes en lecture pour la vue, aiguillage par classe d'intention. Aucune règle. |
+| `duel_engine.gd` | — | Façade : `start_new_duel`, `start_from_state` (tests), `validate`, `submit`, `advance_clock`, `clock_owners`, `awaited_players`, requêtes en lecture pour la vue, aiguillage par classe d'intention. Médiateur (`code-guidelines.md` §5) : aucune règle propre, mais après chaque intention il enchaîne les étapes des modules (effets en attente par `StackRules`, suite de la fin du tour par `TurnRules`), qui ne s'appellent plus entre eux pour cela. |
 | `zone_rules.gd` | 201 | zones, limite de main, appartenance, construction du deck |
 | `card_rules.gd` | 202 | Gear (annonce, attachement, remplacement, retour en main), pouvoir du Hero |
 | `essence_rules.gd` | 203 | paiement à l'annonce, incliner, recycler, Fonte |
@@ -15,7 +15,7 @@ Complète le `CLAUDE.md` racine pour `rules/`. Les décisions 0001, 0003, 0004, 
 | `combat_rules.gd` | 206 | comparaison, égalité, Hero défenseur, avance, auras lues avant l'avance |
 | `effect_rules.gd` | 207 | Spells et vitesses, cibles et validité, effets à la résolution (Force à durée, destruction, jetons), Contrecarrer |
 | `trigger_rules.gd` | 207.3, 208.4 | effets déclenchés (0017) : attente, ordre d'ajout (`ORDER_TRIGGERS`), cibles (`CHOOSE_TARGETS`), choix unique automatique (0004), « une fois par tour », résolution |
-| `stack_rules.gd` | 208 | annonce, priorité (208.2.4), passes, bloc LIFO, retour au joueur actif après les déclencheurs (`settle_after_triggers`) |
+| `stack_rules.gd` | 208 | annonce, priorité (208.2.4), passes, bloc LIFO, retour au joueur actif après les déclencheurs (`settle_after_triggers`, appelée par `DuelEngine` après chaque intention) |
 | `state_check_rules.gd` | 209 | Force plancher 0, victoire après chaque effet, abandon, pendule, fatigue |
 | `keyword_rules.gd` | 210 | texte de règle de chaque mot-clé |
 | `force_rules.gd` | 206.5, 209.1 | Force actuelle calculée à la demande, jamais stockée |

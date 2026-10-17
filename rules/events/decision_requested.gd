@@ -1,6 +1,6 @@
 class_name DecisionRequested
 extends PlayerEvent
-## Décisions 0009 et 0017 : le moteur attend un choix du joueur, décrit par
+## Décisions 0009 et 0017 ; 204.2.2 : le moteur attend un choix du joueur, décrit par
 ## `DuelState.pending_decision`.
 
 var kind: PendingDecision.DecisionKind = PendingDecision.DecisionKind.ORDER_TRIGGERS

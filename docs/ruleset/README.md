@@ -1,6 +1,6 @@
 # Ruleset du TCG tactique
 
-> Dossier de conception des règles, intégré au dépôt du jeu `tcg-game`, dans `docs/ruleset/` (décision 0014 du projet). Édition courante : **0.33** (réponse à la question Q-085, 17 octobre 2026). Historique dans [90-changelog.md](90-changelog.md).
+> Dossier de conception des règles, intégré au dépôt du jeu `tcg-game`, dans `docs/ruleset/` (décision 0014 du projet). Édition courante : **0.34** (réponses aux questions Q-086, Q-087 et Q-088, 17 octobre 2026). Historique dans [90-changelog.md](90-changelog.md).
 
 ## Quel document pour quel lecteur
 

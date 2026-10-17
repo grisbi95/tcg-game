@@ -61,22 +61,32 @@ static func lose_health(
 	check_victory(state, events)
 
 
-## 209.4.2, 209.4.2a à 209.4.2c, 209.4.4a à 209.4.4e, décision 0018 : joueurs dont la pendule
-## tourne, dans l'ordre de DuelState.SIDES ; les deux pendant le mulligan. La pile se résout
-## dans un `submit()`, où aucune pendule ne tourne. Pur.
-static func clock_owners(state: DuelState) -> Array[DuelState.PlayerSide]:
-	var owners: Array[DuelState.PlayerSide] = []
+## 209.4.4, 209.4.4a à 209.4.4d, 204.2.2 : joueurs dont les règles attendent une décision, dans
+## l'ordre de DuelState.SIDES ; les deux pendant le mulligan. Vide hors duel et pendant la
+## résolution de la pile, qui a lieu dans un `submit()`. Pur.
+static func awaited_players(state: DuelState) -> Array[DuelState.PlayerSide]:
+	var awaited: Array[DuelState.PlayerSide] = []
 	if state.phase == DuelState.DuelPhase.NOT_STARTED or state.is_ended():
-		return owners
+		return awaited
 	if state.pending_decision != null:
 		for side: DuelState.PlayerSide in DuelState.SIDES:
 			if state.pending_decision.awaited_players.has(side):
-				owners.append(side)
+				awaited.append(side)
 	elif not state.stack.is_empty():
-		owners.append(state.priority_player)
+		awaited.append(state.priority_player)
 	elif state.phase == DuelState.DuelPhase.MAIN:
-		owners.append(state.active_player)
-	return owners
+		awaited.append(state.active_player)
+	return awaited
+
+
+## 209.4.2, 209.4.2a à 209.4.2d, 209.4.4, décision 0018 : joueurs dont la pendule tourne, ceux
+## dont une décision est attendue, sauf pendant le mulligan. Pur.
+static func clock_owners(state: DuelState) -> Array[DuelState.PlayerSide]:
+	var owners: Array[DuelState.PlayerSide] = []
+	var decision := state.pending_decision
+	if decision != null and decision.kind == PendingDecision.DecisionKind.MULLIGAN:
+		return owners
+	return awaited_players(state)
 
 
 ## 209.4.2, 209.4.5, 209.2.9, décision 0018 : retire `elapsed_msec` aux pendules qui tournent,

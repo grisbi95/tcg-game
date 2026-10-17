@@ -27,7 +27,7 @@ static func start_preparation(state: DuelState, setup: DuelSetup, events: Array[
 	for side: DuelState.PlayerSide in DuelState.SIDES:
 		_draw_cards(state, side, state.config.opening_hand_size, events)
 	if not state.is_ended():
-		state.pending_decision = _make_mulligan_decision()
+		_request_mulligans(state, events)
 
 
 ## 204.2.1, 204.2.4, décisions 0009 et 0013 : raison du refus de `intent`, ou NONE. Pur.
@@ -81,7 +81,16 @@ static func apply_end_turn(state: DuelState, intent: EndTurn, events: Array[Duel
 	state.phase = DuelState.DuelPhase.TURN_END
 	events.append(TurnEnded.new(intent.player))
 	TriggerRules.trigger_end_of_turn(state, events)
-	StackRules.settle_after_triggers(state, events)
+
+
+## 204.5.6, 204.5.7 : la fin du tour se poursuit quand sa pile est vide et qu'aucun choix
+## n'est attendu. Pur.
+static func is_end_of_turn_ready(state: DuelState) -> bool:
+	return (
+		state.phase == DuelState.DuelPhase.TURN_END
+		and state.pending_decision == null
+		and state.stack.is_empty()
+	)
 
 
 ## 204.5.7, 204.5.2 : la pile vide, les effets qui durent jusqu'à la fin du tour prennent fin ;
@@ -140,12 +149,14 @@ static func _put_setup_sources_into_play(
 	events.append(SourcesPutIntoPlay.new(side, player.sources_upright))
 
 
-# 204.2.2 : une seule attente pour les deux joueurs (décision 0009).
-static func _make_mulligan_decision() -> PendingDecision:
+# 204.2.2 : une seule attente pour les deux joueurs (décision 0009), annoncée à chacun.
+static func _request_mulligans(state: DuelState, events: Array[DuelEvent]) -> void:
 	var decision := PendingDecision.new()
 	decision.kind = PendingDecision.DecisionKind.MULLIGAN
 	decision.awaited_players.assign(DuelState.SIDES)
-	return decision
+	state.pending_decision = decision
+	for side: DuelState.PlayerSide in DuelState.SIDES:
+		events.append(DecisionRequested.new(side, decision.kind))
 
 
 static func _ids_in_hand(
@@ -182,7 +193,7 @@ static func _designate_first_player(state: DuelState, events: Array[DuelEvent]) 
 
 
 # 204.3.8 puis 204.4.1 ; 208.4.11 : les effets qui attendaient la fin du début du tour
-# s'ajoutent à la pile dès le début de la phase principale.
+# s'ajoutent à la pile dès le début de la phase principale, par DuelEngine.
 static func _start_turn(
 	state: DuelState, side: DuelState.PlayerSide, events: Array[DuelEvent]
 ) -> void:
@@ -197,7 +208,6 @@ static func _start_turn(
 	_draw_cards(state, side, state.config.cards_drawn_per_turn, events)
 	if not state.is_ended():
 		state.phase = DuelState.DuelPhase.MAIN
-		StackRules.settle_after_triggers(state, events)
 
 
 # 202.3.14, 203.4.2, 204.4.6 : décomptes « par tour » des deux joueurs, remis à zéro au début

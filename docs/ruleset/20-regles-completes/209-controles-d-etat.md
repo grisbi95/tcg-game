@@ -54,6 +54,8 @@ Aucun Invariant.
 
 **209.4.2c** [ACTÉ] Aucune pendule ne tourne pendant les étapes de la fin du tour où aucune décision n'est attendue (décision 0114 ; voir 204.5.6 et 204.5.7).
 
+**209.4.2d** [ACTÉ] Aucune pendule ne tourne tant que les mulligans des deux joueurs ne sont pas exécutés (décision 0188 ; voir 204.2.2 et 204.2.9).
+
 **209.4.3** [PROVISOIRE] La pendule de chaque joueur compte 10 minutes avant tout décompte (décision 0112 ; à mesurer en playtest : nombre de parties perdues au temps, durée moyenne d'une partie, temps restant en fin de partie).
 
 **209.4.3a** [PROVISOIRE] Aucun temps ne s'ajoute à la pendule d'un joueur pendant la partie (décision 0112 ; à mesurer en playtest : nombre de parties perdues au temps, durée moyenne d'une partie, temps restant en fin de partie ; voir 209.4.3).
@@ -68,7 +70,9 @@ Aucun Invariant.
 
 **209.4.4d** [ACTÉ] La pendule d'un joueur tourne pour le choix des cibles d'une entrée de la pile qui lui appartient (décision 0114 ; voir 207.5.1 et 207.5.2).
 
-**209.4.4e** [ACTÉ] La pendule d'un joueur tourne pour son mulligan (décision 0114 ; voir 204.2.2 et 204.2.4).
+**209.4.4e** Supprimée en édition 0.34, voir décision 0188.
+
+**209.4.4f** [ACTÉ] La pendule d'un joueur dont les règles attendent une décision tourne aussi pendant le passage de l'appareil d'un joueur à l'autre et pendant l'affichage des effets, dans une version du jeu sur écran (décision 0187 ; voir 209.4.2 et 209.4.4).
 
 **209.4.5** [ACTÉ] Le temps d'un joueur est écoulé quand sa pendule atteint 0 minute (décision 0113 ; voir 209.4.3 et 209.2.8).
 

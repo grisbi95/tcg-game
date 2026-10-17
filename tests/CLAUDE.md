@@ -11,6 +11,7 @@ Complète le `CLAUDE.md` racine pour `tests/`. GdUnit4 6.2.1 ; commandes dans `t
 - Logique de vue : `DuelSelection` et les fonctions statiques des vues se testent sans scène ; aucune suite n'instancie de scène, `--ignoreHeadlessMode` reste sûr.
 - L'en-tête d'une suite nomme l'édition du ruleset et la décision suivies.
 - Ne jamais résoudre dans un test un `kind` que le moteur ne code pas encore.
+- Non-régression (J2, décision 0022) : `test_duel_journal.gd` rejoue `tests/fixtures/replay_random_duel.journal.json` et compare son empreinte. Un écart voulu (règle modifiée) se régénère par `"$GODOT_BIN" --headless --path . -s tools/record_replay_fixture.gd`, en le disant dans le rapport ; un écart non voulu est un bogue.
 
 ## Outils de `tests/support/` (repris du prototype au J1)
 
@@ -21,6 +22,9 @@ Complète le `CLAUDE.md` racine pour `tests/`. GdUnit4 6.2.1 ; commandes dans `t
 | `EventLog` | `describe(events)` → `["TurnEnded:A", "TurnStarted:B"]` ; `rejection_reason(events)` |
 | `SetupSamples` | catalogue en mémoire (dix Units, Hero d'essai) et `DuelSetup` valide pour `DuelEngine.start_new_duel` |
 | `DeepCompare` | `find_clone_defects(a, b)` par réflexion ; `find_fields_never_set` protège le test de `clone()` |
+| `ManualClock` | horloge de `DuelHost` dont le temps n'avance que par `advance(msec)` (décision 0021) |
+| `ReplayFingerprint` | empreinte d'un duel rejoué : événements et état final par réflexion, SHA-256, `find_differences` |
+| `ReplayFixture` | duel de non-régression (décision 0022) : `play()`, `fingerprint_of(journal)`, fichiers de `tests/fixtures/` |
 
 ## Motifs
 

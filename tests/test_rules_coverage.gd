@@ -169,8 +169,15 @@ const RULES_WITHOUT_OWN_TEST: Dictionary[String, String] = {
 	"208.4.11":
 	(
 		"Sans test possible : aucun déclencheur ne réagit au début du tour (décision 0017) ; "
-		+ "TurnRules._start_turn appelle settle_after_triggers sans rien à ajouter."
+		+ "DuelEngine appelle settle_after_triggers après chaque intention, sans rien à ajouter."
 	),
+	"201.1.2b":
+	(
+		"Inaccessible depuis 209.4.2d : hors du mulligan, une seule pendule tourne à la fois "
+		+ "(décision de design 0189 du ruleset, Q-088) ; StateCheckRules.advance_clock reste "
+		+ "général (test_209_4_5_time_runs_out_exactly_at_zero)."
+	),
+	"209.2.8a": "Inaccessible depuis 209.4.2d, comme 201.1.2b (décision de design 0189).",
 	"209.4.2a":
 	(
 		"Structure : la pile se résout dans un seul submit() "
