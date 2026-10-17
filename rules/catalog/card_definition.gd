@@ -190,6 +190,19 @@ func _check_effects(errors: PackedStringArray) -> void:
 		if not allowed.has(effect.timing):
 			var type_name := str(CardType.find_key(card_type)).to_lower()
 			errors.append("effet %d : timing refusé pour %s" % [index + 1, type_name])
+	_check_once_per_turn(errors)
+
+
+# 207.3.5, 207.3.7 : la mention « une fois par tour » est portée par la carte et décomptée par
+# carte ; le ruleset ne dit rien d'une carte à plusieurs effets déclenchés, qui est refusée.
+func _check_once_per_turn(errors: PackedStringArray) -> void:
+	var triggered := effects.filter(
+		func(effect: EffectDefinition) -> bool:
+			return effect.timing == EffectDefinition.EffectTiming.TRIGGERED
+	)
+	var marked := triggered.any(func(effect: EffectDefinition) -> bool: return effect.once_per_turn)
+	if marked and triggered.size() > 1:
+		errors.append("207.3.5 : « une fois par tour » exige un seul effet déclenché sur la carte")
 
 
 # 202.2.20 : un Spell se résout ; 207.2.2, 207.3 : une pièce porte du statique et du déclenché ;

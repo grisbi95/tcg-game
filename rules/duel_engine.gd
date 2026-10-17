@@ -73,6 +73,10 @@ func _route_validation(intent: DuelIntent) -> IntentRejected.RejectReason:
 		return StateCheckRules.validate_concede(_state, intent as Concede)
 	if intent is ChooseMulligan:
 		return TurnRules.validate_mulligan(_state, intent as ChooseMulligan)
+	if intent is OrderTriggers:
+		return TriggerRules.validate_order(_state, intent as OrderTriggers)
+	if intent is ChooseTargets:
+		return TriggerRules.validate_targets_choice(_state, intent as ChooseTargets)
 	if _state.pending_decision != null:
 		return IntentRejected.RejectReason.DECISION_PENDING
 	return _route_play_validation(intent)
@@ -107,6 +111,10 @@ func _apply(intent: DuelIntent, events: Array[DuelEvent]) -> void:
 		StateCheckRules.apply_concede(_state, intent as Concede, events)
 	elif intent is ChooseMulligan:
 		TurnRules.apply_mulligan(_state, intent as ChooseMulligan, events)
+	elif intent is OrderTriggers:
+		TriggerRules.apply_order(_state, intent as OrderTriggers, events)
+	elif intent is ChooseTargets:
+		TriggerRules.apply_targets_choice(_state, intent as ChooseTargets, events)
 	elif intent is EndTurn:
 		TurnRules.apply_end_turn(_state, intent as EndTurn, events)
 	elif intent is PassPriority:

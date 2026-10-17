@@ -8,6 +8,7 @@ const SOURCES_IN_PLAY: int = 2  # 204.1.12
 const SOURCES_IN_RESERVE: int = 8  # 204.1.13
 const OPENING_HAND_SIZE: int = 5  # 204.1.15
 const CARD: StringName = &"CARD_TEST"
+const CARD_FORCE: int = 3
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
 const B: DuelState.PlayerSide = DuelState.PlayerSide.B
@@ -18,7 +19,9 @@ var _engine: DuelEngine
 
 
 func before_test() -> void:
-	_builder = DuelStateBuilder.new()
+	var catalog := Catalog.new()
+	SetupSamples.add_unit(catalog, CARD, CARD_FORCE)
+	_builder = DuelStateBuilder.new(DuelConfig.new(), catalog)
 	_engine = DuelEngine.new(SetupSamples.catalog())
 	for side: DuelState.PlayerSide in [A, B]:
 		for index: int in CARDS_PER_TURN:

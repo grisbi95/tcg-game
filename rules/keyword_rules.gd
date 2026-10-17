@@ -1,0 +1,43 @@
+class_name KeywordRules
+extends RefCounted
+## Mots-clés (210) : Avant-poste (210.2), Assaut et Rempart (210.4). Arrivée et Dernier souffle
+## (210.3) sont des effets déclenchés, que TriggerRules met en attente.
+##
+## Les mots-clés se lisent sur la définition de la carte d'une pièce ; un Hero et un jeton n'en
+## portent aucun (202.4.13).
+
+
+## 210.4.1, 210.1.3 : Assaut X de `piece`, ajouté à sa Force quand elle attaque ; 0 sans le
+## mot-clé.
+static func assault_value(state: DuelState, piece: Piece) -> int:
+	return _keyword_value(state, piece, CardDefinition.Keyword.ASSAULT)
+
+
+## 210.4.2, 210.1.3 : Rempart X de `piece`, ajouté à sa Force quand elle défend ; 0 sans le
+## mot-clé.
+static func rampart_value(state: DuelState, piece: Piece) -> int:
+	return _keyword_value(state, piece, CardDefinition.Keyword.RAMPART)
+
+
+## 210.2.1, 210.2.1a, 205.1.2a : `cell` est adjacente à l'un des Buildings de `side` qui a
+## Avant-poste, hors de la rangée centrale. Que la case soit libre se contrôle à part. Pur.
+static func is_outpost_cell(state: DuelState, side: DuelState.PlayerSide, cell: Vector2i) -> bool:
+	if BoardGeometry.is_in_central_row(cell):
+		return false
+	for piece: Piece in state.pieces:
+		var is_own_building := piece.kind == Piece.PieceKind.BUILDING and piece.owner == side
+		if not is_own_building or not BoardGeometry.are_adjacent(piece.cell, cell):
+			continue
+		if _definition_of(state, piece).has_keyword(CardDefinition.Keyword.OUTPOST):
+			return true
+	return false
+
+
+static func _keyword_value(state: DuelState, piece: Piece, keyword: CardDefinition.Keyword) -> int:
+	if piece.kind == Piece.PieceKind.HERO or piece.is_token():
+		return 0
+	return _definition_of(state, piece).keyword_value(keyword)
+
+
+static func _definition_of(state: DuelState, piece: Piece) -> CardDefinition:
+	return state.catalog.get_card(piece.card.definition_id)

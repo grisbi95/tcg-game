@@ -73,6 +73,19 @@ func read_int(key: String, minimum: int, fallback: int) -> int:
 	return value
 
 
+## Booléen de JSON ; `fallback` si absent ou invalide.
+func read_bool(key: String, fallback: bool) -> bool:
+	mark_known(key)
+	if not _data.has(key):
+		return fallback
+	var value: Variant = _data[key]
+	if typeof(value) != TYPE_BOOL:
+		fail("« %s » doit être vrai ou faux" % key)
+		return fallback
+	var flag: bool = value
+	return flag
+
+
 ## Valeur d'un enum nommée en minuscules dans le JSON (`"last_breath"`) ; NOT_SET si absente.
 func read_enum(key: String, values: Dictionary) -> int:
 	var text := read_string(key)

@@ -34,11 +34,11 @@ static func start_preparation(state: DuelState, setup: DuelSetup, events: Array[
 static func validate_mulligan(
 	state: DuelState, intent: ChooseMulligan
 ) -> IntentRejected.RejectReason:
-	var decision := state.pending_decision
-	if decision == null or decision.kind != PendingDecision.DecisionKind.MULLIGAN:
-		return IntentRejected.RejectReason.NOT_THE_PENDING_DECISION
-	if not decision.awaited_players.has(intent.player):
-		return IntentRejected.RejectReason.PLAYER_NOT_AWAITED
+	var reason := PendingDecision.validate_answer(
+		state.pending_decision, PendingDecision.DecisionKind.MULLIGAN, intent.player
+	)
+	if reason != IntentRejected.RejectReason.NONE:
+		return reason
 	var player := state.get_player(intent.player)
 	var seen_ids: Array[int] = []
 	for card_id: int in intent.set_aside_card_ids:
@@ -75,13 +75,20 @@ static func validate_end_turn(state: DuelState, intent: EndTurn) -> IntentReject
 	return IntentRejected.RejectReason.NONE
 
 
-## 204.4.7, 204.5.2, 204.5.7 : termine le tour du joueur actif ; son adversaire commence le
-## sien. Sans effet déclenché par la fin du tour (204.5.3 à 204.5.6, étape 1.7).
+## 204.4.7, 204.5.3 à 204.5.6 : termine le tour du joueur actif ; les effets déclenchés par la
+## fin du tour s'ajoutent à la pile, qui se résout comme toute autre (208.3.1).
 static func apply_end_turn(state: DuelState, intent: EndTurn, events: Array[DuelEvent]) -> void:
 	state.phase = DuelState.DuelPhase.TURN_END
 	events.append(TurnEnded.new(intent.player))
+	TriggerRules.trigger_end_of_turn(state, events)
+	StackRules.settle_after_triggers(state, events)
+
+
+## 204.5.7, 204.5.2 : la pile vide, les effets qui durent jusqu'à la fin du tour prennent fin ;
+## l'adversaire du joueur actif commence son tour.
+static func finish_end_of_turn(state: DuelState, events: Array[DuelEvent]) -> void:
 	_end_until_end_of_turn_effects(state, events)
-	_start_turn(state, DuelState.opponent_of(intent.player), events)
+	_start_turn(state, DuelState.opponent_of(state.active_player), events)
 
 
 # 204.1.16, décision 0015 : mulligans joueur A puis B, tirage du premier joueur, premier tour.
@@ -174,7 +181,8 @@ static func _designate_first_player(state: DuelState, events: Array[DuelEvent]) 
 	events.append(FirstPlayerChosen.new(state.first_player))
 
 
-# 204.3.8 puis 204.4.1
+# 204.3.8 puis 204.4.1 ; 208.4.11 : les effets qui attendaient la fin du début du tour
+# s'ajoutent à la pile dès le début de la phase principale.
 static func _start_turn(
 	state: DuelState, side: DuelState.PlayerSide, events: Array[DuelEvent]
 ) -> void:
@@ -189,11 +197,13 @@ static func _start_turn(
 	_draw_cards(state, side, state.config.cards_drawn_per_turn, events)
 	if not state.is_ended():
 		state.phase = DuelState.DuelPhase.MAIN
+		StackRules.settle_after_triggers(state, events)
 
 
 # 202.3.14, 203.4.2, 204.4.6 : décomptes « par tour » des deux joueurs, remis à zéro au début
-# de chaque tour (convention de l'étape 1.3).
+# de chaque tour (convention de l'étape 1.3) ; 207.3.9 : « une fois par tour » aussi.
 static func _reset_turn_counters(state: DuelState) -> void:
+	state.once_per_turn_card_ids.clear()
 	for player: PlayerState in state.players:
 		player.sources_recycled_this_turn = 0
 		player.hero_power_used_this_turn = false

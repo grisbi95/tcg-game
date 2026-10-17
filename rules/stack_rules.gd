@@ -1,15 +1,18 @@
 class_name StackRules
 extends RefCounted
-## Pile et priorité (208), sans effet déclenché : ceux-ci viennent à l'étape 1.7.
+## Pile et priorité (208).
 ##
-## Une annonce s'ajoute par `add_to_stack`, appelée par le module de son chapitre. Ce qu'une
-## entrée fait en se résolvant appartient au module de son genre.
+## Une annonce s'ajoute par `add_to_stack`, appelée par le module de son chapitre ; un effet
+## déclenché, par TriggerRules (décision 0017). Ce qu'une entrée fait en se résolvant appartient
+## au module de son genre.
 
 
 ## 208.4.1, 208.2.4 : ajoute `entry` au sommet de la pile ; l'adversaire du joueur à qui elle
-## appartient peut le premier répondre ou passer. Renvoie l'identifiant attribué.
+## appartient peut le premier répondre ou passer. Renvoie l'identifiant de l'entrée, attribué
+## ici sauf pour un effet déclenché, qui a le sien depuis son attente (décision 0017).
 static func add_to_stack(state: DuelState, entry: StackEntry, events: Array[DuelEvent]) -> int:
-	entry.stack_entry_id = state.allocate_stack_entry_id()
+	if entry.stack_entry_id == DuelState.NO_ID:
+		entry.stack_entry_id = state.allocate_stack_entry_id()
 	state.stack.append(entry)
 	state.consecutive_passes = 0
 	state.priority_player = DuelState.opponent_of(entry.owner)
@@ -60,11 +63,22 @@ static func _resolve_stack(state: DuelState, events: Array[DuelEvent]) -> void:
 		_resolve_entry(state, entry, events)
 		if StateCheckRules.check_victory(state, events):
 			return
+	settle_after_triggers(state, events)
+
+
+## 208.4.3, 208.5.1, 208.5.1a ; 204.5.6, 204.5.7 : les effets en attente s'ajoutent à la pile ;
+## si elle reste vide sans choix attendu, c'est de nouveau au joueur actif d'agir, ou la fin du
+## tour se poursuit.
+static func settle_after_triggers(state: DuelState, events: Array[DuelEvent]) -> void:
+	TriggerRules.add_waiting_triggers(state, events)
+	if state.pending_decision != null or not state.stack.is_empty():
+		return
 	state.priority_player = state.active_player
+	if state.phase == DuelState.DuelPhase.TURN_END:
+		TurnRules.finish_end_of_turn(state, events)
 
 
-# 208.3.2 : chaque genre se résout par le module de son chapitre ; l'effet déclenché vient à
-# l'étape 1.7.
+# 208.3.2 : chaque genre se résout par le module de son chapitre.
 static func _resolve_entry(state: DuelState, entry: StackEntry, events: Array[DuelEvent]) -> void:
 	match entry.kind:
 		StackEntry.StackEntryKind.DEPLOY:
@@ -77,6 +91,8 @@ static func _resolve_entry(state: DuelState, entry: StackEntry, events: Array[Du
 			CardRules.resolve_hero_power(state, entry, events)
 		StackEntry.StackEntryKind.ATTACH_GEAR:
 			CardRules.resolve_attach_gear(state, entry, events)
+		StackEntry.StackEntryKind.TRIGGERED_EFFECT:
+			TriggerRules.resolve_triggered(state, entry, events)
 	# 209.2.2 : une partie arrêtée pendant la résolution s'arrête aussitôt.
 	if not state.is_ended():
 		events.append(StackEntryResolved.new(entry.owner, entry.stack_entry_id))

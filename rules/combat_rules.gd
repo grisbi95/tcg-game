@@ -6,15 +6,16 @@ extends RefCounted
 
 
 ## 206.1.1, 206.1.2, 206.2.2, 206.5.2 : `attacker` attaque `defender`. Les Forces se lisent
-## une fois, avant que l'attaquant change de case.
+## une fois, avant que l'attaquant change de case, Assaut et Rempart compris (210.4.1b,
+## 210.4.2b).
 static func resolve_attack(
 	state: DuelState, attacker: Piece, defender: Piece, events: Array[DuelEvent]
 ) -> void:
-	var attacker_force := ForceRules.current_force(state, attacker)
+	var attacker_force := ForceRules.combat_force(state, attacker, ForceRules.CombatRole.ATTACKER)
 	if defender.kind == Piece.PieceKind.HERO:
 		_attack_hero(state, attacker, attacker_force, defender, events)
 		return
-	var defender_force := ForceRules.current_force(state, defender)
+	var defender_force := ForceRules.combat_force(state, defender, ForceRules.CombatRole.DEFENDER)
 	events.append(
 		CombatResolved.new(attacker.piece_id, defender.piece_id, attacker_force, defender_force)
 	)
@@ -31,7 +32,7 @@ static func resolve_attack(
 
 ## 206.3.2, 206.3.2a, 202.2.13 : retire `piece` du plateau ; sa carte et son Gear vont dans la
 ## défausse de leur joueur, un jeton ne va nulle part ; 207.4.7a : ses effets « tant que la
-## pièce est en jeu » cessent.
+## pièce est en jeu » cessent ; 210.3.2 : son Dernier souffle se déclenche.
 static func destroy_piece(state: DuelState, piece: Piece, events: Array[DuelEvent]) -> void:
 	state.pieces.erase(piece)
 	EffectRules.end_effects_on_piece(state, piece, events)
@@ -42,6 +43,7 @@ static func destroy_piece(state: DuelState, piece: Piece, events: Array[DuelEven
 		var gear := piece.attached_gear
 		state.get_player(gear.owner).discard.append(gear)
 		events.append(CardDiscarded.new(gear.owner, gear.card_instance_id))
+	TriggerRules.trigger(state, piece, EffectDefinition.TriggerEvent.DESTROYED, events)
 
 
 # 206.2.1a, 206.4.2 à 206.4.5 : aucune Force comparée, rien de détruit, l'attaquant reste.

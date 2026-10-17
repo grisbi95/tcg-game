@@ -82,11 +82,49 @@ func test_207_3_1_trigger_is_only_for_triggered_effects() -> void:
 	assert_bool(_mentions(_effect_errors(data), "207.3.1")).is_true()
 
 
-func test_207_3_1_trigger_events_are_arrival_and_destroyed() -> void:
-	var destroyed := _effect_errors(CatalogSamples.triggered("destroyed"))
+func test_207_3_1_trigger_events_are_a_closed_list() -> void:
+	for trigger: String in ["arrival", "destroyed", "end_of_turn"]:
+		assert_array(Array(_effect_errors(CatalogSamples.triggered(trigger)))).is_empty()
 	var unknown := _effect_errors(CatalogSamples.triggered("moved"))
-	assert_array(Array(destroyed)).is_empty()
 	assert_bool(_mentions(unknown, "« moved » inconnu")).is_true()
+
+
+func test_204_5_3_end_of_turn_is_a_trigger_event() -> void:
+	assert_array(Array(_effect_errors(CatalogSamples.triggered("end_of_turn")))).is_empty()
+
+
+func test_207_3_5_once_per_turn_is_read_for_a_triggered_effect() -> void:
+	var data := CatalogSamples.triggered("arrival", {"once_per_turn": true})
+	var effect := EffectDefinition.from_dict(data)
+	assert_array(Array(effect.find_errors())).is_empty()
+	assert_bool(effect.once_per_turn).is_true()
+	(
+		assert_bool(EffectDefinition.from_dict(CatalogSamples.triggered("arrival")).once_per_turn)
+		. is_false()
+	)
+
+
+func test_207_3_5_once_per_turn_card_has_a_single_triggered_effect() -> void:
+	var marked := CatalogSamples.triggered("arrival", {"once_per_turn": true})
+	var second := CatalogSamples.triggered("destroyed")
+	var keywords := [{"keyword": "arrival"}, {"keyword": "last_breath"}]
+	var card := _with_keywords(_with_effects(CatalogSamples.unit(), [marked, second]), keywords)
+	var single := _with_keywords(_with_effects(CatalogSamples.unit(), [marked]), [keywords[0]])
+	assert_bool(_mentions(_card_errors(card), "207.3.5")).is_true()
+	assert_array(Array(_card_errors(single))).is_empty()
+
+
+func test_207_3_5_once_per_turn_is_only_for_triggered_effects() -> void:
+	var data := CatalogSamples.modify_force_resolve({"once_per_turn": true})
+	assert_bool(_mentions(_effect_errors(data), "207.3.5")).is_true()
+
+
+func test_207_3_5_once_per_turn_is_a_boolean() -> void:
+	var data := CatalogSamples.triggered("arrival", {"once_per_turn": "oui"})
+	(
+		assert_bool(_mentions(_effect_errors(data), "« once_per_turn » doit être vrai ou faux"))
+		. is_true()
+	)
 
 
 func test_207_2_2_static_effect_names_its_scope() -> void:
