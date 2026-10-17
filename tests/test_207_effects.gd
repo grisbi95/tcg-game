@@ -1,7 +1,7 @@
 # gdlint: disable=max-public-methods
 
 extends GdUnitTestSuite
-## EffectRules : cibles et validité, application des effets, Contrecarrer (ruleset 0.32,
+## EffectRules : cibles et validité, application des effets, Contrecarrer (ruleset 0.33,
 ## sections 207.4 à 207.6 ; 202.4 pour les jetons).
 
 const UNIT_ID: StringName = &"effect_unit"
@@ -80,6 +80,25 @@ func test_202_4_12_token_targets_free_cell_of_own_first_row() -> void:
 	assert_bool(EffectRules.is_legal_cell(state, A, spec, DuelStateBuilder.cell("B2"))).is_false()
 
 
+func test_207_5_13_cards_outside_the_board_are_never_targeted() -> void:
+	_place(A, UNIT_ID, "B2")
+	for side: DuelState.PlayerSide in [A, B]:
+		_builder.add_to_hand(side, UNIT_ID)
+		_builder.add_to_hand(side, SPELL_ID)
+		_builder.add_to_deck(side, UNIT_ID)
+		_builder.add_to_discard(side, UNIT_ID)
+	var state := _builder.build()
+	var on_board_ids: Array[int] = []
+	for piece: Piece in state.pieces:
+		on_board_ids.append(piece.piece_id)
+	var any_piece := TargetSpec.new()
+	assert_array(EffectRules.legal_target_ids(state, A, any_piece, DuelState.NO_ID)).is_equal(
+		on_board_ids
+	)
+	var legal_spells := EffectRules.legal_target_ids(state, A, _counter().target, DuelState.NO_ID)
+	assert_array(legal_spells).is_empty()
+
+
 func test_207_5_14_spell_on_stack_can_be_targeted() -> void:
 	var spell_id := _builder.push_spell(_builder.make_card_instance(B, SPELL_ID))
 	var state := _builder.build()
@@ -130,6 +149,30 @@ func test_207_5_2_targets_are_judged_for_the_entry_owner() -> void:
 	var spec := _boost().target
 	var entry := _entry(B, [unit_id] as Array[int])
 	assert_int(EffectRules.validate_targets(state, entry, spec)).is_equal(REASON.NONE)
+
+
+func test_207_4_1_effect_text_can_carry_a_duration() -> void:
+	var lasting := EffectDefinition.from_dict(
+		CatalogSamples.modify_force_resolve({"duration": "while_piece_in_play"})
+	)
+	assert_bool(lasting.has_duration).is_true()
+	assert_bool(_destroy().has_duration).is_false()
+	var ally_id := _place(A, UNIT_ID, "B2")
+	var state := _builder.build()
+	EffectRules.resolve_effect(state, _entry(A, [ally_id] as Array[int]), lasting, _events)
+	assert_int(state.active_effects[0].duration).is_equal(
+		ActiveEffect.EffectDuration.WHILE_PIECE_IN_PLAY
+	)
+
+
+func test_207_4_6_one_shot_effect_changes_the_game_once() -> void:
+	var enemy_id := _place(B, UNIT_ID, "B4")
+	var state := _builder.build()
+	EffectRules.resolve_effect(state, _entry(A, [enemy_id] as Array[int]), _destroy(), _events)
+	assert_array(state.active_effects).is_empty()
+	var later_id := DuelStateBuilder.place_unit_in(state, B, UNIT_ID, "B4")
+	assert_object(state.find_piece(later_id)).is_not_null()
+	assert_array(EventLog.describe(_events)).contains_exactly(["PieceDestroyed:B"])
 
 
 func test_207_4_2_force_modifier_lasts_with_its_duration() -> void:
@@ -232,6 +275,24 @@ func test_202_4_12c_token_not_created_when_cell_taken_at_resolution() -> void:
 	DuelStateBuilder.place_unit_in(state, B, UNIT_ID, "B1")
 	EffectRules.resolve_effect(state, entry, _token(), _events)
 	assert_array(EventLog.describe(_events)).contains_exactly(["EffectLostAllTargets:A"])
+
+
+func test_207_6_3_counter_spell_aims_at_no_other_entry_kind() -> void:
+	var card := _builder.make_card_instance(A, UNIT_ID)
+	var unit_id := _place(A, UNIT_ID, "B2")
+	_builder.push_deploy(card, DuelStateBuilder.cell("B1"))
+	_builder.push_normal_action(unit_id, DuelStateBuilder.cell("B3"))
+	for kind: StackEntry.StackEntryKind in [
+		StackEntry.StackEntryKind.HERO_POWER, StackEntry.StackEntryKind.TRIGGERED_EFFECT
+	]:
+		var entry := StackEntry.new()
+		entry.kind = kind
+		entry.owner = A
+		_builder.push_stack_entry(entry)
+	var spell_id := _builder.push_spell(_builder.make_card_instance(A, SPELL_ID))
+	var state := _builder.build()
+	var legal := EffectRules.legal_target_ids(state, B, _counter().target, DuelState.NO_ID)
+	assert_array(legal).contains_exactly([spell_id])
 
 
 func test_207_6_4_countered_spell_does_not_happen() -> void:

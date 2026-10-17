@@ -1,5 +1,5 @@
 extends GdUnitTestSuite
-## ZoneRules : deck, main, limite de main, Écart, appartenance (ruleset 0.30, chapitre 201).
+## ZoneRules : deck, main, limite de main, Écart, appartenance (ruleset 0.33, chapitre 201).
 
 const HAND_LIMIT: int = 7  # 201.3.4
 const CARD: StringName = &"CARD_TEST"
@@ -116,6 +116,27 @@ func test_draw_from_empty_deck_with_full_hand_reports_empty_deck() -> void:
 	var outcome := ZoneRules.draw_card(state, A, _events)
 	assert_int(outcome).is_equal(ZoneRules.DrawOutcome.DECK_EMPTY)
 	assert_array(_events).is_empty()
+
+
+func test_201_3_6a_card_returning_to_a_full_hand_goes_to_its_owner_discard() -> void:
+	_fill_hand(B, HAND_LIMIT)
+	var card := _builder.make_card_instance(B, CARD)
+	var state := _builder.build()
+	ZoneRules.return_card_to_hand(state, card, _events)
+	assert_array(EventLog.describe(_events)).contains_exactly(["CardDiscarded:B"])
+	assert_array(_card_ids(state.get_player(B).discard)).contains_exactly([card.card_instance_id])
+	assert_int(state.get_player(B).hand.size()).is_equal(HAND_LIMIT)
+	assert_array(state.get_player(A).discard).is_empty()
+
+
+func test_201_3_6a_card_returning_with_room_in_hand_enters_it() -> void:
+	_fill_hand(B, HAND_LIMIT - 1)
+	var card := _builder.make_card_instance(B, CARD)
+	var state := _builder.build()
+	ZoneRules.return_card_to_hand(state, card, _events)
+	assert_array(EventLog.describe(_events)).contains_exactly(["CardReturnedToHand:B"])
+	assert_int(state.get_player(B).hand.size()).is_equal(HAND_LIMIT)
+	assert_array(state.get_player(B).discard).is_empty()
 
 
 func test_201_3_9_set_aside_moves_chosen_cards_from_hand() -> void:

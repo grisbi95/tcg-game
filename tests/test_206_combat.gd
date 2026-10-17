@@ -1,7 +1,7 @@
 # gdlint: disable=max-public-methods
 
 extends GdUnitTestSuite
-## CombatRules : comparaison, issue, égalité, Hero défenseur (ruleset 0.31, chapitre 206).
+## CombatRules : comparaison, issue, égalité, Hero défenseur (ruleset 0.33, chapitre 206).
 
 const STRONG_ID: StringName = &"strong_unit"
 const WEAK_ID: StringName = &"weak_unit"
@@ -30,6 +30,38 @@ func before_test() -> void:
 	catalog.add_card(CardDefinition.from_dict(CatalogSamples.gear()))
 	_builder = DuelStateBuilder.new(DuelConfig.new(), catalog)
 	_events = []
+
+
+func test_206_1_1_attacking_piece_is_the_attacker() -> void:
+	var attacker_id := _place(A, WEAK_ID, "B3")
+	var defender_id := _place(B, STRONG_ID, "B4")
+	_attack(attacker_id, defender_id)
+	var combat := _events[0] as CombatResolved
+	assert_int(combat.attacker_piece_id).is_equal(attacker_id)
+	assert_int(combat.attacker_force).is_equal(WEAK_FORCE)
+
+
+func test_206_1_2_attacked_piece_is_the_defender() -> void:
+	var attacker_id := _place(A, WEAK_ID, "B3")
+	var defender_id := _place(B, STRONG_ID, "B4")
+	_attack(attacker_id, defender_id)
+	var combat := _events[0] as CombatResolved
+	assert_int(combat.defender_piece_id).is_equal(defender_id)
+	assert_int(combat.defender_force).is_equal(STRONG_FORCE)
+
+
+func test_206_2_2_force_is_read_again_at_each_combat() -> void:
+	var first_attacker_id := _place(A, WEAK_ID, "B3")
+	var defender_id := _place(B, STRONG_ID, "B4")
+	var second_attacker_id := _place(A, WEAK_ID, "D4")
+	var state := _attack(first_attacker_id, defender_id)
+	assert_int((_events[0] as CombatResolved).defender_force).is_equal(STRONG_FORCE)
+	_add_modifier(defender_id, -(STRONG_FORCE - WEAK_FORCE))
+	_events.clear()
+	CombatRules.resolve_attack(
+		state, state.find_piece(second_attacker_id), state.find_piece(defender_id), _events
+	)
+	assert_int((_events[0] as CombatResolved).defender_force).is_equal(WEAK_FORCE)
 
 
 func test_206_2_1_combat_compares_both_forces() -> void:
@@ -150,6 +182,15 @@ func test_206_4_2_attacked_hero_loses_attacker_force() -> void:
 func test_206_2_1a_hero_defender_compares_no_force() -> void:
 	_attack_hero_of_b()
 	assert_array(EventLog.describe(_events)).not_contains(["CombatResolved"])
+
+
+func test_206_3_1a_hero_is_not_destroyed_by_a_stronger_attacker() -> void:
+	_builder.with_hero_health(B, STRONG_FORCE)
+	var state := _attack_hero_of_b()
+	assert_int(state.find_hero(B).health).is_equal(0)
+	assert_object(state.find_hero(B)).is_not_null()
+	assert_array(EventLog.describe(_events)).not_contains(["PieceDestroyed:B"])
+	assert_array(state.get_player(B).discard).is_empty()
 
 
 func test_206_4_3_attacked_hero_not_destroyed() -> void:

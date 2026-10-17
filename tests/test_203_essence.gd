@@ -1,9 +1,16 @@
+# gdlint: disable=max-public-methods
+
 extends GdUnitTestSuite
-## EssenceRules : paiement d'un coût en inclinant et en recyclant des Sources (ruleset 0.30,
+## EssenceRules : paiement d'un coût en inclinant et en recyclant des Sources (ruleset 0.33,
 ## chapitre 203, décision 0003).
 
 const TOTAL_SOURCES: int = 10  # 203.5.7
 const MAX_ESSENCE_PER_UPRIGHT_SOURCE: int = 2  # 203.2.7
+const SOURCES_IN_PLAY: int = 2  # 204.1.12, ici 1 redressée et 1 inclinée
+const FONTE_SOURCES: int = 3
+const OTHER_FONTE_SOURCES: int = 5
+const CARD: StringName = &"CARD_TEST"
+const CARDS_PER_DECK: int = 6
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
 const B: DuelState.PlayerSide = DuelState.PlayerSide.B
@@ -155,6 +162,87 @@ func test_payment_leaves_opponent_sources_unchanged() -> void:
 	EssenceRules.apply_payment(state, A, EssencePayment.new(1, 1), _events)
 	var defects := DeepCompare.find_clone_defects(opponent_before, state.get_player(B))
 	assert_array(defects).is_empty()
+
+
+func test_203_1_3_essence_is_not_kept_beyond_the_cost() -> void:
+	var state := _with_sources(2, 0, 8)
+	_assert_rejected(state, EssencePayment.new(1, 1), 1, REASON.PAYMENT_DOES_NOT_MATCH_COST)
+	_assert_rejected(state, EssencePayment.new(2, 0), 1, REASON.PAYMENT_DOES_NOT_MATCH_COST)
+
+
+func test_203_2_4_no_essence_is_produced_without_a_cost_to_pay() -> void:
+	var state := _with_sources(2, 2, 6)
+	_assert_rejected(state, EssencePayment.new(1, 0), 0, REASON.PAYMENT_DOES_NOT_MATCH_COST)
+	_assert_rejected(state, EssencePayment.new(0, 1), 0, REASON.PAYMENT_DOES_NOT_MATCH_COST)
+
+
+func test_203_5_1_each_player_has_his_own_reserve() -> void:
+	_builder.with_sources_in_reserve(A, 3).with_sources_in_reserve(B, 5)
+	var engine := _start_engine()
+	engine.submit(EndTurn.new(A))
+	assert_int(engine.get_state().get_player(A).sources_in_reserve).is_equal(3)
+	assert_int(engine.get_state().get_player(B).sources_in_reserve).is_equal(4)
+
+
+func test_203_5_2_each_player_has_his_own_fonte() -> void:
+	_builder.with_sources_in_fonte(A, FONTE_SOURCES).with_sources_in_fonte(B, OTHER_FONTE_SOURCES)
+	_builder.with_sources_in_play(B, 0, 1)
+	var state := _builder.build()
+	EssenceRules.apply_payment(state, B, EssencePayment.new(0, 1), _events)
+	assert_int(state.get_player(A).sources_in_fonte).is_equal(FONTE_SOURCES)
+	assert_int(state.get_player(B).sources_in_fonte).is_equal(OTHER_FONTE_SOURCES + 1)
+
+
+func test_203_5_4_source_in_fonte_never_returns_to_play() -> void:
+	_builder.with_sources_in_fonte(B, FONTE_SOURCES).with_sources_in_reserve(B, 0)
+	_builder.with_sources_in_play(B, 1, 1)
+	var engine := _start_engine()
+	for side: DuelState.PlayerSide in [A, B, A, B]:
+		engine.submit(EndTurn.new(side))
+	var player := engine.get_state().get_player(B)
+	assert_int(player.sources_in_fonte).is_equal(FONTE_SOURCES)
+	assert_int(player.sources_in_reserve).is_equal(0)
+	assert_int(player.sources_upright + player.sources_tilted).is_equal(2)
+
+
+func test_203_5_6_fonte_changes_neither_the_game_state_nor_the_rules() -> void:
+	var without_fonte := _play_two_turns_with_fonte(0)
+	var with_fonte := _play_two_turns_with_fonte(OTHER_FONTE_SOURCES)
+	assert_array(with_fonte).is_equal(without_fonte)
+
+
+func _play_two_turns_with_fonte(fonte_sources: int) -> Array[String]:
+	var builder := DuelStateBuilder.new()
+	var reserve_before := TOTAL_SOURCES - SOURCES_IN_PLAY - fonte_sources
+	builder.with_sources_in_fonte(B, fonte_sources).with_sources_in_play(B, 1, 1)
+	builder.with_sources_in_reserve(B, reserve_before)
+	for index: int in CARDS_PER_DECK:
+		builder.add_to_deck(A, CARD)
+		builder.add_to_deck(B, CARD)
+	var engine := DuelEngine.new(SetupSamples.catalog())
+	engine.start_from_state(builder.build())
+	var described: Array[String] = []
+	for side: DuelState.PlayerSide in [A, B]:
+		described.append_array(EventLog.describe(engine.submit(EndTurn.new(side))))
+	var player := engine.get_state().get_player(B)
+	described.append(
+		(
+			"B : %d redressées, %d inclinées, %d prises en réserve, %d en main"
+			% [
+				player.sources_upright,
+				player.sources_tilted,
+				reserve_before - player.sources_in_reserve,
+				player.hand.size()
+			]
+		)
+	)
+	return described
+
+
+func _start_engine() -> DuelEngine:
+	var engine := DuelEngine.new(SetupSamples.catalog())
+	engine.start_from_state(_builder.build())
+	return engine
 
 
 func _with_sources(upright: int, tilted: int, in_reserve: int) -> DuelState:

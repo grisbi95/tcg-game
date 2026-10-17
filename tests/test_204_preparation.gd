@@ -1,7 +1,7 @@
 # gdlint: disable=max-public-methods
 
 extends GdUnitTestSuite
-## Préparation et mulligan par DuelEngine (ruleset 0.30, sections 204.1 et 204.2 ; décisions
+## Préparation et mulligan par DuelEngine (ruleset 0.33, sections 204.1 et 204.2 ; décisions
 ## 0012, 0013 et 0015).
 
 const SOURCES_IN_PLAY: int = 2  # 204.1.2, 204.1.12
@@ -31,6 +31,19 @@ func test_204_1_9_duel_starts_with_preparation() -> void:
 	var state := _engine.get_state()
 	assert_int(state.phase).is_equal(DuelState.DuelPhase.PREPARATION)
 	assert_int(state.turn_number).is_equal(DuelState.NO_TURN)
+
+
+func test_204_1_10_mulligan_is_part_of_preparation() -> void:
+	_start()
+	var state := _engine.get_state()
+	assert_int(state.pending_decision.kind).is_equal(PendingDecision.DecisionKind.MULLIGAN)
+	assert_int(state.phase).is_equal(DuelState.DuelPhase.PREPARATION)
+	_engine.submit(ChooseMulligan.new(A))
+	assert_int(state.phase).is_equal(DuelState.DuelPhase.PREPARATION)
+	assert_int(state.turn_number).is_equal(DuelState.NO_TURN)
+	_engine.submit(ChooseMulligan.new(B))
+	assert_object(state.pending_decision).is_null()
+	assert_int(state.phase).is_equal(DuelState.DuelPhase.MAIN)
 
 
 func test_204_1_1_heroes_start_on_c1_and_c5() -> void:

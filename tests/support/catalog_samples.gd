@@ -112,6 +112,15 @@ static func create_token_effect() -> Dictionary:
 	}
 
 
+## Spell d'Action qui crée un jeton Unit sur une case ciblée.
+static func token_spell(id: StringName, cost: int) -> CardDefinition:
+	var data := with_field(spell(), "id", String(id))
+	data = with_field(data, "speed", "action")
+	data = with_field(data, "cost", cost)
+	data = with_field(data, "effects", [create_token_effect()])
+	return CardDefinition.from_dict(data)
+
+
 static func ally_unit_target() -> Dictionary:
 	return {"what": "piece", "side": "ally", "piece_kinds": ["unit"]}
 

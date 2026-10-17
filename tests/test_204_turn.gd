@@ -1,7 +1,7 @@
 # gdlint: disable=max-public-methods
 
 extends GdUnitTestSuite
-## Début, phase principale et fin du tour par DuelEngine (ruleset 0.30, sections 204.3 à 204.5).
+## Début, phase principale et fin du tour par DuelEngine (ruleset 0.33, sections 204.3 à 204.5).
 
 const CARDS_PER_TURN: int = 2  # 204.3.6
 const SOURCES_IN_PLAY: int = 2  # 204.1.12
@@ -9,6 +9,13 @@ const SOURCES_IN_RESERVE: int = 8  # 204.1.13
 const OPENING_HAND_SIZE: int = 5  # 204.1.15
 const CARD: StringName = &"CARD_TEST"
 const CARD_FORCE: int = 3
+const CARD_COST: int = 2  # CatalogSamples.unit()
+const GEAR_ID: StringName = &"sample_gear"
+const GEAR_COST: int = 1  # CatalogSamples.gear()
+const SPELL_ID: StringName = &"main_phase_spell"
+const SPELL_COST: int = 1  # CatalogSamples.spell()
+const HERO_ID: StringName = &"sample_hero"
+const POWER_COST: int = 2  # CatalogSamples.hero()
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
 const B: DuelState.PlayerSide = DuelState.PlayerSide.B
@@ -21,11 +28,74 @@ var _engine: DuelEngine
 func before_test() -> void:
 	var catalog := Catalog.new()
 	SetupSamples.add_unit(catalog, CARD, CARD_FORCE)
+	catalog.add_card(CardDefinition.from_dict(CatalogSamples.gear()))
+	var action_spell := CatalogSamples.with_field(CatalogSamples.spell(), "id", String(SPELL_ID))
+	action_spell = CatalogSamples.with_field(action_spell, "speed", "action")
+	catalog.add_card(CardDefinition.from_dict(action_spell))
+	catalog.add_hero(HeroDefinition.from_dict(CatalogSamples.hero()))
 	_builder = DuelStateBuilder.new(DuelConfig.new(), catalog)
 	_engine = DuelEngine.new(SetupSamples.catalog())
 	for side: DuelState.PlayerSide in [A, B]:
 		for index: int in CARDS_PER_TURN:
 			_builder.add_to_deck(side, CARD)
+
+
+func test_204_4_2_active_player_chooses_the_order_of_his_actions() -> void:
+	var unit_id := _builder.place_piece(A, Piece.PieceKind.UNIT, DuelStateBuilder.cell("B2"), CARD)
+	var card_id := _builder.add_to_hand(A, CARD)
+	var state := _builder.build()
+	var deploy := DeployCard.new(
+		A, card_id, DuelStateBuilder.cell("A1"), EssencePayment.new(CARD_COST)
+	)
+	var move := TakeNormalAction.new(A, unit_id, DuelStateBuilder.cell("B3"))
+	var deploy_first := _engine_from(state.clone())
+	var move_first := _engine_from(state.clone())
+	deploy_first.submit(deploy)
+	_resolve_stack(deploy_first)
+	assert_int(deploy_first.validate(move)).is_equal(REASON.NONE)
+	deploy_first.submit(move)
+	assert_int(move_first.validate(deploy)).is_equal(REASON.NONE)
+	move_first.submit(move)
+	_resolve_stack(move_first)
+	assert_int(move_first.validate(deploy)).is_equal(REASON.NONE)
+	move_first.submit(deploy)
+	for engine: DuelEngine in [deploy_first, move_first]:
+		_resolve_stack(engine)
+		assert_object(engine.get_state().piece_at(DuelStateBuilder.cell("B3"))).is_not_null()
+		assert_object(engine.get_state().piece_at(DuelStateBuilder.cell("A1"))).is_not_null()
+
+
+func test_204_4_3_active_player_plays_cards_in_main_phase() -> void:
+	var unit_id := _builder.place_piece(A, Piece.PieceKind.UNIT, DuelStateBuilder.cell("B2"), CARD)
+	var unit_card_id := _builder.add_to_hand(A, CARD)
+	var gear_card_id := _builder.add_to_hand(A, GEAR_ID)
+	var spell_card_id := _builder.add_to_hand(A, SPELL_ID)
+	var state := _builder.build()
+	var deploy := DeployCard.new(
+		A, unit_card_id, DuelStateBuilder.cell("A1"), EssencePayment.new(CARD_COST)
+	)
+	var attach := AttachGear.new(A, gear_card_id, unit_id, EssencePayment.new(GEAR_COST))
+	var cast := CastSpell.new(A, spell_card_id, EssencePayment.new(SPELL_COST))
+	cast.target_piece_ids.append(unit_id)
+	var expected_announcements: Dictionary[DuelIntent, String] = {
+		deploy: "DeployAnnounced:A", attach: "GearAnnounced:A", cast: "SpellAnnounced:A"
+	}
+	for intent: DuelIntent in expected_announcements:
+		var events := _engine_from(state.clone()).submit(intent)
+		assert_array(EventLog.describe(events)).contains(
+			[expected_announcements[intent], "StackEntryAdded:A"]
+		)
+
+
+func test_204_4_4_active_player_uses_his_hero_power_in_main_phase() -> void:
+	var unit_id := _builder.place_piece(A, Piece.PieceKind.UNIT, DuelStateBuilder.cell("B2"), CARD)
+	_builder.with_hero_definition(A, HERO_ID)
+	var power := UseHeroPower.new(A, EssencePayment.new(POWER_COST))
+	power.target_piece_ids.append(unit_id)
+	var events := _engine_from(_builder.build()).submit(power)
+	var expected := EventLog.repeat("SourceInclined:A", POWER_COST)
+	expected.append_array(["HeroPowerAnnounced:A", "StackEntryAdded:A"])
+	assert_array(EventLog.describe(events)).contains_exactly(expected)
 
 
 func test_204_4_7_active_player_ends_turn() -> void:
@@ -185,6 +255,18 @@ func test_end_turn_while_decision_pending_rejected() -> void:
 func _end_turn_of_a() -> Array[DuelEvent]:
 	_engine.start_from_state(_builder.build())
 	return _engine.submit(EndTurn.new(A))
+
+
+func _engine_from(state: DuelState) -> DuelEngine:
+	var engine := DuelEngine.new(state.catalog)
+	engine.start_from_state(state)
+	return engine
+
+
+# Les deux joueurs passent l'un après l'autre : la pile se résout (208.3.1).
+func _resolve_stack(engine: DuelEngine) -> void:
+	var first := engine.get_state().priority_player
+	DuelChecks.pass_twice(engine, first)
 
 
 func _first_event_of(events: Array[DuelEvent], description: String) -> DuelEvent:

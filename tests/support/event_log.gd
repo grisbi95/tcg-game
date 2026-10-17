@@ -31,3 +31,25 @@ static func rejection_reason(events: Array[DuelEvent]) -> int:
 	if events.size() != 1 or not events[0] is IntentRejected:
 		return NOT_A_SINGLE_REJECTION
 	return (events[0] as IntentRejected).reason
+
+
+## Décrit une intention par sa classe, son joueur et ses champs, pour rapporter un écart :
+## « DeployCard:A card_instance_id=12 cell=(1, 0) payment=2+0 ».
+static func describe_intent(intent: DuelIntent) -> String:
+	var script: Script = intent.get_script()
+	var side := str(DuelState.PlayerSide.find_key(intent.player))
+	var parts := PackedStringArray(["%s:%s" % [script.get_global_name(), side]])
+	for property: Dictionary in script.get_script_property_list():
+		var field: String = property["name"]
+		var usage: int = property["usage"]
+		if field == "player" or (usage & PROPERTY_USAGE_SCRIPT_VARIABLE) == 0:
+			continue
+		parts.append("%s=%s" % [field, _describe_value(intent.get(field))])
+	return " ".join(parts)
+
+
+static func _describe_value(value: Variant) -> String:
+	if value is EssencePayment:
+		var payment: EssencePayment = value
+		return "%d+%d" % [payment.incline_count, payment.recycle_count]
+	return str(value)

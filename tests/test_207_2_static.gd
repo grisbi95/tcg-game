@@ -1,5 +1,5 @@
 extends GdUnitTestSuite
-## Effets statiques et auras lus par ForceRules (ruleset 0.32, sections 207.2 et 206.5 ;
+## Effets statiques et auras lus par ForceRules (ruleset 0.33, sections 207.2 et 206.5 ;
 ## 202.3.18 pour le passif du Hero).
 
 const UNIT_ID: StringName = &"plain_unit"
@@ -7,16 +7,25 @@ const AURA_UNIT_ID: StringName = &"aura_unit"
 const ENEMY_ID: StringName = &"enemy_unit"
 const BUILDING_ID: StringName = &"plain_building"
 const GEAR_ID: StringName = &"sample_gear"
+const AURA_GEAR_ID: StringName = &"aura_gear"
+const STRONG_GEAR_ID: StringName = &"strong_gear"
+const SPELL_ID: StringName = &"sample_spell"
 const HERO_ID: StringName = &"sample_hero"
 const UNIT_FORCE: int = 3
 const AURA: int = 1  # CatalogSamples.modify_force_static()
 const BUILDING_FORCE: int = 4
 const TOKEN_FORCE: int = 1
+const STRONG_GEAR_BONUS: int = 2
+const UNIT_COST: int = 2  # CatalogSamples.unit()
+const GEAR_COST: int = 1  # CatalogSamples.gear()
+const SPELL_COST: int = 1  # CatalogSamples.spell()
+const CARDS_PER_TURN: int = 2  # 204.3.6
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
 const B: DuelState.PlayerSide = DuelState.PlayerSide.B
 
 var _builder: DuelStateBuilder
+var _engine: DuelEngine
 
 
 func before_test() -> void:
@@ -33,8 +42,16 @@ func before_test() -> void:
 	)
 	catalog.add_card(CardDefinition.from_dict(aura_unit))
 	catalog.add_card(CardDefinition.from_dict(CatalogSamples.gear()))
+	catalog.add_card(CardDefinition.from_dict(CatalogSamples.spell()))
+	catalog.add_card(
+		_gear(AURA_GEAR_ID, CatalogSamples.modify_force_static({"scope": "adjacent_allied_units"}))
+	)
+	catalog.add_card(
+		_gear(STRONG_GEAR_ID, CatalogSamples.modify_force_static({"amount": STRONG_GEAR_BONUS}))
+	)
 	catalog.add_hero(HeroDefinition.from_dict(CatalogSamples.hero()))
 	_builder = DuelStateBuilder.new(DuelConfig.new(), catalog)
+	_engine = DuelEngine.new(catalog)
 
 
 func test_202_3_18_hero_passive_boosts_adjacent_allied_units() -> void:
@@ -79,6 +96,60 @@ func test_206_5_5_aura_stops_when_position_condition_fails() -> void:
 	assert_int(_force(state, ally_id)).is_equal(UNIT_FORCE)
 
 
+func test_207_2_3_static_effect_begins_when_the_bearer_arrives() -> void:
+	var ally_id := _place(A, UNIT_ID, "B2")
+	_push_aura_deploy("B1")
+	_start()
+	assert_int(_live_force(ally_id)).is_equal(UNIT_FORCE)
+	_pass_twice(B)
+	assert_int(_live_force(ally_id)).is_equal(UNIT_FORCE + AURA)
+
+
+func test_207_2_5_nobody_answers_a_static_effect() -> void:
+	_place(A, UNIT_ID, "B2")
+	_push_aura_deploy("B1")
+	_start()
+	var labels := EventLog.describe(_pass_twice(B))
+	assert_array(labels).contains_exactly(
+		["PriorityPassed:B", "PriorityPassed:A", "PieceDeployed:A", "StackEntryResolved:A"]
+	)
+	var state := _engine.get_state()
+	assert_array(state.stack).is_empty()
+	assert_int(state.priority_player).is_equal(A)
+
+
+func test_207_2_6_player_answers_the_announcement_of_the_bearer() -> void:
+	var ally_id := _place(A, UNIT_ID, "B2")
+	var enemy_id := _place(B, ENEMY_ID, "D4")
+	var aura_card_id := _builder.add_to_hand(A, AURA_UNIT_ID)
+	var spell_card_id := _builder.add_to_hand(B, SPELL_ID)
+	_start()
+	var deploy := DeployCard.new(
+		A, aura_card_id, DuelStateBuilder.cell("B1"), EssencePayment.new(UNIT_COST)
+	)
+	_engine.submit(deploy)
+	var state := _engine.get_state()
+	assert_int(state.priority_player).is_equal(B)
+	assert_int(_live_force(ally_id)).is_equal(UNIT_FORCE)
+	var answer := CastSpell.new(B, spell_card_id, EssencePayment.new(SPELL_COST))
+	answer.target_piece_ids.append(enemy_id)
+	assert_array(EventLog.describe(_engine.submit(answer))).contains(["SpellAnnounced:B"])
+	assert_int(state.stack.size()).is_equal(2)
+
+
+func test_207_2_7_static_effect_lasts_while_the_bearer_is_in_play() -> void:
+	_place(A, AURA_UNIT_ID, "B2")
+	var ally_id := _place(A, UNIT_ID, "B3")
+	_fill_decks()
+	_start()
+	_engine.submit(EndTurn.new(A))
+	_engine.submit(EndTurn.new(B))
+	var state := _engine.get_state()
+	assert_int(state.active_player).is_equal(A)
+	assert_int(_live_force(ally_id)).is_equal(UNIT_FORCE + AURA)
+	assert_array(state.active_effects).is_empty()
+
+
 func test_207_2_4_static_effect_stops_when_bearer_leaves() -> void:
 	var bearer_id := _place(A, AURA_UNIT_ID, "B2")
 	var ally_id := _place(A, UNIT_ID, "B3")
@@ -104,12 +175,47 @@ func test_207_2_8_gear_effect_is_carried_by_its_unit() -> void:
 	assert_int(_force(state, unit_id)).is_equal(UNIT_FORCE + AURA)
 
 
+func test_207_2_9_gear_effect_applies_while_attached_to_a_piece_in_play() -> void:
+	var unit_id := _place(A, UNIT_ID, "B2")
+	_builder.attach_gear(unit_id, GEAR_ID)
+	_fill_decks()
+	_start()
+	assert_int(_live_force(unit_id)).is_equal(UNIT_FORCE + AURA)
+	_engine.submit(EndTurn.new(A))
+	_engine.submit(EndTurn.new(B))
+	assert_int(_live_force(unit_id)).is_equal(UNIT_FORCE + AURA)
+	assert_array(_engine.get_state().active_effects).is_empty()
+
+
 func test_207_2_9a_gear_effect_stops_when_detached() -> void:
 	var unit_id := _place(A, UNIT_ID, "B2")
 	_builder.attach_gear(unit_id, GEAR_ID)
 	var state := _builder.build()
 	state.find_piece(unit_id).attached_gear = null
 	assert_int(_force(state, unit_id)).is_equal(UNIT_FORCE)
+
+
+func test_207_2_9b_gear_effect_stops_when_its_piece_leaves_the_board() -> void:
+	var carrier_id := _place(A, UNIT_ID, "B2")
+	_builder.attach_gear(carrier_id, AURA_GEAR_ID)
+	var ally_id := _place(A, UNIT_ID, "B3")
+	var state := _builder.build()
+	assert_int(_force(state, ally_id)).is_equal(UNIT_FORCE + AURA)
+	var events: Array[DuelEvent] = []
+	CombatRules.destroy_piece(state, state.find_piece(carrier_id), events)
+	assert_int(_force(state, ally_id)).is_equal(UNIT_FORCE)
+
+
+func test_207_4_8_effect_of_a_detached_gear_stops() -> void:
+	var unit_id := _place(A, UNIT_ID, "B2")
+	_builder.attach_gear(unit_id, GEAR_ID)
+	var new_gear_id := _builder.add_to_hand(A, STRONG_GEAR_ID)
+	_builder.with_sources_in_play(A, GEAR_COST, 0)
+	_start()
+	assert_int(_live_force(unit_id)).is_equal(UNIT_FORCE + AURA)
+	_engine.submit(AttachGear.new(A, new_gear_id, unit_id, EssencePayment.new(GEAR_COST)))
+	_pass_twice(B)
+	assert_int(_live_force(unit_id)).is_equal(UNIT_FORCE + STRONG_GEAR_BONUS)
 
 
 func test_206_5_3_attacker_keeps_aura_it_leaves_for_the_combat() -> void:
@@ -137,6 +243,35 @@ func test_206_5_2_auras_read_before_attacker_enters_defender_cell() -> void:
 	assert_object(state.find_piece(attacker_id)).is_null()
 
 
+func _start() -> void:
+	_engine.start_from_state(_builder.build())
+
+
+# Annonce déjà faite du déploiement de l'Unit à aura de A, sous la main de B.
+func _push_aura_deploy(cell_name: String) -> void:
+	var card := _builder.make_card_instance(A, AURA_UNIT_ID)
+	_builder.push_deploy(card, DuelStateBuilder.cell(cell_name))
+	_builder.with_priority_player(B)
+
+
+# Deux tours complets pigent quatre cartes par joueur (204.3.6).
+func _fill_decks() -> void:
+	for side: DuelState.PlayerSide in [A, B]:
+		for index: int in CARDS_PER_TURN * 2:
+			_builder.add_to_deck(side, UNIT_ID)
+
+
+# `first` et son adversaire passent l'un après l'autre : la pile se résout (208.3.1).
+func _pass_twice(first: DuelState.PlayerSide) -> Array[DuelEvent]:
+	return DuelChecks.pass_twice(_engine, first)
+
+
+func _gear(id: StringName, effect: Dictionary) -> CardDefinition:
+	var data := CatalogSamples.with_field(CatalogSamples.gear(), "id", String(id))
+	data = CatalogSamples.with_field(data, "name", "Gear %s" % id)
+	return CardDefinition.from_dict(CatalogSamples.with_field(data, "effects", [effect]))
+
+
 func _place(side: DuelState.PlayerSide, definition_id: StringName, cell_name: String) -> int:
 	return _builder.place_piece(
 		side, Piece.PieceKind.UNIT, DuelStateBuilder.cell(cell_name), definition_id
@@ -145,3 +280,7 @@ func _place(side: DuelState.PlayerSide, definition_id: StringName, cell_name: St
 
 func _force(state: DuelState, piece_id: int) -> int:
 	return ForceRules.current_force(state, state.find_piece(piece_id))
+
+
+func _live_force(piece_id: int) -> int:
+	return _force(_engine.get_state(), piece_id)
