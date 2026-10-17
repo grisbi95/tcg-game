@@ -1,8 +1,9 @@
 class_name StateCheckRules
 extends RefCounted
-## Contrôles d'état (209) : victoire et partie nulle (209.2, 209.3), abandon, fatigue (209.5).
+## Contrôles d'état (209) : victoire et partie nulle (209.2, 209.3), abandon, pendule (209.4),
+## fatigue (209.5).
 ##
-## La pendule (209.4) vient à l'étape 1.8.
+## Décision 0018 : le moteur ne lit jamais l'heure ; l'hôte lui signale le temps écoulé.
 
 
 ## 209.2.5 : un joueur peut abandonner à tout moment ; seule une partie non commencée ou
@@ -58,6 +59,58 @@ static func lose_health(
 	hero.health -= lost_health
 	events.append(HeroLostHealth.new(side, lost_health))
 	check_victory(state, events)
+
+
+## 209.4.2, 209.4.2a à 209.4.2c, 209.4.4a à 209.4.4e, décision 0018 : joueurs dont la pendule
+## tourne, dans l'ordre de DuelState.SIDES ; les deux pendant le mulligan. La pile se résout
+## dans un `submit()`, où aucune pendule ne tourne. Pur.
+static func clock_owners(state: DuelState) -> Array[DuelState.PlayerSide]:
+	var owners: Array[DuelState.PlayerSide] = []
+	if state.phase == DuelState.DuelPhase.NOT_STARTED or state.is_ended():
+		return owners
+	if state.pending_decision != null:
+		for side: DuelState.PlayerSide in DuelState.SIDES:
+			if state.pending_decision.awaited_players.has(side):
+				owners.append(side)
+	elif not state.stack.is_empty():
+		owners.append(state.priority_player)
+	elif state.phase == DuelState.DuelPhase.MAIN:
+		owners.append(state.active_player)
+	return owners
+
+
+## 209.4.2, 209.4.5, 209.2.9, décision 0018 : retire `elapsed_msec` aux pendules qui tournent,
+## sans descendre sous 0. Une pendule qui atteint 0 arrête la partie à cet instant : les autres
+## ne perdent que le temps écoulé jusque-là. Un temps nul ou négatif ne change rien.
+static func advance_clock(state: DuelState, elapsed_msec: int, events: Array[DuelEvent]) -> void:
+	var owners := clock_owners(state)
+	if elapsed_msec <= 0 or owners.is_empty():
+		return
+	var consumed_msec := elapsed_msec
+	for side: DuelState.PlayerSide in owners:
+		consumed_msec = mini(consumed_msec, state.get_player(side).clock_remaining_msec)
+	var expired: Array[DuelState.PlayerSide] = []
+	for side: DuelState.PlayerSide in owners:
+		var player := state.get_player(side)
+		player.clock_remaining_msec -= consumed_msec
+		if player.clock_remaining_msec == 0:
+			expired.append(side)
+	_end_on_time(state, expired, events)
+
+
+# 209.2.8 : le joueur dont le temps est écoulé perd ; 209.2.8a : les deux en même temps, nulle ;
+# 209.2.9 : la partie s'arrête aussitôt.
+static func _end_on_time(
+	state: DuelState, expired: Array[DuelState.PlayerSide], events: Array[DuelEvent]
+) -> void:
+	if expired.is_empty():
+		return
+	for side: DuelState.PlayerSide in expired:
+		events.append(TimeExpired.new(side))
+	if expired.size() == DuelState.PLAYER_COUNT:
+		_end_duel(state, DuelState.DuelResult.DRAW, events)
+	else:
+		_end_duel(state, _win_for(DuelState.opponent_of(expired[0])), events)
 
 
 # 209.2.2, 209.2.3, 209.2.7 : plus rien n'est attendu ni résolu ; la pile reste en l'état.

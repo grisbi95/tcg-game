@@ -40,6 +40,25 @@ func get_state() -> DuelState:
 	return _state
 
 
+## Décision 0018 ; 209.4 : l'hôte signale `elapsed_msec` de temps réel écoulé, hors de tout
+## `submit()`. Renvoie les événements (temps écoulé, fin de la partie) ; vide si aucune pendule
+## ne tourne ou avant le démarrage.
+func advance_clock(elapsed_msec: int) -> Array[DuelEvent]:
+	var events: Array[DuelEvent] = []
+	if _state != null:
+		StateCheckRules.advance_clock(_state, elapsed_msec, events)
+	return events
+
+
+## 209.4.2, 209.4.4 : joueurs dont la pendule tourne, les deux pendant le mulligan ; vide avant
+## le démarrage, après la fin de la partie ou quand aucune décision n'est attendue. Pur.
+func clock_owners() -> Array[DuelState.PlayerSide]:
+	var owners: Array[DuelState.PlayerSide] = []
+	if _state != null:
+		owners = StateCheckRules.clock_owners(_state)
+	return owners
+
+
 ## Raison du refus de `intent`, ou NONE si elle est légale. Pur.
 func validate(intent: DuelIntent) -> IntentRejected.RejectReason:
 	var reason := _validate_duel_running()

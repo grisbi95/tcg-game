@@ -31,7 +31,7 @@ var fatigue_damage_per_counter_point: int = 1  # 209.5.3
 
 
 ## Renvoie les incohérences entre valeurs qui se recoupent (203.5.7, 204.1.2, 204.1.12,
-## 204.1.13) et les valeurs que les règles ne définissent pas (206.3.6) ; vide si la
+## 204.1.13) et les valeurs que les règles ne définissent pas (206.3.6, 209.4.3a) ; vide si la
 ## configuration est cohérente.
 func find_errors() -> PackedStringArray:
 	var errors := PackedStringArray()
@@ -44,4 +44,6 @@ func find_errors() -> PackedStringArray:
 		)
 	if not tie_destroys_both:
 		errors.append("206.3.6 : seule l'option A de la décision 0053 est définie par les règles")
+	if clock_bonus_msec != 0:
+		errors.append("209.4.3a : aucune règle ne dit quand du temps s'ajouterait à une pendule")
 	return errors
