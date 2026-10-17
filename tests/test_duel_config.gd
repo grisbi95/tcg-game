@@ -93,6 +93,11 @@ func test_209_4_3a_clock_gains_no_time() -> void:
 	assert_int(_config.clock_bonus_msec).is_equal(CLOCK_BONUS_MSEC)
 
 
+func test_209_4_3a_clock_bonus_is_undefined() -> void:
+	_config.clock_bonus_msec = 1
+	assert_bool(CatalogSamples.mentions(_config.find_errors(), "209.4.3a")).is_true()
+
+
 func test_209_5_1_fatigue_starts_at_zero() -> void:
 	assert_int(_config.starting_fatigue).is_equal(STARTING_FATIGUE)
 

@@ -1,12 +1,12 @@
 # Moteur de duel — consignes locales
 
-Complète le `CLAUDE.md` racine pour `rules/`. Les décisions 0001, 0003, 0004, 0007, 0008, 0009, 0010, 0012, 0013, 0015, 0016 et 0017 priment ; `docs/ruleset/20-regles-completes/` fait foi.
+Complète le `CLAUDE.md` racine pour `rules/`. Les décisions 0001, 0003, 0004, 0007, 0008, 0009, 0010, 0012, 0013, 0015, 0016, 0017 et 0018 priment ; `docs/ruleset/20-regles-completes/` fait foi.
 
 ## Carte des modules (cible du jalon J1)
 
 | Fichier | Chapitre | Rôle |
 | --- | --- | --- |
-| `duel_engine.gd` | — | Façade : `start_new_duel`, `start_from_state` (tests), `validate`, `submit`, `advance_clock`, `clock_owner`, requêtes en lecture pour la vue, aiguillage par classe d'intention. Aucune règle. |
+| `duel_engine.gd` | — | Façade : `start_new_duel`, `start_from_state` (tests), `validate`, `submit`, `advance_clock`, `clock_owners`, requêtes en lecture pour la vue, aiguillage par classe d'intention. Aucune règle. |
 | `zone_rules.gd` | 201 | zones, limite de main, appartenance, construction du deck |
 | `card_rules.gd` | 202 | Gear (annonce, attachement, remplacement, retour en main), pouvoir du Hero |
 | `essence_rules.gd` | 203 | paiement à l'annonce, incliner, recycler, Fonte |
