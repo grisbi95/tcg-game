@@ -1,6 +1,6 @@
 # Moteur de duel — consignes locales
 
-Complète le `CLAUDE.md` racine pour `rules/`. Les décisions 0001, 0003, 0004, 0007, 0008, 0009, 0010, 0012, 0013, 0015 et 0016 priment ; `docs/ruleset/20-regles-completes/` fait foi.
+Complète le `CLAUDE.md` racine pour `rules/`. Les décisions 0001, 0003, 0004, 0007, 0008, 0009, 0010, 0012, 0013, 0015, 0016 et 0017 priment ; `docs/ruleset/20-regles-completes/` fait foi.
 
 ## Carte des modules (cible du jalon J1)
 
@@ -13,8 +13,9 @@ Complète le `CLAUDE.md` racine pour `rules/`. Les décisions 0001, 0003, 0004, 
 | `turn_rules.gd` | 204 | préparation par `DuelSetup` (0012), mulligan simultané exécuté à la dernière réponse, joueur A puis B (0013, 0015) et Écart, début de tour (204.3.8, redressement compris), fin de tour (204.5) |
 | `action_rules.gd` | 205 | déploiement (annonce, résolution), action normale, déplacement du Hero, échecs |
 | `combat_rules.gd` | 206 | comparaison, égalité, Hero défenseur, avance, auras lues avant l'avance |
-| `effect_rules.gd` | 207 | Spells et vitesses, cibles et validité, effets à la résolution (Force à durée, destruction, jetons), Contrecarrer ; déclenchés en 1.7 |
-| `stack_rules.gd` | 208 | annonce, priorité (208.2.4), passes, bloc LIFO, chaînes, ordre des déclencheurs |
+| `effect_rules.gd` | 207 | Spells et vitesses, cibles et validité, effets à la résolution (Force à durée, destruction, jetons), Contrecarrer |
+| `trigger_rules.gd` | 207.3, 208.4 | effets déclenchés (0017) : attente, ordre d'ajout (`ORDER_TRIGGERS`), cibles (`CHOOSE_TARGETS`), choix unique automatique (0004), « une fois par tour », résolution |
+| `stack_rules.gd` | 208 | annonce, priorité (208.2.4), passes, bloc LIFO, retour au joueur actif après les déclencheurs (`settle_after_triggers`) |
 | `state_check_rules.gd` | 209 | Force plancher 0, victoire après chaque effet, abandon, pendule, fatigue |
 | `keyword_rules.gd` | 210 | texte de règle de chaque mot-clé |
 | `force_rules.gd` | 206.5, 209.1 | Force actuelle calculée à la demande, jamais stockée |

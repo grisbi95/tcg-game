@@ -60,6 +60,13 @@ var pieces: Array[Piece] = []
 var stack: Array[StackEntry] = []
 ## 207.4 : effets à durée en cours.
 var active_effects: Array[ActiveEffect] = []
+## Décision 0017 ; 208.4.2 : effets déclenchés en attente, pas encore ordonnés.
+var waiting_triggers: Array[StackEntry] = []
+## Décision 0017 ; 208.4.6, 208.4.7 : effets déclenchés ordonnés, en cours d'ajout à la pile.
+var triggers_to_add: Array[StackEntry] = []
+## 207.3.6, 207.3.7, 207.3.10 : cartes dont l'effet « une fois par tour » s'est ajouté à la
+## pile pendant le tour ; remis à zéro au début de chaque tour (207.3.9).
+var once_per_turn_card_ids: Array[int] = []
 ## Null hors attente d'un choix (décision 0009).
 var pending_decision: PendingDecision
 var active_player: PlayerSide = PlayerSide.A
@@ -170,10 +177,12 @@ func clone() -> DuelState:
 		copy.players.append(player.clone())
 	for piece: Piece in pieces:
 		copy.pieces.append(piece.clone())
-	for entry: StackEntry in stack:
-		copy.stack.append(entry.clone())
+	copy.stack = _clone_entries(stack)
 	for effect: ActiveEffect in active_effects:
 		copy.active_effects.append(effect.clone())
+	copy.waiting_triggers = _clone_entries(waiting_triggers)
+	copy.triggers_to_add = _clone_entries(triggers_to_add)
+	copy.once_per_turn_card_ids.assign(once_per_turn_card_ids)
 	copy.pending_decision = pending_decision.clone() if pending_decision != null else null
 	copy.active_player = active_player
 	copy.priority_player = priority_player
@@ -184,6 +193,13 @@ func clone() -> DuelState:
 	copy.next_stack_entry_id = next_stack_entry_id
 	copy.next_active_effect_id = next_active_effect_id
 	return copy
+
+
+static func _clone_entries(entries: Array[StackEntry]) -> Array[StackEntry]:
+	var copies: Array[StackEntry] = []
+	for entry: StackEntry in entries:
+		copies.append(entry.clone())
+	return copies
 
 
 func _clone_rng() -> RandomNumberGenerator:

@@ -2,7 +2,7 @@ class_name EffectRules
 extends RefCounted
 ## Effets qui passent par la pile (207) : Spells et vitesses (207.1), cibles et validité
 ## (207.5), application à la résolution, Contrecarrer (207.6). Les effets statiques se lisent
-## dans ForceRules (207.2) ; les effets déclenchés viennent à l'étape 1.7.
+## dans ForceRules (207.2) ; les effets déclenchés attendent et s'ajoutent par TriggerRules.
 ##
 ## Une entrée porte ses cibles par genre (`target_piece_ids`, `target_cells`,
 ## `target_stack_entry_ids`) ; chaque effet lit celles du genre que vise sa TargetSpec.
@@ -101,21 +101,37 @@ static func end_effects_on_piece(state: DuelState, piece: Piece, events: Array[D
 static func legal_target_count(
 	state: DuelState, owner: DuelState.PlayerSide, spec: TargetSpec
 ) -> int:
-	var count := 0
-	match spec.what:
-		TargetSpec.TargetWhat.PIECE:
-			for piece: Piece in state.pieces:
-				if is_legal_piece(state, owner, spec, piece):
-					count += 1
-		TargetSpec.TargetWhat.CELL:
-			for cell: Vector2i in BoardGeometry.all_cells():
-				if is_legal_cell(state, owner, spec, cell):
-					count += 1
-		TargetSpec.TargetWhat.SPELL_ON_STACK:
-			for entry: StackEntry in state.stack:
-				if is_legal_spell(spec, entry, DuelState.NO_ID):
-					count += 1
-	return count
+	if spec.what == TargetSpec.TargetWhat.CELL:
+		return legal_cells(state, owner, spec).size()
+	return legal_target_ids(state, owner, spec, DuelState.NO_ID).size()
+
+
+## 207.5.1b, 207.5.9 : pièces ou Spells de la pile légaux pour `spec` d'une entrée de `owner`,
+## d'identifiant `entry_id` (jamais ciblée par elle-même, 207.5.16). Pur.
+static func legal_target_ids(
+	state: DuelState, owner: DuelState.PlayerSide, spec: TargetSpec, entry_id: int
+) -> Array[int]:
+	var ids: Array[int] = []
+	if spec.what == TargetSpec.TargetWhat.PIECE:
+		for piece: Piece in state.pieces:
+			if is_legal_piece(state, owner, spec, piece):
+				ids.append(piece.piece_id)
+	elif spec.what == TargetSpec.TargetWhat.SPELL_ON_STACK:
+		for entry: StackEntry in state.stack:
+			if is_legal_spell(spec, entry, entry_id):
+				ids.append(entry.stack_entry_id)
+	return ids
+
+
+## 207.5.1b, 207.5.9 : cases légales pour `spec` d'une entrée de `owner`. Pur.
+static func legal_cells(
+	state: DuelState, owner: DuelState.PlayerSide, spec: TargetSpec
+) -> Array[Vector2i]:
+	var cells: Array[Vector2i] = []
+	for cell: Vector2i in BoardGeometry.all_cells():
+		if is_legal_cell(state, owner, spec, cell):
+			cells.append(cell)
+	return cells
 
 
 ## 207.5.6, 207.5.11, 207.5.11a, 207.5.11b : `piece` remplit les conditions de `spec` pour une

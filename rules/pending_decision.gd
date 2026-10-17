@@ -17,13 +17,26 @@ var kind: DecisionKind = DecisionKind.MULLIGAN
 var awaited_players: Array[DuelState.PlayerSide] = []
 ## Entrée de la pile dont on choisit les cibles ; NO_ID sinon.
 var subject_stack_entry_id: int = DuelState.NO_ID
-## Identifiants parmi lesquels répondre : effets déclenchés à ordonner, pièces ciblables.
+## Identifiants parmi lesquels répondre : effets déclenchés à ordonner, ou pièces et Spells de
+## la pile ciblables (selon la cible de l'effet).
 var candidate_ids: Array[int] = []
 ## Cases parmi lesquelles répondre, quand le choix porte sur une case (202.4.12a).
 var candidate_cells: Array[Vector2i] = []
 ## Décision 0013 : cartes à écarter déjà choisies, tous joueurs confondus ; chaque carte est
 ## dans la main de son joueur. Choix cachés : ni la vue ni l'IA ne les lisent (204.2.3).
 var set_aside_card_ids: Array[int] = []
+
+
+## Décision 0009 : raison du refus d'une réponse de `player` à une attente de genre `kind`, ou
+## NONE ; `decision` vaut null hors attente. Pur.
+static func validate_answer(
+	decision: PendingDecision, expected_kind: DecisionKind, player: DuelState.PlayerSide
+) -> IntentRejected.RejectReason:
+	if decision == null or decision.kind != expected_kind:
+		return IntentRejected.RejectReason.NOT_THE_PENDING_DECISION
+	if not decision.awaited_players.has(player):
+		return IntentRejected.RejectReason.PLAYER_NOT_AWAITED
+	return IntentRejected.RejectReason.NONE
 
 
 func clone() -> PendingDecision:

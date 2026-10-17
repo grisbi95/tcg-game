@@ -26,6 +26,7 @@ enum TriggerEvent {
 	NONE,
 	ARRIVAL,  # 210.3.1
 	DESTROYED,  # 210.3.2
+	END_OF_TURN,  # 204.5.3 : quand le joueur actif termine son tour, à chaque tour
 }
 
 ## 207.2 : pièces que touche un effet statique, relativement à la pièce qui le porte.
@@ -48,6 +49,8 @@ var kind: EffectKind = EffectKind.MODIFY_FORCE
 var timing: EffectTiming = EffectTiming.RESOLVE
 var trigger: TriggerEvent = TriggerEvent.NONE
 var scope: StaticScope = StaticScope.NONE
+## 207.3.5 : mention « une fois par tour », pour un effet déclenché seulement.
+var once_per_turn: bool = false
 ## Null pour un effet statique, qui ne cible pas (207.2.1).
 var target: TargetSpec
 ## 207.4.2 : présente seulement pour un effet non statique qui modifie la Force.
@@ -105,6 +108,7 @@ func _read_conditions(reader: CatalogReader) -> void:
 	var scope_value := reader.read_enum("scope", StaticScope)
 	if scope_value != CatalogReader.NOT_SET:
 		scope = scope_value as StaticScope
+	once_per_turn = reader.read_bool("once_per_turn", false)
 	if reader.has("target"):
 		target = TargetSpec.from_dict(reader.read_object("target"))
 
@@ -143,6 +147,8 @@ func _check_conditions(errors: PackedStringArray) -> void:
 		errors.append("207.3.1 : un effet déclenché nomme son événement dans trigger")
 	if timing != EffectTiming.TRIGGERED and trigger != TriggerEvent.NONE:
 		errors.append("207.3.1 : trigger ne vaut que pour un effet déclenché")
+	if timing != EffectTiming.TRIGGERED and once_per_turn:
+		errors.append("207.3.5 : once_per_turn ne vaut que pour un effet déclenché")
 	if timing == EffectTiming.STATIC and scope == StaticScope.NONE:
 		errors.append("207.2.2 : un effet statique nomme les pièces qu'il touche dans scope")
 	if timing != EffectTiming.STATIC and scope != StaticScope.NONE:

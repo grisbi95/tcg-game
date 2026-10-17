@@ -15,7 +15,7 @@ static func validate_deploy(state: DuelState, intent: DeployCard) -> IntentRejec
 	var definition := state.catalog.get_card(card.definition_id)
 	if not _is_deployable(definition):
 		return IntentRejected.RejectReason.NOT_DEPLOYABLE
-	if not _is_in_deploy_zone(definition, intent.player, intent.cell):
+	if not _is_in_deploy_zone(state, definition, intent.player, intent.cell):
 		return IntentRejected.RejectReason.CELL_NOT_IN_DEPLOY_ZONE
 	if state.piece_at(intent.cell) != null:
 		return IntentRejected.RejectReason.CELL_NOT_FREE
@@ -38,7 +38,8 @@ static func announce_deploy(state: DuelState, intent: DeployCard, events: Array[
 	StackRules.add_to_stack(state, entry, events)
 
 
-## 205.1.2 à 205.1.10 : résout le déploiement `entry` selon le plateau du moment.
+## 205.1.2 à 205.1.10 : résout le déploiement `entry` selon le plateau du moment ; 205.1.2b :
+## la case n'est pas recontrôlée, même si le Building qui permettait Avant-poste est parti.
 static func resolve_deploy(state: DuelState, entry: StackEntry, events: Array[DuelEvent]) -> void:
 	var cell := entry.target_cells[0]
 	var occupant := state.piece_at(cell)
@@ -140,14 +141,17 @@ static func _is_deployable(definition: CardDefinition) -> bool:
 	return definition.card_type in [CardDefinition.CardType.UNIT, CardDefinition.CardType.BUILDING]
 
 
-# 205.1.2, 205.1.3, 205.1.4 ; Avant-poste (205.1.2a) vient à l'étape 1.7.
+# 205.1.2, 205.1.2a, 205.1.3, 205.1.4
 static func _is_in_deploy_zone(
-	definition: CardDefinition, side: DuelState.PlayerSide, cell: Vector2i
+	state: DuelState, definition: CardDefinition, side: DuelState.PlayerSide, cell: Vector2i
 ) -> bool:
 	if BoardGeometry.is_in_central_row(cell):
 		return false
 	if definition.card_type == CardDefinition.CardType.UNIT:
-		return BoardGeometry.is_in_first_row(side, cell)
+		return (
+			BoardGeometry.is_in_first_row(side, cell)
+			or KeywordRules.is_outpost_cell(state, side, cell)
+		)
 	return BoardGeometry.is_in_near_rows(side, cell)
 
 
@@ -163,16 +167,19 @@ static func _deploy_on_free_cell(
 	piece.cell = cell
 	state.pieces.append(piece)
 	events.append(PieceDeployed.new(piece.owner, piece.piece_id, cell))
+	TriggerRules.trigger(state, piece, EffectDefinition.TriggerEvent.ARRIVAL, events)
 
 
 # 205.1.6, 206.1.1 : l'Unit entre en jeu sans case et attaque ; si elle gagne, elle prend la
 # case (206.3.3). Un Hero ennemi n'est jamais sur une case de déploiement d'Unit (205.3.2).
+# 210.3.1a : entrer en jeu, c'est arriver sur le plateau (glossaire, En jeu).
 static func _enter_attacking(
 	state: DuelState, card: CardInstance, defender: Piece, events: Array[DuelEvent]
 ) -> void:
 	var piece := _make_piece(state, card, state.catalog.get_card(card.definition_id))
 	state.pieces.append(piece)
 	events.append(PieceEnteredAttacking.new(piece.owner, piece.piece_id, defender.cell))
+	TriggerRules.trigger(state, piece, EffectDefinition.TriggerEvent.ARRIVAL, events)
 	CombatRules.resolve_attack(state, piece, defender, events)
 
 
