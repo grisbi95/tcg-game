@@ -4,7 +4,6 @@ extends GdUnitTestSuite
 ## Catalogue : chargement JSON, édition, identifiants et construction du deck (ruleset 0.28,
 ## décisions 0002 et 0010).
 
-const DATA_DIRECTORY: String = "res://data/cards"
 const RULESET_README: String = "res://docs/ruleset/README.md"
 const CURRENT_EDITION_PATTERN: String = "Édition courante : \\*\\*([0-9.]+)\\*\\*"
 const EDITION: String = "0.28"
@@ -173,7 +172,7 @@ func test_two_files_merge_into_one_catalog() -> void:
 
 func test_missing_file_and_directory_are_reported() -> void:
 	var loader := CatalogLoader.new()
-	loader.load_file("res://data/cards/absent.json")
+	loader.load_file(TestCatalog.DATA_DIRECTORY.path_join("absent.json"))
 	loader.load_directory("res://data/absent")
 	assert_bool(_mentions(loader.find_errors(), "absent.json : lecture impossible")).is_true()
 	(
@@ -186,7 +185,7 @@ func test_data_cards_directory_loads_without_errors_in_the_current_edition() -> 
 	var edition := _current_ruleset_edition()
 	assert_str(edition).is_not_empty()
 	var loader := CatalogLoader.new(edition)
-	loader.load_directory(DATA_DIRECTORY)
+	loader.load_directory(TestCatalog.DATA_DIRECTORY)
 	assert_array(Array(loader.find_errors())).is_empty()
 
 

@@ -1,0 +1,289 @@
+{
+	"edition": "0.33",
+	"heroes": [
+		{
+			"id": "capitaine",
+			"name": "Capitaine",
+			"health": 15,
+			"text": "Les Units alliées adjacentes au Hero ont +1 Force. Pouvoir (2 Essence) : une Unit alliée ciblée a +1 Force jusqu'à la fin du tour.",
+			"power_cost": 2,
+			"passive": [
+				{
+					"kind": "modify_force",
+					"timing": "static",
+					"amount": 1,
+					"scope": "adjacent_allied_units"
+				}
+			],
+			"power": [
+				{
+					"kind": "modify_force",
+					"timing": "resolve",
+					"amount": 1,
+					"duration": "until_end_of_turn",
+					"target": {
+						"what": "piece",
+						"side": "ally",
+						"piece_kinds": [
+							"unit"
+						]
+					}
+				}
+			]
+		}
+	],
+	"cards": [
+		{
+			"id": "recrue",
+			"name": "Recrue",
+			"cost": 1,
+			"type": "unit",
+			"text": "",
+			"force": 2
+		},
+		{
+			"id": "soldat",
+			"name": "Soldat",
+			"cost": 2,
+			"type": "unit",
+			"text": "",
+			"force": 3
+		},
+		{
+			"id": "veteran",
+			"name": "Vétéran",
+			"cost": 3,
+			"type": "unit",
+			"text": "",
+			"force": 4
+		},
+		{
+			"id": "champion",
+			"name": "Champion",
+			"cost": 4,
+			"type": "unit",
+			"text": "",
+			"force": 5
+		},
+		{
+			"id": "colosse",
+			"name": "Colosse",
+			"cost": 5,
+			"type": "unit",
+			"text": "",
+			"force": 6
+		},
+		{
+			"id": "pillard",
+			"name": "Pillard",
+			"cost": 2,
+			"type": "unit",
+			"text": "Assaut 1",
+			"force": 2,
+			"keywords": [
+				{
+					"keyword": "assault",
+					"value": 1
+				}
+			]
+		},
+		{
+			"id": "gardien",
+			"name": "Gardien",
+			"cost": 2,
+			"type": "unit",
+			"text": "Rempart 1",
+			"force": 2,
+			"keywords": [
+				{
+					"keyword": "rampart",
+					"value": 1
+				}
+			]
+		},
+		{
+			"id": "heraut",
+			"name": "Héraut",
+			"cost": 3,
+			"type": "unit",
+			"text": "Arrivée : une Unit ennemie ciblée a −1 Force jusqu'à la fin du tour.",
+			"force": 3,
+			"keywords": [
+				{
+					"keyword": "arrival"
+				}
+			],
+			"effects": [
+				{
+					"kind": "modify_force",
+					"timing": "triggered",
+					"amount": -1,
+					"trigger": "arrival",
+					"duration": "until_end_of_turn",
+					"target": {
+						"what": "piece",
+						"side": "enemy",
+						"piece_kinds": [
+							"unit"
+						]
+					}
+				}
+			]
+		},
+		{
+			"id": "martyr",
+			"name": "Martyr",
+			"cost": 3,
+			"type": "unit",
+			"text": "Dernier souffle : une Unit alliée ciblée a +1 Force tant que la pièce est en jeu.",
+			"force": 3,
+			"keywords": [
+				{
+					"keyword": "last_breath"
+				}
+			],
+			"effects": [
+				{
+					"kind": "modify_force",
+					"timing": "triggered",
+					"amount": 1,
+					"trigger": "destroyed",
+					"duration": "while_piece_in_play",
+					"target": {
+						"what": "piece",
+						"side": "ally",
+						"piece_kinds": [
+							"unit"
+						]
+					}
+				}
+			]
+		},
+		{
+			"id": "palissade",
+			"name": "Palissade",
+			"cost": 2,
+			"type": "building",
+			"text": "",
+			"force": 4
+		},
+		{
+			"id": "bastion",
+			"name": "Bastion",
+			"cost": 3,
+			"type": "building",
+			"text": "",
+			"force": 5
+		},
+		{
+			"id": "campement",
+			"name": "Campement",
+			"cost": 3,
+			"type": "building",
+			"text": "Avant-poste",
+			"force": 4,
+			"keywords": [
+				{
+					"keyword": "outpost"
+				}
+			]
+		},
+		{
+			"id": "renfort",
+			"name": "Renfort",
+			"cost": 1,
+			"type": "spell",
+			"speed": "reaction",
+			"text": "Une Unit alliée ciblée a +2 Force jusqu'à la fin du tour.",
+			"effects": [
+				{
+					"kind": "modify_force",
+					"timing": "resolve",
+					"amount": 2,
+					"duration": "until_end_of_turn",
+					"target": {
+						"what": "piece",
+						"side": "ally",
+						"piece_kinds": [
+							"unit"
+						]
+					}
+				}
+			]
+		},
+		{
+			"id": "frappe",
+			"name": "Frappe",
+			"cost": 3,
+			"type": "spell",
+			"speed": "action",
+			"text": "Détruisez une Unit ennemie ciblée de Force 3 ou moins.",
+			"effects": [
+				{
+					"kind": "destroy",
+					"timing": "resolve",
+					"target": {
+						"what": "piece",
+						"side": "enemy",
+						"piece_kinds": [
+							"unit"
+						],
+						"max_force": 3
+					}
+				}
+			]
+		},
+		{
+			"id": "contre",
+			"name": "Contre",
+			"cost": 2,
+			"type": "spell",
+			"speed": "reaction",
+			"text": "Contrecarrez un Spell ciblé.",
+			"effects": [
+				{
+					"kind": "counter_spell",
+					"timing": "resolve",
+					"target": {
+						"what": "spell_on_stack"
+					}
+				}
+			]
+		},
+		{
+			"id": "levee",
+			"name": "Levée",
+			"cost": 2,
+			"type": "spell",
+			"speed": "action",
+			"text": "Créez un jeton Unit de Force 2 sur une case libre ciblée de votre première rangée.",
+			"effects": [
+				{
+					"kind": "create_token",
+					"timing": "resolve",
+					"token_piece_kind": "unit",
+					"token_force": 2,
+					"target": {
+						"what": "cell",
+						"row": "own_first"
+					}
+				}
+			]
+		},
+		{
+			"id": "lame",
+			"name": "Lame",
+			"cost": 1,
+			"type": "gear",
+			"text": "La Unit qui porte ce Gear a +1 Force.",
+			"effects": [
+				{
+					"kind": "modify_force",
+					"timing": "static",
+					"amount": 1,
+					"scope": "bearer"
+				}
+			]
+		}
+	]
+}
