@@ -30,11 +30,18 @@ static func deck() -> Array[StringName]:
 
 
 static func setup(rng_seed: int = DEFAULT_SEED) -> DuelSetup:
+	return mirror_setup(deck(), HERO_ID, rng_seed)
+
+
+## Les deux joueurs jouent le même Hero et le même deck.
+static func mirror_setup(
+	deck_ids: Array[StringName], hero_id: StringName, rng_seed: int
+) -> DuelSetup:
 	var duel_setup := DuelSetup.new()
-	duel_setup.deck_a = deck()
-	duel_setup.deck_b = deck()
-	duel_setup.hero_a = HERO_ID
-	duel_setup.hero_b = HERO_ID
+	duel_setup.deck_a = deck_ids.duplicate()
+	duel_setup.deck_b = deck_ids.duplicate()
+	duel_setup.hero_a = hero_id
+	duel_setup.hero_b = hero_id
 	duel_setup.rng_seed = rng_seed
 	return duel_setup
 
