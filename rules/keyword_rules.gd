@@ -28,15 +28,25 @@ static func is_outpost_cell(state: DuelState, side: DuelState.PlayerSide, cell: 
 		var is_own_building := piece.kind == Piece.PieceKind.BUILDING and piece.owner == side
 		if not is_own_building or not BoardGeometry.are_adjacent(piece.cell, cell):
 			continue
-		if _definition_of(state, piece).has_keyword(CardDefinition.Keyword.OUTPOST):
+		if _has_keyword(state, piece, CardDefinition.Keyword.OUTPOST):
 			return true
 	return false
 
 
 static func _keyword_value(state: DuelState, piece: Piece, keyword: CardDefinition.Keyword) -> int:
-	if piece.kind == Piece.PieceKind.HERO or piece.is_token():
+	if not _carries_keywords(piece):
 		return 0
 	return _definition_of(state, piece).keyword_value(keyword)
+
+
+static func _has_keyword(state: DuelState, piece: Piece, keyword: CardDefinition.Keyword) -> bool:
+	return _carries_keywords(piece) and _definition_of(state, piece).has_keyword(keyword)
+
+
+# 202.4.13 : un jeton ne porte aucun mot-clé ; 210.2.1, 210.3.1c, 210.3.2c, 210.4.1c, 210.4.2c :
+# seuls une Unit ou un Building en portent, jamais un Hero.
+static func _carries_keywords(piece: Piece) -> bool:
+	return piece.kind != Piece.PieceKind.HERO and not piece.is_token()
 
 
 static func _definition_of(state: DuelState, piece: Piece) -> CardDefinition:

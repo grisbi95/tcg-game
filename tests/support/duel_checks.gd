@@ -17,6 +17,19 @@ static func rejection_defects(
 	return defects
 
 
+## `first` puis son adversaire passent la priorité l'un après l'autre (208.3.1). Renvoie les
+## événements des deux soumissions.
+static func pass_twice(engine: DuelEngine, first: DuelState.PlayerSide) -> Array[DuelEvent]:
+	var events := engine.submit(PassPriority.new(first))
+	events.append_array(engine.submit(PassPriority.new(DuelState.opponent_of(first))))
+	return events
+
+
+## Vrai si l'étiquette décrit un événement `HeroPlaced`.
+static func is_hero_placed(label: String) -> bool:
+	return label.begins_with("HeroPlaced")
+
+
 static func card_ids(cards: Array[CardInstance]) -> Array[int]:
 	var identifiers: Array[int] = []
 	for card: CardInstance in cards:

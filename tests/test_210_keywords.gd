@@ -106,6 +106,32 @@ func test_210_4_2b_rampart_is_read_only_during_combat() -> void:
 	assert_int(ForceRules.current_force(state, state.find_piece(guard_id))).is_equal(FORCE)
 
 
+func test_210_3_2c_only_a_unit_or_a_building_carries_last_breath() -> void:
+	var last_breath := [{"keyword": "last_breath"}]
+	var effects := [CatalogSamples.triggered("destroyed")]
+	for base: Dictionary in [CatalogSamples.unit(), CatalogSamples.building()]:
+		var carrier := CatalogSamples.with_field(base, "keywords", last_breath)
+		carrier = CatalogSamples.with_field(carrier, "effects", effects)
+		assert_array(Array(_errors_of(carrier))).is_empty()
+	for base: Dictionary in [CatalogSamples.spell(), CatalogSamples.gear()]:
+		var refused := CatalogSamples.with_field(base, "keywords", last_breath)
+		(
+			assert_bool(CatalogSamples.mentions(_errors_of(refused), "LAST_BREATH est refusé"))
+			. is_true()
+		)
+
+
+func test_210_4_2c_only_a_unit_carries_rampart() -> void:
+	var rampart := [{"keyword": "rampart", "value": KEYWORD_VALUE}]
+	var unit := CatalogSamples.with_field(CatalogSamples.unit(), "keywords", rampart)
+	assert_array(Array(_errors_of(unit))).is_empty()
+	for base: Dictionary in [
+		CatalogSamples.building(), CatalogSamples.spell(), CatalogSamples.gear()
+	]:
+		var refused := CatalogSamples.with_field(base, "keywords", rampart)
+		assert_bool(CatalogSamples.mentions(_errors_of(refused), "RAMPART est refusé")).is_true()
+
+
 func test_210_2_1_outpost_allows_a_free_adjacent_cell() -> void:
 	_place_building(A, CAMP, "B2")
 	assert_int(_validate_deploy("A2")).is_equal(REASON.NONE)
@@ -178,6 +204,10 @@ func _add_with_keyword(
 	var definition := CardDefinition.from_dict(data)
 	assert_array(Array(definition.find_errors())).is_empty()
 	catalog.add_card(definition)
+
+
+func _errors_of(data: Dictionary) -> PackedStringArray:
+	return CardDefinition.from_dict(data).find_errors()
 
 
 func _place(side: DuelState.PlayerSide, definition_id: StringName, cell_name: String) -> int:

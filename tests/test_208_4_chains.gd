@@ -327,9 +327,7 @@ func _push_deploy(side: DuelState.PlayerSide, definition_id: StringName, cell_na
 func _pass_twice(first: DuelState.PlayerSide) -> Array[DuelEvent]:
 	if _engine.get_state() == null:
 		_engine.start_from_state(_builder.with_priority_player(first).build())
-	var events := _engine.submit(PassPriority.new(first))
-	events.append_array(_engine.submit(PassPriority.new(DuelState.opponent_of(first))))
-	return events
+	return DuelChecks.pass_twice(_engine, first)
 
 
 func _stack_ids() -> Array[int]:
