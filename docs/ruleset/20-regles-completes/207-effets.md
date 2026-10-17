@@ -20,6 +20,10 @@ Aucun Invariant.
 
 **207.1.6** [ACTÉ] Un joueur peut aussi annoncer un Spell de vitesse Réaction chaque fois qu'il peut répondre, y compris pendant le tour de son adversaire (décision 0061 ; voir 208.2.2, 208.2.3 et 208.2.4).
 
+**207.1.7** [ACTÉ] La carte d'un Spell résolu va dans la défausse du joueur à qui elle appartient (décision 0183 ; voir 201.3.3, 201.3.8, 201.5.1 et 208.3.2).
+
+**207.1.7a** [ACTÉ] La carte d'un Spell dont l'effet n'a pas lieu à sa résolution faute de cible valide va dans la défausse du joueur à qui elle appartient (décision 0183 ; voir 207.1.7 et 207.5.5).
+
 ## 207.2 Effets statiques
 
 **207.2.1** [ACTÉ] Un effet statique s'applique sans passer par la pile (décision 0093 ; voir 201.3.7).
@@ -149,6 +153,14 @@ Aucun Invariant.
 **207.5.15** [ACTÉ] Un effet ne cible ni un déploiement, ni une action normale, ni le pouvoir d'un Hero, ni un effet déclenché qui se trouve sur la pile (décision 0087 ; voir 207.5.14).
 
 **207.5.16** [ACTÉ] Une entrée de la pile ne se cible jamais elle-même, ni à son ajout à la pile, ni ensuite (décision 0088 ; voir 207.5.1).
+
+**207.5.17** [ACTÉ] Un joueur peut annoncer l'utilisation du pouvoir de son Hero qui exige une cible même s'il n'existe aucune cible légale (décision 0185 ; voir 202.3.12, 207.5.8 et 208.1.4).
+
+**207.5.17a** [ACTÉ] Une utilisation du pouvoir du Hero annoncée selon 207.5.17 n'a pas lieu à sa résolution (décision 0185 ; voir 200.4.1 et 207.5.5).
+
+**207.5.17b** [ACTÉ] Le coût payé pour une utilisation du pouvoir du Hero annoncée selon 207.5.17 reste dépensé (décision 0185 ; voir 203.3.3 et 207.5.7).
+
+**207.5.17c** [ACTÉ] Une utilisation du pouvoir du Hero annoncée selon 207.5.17 compte pour la limite de 202.3.14 (décision 0185 ; voir 202.3.17).
 
 ## 207.6 Contrecarrer
 

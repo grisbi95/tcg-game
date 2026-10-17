@@ -17,6 +17,19 @@ static func add_to_stack(state: DuelState, entry: StackEntry, events: Array[Duel
 	return entry.stack_entry_id
 
 
+## 208.1.6 à 208.1.11, 202.3.15, 202.3.16 : annonce du joueur actif, phase principale, pile vide.
+static func validate_main_phase_with_empty_stack(
+	state: DuelState, side: DuelState.PlayerSide
+) -> IntentRejected.RejectReason:
+	if state.phase != DuelState.DuelPhase.MAIN:
+		return IntentRejected.RejectReason.WRONG_PHASE
+	if side != state.active_player:
+		return IntentRejected.RejectReason.NOT_YOUR_TURN
+	if not state.stack.is_empty():
+		return IntentRejected.RejectReason.STACK_NOT_EMPTY
+	return IntentRejected.RejectReason.NONE
+
+
 ## 208.2.2, 208.2.4, 208.3.1 : raison du refus de `intent`, ou NONE. L'attente est contrôlée
 ## par DuelEngine. Pur.
 static func validate_pass(state: DuelState, intent: PassPriority) -> IntentRejected.RejectReason:
@@ -50,14 +63,20 @@ static func _resolve_stack(state: DuelState, events: Array[DuelEvent]) -> void:
 	state.priority_player = state.active_player
 
 
-# 208.3.2 : chaque genre se résout par le module de son chapitre ; les genres de l'étape 1.6
-# (Spell, pouvoir du Hero, Gear) et 1.7 (effet déclenché) ne font encore rien.
+# 208.3.2 : chaque genre se résout par le module de son chapitre ; l'effet déclenché vient à
+# l'étape 1.7.
 static func _resolve_entry(state: DuelState, entry: StackEntry, events: Array[DuelEvent]) -> void:
 	match entry.kind:
 		StackEntry.StackEntryKind.DEPLOY:
 			ActionRules.resolve_deploy(state, entry, events)
 		StackEntry.StackEntryKind.NORMAL_ACTION:
 			ActionRules.resolve_normal_action(state, entry, events)
+		StackEntry.StackEntryKind.SPELL:
+			EffectRules.resolve_spell(state, entry, events)
+		StackEntry.StackEntryKind.HERO_POWER:
+			CardRules.resolve_hero_power(state, entry, events)
+		StackEntry.StackEntryKind.ATTACH_GEAR:
+			CardRules.resolve_attach_gear(state, entry, events)
 	# 209.2.2 : une partie arrêtée pendant la résolution s'arrête aussitôt.
 	if not state.is_ended():
 		events.append(StackEntryResolved.new(entry.owner, entry.stack_entry_id))

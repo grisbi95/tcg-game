@@ -6,7 +6,7 @@ extends RefCounted
 ## 208.1.1, 208.1.8, 208.1.9, 205.1.2 à 205.1.4, 203.3.2 : raison du refus de `intent`, ou
 ## NONE. L'attente est contrôlée par DuelEngine. Pur.
 static func validate_deploy(state: DuelState, intent: DeployCard) -> IntentRejected.RejectReason:
-	var reason := _validate_main_phase_with_empty_stack(state, intent.player)
+	var reason := StackRules.validate_main_phase_with_empty_stack(state, intent.player)
 	if reason != IntentRejected.RejectReason.NONE:
 		return reason
 	var card := state.get_player(intent.player).find_card_in_hand(intent.card_instance_id)
@@ -48,7 +48,7 @@ static func resolve_deploy(state: DuelState, entry: StackEntry, events: Array[Du
 	elif definition.card_type == CardDefinition.CardType.UNIT and occupant.owner != entry.owner:
 		_enter_attacking(state, entry.card, occupant, events)
 	else:
-		_return_to_hand(state, entry.card, events)
+		ZoneRules.return_card_to_hand(state, entry.card, events)
 
 
 ## 204.4.5, 204.4.6, 208.1.2, 208.1.10, 208.1.11, 205.2.5, 205.2.6, 205.3.1 à 205.3.3,
@@ -56,7 +56,7 @@ static func resolve_deploy(state: DuelState, entry: StackEntry, events: Array[Du
 static func validate_normal_action(
 	state: DuelState, intent: TakeNormalAction
 ) -> IntentRejected.RejectReason:
-	var reason := _validate_main_phase_with_empty_stack(state, intent.player)
+	var reason := StackRules.validate_main_phase_with_empty_stack(state, intent.player)
 	if reason != IntentRejected.RejectReason.NONE:
 		return reason
 	if state.get_player(intent.player).normal_action_used_this_turn:
@@ -135,19 +135,6 @@ static func _validate_unit_target(
 	return IntentRejected.RejectReason.NONE
 
 
-# 208.1.8, 208.1.9, 208.1.10, 208.1.11 : annonce du joueur actif, phase principale, pile vide.
-static func _validate_main_phase_with_empty_stack(
-	state: DuelState, side: DuelState.PlayerSide
-) -> IntentRejected.RejectReason:
-	if state.phase != DuelState.DuelPhase.MAIN:
-		return IntentRejected.RejectReason.WRONG_PHASE
-	if side != state.active_player:
-		return IntentRejected.RejectReason.NOT_YOUR_TURN
-	if not state.stack.is_empty():
-		return IntentRejected.RejectReason.STACK_NOT_EMPTY
-	return IntentRejected.RejectReason.NONE
-
-
 # 202.2.2, 202.2.3, 202.2.5, 202.2.7 : seules les Units et les Buildings deviennent des pièces.
 static func _is_deployable(definition: CardDefinition) -> bool:
 	return definition.card_type in [CardDefinition.CardType.UNIT, CardDefinition.CardType.BUILDING]
@@ -187,17 +174,6 @@ static func _enter_attacking(
 	state.pieces.append(piece)
 	events.append(PieceEnteredAttacking.new(piece.owner, piece.piece_id, defender.cell))
 	CombatRules.resolve_attack(state, piece, defender, events)
-
-
-# 205.1.7, 205.1.8, 205.1.9, 205.1.10, 201.3.6a : l'Essence payée reste dépensée.
-static func _return_to_hand(state: DuelState, card: CardInstance, events: Array[DuelEvent]) -> void:
-	var owner_player := state.get_player(card.owner)
-	if ZoneRules.has_room_in_hand(state, card.owner):
-		owner_player.hand.append(card)
-		events.append(CardReturnedToHand.new(card.owner, card.card_instance_id))
-	else:
-		owner_player.discard.append(card)
-		events.append(CardDiscarded.new(card.owner, card.card_instance_id))
 
 
 # 202.2.2, 202.2.3, 201.5.2 : une Unit ou un Building, contrôlé par le joueur de sa carte.

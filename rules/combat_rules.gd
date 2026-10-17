@@ -30,9 +30,11 @@ static func resolve_attack(
 
 
 ## 206.3.2, 206.3.2a, 202.2.13 : retire `piece` du plateau ; sa carte et son Gear vont dans la
-## défausse de leur joueur, un jeton ne va nulle part.
+## défausse de leur joueur, un jeton ne va nulle part ; 207.4.7a : ses effets « tant que la
+## pièce est en jeu » cessent.
 static func destroy_piece(state: DuelState, piece: Piece, events: Array[DuelEvent]) -> void:
 	state.pieces.erase(piece)
+	EffectRules.end_effects_on_piece(state, piece, events)
 	if piece.card != null:
 		state.get_player(piece.card.owner).discard.append(piece.card)
 	events.append(PieceDestroyed.new(piece.owner, piece.piece_id))

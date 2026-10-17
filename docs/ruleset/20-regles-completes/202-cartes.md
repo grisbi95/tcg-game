@@ -68,6 +68,18 @@ Aucun Invariant.
 
 **202.2.21** [ACTÉ] L'effet qu'un Spell produit est ponctuel ou à durée (décision 0099 ; voir 207.4.1, 207.4.2 et 207.4.9).
 
+**202.2.22** [ACTÉ] Un joueur choisit l'Unit à laquelle s'attache un Gear quand il annonce ce Gear (décision 0184 ; voir 202.2.14, 207.5.1 et 208.1.5).
+
+**202.2.23** [ACTÉ] L'Unit que choisit un joueur pour un Gear est une cible, soumise à la section 207.5 (décision 0184 ; voir 202.2.22).
+
+**202.2.24** [ACTÉ] Si l'Unit choisie pour un Gear est une cible invalide à la résolution de l'annonce de ce Gear, le Gear ne s'attache pas (décision 0184 ; voir 207.5.5, 207.5.6a et 208.1.5).
+
+**202.2.24a** [ACTÉ] Un Gear qui ne s'attache pas selon 202.2.24 revient dans la main de son joueur (décision 0184 ; voir 205.1.7 et 205.1.8).
+
+**202.2.24b** [ACTÉ] Un Gear qui doit revenir dans la main selon 202.2.24a va dans la défausse du joueur à qui il appartient si son entrée dans la main ferait dépasser la limite de main (décision 0184 ; voir 201.3.5, 201.3.6a et 205.1.10).
+
+**202.2.24c** [ACTÉ] L'Essence payée pour un Gear qui ne s'attache pas selon 202.2.24 reste dépensée (décision 0184 ; voir 203.3.3, 205.1.9 et 207.5.7).
+
 ## 202.3 Le Hero
 
 **202.3.1** [ACTÉ] Chaque joueur a un Hero (décision 0008).

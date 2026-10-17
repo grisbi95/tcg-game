@@ -1,0 +1,147 @@
+extends GdUnitTestSuite
+## Effets statiques et auras lus par ForceRules (ruleset 0.32, sections 207.2 et 206.5 ;
+## 202.3.18 pour le passif du Hero).
+
+const UNIT_ID: StringName = &"plain_unit"
+const AURA_UNIT_ID: StringName = &"aura_unit"
+const ENEMY_ID: StringName = &"enemy_unit"
+const BUILDING_ID: StringName = &"plain_building"
+const GEAR_ID: StringName = &"sample_gear"
+const HERO_ID: StringName = &"sample_hero"
+const UNIT_FORCE: int = 3
+const AURA: int = 1  # CatalogSamples.modify_force_static()
+const BUILDING_FORCE: int = 4
+const TOKEN_FORCE: int = 1
+
+const A: DuelState.PlayerSide = DuelState.PlayerSide.A
+const B: DuelState.PlayerSide = DuelState.PlayerSide.B
+
+var _builder: DuelStateBuilder
+
+
+func before_test() -> void:
+	var catalog := Catalog.new()
+	SetupSamples.add_unit(catalog, UNIT_ID, UNIT_FORCE)
+	SetupSamples.add_unit(catalog, ENEMY_ID, UNIT_FORCE)
+	SetupSamples.add_building(catalog, BUILDING_ID, BUILDING_FORCE)
+	var aura_unit := CatalogSamples.with_field(CatalogSamples.unit(), "id", String(AURA_UNIT_ID))
+	aura_unit = CatalogSamples.with_field(aura_unit, "name", "Unit à aura")
+	aura_unit = CatalogSamples.with_field(
+		aura_unit,
+		"effects",
+		[CatalogSamples.modify_force_static({"scope": "adjacent_allied_units"})]
+	)
+	catalog.add_card(CardDefinition.from_dict(aura_unit))
+	catalog.add_card(CardDefinition.from_dict(CatalogSamples.gear()))
+	catalog.add_hero(HeroDefinition.from_dict(CatalogSamples.hero()))
+	_builder = DuelStateBuilder.new(DuelConfig.new(), catalog)
+
+
+func test_202_3_18_hero_passive_boosts_adjacent_allied_units() -> void:
+	var near_id := _place(A, UNIT_ID, "B1")
+	var far_id := _place(A, UNIT_ID, "A2")
+	var state := _builder.with_hero_definition(A, HERO_ID).build()
+	assert_int(_force(state, near_id)).is_equal(UNIT_FORCE + AURA)
+	assert_int(_force(state, far_id)).is_equal(UNIT_FORCE)
+
+
+func test_207_2_1_static_effect_applies_without_the_stack() -> void:
+	var near_id := _place(A, UNIT_ID, "B1")
+	var state := _builder.with_hero_definition(A, HERO_ID).build()
+	assert_array(state.stack).is_empty()
+	assert_int(_force(state, near_id)).is_equal(UNIT_FORCE + AURA)
+
+
+func test_206_5_4_aura_of_a_unit_touches_adjacent_allied_units() -> void:
+	_place(A, AURA_UNIT_ID, "B2")
+	var ally_id := _place(A, UNIT_ID, "B3")
+	var enemy_id := _place(B, ENEMY_ID, "C2")
+	var state := _builder.build()
+	assert_int(_force(state, ally_id)).is_equal(UNIT_FORCE + AURA)
+	assert_int(_force(state, enemy_id)).is_equal(UNIT_FORCE)
+
+
+func test_206_5_5_aura_touches_neither_its_bearer_nor_buildings() -> void:
+	var bearer_id := _place(A, AURA_UNIT_ID, "B2")
+	var building_id := _builder.place_piece(
+		A, Piece.PieceKind.BUILDING, DuelStateBuilder.cell("B3"), BUILDING_ID
+	)
+	var state := _builder.build()
+	assert_int(_force(state, bearer_id)).is_equal(UNIT_FORCE)
+	assert_int(_force(state, building_id)).is_equal(BUILDING_FORCE)
+
+
+func test_206_5_5_aura_stops_when_position_condition_fails() -> void:
+	_place(A, AURA_UNIT_ID, "B2")
+	var ally_id := _place(A, UNIT_ID, "B3")
+	var state := _builder.build()
+	state.find_piece(ally_id).cell = DuelStateBuilder.cell("D3")
+	assert_int(_force(state, ally_id)).is_equal(UNIT_FORCE)
+
+
+func test_207_2_4_static_effect_stops_when_bearer_leaves() -> void:
+	var bearer_id := _place(A, AURA_UNIT_ID, "B2")
+	var ally_id := _place(A, UNIT_ID, "B3")
+	var state := _builder.build()
+	var events: Array[DuelEvent] = []
+	CombatRules.destroy_piece(state, state.find_piece(bearer_id), events)
+	assert_int(_force(state, ally_id)).is_equal(UNIT_FORCE)
+
+
+func test_202_4_5a_token_receives_an_aura() -> void:
+	_place(A, AURA_UNIT_ID, "B2")
+	var token_id := _builder.place_token(
+		A, Piece.PieceKind.UNIT, DuelStateBuilder.cell("B3"), TOKEN_FORCE
+	)
+	var state := _builder.build()
+	assert_int(_force(state, token_id)).is_equal(TOKEN_FORCE + AURA)
+
+
+func test_207_2_8_gear_effect_is_carried_by_its_unit() -> void:
+	var unit_id := _place(A, UNIT_ID, "B2")
+	_builder.attach_gear(unit_id, GEAR_ID)
+	var state := _builder.build()
+	assert_int(_force(state, unit_id)).is_equal(UNIT_FORCE + AURA)
+
+
+func test_207_2_9a_gear_effect_stops_when_detached() -> void:
+	var unit_id := _place(A, UNIT_ID, "B2")
+	_builder.attach_gear(unit_id, GEAR_ID)
+	var state := _builder.build()
+	state.find_piece(unit_id).attached_gear = null
+	assert_int(_force(state, unit_id)).is_equal(UNIT_FORCE)
+
+
+func test_206_5_3_attacker_keeps_aura_it_leaves_for_the_combat() -> void:
+	var attacker_id := _place(A, UNIT_ID, "B1")
+	var defender_id := _place(B, ENEMY_ID, "B2")
+	var state := _builder.with_hero_definition(A, HERO_ID).build()
+	var events: Array[DuelEvent] = []
+	var attacker := state.find_piece(attacker_id)
+	CombatRules.resolve_attack(state, attacker, state.find_piece(defender_id), events)
+	assert_int((events[0] as CombatResolved).attacker_force).is_equal(UNIT_FORCE + AURA)
+	assert_object(state.find_piece(defender_id)).is_null()
+	assert_str(BoardGeometry.cell_name(attacker.cell)).is_equal("B2")
+
+
+func test_206_5_2_auras_read_before_attacker_enters_defender_cell() -> void:
+	var attacker_id := _place(A, UNIT_ID, "D1")
+	var defender_id := _place(B, ENEMY_ID, "D2")
+	_place(A, AURA_UNIT_ID, "E2")
+	var state := _builder.build()
+	var events: Array[DuelEvent] = []
+	CombatRules.resolve_attack(
+		state, state.find_piece(attacker_id), state.find_piece(defender_id), events
+	)
+	assert_int((events[0] as CombatResolved).attacker_force).is_equal(UNIT_FORCE)
+	assert_object(state.find_piece(attacker_id)).is_null()
+
+
+func _place(side: DuelState.PlayerSide, definition_id: StringName, cell_name: String) -> int:
+	return _builder.place_piece(
+		side, Piece.PieceKind.UNIT, DuelStateBuilder.cell(cell_name), definition_id
+	)
+
+
+func _force(state: DuelState, piece_id: int) -> int:
+	return ForceRules.current_force(state, state.find_piece(piece_id))

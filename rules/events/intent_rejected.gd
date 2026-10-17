@@ -34,6 +34,11 @@ enum RejectReason {
 	CELL_NOT_ADJACENT,  # 205.2.5, 205.3.1
 	CELL_OCCUPIED_BY_ALLY,  # 205.2.6
 	CELL_OUTSIDE_HERO_ROWS,  # 205.3.2
+	WRONG_TARGET_COUNT,  # 207.5.1, 207.5.8, 207.5.10 : cibles hors des bornes ou d'un genre non exigé
+	ILLEGAL_TARGET,  # 207.5.6, 207.5.11 à 207.5.16 : cible qui ne remplit pas les conditions
+	NOT_A_SPELL,  # 208.1.3 : seule une carte Spell s'annonce comme Spell
+	NOT_A_GEAR,  # 208.1.5 : seule une carte Gear s'attache
+	HERO_POWER_ALREADY_USED,  # 202.3.14, 202.3.17
 }
 
 ## Intention refusée, telle que soumise ; null si le refus ne vient pas d'une intention.

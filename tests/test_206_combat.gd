@@ -7,7 +7,7 @@ const STRONG_ID: StringName = &"strong_unit"
 const WEAK_ID: StringName = &"weak_unit"
 const EQUAL_ID: StringName = &"equal_unit"
 const WALL_ID: StringName = &"wall_building"
-const GEAR_ID: StringName = &"GEAR_TEST"
+const GEAR_ID: StringName = &"sample_gear"
 const STRONG_FORCE: int = 5
 const WEAK_FORCE: int = 2
 const HERO_HEALTH: int = DuelStateBuilder.DEFAULT_HERO_HEALTH
@@ -27,6 +27,7 @@ func before_test() -> void:
 	SetupSamples.add_unit(catalog, WEAK_ID, WEAK_FORCE)
 	SetupSamples.add_unit(catalog, EQUAL_ID, STRONG_FORCE)
 	SetupSamples.add_building(catalog, WALL_ID, STRONG_FORCE)
+	catalog.add_card(CardDefinition.from_dict(CatalogSamples.gear()))
 	_builder = DuelStateBuilder.new(DuelConfig.new(), catalog)
 	_events = []
 

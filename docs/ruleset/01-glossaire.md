@@ -14,7 +14,7 @@
 | Appartenir | Relation d'une carte avec le joueur dont le deck ou le Hero la fournit, d'un effet déclenché avec le joueur à qui appartient la carte ou le jeton qui porte cet effet, ou d'un jeton avec le joueur à qui appartient l'entrée de la pile qui l'a créé ; voir 201.5.1, 201.5.3, 201.5.4, 207.3.4 et 207.3.4a. | |
 | Arrivée | Mot-clé de déclencheur dont l'effet se déclenche quand la pièce qui le porte arrive sur le plateau ; voir 210.3.1, 210.3.1a, 210.3.1b, 210.3.1c et 202.4.13a. | |
 | Assaut | Mot-clé de combat à valeur X, qui donne à la pièce X de Force de plus quand elle attaque ; voir 210.4.1, 210.4.1a, 210.4.1b et 210.4.1c. | |
-| Attacher | Lier un Gear à une pièce, qui porte alors ce Gear ; voir 202.2.6, 202.2.8, 207.2.8 et 208.1.5. | |
+| Attacher | Lier un Gear à une pièce, qui porte alors ce Gear ; voir 202.2.6, 202.2.8, 202.2.22, 202.2.24, 207.2.8 et 208.1.5. | |
 | Attaquant | Pièce qui attaque, dans un combat ; voir 206.1.1. | |
 | Attaquer | Pour une pièce, engager un combat contre une pièce ennemie, réglé au chapitre 206 ; voir 205.1.6, 205.2.3 et 206.1.1. | |
 | Aura | Effet statique dont le résultat dépend de la position des pièces sur le plateau ; voir Effet statique, 206.5.2, 206.5.3, 206.5.4 et 206.5.5. | |
@@ -22,8 +22,8 @@
 | Building | Type de carte de deck, et pièce du plateau issue d'une carte de ce type ou jeton que désigne l'effet qui le crée ; voir 202.2.3, 202.4.8 et 202.4.11. | |
 | Carte | Élément de jeu qui se trouve dans une zone. | |
 | Case | Position du plateau. | |
-| Cible | Pièce du plateau, case ou Spell de la pile qu'un effet vise, choisie quand l'entrée de la pile qui porte cet effet s'y ajoute ; voir 202.4.12, 207.5.1, 207.5.2, 207.5.3, 207.5.6, 207.5.11, 207.5.14 et 207.5.16. | |
-| Cible légale | Cible qui remplit, au moment où l'entrée s'ajoute à la pile, les conditions que la carte pose à ses cibles et celles de la section 207.5 ; voir 207.5.8, 207.5.9 et 207.5.10. | |
+| Cible | Pièce du plateau, case ou Spell de la pile qu'un effet vise, choisie quand l'entrée de la pile qui porte cet effet s'y ajoute ; voir 202.2.23, 202.4.12, 207.5.1, 207.5.2, 207.5.3, 207.5.6, 207.5.11, 207.5.14 et 207.5.16. | |
+| Cible légale | Cible qui remplit, au moment où l'entrée s'ajoute à la pile, les conditions que la carte pose à ses cibles et celles de la section 207.5 ; voir 207.5.8, 207.5.9, 207.5.10 et 207.5.17. | |
 | Colonne | Alignement de cases du plateau qui s'étend d'un joueur à l'autre. | |
 | Combat | Affrontement d'un attaquant et d'un défenseur, réglé au chapitre 206 ; voir 206.1.1, 206.1.2, 206.2.1 et 206.4.2. | |
 | Compteur de fatigue | Valeur propre à chaque joueur, qui augmente chaque fois qu'il doit piocher alors que son deck est vide et fixe les PV que perd alors son Hero ; voir 209.5.1, 209.5.2, 209.5.2a, 209.5.3, 209.5.4 et 209.5.4a. | |
@@ -68,7 +68,7 @@
 | Joueur | Personne qui prend part à une partie. | |
 | Joueur actif | Joueur dont c'est le tour ; voir 204.4.2 et 208.4.6. | |
 | Libre | Se dit d'une case qui ne contient aucune pièce ; voir 201.0.1, 202.4.12 et 202.4.12b. | |
-| Limite de main | Nombre maximal de cartes qu'un joueur peut avoir en main ; voir 201.3.4, 201.3.5, 201.3.6, 201.3.6a et 205.1.10. | |
+| Limite de main | Nombre maximal de cartes qu'un joueur peut avoir en main ; voir 201.3.4, 201.3.5, 201.3.6, 201.3.6a, 202.2.24b et 205.1.10. | |
 | Main | Zone hors du plateau qui contient les cartes qu'un joueur tient. | |
 | Main de départ | Cartes qu'un joueur a en main après avoir pioché pendant la préparation ; voir 204.1.15 et 204.2.4. | |
 | Mélanger | Mettre les cartes de son deck dans un ordre aléatoire ; voir 204.1.6 et 204.2.7. | |
@@ -86,7 +86,7 @@
 | Pile | Zone commune aux deux joueurs qui forme l'ensemble ordonné des annonces et des effets déclenchés en attente de résolution ; voir 201.3.7, 201.3.8, 201.4.7, 207.3.2 et le chapitre 208. | |
 | Piocher | Faire passer la carte du dessus de son deck dans sa main ; voir 204.1.15, 204.2.5, 204.3.6 et 204.3.7. | |
 | Plateau | Surface de jeu commune aux deux joueurs, divisée en cases. | |
-| Pouvoir | Capacité d'un Hero que son joueur choisit d'utiliser ; voir 202.3.12, 202.3.13, 202.3.14, 202.3.15, 202.3.16 et 202.3.17. | |
+| Pouvoir | Capacité d'un Hero que son joueur choisit d'utiliser ; voir 202.3.12, 202.3.13, 202.3.14, 202.3.15, 202.3.16, 202.3.17 et 207.5.17. | |
 | Premier joueur | Joueur qui joue le premier tour de la partie ; voir 204.3.4. | |
 | Première rangée | Rangée du plateau la plus proche d'un joueur. | |
 | Préparation | Période de la partie qui précède le premier tour et comprend la mise en place de la section 204.1 et le mulligan ; voir 204.1.9, 204.1.10 et 204.1.11. | |
@@ -104,7 +104,7 @@
 | Résoudre | Faire avoir lieu une annonce ou un effet déclenché de la pile ; voir 208.3.1, 208.3.2 et 208.3.2a. | |
 | Source | Élément d'un joueur qui produit l'Essence ; voir 203.1.2. | |
 | Sous-règle | Règle dont l'identifiant ajoute une lettre à celui de la règle qu'elle précise ; voir 200.1.1. | |
-| Spell | Type de carte de deck ; voir 202.2.5, 202.2.20, 202.2.21 et 207.1.1. | |
+| Spell | Type de carte de deck ; voir 202.2.5, 202.2.20, 202.2.21, 207.1.1, 207.1.7 et 207.1.7a. | |
 | Temps écoulé | État d'un joueur dont la pendule atteint 0 minute, qui perd alors la partie, sauf si le temps de son adversaire est écoulé en même temps, la partie étant alors nulle ; voir 201.1.2b, 201.1.3c, 206.4.6b, 209.2.8, 209.2.8a, 209.2.9 et 209.4.5. | |
 | Texte | Énoncé que porte une carte, qui peut être vide ; voir 202.1.4 et 202.3.8. | |
 | Tour | Période de la partie attribuée à un joueur ; voir le chapitre 204. | |
