@@ -311,3 +311,9 @@
 - Pouvoir du Hero sans cible légale, dans [207-effets.md](20-regles-completes/207-effets.md), section 207.5 Cibles et validité : un joueur peut annoncer l'utilisation du pouvoir de son Hero qui exige une cible même s'il n'existe aucune cible légale ; ce pouvoir n'a alors pas lieu à sa résolution, son coût reste dépensé et l'utilisation compte pour la limite de 202.3.14 ; la règle ne vise que le pouvoir qui exige une cible, 207.5.10 n'est pas modifiée et son application à un pouvoir qui exigerait plusieurs cibles n'est pas tranchée. Identifiants ajoutés : 207.5.17, 207.5.17a, 207.5.17b, 207.5.17c. Termes modifiés au glossaire, renvois seulement : Cible légale, Pouvoir. Question ouverte Q-084 créée puis tranchée. Décision associée : [0185](40-decisions/0185-pouvoir-du-hero-sans-cible-legale.md).
 - Aucun identifiant supprimé. Aucune question ouverte ne reste.
 - [README.md](README.md) : édition courante passée à 0.32.
+
+## 0.33 · 17 octobre 2026 · majeure · réponse à la question Q-085
+
+- Déploiement sur une case d'Avant-poste dont le Building a quitté le plateau, dans [205-actions.md](20-regles-completes/205-actions.md), section 205.1 Déploiement : un déploiement annoncé sur une case que permet Avant-poste se résout selon 205.1.6 et 205.1.7, même si le Building qui a Avant-poste a quitté le plateau. Identifiant ajouté : 205.1.2b. Aucun terme ajouté ni modifié au glossaire. Question ouverte Q-085 créée puis tranchée. Décision associée : [0186](40-decisions/0186-deploiement-sur-une-case-d-avant-poste-dont-le-building-a-quitte-le-plateau.md).
+- Aucun identifiant modifié ni supprimé. Aucune question ouverte ne reste.
+- [README.md](README.md) : édition courante passée à 0.33.

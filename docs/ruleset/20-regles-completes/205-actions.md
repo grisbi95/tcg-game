@@ -14,6 +14,8 @@ Aucun Invariant.
 
 **205.1.2a** [ACTÉ] Une Unit peut aussi se déployer sur une case que permet le mot-clé Avant-poste (décision 0041 ; voir 210.2.1).
 
+**205.1.2b** [ACTÉ] Un déploiement annoncé sur une case que permet Avant-poste se résout selon 205.1.6 et 205.1.7, même si le Building qui a Avant-poste a quitté le plateau (décision 0186 ; voir 205.1.5 et 210.2.1).
+
 **205.1.3** [ACTÉ] Un Building se déploie sur une case libre de l'une des deux rangées les plus proches de son joueur (décision 0040).
 
 **205.1.4** [ACTÉ] Aucun joueur ne déploie dans la rangée centrale (décision 0040).
