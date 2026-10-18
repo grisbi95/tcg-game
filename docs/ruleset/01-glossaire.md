@@ -79,7 +79,7 @@
 | Partie nulle | Issue d'une partie qui s'arrête sans vainqueur ; voir 201.1.2a, 201.1.2b, 209.2.8a et 209.3.1. | |
 | Passer | Renoncer à répondre ; voir 208.2.2, 208.2.4 et 208.3.1. | |
 | Passif | Effet statique d'un Hero ; voir Effet statique, 202.3.11 et 202.3.18. | |
-| Payer | Fournir l'Essence qu'exige un coût ; voir 203.2.4, 203.3.1, 203.3.2 et 203.3.3. | |
+| Payer | Fournir l'Essence qu'exige un coût ; voir 203.2.4, 203.3.1, 203.3.2, 203.3.2a, 203.3.2b et 203.3.3. | |
 | Pendule | Temps dont dispose chaque joueur pour toute la partie, qui ne tourne que quand les règles attendent une décision de lui ; voir 209.4.1, 209.4.2, 209.4.2d, 209.4.3, 209.4.4 et 209.4.4f. | |
 | Phase principale | Phase du tour qui suit le début du tour, pendant laquelle le joueur actif agit ; voir 204.4.1, 204.4.2 et 208.4.11. | |
 | Pièce | Élément qui occupe une case du plateau. | |
@@ -100,7 +100,8 @@
 | Règle du jeu | Règle numérotée des règles complètes, par opposition au texte d'une carte ; voir 200.2.1 et 200.3.1b. | |
 | Rempart | Mot-clé de combat à valeur X, qui donne à la pièce X de Force de plus quand elle défend ; voir 210.4.2, 210.4.2a, 210.4.2b et 210.4.2c. | |
 | Répondre | Agir pendant le tour d'un autre joueur ou en réaction à une action ; voir 204.3.9, 208.2.3, 208.2.4 et 208.4.5. | |
-| Réserve | Emplacement propre à chaque joueur, qui contient ses Sources qui ne sont pas encore entrées en jeu ; voir 203.5.1, 204.1.12 et 204.3.5. | |
+| Réserve | Emplacement propre à chaque joueur, qui contient ses Sources qui ne sont pas encore entrées en jeu, sans rapport avec la réserve d'Essence ; voir 203.5.1, 204.1.12 et 204.3.5. | |
+| Réserve d'Essence | Essence qu'un joueur a produite pendant son propre tour et n'a pas encore dépensée, perdue à la fin de ce tour ; voir 203.1.3, 203.6.1, 203.6.2, 203.6.3, 203.6.4, 203.6.5, 203.6.10, 203.6.12, 201.4.10 et 204.5.7a. | |
 | Résoudre | Faire avoir lieu une annonce ou un effet déclenché de la pile ; voir 208.3.1, 208.3.2 et 208.3.2a. | |
 | Source | Élément d'un joueur qui produit l'Essence ; voir 203.1.2. | |
 | Sous-règle | Règle dont l'identifiant ajoute une lettre à celui de la règle qu'elle précise ; voir 200.1.1. | |

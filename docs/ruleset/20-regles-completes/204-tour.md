@@ -124,3 +124,5 @@ Aucun Invariant.
 
 **204.5.7** [ACTÉ] Une fois la pile vide, les effets qui durent jusqu'à la fin du tour prennent fin (décision 0071 ; voir 204.5.6).
 
+**204.5.7a** [ACTÉ] Quand les effets de 204.5.7 prennent fin, l'Essence que contient la réserve d'Essence du joueur actif est perdue (décision 0193 ; voir 203.1.3 et 203.6.1).
+

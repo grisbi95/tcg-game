@@ -40,6 +40,7 @@ enum RejectReason {
 	NOT_A_GEAR,  # 208.1.5 : seule une carte Gear s'attache
 	HERO_POWER_ALREADY_USED,  # 202.3.14, 202.3.17
 	WRONG_TRIGGER_ORDER,  # 208.4.6, 208.4.7 : l'ordre cite chaque effet attendu une fois, seul
+	NO_ESSENCE_PRODUCED,  # 203.6.3, 203.6.4 : produire de l'Essence incline ou recycle une Source
 }
 
 ## Intention refusée, telle que soumise ; null si le refus ne vient pas d'une intention.

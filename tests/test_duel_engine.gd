@@ -31,6 +31,19 @@ func test_unknown_intent_rejected() -> void:
 	_assert_rejected(engine, DuelIntent.new(A), REASON.UNKNOWN_INTENT)
 
 
+func test_decision_0001_current_force_is_read_through_the_engine() -> void:
+	var builder := DuelStateBuilder.new(DuelConfig.new(), _catalog)
+	var definition_id := SetupSamples.deck()[0]
+	var piece_id := builder.place_piece(
+		A, Piece.PieceKind.UNIT, DuelStateBuilder.cell("B2"), definition_id
+	)
+	var engine := _engine_on(builder)
+	var piece := engine.get_state().find_piece(piece_id)
+	var expected := ForceRules.current_force(engine.get_state(), piece)
+	assert_int(engine.current_force(piece_id)).is_equal(expected)
+	assert_int(engine.current_force(piece_id + 100)).is_equal(CardDefinition.NO_FORCE)
+
+
 func test_validate_is_pure() -> void:
 	var engine := _engine_on(DuelStateBuilder.new())
 	var snapshot := engine.get_state().clone()

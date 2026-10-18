@@ -23,12 +23,13 @@ static func validate_attach_gear(
 	return EssenceRules.validate_payment(state, intent.player, intent.payment, definition.cost)
 
 
-## 203.3.2, 201.3.8, 202.2.22, 208.4.1 : paie le coût ; le Gear quitte la main pour la pile
-## avec l'Unit choisie. Suppose l'intention validée.
+## 203.3.2, 203.3.2a, 201.3.8, 202.2.22, 208.4.1 : paie le coût ; le Gear quitte la main pour
+## la pile avec l'Unit choisie. Suppose l'intention validée.
 static func announce_gear(state: DuelState, intent: AttachGear, events: Array[DuelEvent]) -> void:
-	EssenceRules.apply_payment(state, intent.player, intent.payment, events)
 	var player := state.get_player(intent.player)
 	var card := player.find_card_in_hand(intent.card_instance_id)
+	var cost := state.catalog.get_card(card.definition_id).cost
+	events.append_array(EssenceRules.pay_cost(state, intent.player, intent.payment, cost))
 	player.hand.erase(card)
 	events.append(GearAnnounced.new(intent.player, card.card_instance_id, intent.unit_piece_id))
 	var entry := StackEntry.new()
@@ -80,7 +81,8 @@ static func announce_hero_power(
 	state: DuelState, intent: UseHeroPower, events: Array[DuelEvent]
 ) -> void:
 	state.get_player(intent.player).hero_power_used_this_turn = true
-	EssenceRules.apply_payment(state, intent.player, intent.payment, events)
+	var cost := _hero_definition(state, intent.player).power_cost
+	events.append_array(EssenceRules.pay_cost(state, intent.player, intent.payment, cost))
 	events.append(HeroPowerAnnounced.new(intent.player))
 	StackRules.add_to_stack(state, _make_power_entry(state, intent), events)
 

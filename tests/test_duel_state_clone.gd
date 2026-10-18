@@ -169,6 +169,7 @@ func _fill_player(builder: DuelStateBuilder, side: DuelState.PlayerSide) -> void
 	builder.with_sources_in_reserve(side, 5)
 	builder.with_sources_in_play(side, 2, 1)
 	builder.with_sources_in_fonte(side, 2)
+	builder.with_essence_reserve(side, 1)
 	builder.with_recycled_this_turn(side, 1)
 	builder.with_hero_power_used(side)
 	builder.with_normal_action_used(side)
