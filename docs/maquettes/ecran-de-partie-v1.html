@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Écran de partie V1</title>
+<style>
+:root{
+  --table:#1d2127;--panel:#262b33;--cell:#2c323b;--cell-line:#3a414c;--ink:#eef0f3;--muted:#a3a9b3;
+  --unit-bg:#dff3ea;--unit-ink:#0b5c47;--building-bg:#f8ecd6;--building-ink:#7a4808;
+  --spell-bg:#ecebfd;--spell-ink:#463ca8;--gear-bg:#fae9e2;--gear-ink:#8d3517;
+  --hero-bg:#fae7ef;--hero-ink:#8a2c4c;--player-a:#2f7fd8;--player-a-soft:#2a3a52;--player-a-ink:#9cc6f2;
+  --player-b:#d23a3a;--player-b-soft:#4a2a2e;--player-b-ink:#f2b8b8;
+  --kw-bg:#24252a;--kw-ink:#ffffff;--up-bg:#e3f1d3;--up-ink:#2f5a0c;--down-bg:#ffe1c2;--down-ink:#9a4700;
+  --cost-ink:#1e5fae;--card-face:#ffffff;--card-text:#1c1d20;--essence:#ffd66b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#0f1114;overflow:hidden;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+#stage{position:absolute;left:0;top:0;width:1920px;height:1080px;background:var(--table);transform-origin:0 0;overflow:hidden}
+.abs{position:absolute}
+/* Plateau */
+#board{display:grid;grid-template-columns:repeat(5,143px);grid-template-rows:repeat(5,143px);gap:4px}
+.cell{background:var(--cell);border-radius:8px;position:relative;box-shadow:inset 0 0 0 1px var(--cell-line)}
+.coord{position:absolute;font:500 13px system-ui;color:var(--muted)}
+/* Mini-carte */
+.mini{position:absolute;left:7px;right:7px;bottom:7px;border-radius:8px;display:flex;flex-direction:column;overflow:hidden;border:2px solid}
+.mini .hd{display:flex;align-items:center;gap:5px;padding:5px 6px 4px}
+.mini .nm{font:600 13px system-ui;letter-spacing:-.2px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex:none;background:var(--card-face);color:var(--card-text);border:1px solid rgba(0,0,0,.18)}
+.mini .pill{width:34px;height:34px;font-size:19px}
+.mini .art{flex:1;margin:0 6px;border-radius:5px;background:rgba(255,255,255,.75);display:flex;align-items:center;justify-content:center}
+.mini .band{display:flex;align-items:center;gap:4px;padding:4px 6px;font:600 11px system-ui}
+.old{font:600 14px system-ui;text-decoration:line-through;opacity:.75}
+.kw{display:inline-block;padding:1px 6px;border-radius:4px;font-weight:600;background:var(--kw-bg);color:var(--kw-ink);margin-right:4px;white-space:nowrap}
+.gearpeek{position:absolute;left:7px;right:7px;top:7px;height:40px;border-radius:8px;border:2px solid;display:flex;align-items:flex-start;gap:4px;padding:3px 6px;font:600 11px system-ui}
+/* Carte complète */
+.card{position:absolute;border-radius:10px;overflow:hidden;display:flex;flex-direction:column;border:2px solid;box-shadow:0 2px 6px rgba(0,0,0,.35)}
+.card .hd{display:flex;align-items:center;gap:calc(4px*var(--k));padding:calc(7px*var(--k)) calc(6px*var(--k))}
+.card .pill{width:calc(26px*var(--k));height:calc(26px*var(--k));font-size:calc(15px*var(--k))}
+.card .nm{font-weight:700;font-size:calc(14px*var(--k));letter-spacing:-.2px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .art{flex:1;margin:0 calc(7px*var(--k));border-radius:calc(6px*var(--k));background:rgba(255,255,255,.75);display:flex;align-items:center;justify-content:center}
+.card .band{display:flex;align-items:center;gap:calc(4px*var(--k));padding:calc(5px*var(--k)) calc(7px*var(--k));font-weight:700;font-size:calc(12px*var(--k))}
+.card .tx{margin:0 calc(7px*var(--k)) calc(7px*var(--k));padding:calc(6px*var(--k));border-radius:calc(6px*var(--k));background:var(--card-face);color:var(--card-text);font-size:calc(12px*var(--k));line-height:1.3;height:calc(84px*var(--k));overflow:hidden}
+.card .tx .kw{font-size:calc(11px*var(--k))}
+.back{position:absolute;border-radius:10px;border:2px solid;background:repeating-linear-gradient(45deg,#343b46 0 8px,#2c323b 8px 16px);display:flex;align-items:center;justify-content:center;color:var(--ink);font:700 28px system-ui}
+.lbl{position:absolute;font:500 14px system-ui;color:var(--muted);white-space:nowrap}
+/* Sources */
+.src{position:absolute;width:74px;height:106px;border-radius:7px;border:2px solid;background:#3b424e;display:flex;align-items:center;justify-content:center;transition:opacity .15s,background .15s}
+.src.mine{cursor:pointer}
+.src.mine.up:hover{background:#46505e}
+.src.tapped{background:#262b33;opacity:.55;border-color:#6b7380 !important}
+.src.tapped svg{transform:rotate(90deg)}
+.src.empty{border-style:dashed;border-color:#3a414c !important;background:transparent;opacity:1;cursor:default}
+.src .recycle{position:absolute;left:4px;right:4px;bottom:4px;height:26px;border-radius:5px;border:none;background:#eef0f3;color:#1c1d20;font:600 11px system-ui;cursor:pointer;display:none}
+.src.mine.tapped:hover{opacity:1}
+.src.mine.tapped:hover .recycle{display:block}
+.counter{position:absolute;display:flex;align-items:center;gap:8px;font:500 15px system-ui;color:var(--ink)}
+.chip{display:flex;align-items:center;gap:6px;border-radius:7px;padding:2px 10px;border:1px solid #4a525e;background:#2a2f37;height:28px}
+.chip b{font-weight:700;font-size:17px}
+.chip.essence{border-color:var(--essence);color:var(--essence);background:#3a3420}
+.reset{font:500 13px system-ui;padding:3px 9px;border-radius:6px;border:1px solid #586273;background:#323a46;color:var(--ink);cursor:pointer}
+/* Colonne de duel */
+#duel{background:var(--panel);border-radius:12px;border:1px solid #3a414c;display:flex;flex-direction:column;padding:10px;gap:10px}
+.clock{border-radius:10px;border:3px solid;padding:10px 12px}
+.clock .who{font:600 14px system-ui}
+.clock .time{font:700 44px ui-monospace,Menlo,Consolas,monospace;color:var(--ink);line-height:1.1}
+.clock .bar{height:6px;border-radius:3px;background:#3a414c;margin-top:6px}
+.clock .bar div{height:100%;border-radius:3px}
+.clock.idle{opacity:.55}
+#center{flex:1;display:flex;flex-direction:column;justify-content:center;gap:10px}
+.turn{text-align:center;font:500 15px system-ui;color:var(--muted)}
+.turn strong{display:block;font:600 19px system-ui;color:var(--player-a-ink);margin-top:2px}
+.bigbtn{height:64px;border-radius:10px;border:none;background:var(--player-a);color:#fff;font:600 20px system-ui;cursor:pointer}
+.bigbtn:hover{filter:brightness(1.1)}
+.entry{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;border:2px solid;font:600 15px system-ui}
+.entry small{font:500 11px system-ui;margin-left:auto;opacity:.85}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<script>
+// ---------- Dimensions de référence (viewport 1920×1080) ----------
+const M = 16, CARD_W = 158, CARD_H = 220, CELL = 143, GAP = 4;
+const BOARD = CELL * 5 + GAP * 4;                 // 731
+const BOARD_X = Math.round((1920 - BOARD) / 2);   // 595
+const BOARD_Y = 16 + 70 + 8;                      // 94
+const HAND_Y = 1080 - M - CARD_H;                 // 844
+const SRC_W = 74, SRC_H = 106, SRC_GAP_X = 6, SRC_GAP_Y = 8;
+const SRC_BLOCK_W = SRC_W * 5 + SRC_GAP_X * 4;    // 394
+const HAND_GAP = 5;
+const HAND_X = M + SRC_BLOCK_W + 14;              // 424
+const DUEL_X = BOARD_X + BOARD + 16, DUEL_W = 220;
+const RIGHT = 1920 - M;
+
+const T = {
+  unit: ['--unit-bg', '--unit-ink', 'Unit', 'M14 3l7 7-11 11-4 1 1-4z'],
+  building: ['--building-bg', '--building-ink', 'Building', 'M4 21V9l4-3 4 3 4-3 4 3v12z'],
+  spell: ['--spell-bg', '--spell-ink', 'Spell', 'M12 2l2.5 6.5L21 11l-6.5 2.5L12 20l-2.5-6.5L3 11l6.5-2.5z'],
+  gear: ['--gear-bg', '--gear-ink', 'Gear', 'M4 20l9-9m2-7l5 5-3 3-5-5z'],
+  hero: ['--hero-bg', '--hero-ink', 'Hero', 'M3 18l2-11 5 5 2-7 2 7 5-5 2 11z'],
+};
+const SPEED = { reaction: 'Réaction', action: 'Action' };
+const KW = ['Dernier souffle', 'Avant-poste', 'Assaut', 'Rempart', 'Arrivée'];
+const CARDS = {
+  recrue: ['Recrue', 1, 'unit', 2, '', ''],
+  heraut: ['Héraut', 3, 'unit', 3, '', "Arrivée : une Unit ennemie ciblée a −1 Force jusqu'à la fin du tour."],
+  martyr: ['Martyr', 3, 'unit', 3, '', 'Dernier souffle : une Unit alliée ciblée a +1 Force tant que la pièce est en jeu.'],
+  campement: ['Campement', 3, 'building', 4, '', 'Avant-poste'],
+  renfort: ['Renfort', 1, 'spell', null, 'reaction', "Une Unit alliée ciblée a +2 Force jusqu'à la fin du tour."],
+  frappe: ['Frappe', 3, 'spell', null, 'action', 'Détruisez une Unit ennemie ciblée de Force 3 ou moins.'],
+  contre: ['Contre', 2, 'spell', null, 'reaction', 'Contrecarrez un Spell ciblé.'],
+  lame: ['Lame', 1, 'gear', null, '', 'La Unit qui porte ce Gear a +1 Force.'],
+};
+const PLAYER = { A: 'var(--player-a)', B: 'var(--player-b)' };
+
+const stage = document.getElementById('stage');
+const add = (html) => stage.insertAdjacentHTML('beforeend', html);
+const tint = (t) => `background:var(${T[t][0]});color:var(${T[t][1]});border-color:var(${T[t][1]})`;
+const icon = (t, px) => `<svg width="${px}" height="${px}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="${T[t][3]}"/></svg>`;
+const heart = (px) => `<svg width="${px}" height="${px}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>`;
+const sun = (px, color) => `<svg width="${px}" height="${px}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></svg>`;
+
+function text(s) {
+  if (!s) return '';
+  const k = KW.find((w) => s.startsWith(w));
+  if (!k) return s;
+  const rest = s.slice(k.length).match(/^( \d+)?(?: : )?(.*)$/);
+  return `<span class="kw">${k}${rest[1] || ''}</span>${rest[2] || ''}`;
+}
+
+function card(id, x, y, k = 1, extra = '') {
+  const [name, cost, type, force, speed, body] = CARDS[id];
+  return `<div class="card" style="left:${x}px;top:${y}px;width:${Math.round(CARD_W * k)}px;height:${Math.round(CARD_H * k)}px;--k:${k};${tint(type)};${extra}">
+    <div class="hd"><div class="pill" style="color:var(--cost-ink)">${cost}</div><div class="nm">${name}</div>${force != null ? `<div class="pill">${force}</div>` : ''}</div>
+    <div class="art">${icon(type, Math.round(40 * k))}</div>
+    <div class="band">${icon(type, Math.round(14 * k))}${T[type][2]}${speed ? `<span style="margin-left:auto;font-weight:500">${SPEED[speed]}</span>` : ''}</div>
+    <div class="tx">${text(body)}</div></div>`;
+}
+
+function forcePill(now, printed) {
+  if (printed == null || now === printed) return `<div class="pill">${now}</div>`;
+  const up = now > printed;
+  return `<span class="old">${printed}</span><div class="pill" style="background:var(--${up ? 'up' : 'down'}-bg);color:var(--${up ? 'up' : 'down'}-ink)">${now}</div>`;
+}
+const hpPill = (hp) => `<div class="pill" style="width:auto;height:30px;font-size:16px;border-radius:99px;padding:0 5px;gap:2px">${heart(11)}${hp}</div>`;
+
+function mini(p) {
+  const type = p.type === 'token' ? p.tokenOf : p.type;
+  const label = p.type === 'token' ? `${T[type][2]} · Jeton` : T[type][2];
+  const peek = p.gear ? `<div class="gearpeek" style="${tint('gear')}">${icon('gear', 13)}${p.gear}</div>` : '';
+  return `${peek}<div class="mini" style="top:${p.gear ? 30 : 7}px;${tint(type)};box-shadow:0 0 0 4px ${PLAYER[p.player]}">
+    <div class="hd" style="color:var(${T[type][1]})"><div class="nm">${p.name}</div>${p.stat}</div>
+    <div class="art">${icon(type, 30)}</div>
+    <div class="band">${icon(type, 12)}${label}${p.kw ? `<span class="kw" style="margin:0 0 0 auto">${p.kw}</span>` : ''}</div></div>`;
+}
+
+// ---------- Plateau (rangée 1 en bas : première rangée du joueur A) ----------
+const pieces = {
+  C5: { name: 'Capitaine', type: 'hero', player: 'B', stat: hpPill(15) },
+  B4: { name: 'Gardien', type: 'unit', player: 'B', stat: forcePill(2), kw: 'Rempart 1' },
+  D4: { name: 'Héraut', type: 'unit', player: 'B', stat: forcePill(3), kw: 'Arrivée' },
+  E4: { name: 'Jeton', type: 'token', tokenOf: 'unit', player: 'B', stat: forcePill(1, 2) },
+  B3: { name: 'Soldat', type: 'unit', player: 'A', stat: forcePill(4, 3), gear: 'Lame' },
+  A2: { name: 'Jeton', type: 'token', tokenOf: 'unit', player: 'A', stat: forcePill(2) },
+  D1: { name: 'Palissade', type: 'building', player: 'A', stat: forcePill(4) },
+  C1: { name: 'Capitaine', type: 'hero', player: 'A', stat: hpPill(12) },
+};
+let cells = '';
+for (let row = 5; row >= 1; row--) {
+  for (const col of 'ABCDE') {
+    const p = pieces[col + row];
+    cells += `<div class="cell">${p ? mini(p) : ''}</div>`;
+  }
+}
+add(`<div id="board" class="abs" style="left:${BOARD_X}px;top:${BOARD_Y}px">${cells}</div>`);
+for (let i = 0; i < 5; i++) {
+  add(`<div class="coord" style="left:${BOARD_X + i * (CELL + GAP) + CELL / 2 - 5}px;top:${BOARD_Y + BOARD + 2}px">${'ABCDE'[i]}</div>`);
+  add(`<div class="coord" style="left:${BOARD_X - 18}px;top:${BOARD_Y + i * (CELL + GAP) + CELL / 2 - 9}px">${5 - i}</div>`);
+}
+
+// ---------- Sources : 2 rangées de 5, hauteur totale d'une carte de main ----------
+// slot : 'up' (redressée), 'tapped' (inclinée), 'empty' (vide)
+const sourcesA = { slots: ['up', 'up', 'up', 'up', 'tapped', 'tapped', 'empty', 'empty', 'empty', 'empty'], reserve: 3, forge: 1, essence: 0 };
+const sourcesB = { slots: ['up', 'up', 'up', 'up', 'up', 'empty', 'empty', 'empty', 'empty', 'empty'], reserve: 5, forge: 0 };
+const initialA = JSON.parse(JSON.stringify(sourcesA));
+const SRC_A_Y = HAND_Y, SRC_B_Y = M;
+
+add(`<div id="srcA" class="abs" style="left:0;top:0"></div><div id="srcB" class="abs" style="left:0;top:0"></div>`);
+
+function slotPos(i, y) {
+  const r = Math.floor(i / 5), c = i % 5;
+  return [M + c * (SRC_W + SRC_GAP_X), y + r * (SRC_H + SRC_GAP_Y)];
+}
+
+function renderSources(id, state, player, y, counterY, mine) {
+  const col = PLAYER[player];
+  let h = '';
+  state.slots.forEach((s, i) => {
+    const [x, sy] = slotPos(i, y);
+    const inner = s === 'empty' ? '' : sun(30, player === 'A' ? 'var(--player-a-ink)' : 'var(--player-b-ink)');
+    const recycle = mine && s === 'tapped' ? `<button class="recycle" data-i="${i}">Recycler +1</button>` : '';
+    h += `<div class="src ${s} ${mine ? 'mine' : ''}" data-i="${i}" style="left:${x}px;top:${sy}px;border-color:${col}">${inner}${recycle}</div>`;
+  });
+  const essence = mine ? `<span class="chip essence">${sun(18, 'var(--essence)')}Essence <b>${state.essence}</b></span>` : '';
+  const reset = mine && state.essence > 0 ? `<button class="reset" id="resetPay">Annuler</button>` : '';
+  h += `<div class="counter" style="left:${M}px;top:${counterY}px">${essence}<span class="chip">Réserve <b>${state.reserve}</b></span><span class="chip">Fonte <b>${state.forge}</b></span>${reset}</div>`;
+  document.getElementById(id).innerHTML = h;
+}
+
+function renderAll() {
+  renderSources('srcA', sourcesA, 'A', SRC_A_Y, SRC_A_Y - 38, true);
+  renderSources('srcB', sourcesB, 'B', SRC_B_Y, SRC_B_Y + CARD_H + 8, false);
+}
+
+// 203.2.1 incliner une Source redressée : +1 Essence ; 203.2.2 recycler une Source inclinée : +1 Essence
+stage.addEventListener('click', (e) => {
+  const recycle = e.target.closest('.recycle');
+  if (recycle) {
+    const i = +recycle.dataset.i;
+    sourcesA.slots.splice(i, 1);
+    sourcesA.slots.push('empty');
+    sourcesA.forge += 1;
+    sourcesA.essence += 1;
+    renderAll();
+    return;
+  }
+  if (e.target.closest('#resetPay')) {
+    Object.assign(sourcesA, JSON.parse(JSON.stringify(initialA)));
+    renderAll();
+    return;
+  }
+  const src = e.target.closest('#srcA .src.up');
+  if (src) {
+    sourcesA.slots[+src.dataset.i] = 'tapped';
+    sourcesA.essence += 1;
+    renderAll();
+  }
+});
+renderAll();
+
+// ---------- Main adverse (dos réduits) ----------
+const BACK_W = 50, BACK_H = 70, oppCount = 5;
+const oppX = Math.round((1920 - (oppCount * BACK_W + (oppCount - 1) * 8)) / 2);
+for (let i = 0; i < oppCount; i++) {
+  add(`<div class="back" style="left:${oppX + i * (BACK_W + 8)}px;top:${M}px;width:${BACK_W}px;height:${BACK_H}px;border-color:var(--player-b);font-size:0"></div>`);
+}
+
+// ---------- Ta main : 7 cartes droites et entières ----------
+const hand = ['recrue', 'heraut', 'martyr', 'campement', 'renfort', 'frappe', 'lame'];
+hand.forEach((id, i) => add(card(id, HAND_X + i * (CARD_W + HAND_GAP), HAND_Y)));
+
+// ---------- Deck et défausse, taille d'une carte ----------
+const DECK_X = RIGHT - 2 * CARD_W - 10;
+add(`<div class="back" style="left:${DECK_X}px;top:${M}px;width:${CARD_W}px;height:${CARD_H}px;border-color:var(--player-b)">19</div>`);
+add(card('frappe', RIGHT - CARD_W, M, 1, 'box-shadow:0 0 0 3px var(--player-b)'));
+add(`<div class="lbl" style="left:${DECK_X}px;top:${M + CARD_H + 6}px">Deck · Défausse</div>`);
+add(`<div class="back" style="left:${DECK_X}px;top:${HAND_Y}px;width:${CARD_W}px;height:${CARD_H}px;border-color:var(--player-a)">16</div>`);
+add(card('contre', RIGHT - CARD_W, HAND_Y, 1, 'box-shadow:0 0 0 3px var(--player-a)'));
+add(`<div class="lbl" style="left:${DECK_X}px;top:${HAND_Y - 24}px">Deck · Défausse</div>`);
+
+// ---------- Colonne de duel ----------
+function clock(player, name, time, ratio, running) {
+  return `<div class="clock ${running ? '' : 'idle'}" style="border-color:${PLAYER[player]};background:var(--player-${player.toLowerCase()}-soft)">
+    <div class="who" style="color:var(--player-${player.toLowerCase()}-ink)">${name}</div>
+    <div class="time">${time}</div>
+    <div class="bar"><div style="width:${ratio}%;background:${PLAYER[player]}"></div></div></div>`;
+}
+const centerIdle = `<div class="turn">Tour 7<strong>À toi de jouer</strong></div><button class="bigbtn">Terminer le tour</button>`;
+add(`<div id="duel" class="abs" style="left:${DUEL_X}px;top:${BOARD_Y}px;width:${DUEL_W}px;height:${BOARD}px">
+  ${clock('B', 'Joueur B', '4:12', 52, false)}
+  <div id="center">${centerIdle}</div>
+  ${clock('A', 'Joueur A', '5:03', 63, true)}</div>`);
+
+// ---------- Aperçu au survol ----------
+// Centrée dans la colonne gauche, entre les compteurs des deux joueurs
+const PREVIEW_K = 2.2;
+const PREVIEW_W = Math.round(CARD_W * PREVIEW_K), PREVIEW_H = Math.round(CARD_H * PREVIEW_K);
+const LEFT_TOP = SRC_B_Y + CARD_H + 44, LEFT_BOTTOM = SRC_A_Y - 38;
+const PREVIEW_X = Math.round((M + BOARD_X - 24 - PREVIEW_W) / 2);
+const PREVIEW_Y = Math.round((LEFT_TOP + LEFT_BOTTOM - PREVIEW_H) / 2);
+add(card('heraut', PREVIEW_X, PREVIEW_Y, PREVIEW_K));
+
+// ---------- Mise à l'échelle 16:9 ----------
+function fit() {
+  const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+  stage.style.transform = `translate(${(innerWidth - 1920 * s) / 2}px,${(innerHeight - 1080 * s) / 2}px) scale(${s})`;
+}
+addEventListener('resize', fit);
+fit();
+</script>
+</body>
+</html>
