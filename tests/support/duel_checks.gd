@@ -17,12 +17,10 @@ static func rejection_defects(
 	return defects
 
 
-## `first` puis son adversaire passent la priorité l'un après l'autre (208.3.1). Renvoie les
-## événements des deux soumissions.
-static func pass_twice(engine: DuelEngine, first: DuelState.PlayerSide) -> Array[DuelEvent]:
-	var events := engine.submit(PassPriority.new(first))
-	events.append_array(engine.submit(PassPriority.new(DuelState.opponent_of(first))))
-	return events
+## `player` passe la priorité : la pile entière se résout d'un bloc (208.3.1, 208.3.1a). Renvoie
+## les événements de la soumission ; refusée si `player` n'a pas la priorité (208.2.4).
+static func pass_once(engine: DuelEngine, player: DuelState.PlayerSide) -> Array[DuelEvent]:
+	return engine.submit(PassPriority.new(player))
 
 
 ## Vrai si l'étiquette décrit un événement `HeroPlaced`.

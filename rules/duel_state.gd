@@ -72,8 +72,6 @@ var pending_decision: PendingDecision
 var active_player: PlayerSide = PlayerSide.A
 ## 208.2.4 : joueur qui peut répondre ou passer.
 var priority_player: PlayerSide = PlayerSide.A
-## 208.3.1 : passes consécutives depuis le dernier ajout à la pile.
-var consecutive_passes: int = 0
 ## Numéro du tour global, commencé à 1.
 var turn_number: int = NO_TURN
 var next_card_instance_id: int = FIRST_ID
@@ -186,7 +184,6 @@ func clone() -> DuelState:
 	copy.pending_decision = pending_decision.clone() if pending_decision != null else null
 	copy.active_player = active_player
 	copy.priority_player = priority_player
-	copy.consecutive_passes = consecutive_passes
 	copy.turn_number = turn_number
 	copy.next_card_instance_id = next_card_instance_id
 	copy.next_piece_id = next_piece_id

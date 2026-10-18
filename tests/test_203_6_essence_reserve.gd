@@ -211,11 +211,11 @@ func test_203_6_12_essence_is_added_at_once_without_the_stack() -> void:
 
 func test_203_6_13_producing_essence_keeps_who_can_act() -> void:
 	_builder.push_spell(_builder.make_card_instance(B, SPELL))
-	_builder.with_priority_player(A).with_consecutive_passes(1)
+	_builder.with_priority_player(A)
 	_start()
 	_engine.submit(_produce(A, 1, 0))
 	assert_int(_engine.get_state().priority_player).is_equal(A)
-	assert_int(_engine.get_state().consecutive_passes).is_equal(1)
+	assert_int(_engine.get_state().stack.size()).is_equal(1)
 
 
 func test_204_5_7a_unspent_essence_is_lost_at_the_end_of_the_turn() -> void:

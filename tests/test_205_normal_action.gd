@@ -264,11 +264,10 @@ func _act(piece_id: int, cell_name: String) -> TakeNormalAction:
 	return TakeNormalAction.new(A, piece_id, DuelStateBuilder.cell(cell_name))
 
 
-## Les deux joueurs passent : la pile se résout. Renvoie les événements décrits.
+## Le joueur qui a la priorité passe : la pile se résout. Renvoie les événements décrits.
 func _resolve_stack() -> Array[String]:
 	var first := _engine.get_state().priority_player
-	var events := _engine.submit(PassPriority.new(first))
-	events.append_array(_engine.submit(PassPriority.new(DuelState.opponent_of(first))))
+	var events := DuelChecks.pass_once(_engine, first)
 	return EventLog.describe(events)
 
 

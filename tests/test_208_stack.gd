@@ -1,5 +1,6 @@
 extends GdUnitTestSuite
-## Pile et priorité sans effet déclenché (ruleset 0.30, chapitre 208 ; 209.2.1 et 209.2.3).
+## Pile et priorité sans effet déclenché (ruleset 0.36, chapitre 208, décision 0197 ; 209.2.1 et
+## 209.2.3).
 ##
 ## Les entrées sont posées par le builder ou par StackRules.add_to_stack, comme des annonces
 ## déjà faites, avec un Spell sans effet : ces suites ne vérifient que la mécanique de la pile.
@@ -45,41 +46,54 @@ func test_208_2_4_opponent_of_top_owner_answers_first() -> void:
 	assert_int(state.priority_player).is_equal(A)
 
 
-func test_208_2_2_pass_lets_opponent_answer_or_pass() -> void:
-	var entry_id := _push_spell_of(A)
-	_engine.start_from_state(_builder.with_priority_player(B).build())
-	var events := _engine.submit(PassPriority.new(B))
-	assert_array(EventLog.describe(events)).contains_exactly(["PriorityPassed:B"])
-	var state := _engine.get_state()
-	assert_int(state.priority_player).is_equal(A)
-	assert_int(state.consecutive_passes).is_equal(1)
-	assert_object(state.find_stack_entry(entry_id)).is_not_null()
-
-
-func test_208_3_1_two_passes_in_a_row_resolve_whole_stack() -> void:
+func test_208_3_1_one_pass_resolves_whole_stack() -> void:
 	for side: DuelState.PlayerSide in [A, B, A]:
 		_push_spell_of(side)
 	_engine.start_from_state(_builder.with_priority_player(B).build())
 	var events := _engine.submit(PassPriority.new(B))
-	events.append_array(_engine.submit(PassPriority.new(A)))
-	var expected: Array[String] = ["PriorityPassed:B", "PriorityPassed:A"]
+	var expected: Array[String] = ["PriorityPassed:B"]
 	for side: String in ["A", "B", "A"]:
 		expected.append_array(["CardDiscarded:" + side, "StackEntryResolved:" + side])
+	# Les entrées se résolvent du sommet à la base : A, B, A.
 	assert_array(EventLog.describe(events)).contains_exactly(expected)
 	assert_array(_engine.get_state().stack).is_empty()
 
 
-func test_208_3_1_announcement_between_passes_restarts_count() -> void:
-	_push_spell_of(A)
+func test_208_3_1a_top_owner_does_not_have_to_pass() -> void:
+	var entry_id := _push_spell_of(A)
 	_engine.start_from_state(_builder.with_priority_player(B).build())
-	_engine.submit(PassPriority.new(B))
-	var events: Array[DuelEvent] = []
-	# Annonce simulée : les annonces arrivent avec leur chapitre (étapes 1.5 et 1.6).
-	StackRules.add_to_stack(_engine.get_state(), _make_entry(A), events)
-	assert_int(_engine.get_state().consecutive_passes).is_equal(0)
+	assert_int(_engine.validate(PassPriority.new(A))).is_equal(REASON.NOT_YOUR_PRIORITY)
 	var labels := EventLog.describe(_engine.submit(PassPriority.new(B)))
-	assert_array(labels).contains_exactly(["PriorityPassed:B"])
-	assert_int(_engine.get_state().stack.size()).is_equal(2)
+	assert_array(labels).contains_exactly(
+		["PriorityPassed:B", "CardDiscarded:A", "StackEntryResolved:A"]
+	)
+	assert_object(_engine.get_state().find_stack_entry(entry_id)).is_null()
+
+
+func test_208_3_1a_answer_then_single_pass_of_first_owner_resolves_both() -> void:
+	var first_id := _push_spell_of(A)
+	var answer_id := _push_spell_of(B)
+	_engine.start_from_state(_builder.with_priority_player(A).build())
+	assert_int(_engine.get_state().priority_player).is_equal(A)
+	var events := _engine.submit(PassPriority.new(A))
+	(
+		assert_array(EventLog.describe(events))
+		. contains_exactly(
+			[
+				"PriorityPassed:A",
+				"CardDiscarded:B",
+				"StackEntryResolved:B",
+				"CardDiscarded:A",
+				"StackEntryResolved:A",
+			]
+		)
+	)
+	var resolved_ids: Array[int] = []
+	for event: DuelEvent in events:
+		if event is StackEntryResolved:
+			resolved_ids.append((event as StackEntryResolved).stack_entry_id)
+	assert_array(resolved_ids).is_equal([answer_id, first_id])
+	assert_array(_engine.get_state().stack).is_empty()
 
 
 func test_208_3_2_last_added_resolves_first() -> void:
@@ -87,9 +101,8 @@ func test_208_3_2_last_added_resolves_first() -> void:
 	for side: DuelState.PlayerSide in [A, B, A]:
 		added_ids.append(_push_spell_of(side))
 	_engine.start_from_state(_builder.with_priority_player(B).build())
-	_engine.submit(PassPriority.new(B))
 	var resolved_ids: Array[int] = []
-	for event: DuelEvent in _engine.submit(PassPriority.new(A)):
+	for event: DuelEvent in _engine.submit(PassPriority.new(B)):
 		if event is StackEntryResolved:
 			resolved_ids.append((event as StackEntryResolved).stack_entry_id)
 	added_ids.reverse()
@@ -100,13 +113,12 @@ func test_208_3_3_whole_stack_resolves_within_one_submission() -> void:
 	_push_spell_of(A)
 	_push_spell_of(B)
 	_engine.start_from_state(_builder.with_priority_player(A).build())
-	_engine.submit(PassPriority.new(A))
-	var labels := EventLog.describe(_engine.submit(PassPriority.new(B)))
+	var labels := EventLog.describe(_engine.submit(PassPriority.new(A)))
 	(
 		assert_array(labels)
 		. contains_exactly(
 			[
-				"PriorityPassed:B",
+				"PriorityPassed:A",
 				"CardDiscarded:B",
 				"StackEntryResolved:B",
 				"CardDiscarded:A",
@@ -114,6 +126,7 @@ func test_208_3_3_whole_stack_resolves_within_one_submission() -> void:
 			]
 		)
 	)
+	assert_array(_engine.get_state().stack).is_empty()
 
 
 func test_208_5_1_active_player_acts_again_once_stack_is_empty() -> void:
@@ -122,10 +135,9 @@ func test_208_5_1_active_player_acts_again_once_stack_is_empty() -> void:
 	_builder.with_active_player(A).with_priority_player(A)
 	_engine.start_from_state(_builder.build())
 	_engine.submit(PassPriority.new(A))
-	_engine.submit(PassPriority.new(B))
 	var state := _engine.get_state()
+	assert_array(state.stack).is_empty()
 	assert_int(state.priority_player).is_equal(A)
-	assert_int(state.consecutive_passes).is_equal(0)
 	assert_int(_engine.validate(EndTurn.new(A))).is_equal(REASON.NONE)
 
 
@@ -134,8 +146,7 @@ func test_209_2_3_resolution_stops_when_duel_ends() -> void:
 	_push_spell_of(B)
 	_builder.with_hero_health(B, 0).with_priority_player(A)
 	_engine.start_from_state(_builder.build())
-	_engine.submit(PassPriority.new(A))
-	var labels := EventLog.describe(_engine.submit(PassPriority.new(B)))
+	var labels := EventLog.describe(_engine.submit(PassPriority.new(A)))
 	assert_array(labels.slice(labels.size() - 2)).contains_exactly(
 		["StackEntryResolved:B", "DuelEnded"]
 	)
@@ -149,7 +160,7 @@ func test_208_2_4_pass_with_empty_stack_rejected() -> void:
 	_assert_rejected(PassPriority.new(A), REASON.STACK_EMPTY)
 
 
-func test_208_2_2_pass_out_of_turn_rejected() -> void:
+func test_208_2_4_pass_out_of_turn_rejected() -> void:
 	_push_spell_of(A)
 	_engine.start_from_state(_builder.with_priority_player(B).build())
 	_assert_rejected(PassPriority.new(A), REASON.NOT_YOUR_PRIORITY)

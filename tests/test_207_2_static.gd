@@ -101,7 +101,7 @@ func test_207_2_3_static_effect_begins_when_the_bearer_arrives() -> void:
 	_push_aura_deploy("B1")
 	_start()
 	assert_int(_live_force(ally_id)).is_equal(UNIT_FORCE)
-	_pass_twice(B)
+	_pass_once(B)
 	assert_int(_live_force(ally_id)).is_equal(UNIT_FORCE + AURA)
 
 
@@ -109,9 +109,9 @@ func test_207_2_5_nobody_answers_a_static_effect() -> void:
 	_place(A, UNIT_ID, "B2")
 	_push_aura_deploy("B1")
 	_start()
-	var labels := EventLog.describe(_pass_twice(B))
+	var labels := EventLog.describe(_pass_once(B))
 	assert_array(labels).contains_exactly(
-		["PriorityPassed:B", "PriorityPassed:A", "PieceDeployed:A", "StackEntryResolved:A"]
+		["PriorityPassed:B", "PieceDeployed:A", "StackEntryResolved:A"]
 	)
 	var state := _engine.get_state()
 	assert_array(state.stack).is_empty()
@@ -214,7 +214,7 @@ func test_207_4_8_effect_of_a_detached_gear_stops() -> void:
 	_start()
 	assert_int(_live_force(unit_id)).is_equal(UNIT_FORCE + AURA)
 	_engine.submit(AttachGear.new(A, new_gear_id, unit_id, EssencePayment.new(GEAR_COST)))
-	_pass_twice(B)
+	_pass_once(B)
 	assert_int(_live_force(unit_id)).is_equal(UNIT_FORCE + STRONG_GEAR_BONUS)
 
 
@@ -261,9 +261,9 @@ func _fill_decks() -> void:
 			_builder.add_to_deck(side, UNIT_ID)
 
 
-# `first` et son adversaire passent l'un après l'autre : la pile se résout (208.3.1).
-func _pass_twice(first: DuelState.PlayerSide) -> Array[DuelEvent]:
-	return DuelChecks.pass_twice(_engine, first)
+# `first` passe : la pile se résout (208.3.1).
+func _pass_once(first: DuelState.PlayerSide) -> Array[DuelEvent]:
+	return DuelChecks.pass_once(_engine, first)
 
 
 func _gear(id: StringName, effect: Dictionary) -> CardDefinition:

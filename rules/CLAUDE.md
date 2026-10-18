@@ -15,7 +15,7 @@ Complète le `CLAUDE.md` racine pour `rules/`. Les décisions 0001, 0003, 0004, 
 | `combat_rules.gd` | 206 | comparaison, égalité, Hero défenseur, avance, auras lues avant l'avance |
 | `effect_rules.gd` | 207 | Spells et vitesses, cibles et validité, effets à la résolution (Force à durée, destruction, jetons), Contrecarrer |
 | `trigger_rules.gd` | 207.3, 208.4 | effets déclenchés (0017) : attente, ordre d'ajout (`ORDER_TRIGGERS`), cibles (`CHOOSE_TARGETS`), choix unique automatique (0004), « une fois par tour », résolution |
-| `stack_rules.gd` | 208 | annonce, priorité (208.2.4), passes, bloc LIFO, retour au joueur actif après les déclencheurs (`settle_after_triggers`, appelée par `DuelEngine` après chaque intention) |
+| `stack_rules.gd` | 208 | annonce, priorité (208.2.4), passe qui résout toute la pile (208.3.1), bloc LIFO, retour au joueur actif après les déclencheurs (`settle_after_triggers`, appelée par `DuelEngine` après chaque intention) |
 | `state_check_rules.gd` | 209 | Force plancher 0, victoire après chaque effet, abandon, pendule, fatigue |
 | `keyword_rules.gd` | 210 | texte de règle de chaque mot-clé |
 | `force_rules.gd` | 206.5, 209.1 | Force actuelle calculée à la demande, jamais stockée |
@@ -49,7 +49,7 @@ Le champ **et** sa copie dans `clone()` de la même classe, puis une valeur non 
 - Tout aléa passe par `state.rng` ; jamais `randi()`, `Array.shuffle()` ni l'heure.
 - Une `CardInstance` est dans une seule zone à la fois : la déplacer, jamais la copier. Une pièce qui revient sur le plateau reçoit un nouveau `piece_id`.
 - La Force actuelle se calcule par `ForceRules`, jamais ne se stocke.
-- Pile vide ⇒ passes consécutives à zéro ; phase `ENDED` ⇒ toute intention refusée ; `state.pending_decision` non null ⇒ seule l'intention qui y répond est acceptée, et `Concede` (209.2.5 : à tout moment).
+- Phase `ENDED` ⇒ toute intention refusée ; `state.pending_decision` non null ⇒ seule l'intention qui y répond est acceptée, et `Concede` (209.2.5 : à tout moment).
 - Un Hero ne perd de PV que par `StateCheckRules.lose_health()`, qui vérifie la victoire (209.2.1).
 - Les pendules ne bougent que par `advance_clock()`, jamais pendant un `submit()`.
 - Les modules ne lisent que `state`, le catalogue compris par `state.catalog`, en lecture seule (0016) ; aucune injection, aucun Node, aucun accès à la vue.

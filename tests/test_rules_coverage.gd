@@ -1,5 +1,5 @@
 extends GdUnitTestSuite
-## Couverture du ruleset par les tests (ruleset 0.33, décision 0007 ; tests/CLAUDE.md).
+## Couverture du ruleset par les tests (ruleset 0.36, décision 0007 ; tests/CLAUDE.md).
 ##
 ## Chaque règle [ACTÉ] ou [PROVISOIRE] de docs/ruleset/20-regles-completes/ a un test à son nom
 ## (`test_206_3_6_…`) ou une entrée justifiée de RULES_WITHOUT_OWN_TEST ; chaque raison de refus
@@ -191,6 +191,15 @@ const RULES_WITHOUT_OWN_TEST: Dictionary[String, String] = {
 		+ "jamais appelé pendant un submit() (décision 0018) ; un choix demandé fait tourner la "
 		+ "pendule (test_209_4_4d_clock_runs_for_choosing_targets_of_own_entry)."
 	),
+	"208.6.1": "Fenêtre de réponse à l'écran : app/ et ui/, étape 2.3.",
+	"208.6.2": "Fenêtre de réponse à l'écran : app/ et ui/, étape 2.3.",
+	"208.6.3": "Fenêtre de réponse à l'écran : app/ et ui/, étape 2.3.",
+	"208.6.4": "Fenêtre de réponse à l'écran : app/ et ui/, étape 2.3.",
+	"208.6.5": "Fenêtre de réponse à l'écran : app/ et ui/, étape 2.3.",
+	"208.6.5a": "Fenêtre de réponse à l'écran : app/ et ui/, étape 2.3.",
+	"208.6.6": "Fenêtre de réponse à l'écran : app/ et ui/, étape 2.3.",
+	"208.6.7": "Fenêtre de réponse à l'écran : app/ et ui/, étape 2.3.",
+	"209.4.4g": "Fenêtre de réponse à l'écran : app/ et ui/, étape 2.3.",
 	"210.1.2":
 	(
 		"Règle de rédaction du ruleset (texte écrit une fois avec X) ; le moteur lit X sur la "

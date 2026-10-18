@@ -29,7 +29,6 @@ func test_208_4_2_trigger_waits_for_the_end_of_the_block() -> void:
 	_push_deploy(A, TriggerSamples.HERALD, "B1")
 	var expected: Array[String] = [
 		"PriorityPassed:B",
-		"PriorityPassed:A",
 		"PieceDeployed:A",
 		"EffectTriggered:A",
 		"StackEntryResolved:A",
@@ -39,13 +38,13 @@ func test_208_4_2_trigger_waits_for_the_end_of_the_block() -> void:
 		"DecisionResolvedAutomatically:A",
 		"StackEntryAdded:A",
 	]
-	assert_array(EventLog.describe(_pass_twice(B))).contains_exactly(expected)
+	assert_array(EventLog.describe(_pass_once(B))).contains_exactly(expected)
 
 
 func test_208_4_3_waiting_trigger_goes_on_top_of_the_stack() -> void:
 	_place(B, TriggerSamples.SOLDIER, "D4")
 	_push_deploy(A, TriggerSamples.HERALD, "B1")
-	var events := _pass_twice(B)
+	var events := _pass_once(B)
 	var added := events[events.size() - 1] as StackEntryAdded
 	var triggered := _first_event_of(events, "EffectTriggered") as EffectTriggered
 	assert_int(added.stack_entry_id).is_equal(triggered.stack_entry_id)
@@ -55,14 +54,14 @@ func test_208_4_3_waiting_trigger_goes_on_top_of_the_stack() -> void:
 func test_208_4_5_players_can_answer_the_added_trigger() -> void:
 	_place(B, TriggerSamples.SOLDIER, "D4")
 	_push_deploy(A, TriggerSamples.HERALD, "B1")
-	_pass_twice(B)
+	_pass_once(B)
 	assert_int(_engine.validate(PassPriority.new(B))).is_equal(REASON.NONE)
 
 
 func test_208_5_1a_trigger_is_added_before_the_active_player_acts_again() -> void:
 	_place(B, TriggerSamples.SOLDIER, "D4")
 	_push_deploy(A, TriggerSamples.HERALD, "B1")
-	_pass_twice(B)
+	_pass_once(B)
 	var state := _engine.get_state()
 	assert_int(state.stack.size()).is_equal(1)
 	assert_int(state.priority_player).is_equal(B)
@@ -155,7 +154,7 @@ func test_208_4_8_opponent_triggers_resolve_first() -> void:
 	_place_building(B, TriggerSamples.BEACON, "B4")
 	_engine.start_from_state(_builder.build())
 	_engine.submit(EndTurn.new(A))
-	var labels := EventLog.describe(_pass_twice(A))
+	var labels := EventLog.describe(_pass_once(A))
 	assert_int(labels.find("ForceModified:B")).is_less(labels.find("ForceModified:A"))
 
 
@@ -173,7 +172,7 @@ func test_207_5_1b_owner_chooses_among_several_legal_targets() -> void:
 	var first_id := _place(B, TriggerSamples.SOLDIER, "B4")
 	var second_id := _place(B, TriggerSamples.SOLDIER, "D4")
 	_push_deploy(A, TriggerSamples.HERALD, "B1")
-	var labels := EventLog.describe(_pass_twice(B))
+	var labels := EventLog.describe(_pass_once(B))
 	assert_str(labels[labels.size() - 1]).is_equal("DecisionRequested:A")
 	var decision := _engine.get_state().pending_decision
 	assert_int(decision.kind).is_equal(DECISION.CHOOSE_TARGETS)
@@ -245,7 +244,7 @@ func test_204_5_5_players_can_answer_end_of_turn_triggers() -> void:
 
 func test_204_5_6_end_of_turn_stack_resolves_then_the_turn_passes() -> void:
 	var soldier_id := _end_turn_with_one_beacon()
-	var labels := EventLog.describe(_pass_twice(B))
+	var labels := EventLog.describe(_pass_once(B))
 	var resolved_at := labels.find("ForceModified:A")
 	assert_int(resolved_at).is_less(labels.find("ActiveEffectEnded"))
 	assert_int(labels.find("ActiveEffectEnded")).is_less(labels.find("TurnStarted:B"))
@@ -294,7 +293,7 @@ func _ask_herald_targets() -> int:
 	var first_id := _place(B, TriggerSamples.SOLDIER, "B4")
 	_place(B, TriggerSamples.SOLDIER, "D4")
 	_push_deploy(A, TriggerSamples.HERALD, "B1")
-	_pass_twice(B)
+	_pass_once(B)
 	return first_id
 
 
@@ -323,11 +322,11 @@ func _push_deploy(side: DuelState.PlayerSide, definition_id: StringName, cell_na
 	_builder.push_deploy(card, DuelStateBuilder.cell(cell_name))
 
 
-# Démarre le moteur s'il ne l'est pas, puis `first` et son adversaire passent (208.3.1).
-func _pass_twice(first: DuelState.PlayerSide) -> Array[DuelEvent]:
+# Démarre le moteur s'il ne l'est pas, puis `first` passe : la pile se résout (208.3.1).
+func _pass_once(first: DuelState.PlayerSide) -> Array[DuelEvent]:
 	if _engine.get_state() == null:
 		_engine.start_from_state(_builder.with_priority_player(first).build())
-	return DuelChecks.pass_twice(_engine, first)
+	return DuelChecks.pass_once(_engine, first)
 
 
 func _stack_ids() -> Array[int]:

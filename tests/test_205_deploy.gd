@@ -81,7 +81,7 @@ func test_205_1_2_unit_enters_play_on_free_first_row_cell() -> void:
 	_engine.submit(_deploy(card_id, "B1"))
 	var labels := _resolve_stack()
 	assert_array(labels).contains_exactly(
-		["PriorityPassed:B", "PriorityPassed:A", "PieceDeployed:A", "StackEntryResolved:A"]
+		["PriorityPassed:B", "PieceDeployed:A", "StackEntryResolved:A"]
 	)
 	var piece := _engine.get_state().piece_at(DuelStateBuilder.cell("B1"))
 	assert_int(piece.kind).is_equal(Piece.PieceKind.UNIT)
@@ -250,12 +250,11 @@ func _deploy(card_id: int, cell_name: String, cost: int = UNIT_COST) -> DeployCa
 	return DeployCard.new(A, card_id, DuelStateBuilder.cell(cell_name), EssencePayment.new(cost))
 
 
-## Les deux joueurs passent : la pile se résout. Renvoie les événements décrits.
+## Le joueur qui a la priorité passe : la pile se résout. Renvoie les événements décrits.
 func _resolve_stack() -> Array[String]:
 	var state := _engine.get_state()
 	var first := state.priority_player
-	var events := _engine.submit(PassPriority.new(first))
-	events.append_array(_engine.submit(PassPriority.new(DuelState.opponent_of(first))))
+	var events := DuelChecks.pass_once(_engine, first)
 	return EventLog.describe(events)
 
 

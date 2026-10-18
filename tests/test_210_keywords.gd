@@ -172,8 +172,7 @@ func test_205_1_2b_deploy_resolves_after_the_outpost_building_left() -> void:
 	engine.submit(deploy)
 	var state := engine.get_state()
 	state.pieces.erase(state.find_piece(camp_id))
-	engine.submit(PassPriority.new(B))
-	var labels := EventLog.describe(engine.submit(PassPriority.new(A)))
+	var labels := EventLog.describe(engine.submit(PassPriority.new(B)))
 	assert_bool(labels.has("PieceDeployed:A")).is_true()
 	assert_object(state.piece_at(DuelStateBuilder.cell("A2"))).is_not_null()
 
@@ -188,8 +187,7 @@ func test_205_1_2b_outpost_deploy_on_an_enemy_attacks_it() -> void:
 	)
 	engine.submit(deploy)
 	DuelStateBuilder.place_unit_in(engine.get_state(), B, SOLDIER, "A2")
-	engine.submit(PassPriority.new(B))
-	var labels := EventLog.describe(engine.submit(PassPriority.new(A)))
+	var labels := EventLog.describe(engine.submit(PassPriority.new(B)))
 	assert_bool(labels.has("PieceEnteredAttacking:A")).is_true()
 	assert_int(engine.get_state().piece_at(DuelStateBuilder.cell("A2")).owner).is_equal(A)
 

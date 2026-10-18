@@ -265,10 +265,10 @@ func _token_cast(card_id: int, cells: Array[Vector2i]) -> CastSpell:
 	return intent
 
 
-## Les deux joueurs passent : la pile se résout. Renvoie les événements décrits.
+## Le joueur qui a la priorité passe : la pile se résout. Renvoie les événements décrits.
 func _resolve_stack() -> Array[String]:
 	var first := _engine.get_state().priority_player
-	return EventLog.describe(DuelChecks.pass_twice(_engine, first))
+	return EventLog.describe(DuelChecks.pass_once(_engine, first))
 
 
 func _place(side: DuelState.PlayerSide, definition_id: StringName, cell_name: String) -> int:

@@ -26,10 +26,9 @@ func test_decision_0017_trigger_samples_are_valid() -> void:
 func test_210_3_1_arrival_triggers_when_the_piece_arrives() -> void:
 	_place(B, TriggerSamples.SOLDIER, "B4")
 	_push_deploy(A, TriggerSamples.HERALD, "B1")
-	var events := _pass_twice(B)
+	var events := _pass_once(B)
 	var expected: Array[String] = [
 		"PriorityPassed:B",
-		"PriorityPassed:A",
 		"PieceDeployed:A",
 		"EffectTriggered:A",
 		"StackEntryResolved:A",
@@ -43,7 +42,7 @@ func test_210_3_1_arrival_triggers_when_the_piece_arrives() -> void:
 func test_210_3_1b_arrival_effect_goes_on_the_stack() -> void:
 	var soldier_id := _place(B, TriggerSamples.SOLDIER, "B4")
 	_push_deploy(A, TriggerSamples.HERALD, "B1")
-	_pass_twice(B)
+	_pass_once(B)
 	var stack := _engine.get_state().stack
 	assert_int(stack.size()).is_equal(1)
 	assert_int(stack[0].kind).is_equal(StackEntry.StackEntryKind.TRIGGERED_EFFECT)
@@ -53,10 +52,10 @@ func test_210_3_1b_arrival_effect_goes_on_the_stack() -> void:
 func test_208_3_2a_trigger_resolves_like_an_announcement() -> void:
 	var soldier_id := _place(B, TriggerSamples.SOLDIER, "B4")
 	_push_deploy(A, TriggerSamples.HERALD, "B1")
-	_pass_twice(B)
-	var labels := EventLog.describe(_pass_twice(B))
+	_pass_once(B)
+	var labels := EventLog.describe(_pass_once(B))
 	assert_array(labels).contains_exactly(
-		["PriorityPassed:B", "PriorityPassed:A", "ForceModified:B", "StackEntryResolved:A"]
+		["PriorityPassed:B", "ForceModified:B", "StackEntryResolved:A"]
 	)
 	assert_int(_force_of(soldier_id)).is_equal(
 		TriggerSamples.SOLDIER_FORCE + TriggerSamples.HERALD_MALUS
@@ -67,7 +66,7 @@ func test_210_3_1a_unit_entering_attacking_arrives() -> void:
 	_place(B, TriggerSamples.SOLDIER, "B1")
 	var other_id := _place(B, TriggerSamples.SOLDIER, "D4")
 	_push_deploy(A, TriggerSamples.HERALD, "B1")
-	var labels := EventLog.describe(_pass_twice(B))
+	var labels := EventLog.describe(_pass_once(B))
 	assert_bool(labels.has("PieceEnteredAttacking:A")).is_true()
 	assert_bool(labels.has("EffectTriggered:A")).is_true()
 	assert_array(_engine.get_state().stack[0].target_piece_ids).contains_exactly([other_id])
@@ -85,7 +84,7 @@ func test_210_3_2_last_breath_triggers_when_the_piece_is_destroyed() -> void:
 func test_210_3_2b_last_breath_happens_after_the_piece_left_the_board() -> void:
 	var soldier_id := _place(A, TriggerSamples.SOLDIER, "D1")
 	_destroy_martyr()
-	_pass_twice(B)
+	_pass_once(B)
 	assert_int(_force_of(soldier_id)).is_equal(
 		TriggerSamples.SOLDIER_FORCE + TriggerSamples.MARTYR_BONUS
 	)
@@ -96,7 +95,7 @@ func test_210_3_2b_last_breath_happens_after_the_piece_left_the_board() -> void:
 func test_207_3_2_triggered_effect_is_added_to_the_stack_before_it_happens() -> void:
 	var soldier_id := _place(B, TriggerSamples.SOLDIER, "B4")
 	_push_deploy(A, TriggerSamples.HERALD, "B1")
-	_pass_twice(B)
+	_pass_once(B)
 	var state := _engine.get_state()
 	assert_int(state.stack.size()).is_equal(1)
 	assert_int(state.stack[0].kind).is_equal(StackEntry.StackEntryKind.TRIGGERED_EFFECT)
@@ -107,12 +106,12 @@ func test_207_3_2_triggered_effect_is_added_to_the_stack_before_it_happens() -> 
 func test_207_3_3_triggered_effect_happens_though_its_piece_left_the_board() -> void:
 	var soldier_id := _place(B, TriggerSamples.SOLDIER, "B4")
 	_push_deploy(A, TriggerSamples.HERALD, "B1")
-	_pass_twice(B)
+	_pass_once(B)
 	var state := _engine.get_state()
 	var herald := state.find_piece(state.stack[0].source_piece_id)
 	CombatRules.destroy_piece(state, herald, [] as Array[DuelEvent])
 	assert_object(state.find_piece(herald.piece_id)).is_null()
-	var labels := EventLog.describe(_pass_twice(B))
+	var labels := EventLog.describe(_pass_once(B))
 	assert_array(labels).contains(["ForceModified:B"])
 	assert_int(_force_of(soldier_id)).is_equal(
 		TriggerSamples.SOLDIER_FORCE + TriggerSamples.HERALD_MALUS
@@ -129,7 +128,7 @@ func test_207_3_4_trigger_belongs_to_the_owner_of_its_card() -> void:
 
 func test_207_5_9_trigger_without_legal_target_is_not_added() -> void:
 	_push_deploy(A, TriggerSamples.HERALD, "B1")
-	var labels := EventLog.describe(_pass_twice(B))
+	var labels := EventLog.describe(_pass_once(B))
 	assert_str(labels[labels.size() - 1]).is_equal("TriggerSkipped:A")
 	var state := _engine.get_state()
 	assert_array(state.stack).is_empty()
@@ -139,7 +138,7 @@ func test_207_5_9_trigger_without_legal_target_is_not_added() -> void:
 func test_207_5_10_trigger_without_enough_legal_targets_is_not_added() -> void:
 	_place(B, TriggerSamples.SOLDIER, "B4")
 	_push_deploy(A, TriggerSamples.DOUBLE_HERALD, "B1")
-	var labels := EventLog.describe(_pass_twice(B))
+	var labels := EventLog.describe(_pass_once(B))
 	assert_str(labels[labels.size() - 1]).is_equal("TriggerSkipped:A")
 	assert_array(_engine.get_state().stack).is_empty()
 
@@ -192,7 +191,7 @@ func test_207_3_8_once_per_turn_count_lasts_from_turn_start_to_turn_end() -> voi
 	assert_array(EventLog.describe(events)).contains_exactly(
 		["EffectTriggered:A", "TriggerSkipped:A"]
 	)
-	_pass_twice(B)
+	_pass_once(B)
 	assert_int(state.active_player).is_equal(B)
 	assert_array(state.once_per_turn_card_ids).is_empty()
 
@@ -202,7 +201,7 @@ func test_207_3_9_once_per_turn_count_resets_at_each_turn_start() -> void:
 	_place_building(A, TriggerSamples.ONCE_BEACON, "B2")
 	_engine.start_from_state(_builder.build())
 	_engine.submit(EndTurn.new(A))
-	_pass_twice(B)
+	_pass_once(B)
 	var state := _engine.get_state()
 	assert_int(state.active_player).is_equal(B)
 	assert_array(state.once_per_turn_card_ids).is_empty()
@@ -251,7 +250,7 @@ func _destroy_martyr() -> Array[DuelEvent]:
 	var giant_id := _place(B, TriggerSamples.GIANT, "B3")
 	_builder.with_active_player(B)
 	_builder.push_normal_action(giant_id, DuelStateBuilder.cell("B2"))
-	return _pass_twice(A)
+	return _pass_once(A)
 
 
 func _place(side: DuelState.PlayerSide, definition_id: StringName, cell_name: String) -> int:
@@ -273,11 +272,11 @@ func _push_deploy(side: DuelState.PlayerSide, definition_id: StringName, cell_na
 	_builder.push_deploy(card, DuelStateBuilder.cell(cell_name))
 
 
-# Démarre le moteur s'il ne l'est pas, puis `first` et son adversaire passent (208.3.1).
-func _pass_twice(first: DuelState.PlayerSide) -> Array[DuelEvent]:
+# Démarre le moteur s'il ne l'est pas, puis `first` passe : la pile se résout (208.3.1).
+func _pass_once(first: DuelState.PlayerSide) -> Array[DuelEvent]:
 	if _engine.get_state() == null:
 		_engine.start_from_state(_builder.with_priority_player(first).build())
-	return DuelChecks.pass_twice(_engine, first)
+	return DuelChecks.pass_once(_engine, first)
 
 
 func _force_of(piece_id: int) -> int:

@@ -84,8 +84,6 @@ static func _check_board(state: DuelState, violations: PackedStringArray) -> voi
 
 # 208.3.1, 208.5.1, 209.2.2, décisions 0009 et 0017
 static func _check_stack_and_waits(state: DuelState, violations: PackedStringArray) -> void:
-	if state.stack.is_empty() and state.consecutive_passes != 0:
-		violations.append("208.3.1 : passes comptées pile vide")
 	var waiting := not state.waiting_triggers.is_empty() or not state.triggers_to_add.is_empty()
 	if waiting and state.pending_decision == null:
 		violations.append("décision 0017 : effets en attente sans choix attendu")

@@ -64,7 +64,7 @@ Aucun Invariant.
 
 **209.4.4a** [ACTÉ] La pendule du joueur actif tourne pendant sa phase principale quand la pile est vide (décision 0114 ; voir 204.4.1 et 208.5.1).
 
-**209.4.4b** [ACTÉ] La pendule d'un joueur tourne chaque fois qu'il peut répondre ou passer (décision 0114 ; voir 208.2.2 et 208.2.4).
+**209.4.4b** [ACTÉ] La pendule d'un joueur tourne chaque fois qu'il peut répondre ou passer (décision 0114 ; voir 208.2.4 et 208.3.1).
 
 **209.4.4c** [ACTÉ] La pendule d'un joueur tourne pour l'ordre de ses effets déclenchés (décision 0114 ; voir 208.4.6 et 208.4.7).
 
@@ -73,6 +73,8 @@ Aucun Invariant.
 **209.4.4e** Supprimée en édition 0.34, voir décision 0188.
 
 **209.4.4f** [ACTÉ] La pendule d'un joueur dont les règles attendent une décision tourne aussi pendant le passage de l'appareil d'un joueur à l'autre et pendant l'affichage des effets, dans une version du jeu sur écran (décision 0187 ; voir 209.4.2 et 209.4.4).
+
+**209.4.4g** [ACTÉ] La pendule d'un joueur tourne pendant la fenêtre de réponse qu'on lui montre (décision 0198 ; voir 208.6.1 et 209.4.4b).
 
 **209.4.5** [ACTÉ] Le temps d'un joueur est écoulé quand sa pendule atteint 0 minute (décision 0113 ; voir 209.4.3 et 209.2.8).
 

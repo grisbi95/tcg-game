@@ -69,7 +69,6 @@ func test_209_4_4a_active_clock_runs_again_once_the_stack_is_resolved() -> void:
 	_push_spell(A)
 	_engine.start_from_state(_builder.with_priority_player(B).build())
 	_engine.submit(PassPriority.new(B))
-	_engine.submit(PassPriority.new(A))
 	assert_array(_engine.clock_owners()).contains_exactly([A])
 
 

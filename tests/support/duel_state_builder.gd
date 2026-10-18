@@ -83,11 +83,6 @@ func with_turn_number(turn_number: int) -> DuelStateBuilder:
 	return self
 
 
-func with_consecutive_passes(passes: int) -> DuelStateBuilder:
-	_state.consecutive_passes = passes
-	return self
-
-
 func with_pending_decision(decision: PendingDecision) -> DuelStateBuilder:
 	_state.pending_decision = decision
 	return self
