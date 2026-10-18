@@ -80,7 +80,7 @@
 
 **203.6.6** [ACTÉ] Un joueur peut agir quand la pile est vide pendant sa phase principale (décision 0192 ; voir 209.4.4a et 208.5.1).
 
-**203.6.7** [ACTÉ] Un joueur peut agir chaque fois qu'il peut répondre ou passer (décision 0192 ; voir 209.4.4b, 208.2.2 et 208.2.4).
+**203.6.7** [ACTÉ] Un joueur peut agir chaque fois qu'il peut répondre ou passer (décision 0192 ; voir 209.4.4b, 208.2.4 et 208.3.1).
 
 **203.6.8** [ACTÉ] Un joueur ne peut pas agir pendant que les règles attendent une décision de son adversaire (décision 0192 ; voir 209.4.2 et 209.4.4).
 

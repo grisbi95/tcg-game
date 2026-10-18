@@ -119,7 +119,7 @@ func test_drawing_in_clone_does_not_change_original_rng() -> void:
 func test_deep_compare_detects_missing_field_and_shared_object() -> void:
 	var state := _build_full_state()
 	var missing_field := state.clone()
-	missing_field.consecutive_passes = 0
+	missing_field.turn_number = 0
 	assert_array(DeepCompare.find_clone_defects(state, missing_field)).is_not_empty()
 	var shared_player := state.clone()
 	shared_player.players[0] = state.players[0]
@@ -139,7 +139,6 @@ func _build_full_state() -> DuelState:
 	builder.with_active_player(B)
 	builder.with_priority_player(B)
 	builder.with_turn_number(3)
-	builder.with_consecutive_passes(1)
 	for side: DuelState.PlayerSide in [A, B]:
 		_fill_player(builder, side)
 	var unit_id := builder.place_piece(

@@ -34,17 +34,19 @@ Aucun Invariant.
 
 **208.2.1** Supprimée en édition 0.3, voir décision 0070.
 
-**208.2.2** [ACTÉ] Quand un joueur passe, son adversaire peut à son tour répondre ou passer (décision 0046 ; voir 208.3.1).
+**208.2.2** Supprimée en édition 0.36, voir décision 0197.
 
 **208.2.3** [ACTÉ] Un joueur qui répond n'annonce que des Spells de vitesse Réaction (décision 0061 ; voir 207.1.6).
 
-**208.2.4** [ACTÉ] Après tout ajout à la pile, l'adversaire du joueur à qui appartient l'entrée du sommet de la pile peut le premier répondre ou passer (décision 0070 ; voir 208.2.2 et 208.4.1).
+**208.2.4** [ACTÉ] Après tout ajout à la pile, l'adversaire du joueur à qui appartient l'entrée du sommet de la pile peut le premier répondre ou passer (décision 0070 ; voir 208.3.1 et 208.4.1).
 
 **208.2.4a** [ACTÉ] Quand une annonce déclenche un effet déclenché qui appartient à l'adversaire du joueur qui annonce, le joueur qui annonce peut le premier répondre ou passer (décision 0070 ; voir 208.2.4 et 208.4.4).
 
 ## 208.3 Passes et résolution
 
-**208.3.1** [ACTÉ] Quand les deux joueurs passent l'un après l'autre, toute la pile se résout d'un bloc (décision 0046).
+**208.3.1** [ACTÉ] Quand le joueur qui peut répondre ou passer passe, toute la pile se résout d'un bloc (décisions 0046 et 0197 ; voir 208.2.4 et 208.3.1a).
+
+**208.3.1a** [ACTÉ] Le joueur à qui appartient l'entrée du sommet de la pile est considéré comme ayant passé (décision 0197 ; voir 208.2.4 et 208.3.1).
 
 **208.3.2** [ACTÉ] Les annonces de la pile se résolvent de la dernière ajoutée à la première (décision 0046).
 
@@ -83,3 +85,21 @@ Aucun Invariant.
 **208.5.1** [ACTÉ] Une fois la pile vide, c'est de nouveau au joueur actif d'agir (décision 0046).
 
 **208.5.1a** [ACTÉ] Un effet déclenché qui attend la fin de la résolution s'ajoute à la pile avant que ce soit de nouveau au joueur actif d'agir (décision 0064 ; voir 208.4.3).
+
+## 208.6 Fenêtre de réponse
+
+**208.6.1** [ACTÉ] Dans une version du jeu sur écran, le jeu montre une fenêtre de réponse à un joueur chaque fois qu'il peut répondre ou passer (décision 0198 ; voir 208.2.4).
+
+**208.6.2** [PROVISOIRE] La fenêtre de réponse dure 2 secondes (décision 0198 ; à mesurer en playtest : temps de pendule consommé par les fenêtres de réponse, nombre de réponses commencées, ressenti du rythme ; voir 208.6.1).
+
+**208.6.3** [ACTÉ] Un joueur qui ne fait rien pendant la durée de la fenêtre de réponse passe automatiquement (décision 0198 ; voir 208.3.1 et 208.6.2).
+
+**208.6.4** [ACTÉ] Un joueur peut passer avant la fin de la fenêtre de réponse (décision 0198 ; voir 208.6.1).
+
+**208.6.5** [ACTÉ] Le décompte de la fenêtre de réponse s'arrête quand le joueur commence une réponse (décision 0198 ; voir 208.2.3 et 208.6.2).
+
+**208.6.5a** [ACTÉ] Un joueur dont le décompte s'est arrêté selon 208.6.5 doit répondre ou passer lui-même (décision 0198 ; voir 208.6.5).
+
+**208.6.6** [ACTÉ] La fenêtre de réponse est la même pour tout joueur, qu'il ait ou non une Réaction jouable (décision 0198 ; voir 207.1.6).
+
+**208.6.7** [ACTÉ] La fenêtre de réponse ne s'applique qu'au moment où un joueur peut répondre ou passer (décision 0198 ; voir 208.6.1).

@@ -263,10 +263,10 @@ func _engine_from(state: DuelState) -> DuelEngine:
 	return engine
 
 
-# Les deux joueurs passent l'un après l'autre : la pile se résout (208.3.1).
+# Le joueur qui a la priorité passe : la pile se résout (208.3.1).
 func _resolve_stack(engine: DuelEngine) -> void:
 	var first := engine.get_state().priority_player
-	DuelChecks.pass_twice(engine, first)
+	DuelChecks.pass_once(engine, first)
 
 
 func _first_event_of(events: Array[DuelEvent], description: String) -> DuelEvent:

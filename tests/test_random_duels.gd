@@ -1,5 +1,5 @@
 extends GdUnitTestSuite
-## Duels aléatoires avec oracle et déterminisme (ruleset 0.33 ; décisions 0001, 0018 et 0019 ;
+## Duels aléatoires avec oracle et déterminisme (ruleset 0.36 ; décisions 0001, 0018 et 0019 ;
 ## tests/CLAUDE.md, « Duels aléatoires »).
 ##
 ## Deux decks de test, RandomLegalAgent pour les deux joueurs, la pendule avancée d'un pas après
@@ -10,8 +10,8 @@ extends GdUnitTestSuite
 
 const SHORT_SEEDS: Array[int] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 const SHORT_STEPS: int = 300
-## Graines dont le duel finit avant LONG_STEPS (relevé du 17 octobre 2026).
-const LONG_SEEDS: Array[int] = [2, 4]
+## Graines dont le duel finit avant LONG_STEPS (relevé du 18 octobre 2026, ruleset 0.36).
+const LONG_SEEDS: Array[int] = [4, 6]
 const LONG_STEPS: int = 2_000
 const CLOCK_STEP_MSEC: int = 50
 

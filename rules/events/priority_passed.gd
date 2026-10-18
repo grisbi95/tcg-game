@@ -1,3 +1,3 @@
 class_name PriorityPassed
 extends PlayerEvent
-## 208.2.2 : le joueur passe sans répondre.
+## 208.3.1 : le joueur passe sans répondre.

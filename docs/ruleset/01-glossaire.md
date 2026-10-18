@@ -54,6 +54,7 @@
 | Entrée de la pile | Annonce ou effet déclenché qui se trouve sur la pile, et qui appartient au joueur qui a fait l'annonce ou, pour un effet déclenché, au joueur de 207.3.4 ou de 207.3.4a ; voir 201.3.7, 201.5.4, 202.4.6, 208.1.1 et 208.2.4. | |
 | Essence | Ressource du jeu ; voir 203.1.1, 203.3.1 et 203.3.3. | |
 | Exemplaire | Chacune des cartes qui portent le même nom ; voir 201.6.2. | |
+| Fenêtre de réponse | Dans une version du jeu sur écran, affichage montré à un joueur chaque fois qu'il peut répondre ou passer, qui le fait passer automatiquement s'il ne fait rien pendant sa durée ; voir 208.6.1, 208.6.2, 208.6.3, 208.6.4, 208.6.5, 208.6.5a, 208.6.6 et 208.6.7. | |
 | Fin du tour | Dernière partie du tour, qui commence quand le joueur actif termine son tour et précède le début du tour de son adversaire ; voir 204.4.7 et 204.5.3. | |
 | Fonte | Emplacement propre à chaque joueur, qui accueille ses Sources recyclées ; voir 203.5.2, 203.5.3, 203.5.4 et 203.5.6. | |
 | Force | Statistique de combat des Units et des Buildings ; voir 202.1.5, 202.1.6, 202.4.9, 206.2.2, 206.2.3 et 209.1.1. | |
@@ -77,10 +78,10 @@
 | Mulligan | Remplacement, une seule fois, de cartes de sa main par des cartes de son deck ; voir 204.2.1, 204.2.4, 204.2.5 et 204.2.13. | |
 | Partie | Affrontement qui oppose deux joueurs. | |
 | Partie nulle | Issue d'une partie qui s'arrête sans vainqueur ; voir 201.1.2a, 201.1.2b, 209.2.8a et 209.3.1. | |
-| Passer | Renoncer à répondre ; voir 208.2.2, 208.2.4 et 208.3.1. | |
+| Passer | Renoncer à répondre ; voir 208.2.4, 208.3.1, 208.3.1a et 208.6.3. | |
 | Passif | Effet statique d'un Hero ; voir Effet statique, 202.3.11 et 202.3.18. | |
 | Payer | Fournir l'Essence qu'exige un coût ; voir 203.2.4, 203.3.1, 203.3.2, 203.3.2a, 203.3.2b et 203.3.3. | |
-| Pendule | Temps dont dispose chaque joueur pour toute la partie, qui ne tourne que quand les règles attendent une décision de lui ; voir 209.4.1, 209.4.2, 209.4.2d, 209.4.3, 209.4.4 et 209.4.4f. | |
+| Pendule | Temps dont dispose chaque joueur pour toute la partie, qui ne tourne que quand les règles attendent une décision de lui ; voir 209.4.1, 209.4.2, 209.4.2d, 209.4.3, 209.4.4, 209.4.4f et 209.4.4g. | |
 | Phase principale | Phase du tour qui suit le début du tour, pendant laquelle le joueur actif agit ; voir 204.4.1, 204.4.2 et 208.4.11. | |
 | Pièce | Élément qui occupe une case du plateau. | |
 | Pile | Zone commune aux deux joueurs qui forme l'ensemble ordonné des annonces et des effets déclenchés en attente de résolution ; voir 201.3.7, 201.3.8, 201.4.7, 207.3.2 et le chapitre 208. | |
@@ -90,7 +91,7 @@
 | Premier joueur | Joueur qui joue le premier tour de la partie ; voir 204.3.4. | |
 | Première rangée | Rangée du plateau la plus proche d'un joueur. | |
 | Préparation | Période de la partie qui précède le premier tour et comprend la mise en place de la section 204.1 et le mulligan ; voir 204.1.9, 204.1.10 et 204.1.11. | |
-| Priorité | Droit d'un joueur d'agir, soit d'annoncer pendant sa phase principale quand la pile est vide, soit de répondre ou de passer après un ajout à la pile ; voir 208.2.2, 208.2.4 et 208.5.1. | |
+| Priorité | Droit d'un joueur d'agir, soit d'annoncer pendant sa phase principale quand la pile est vide, soit de répondre ou de passer après un ajout à la pile ; voir 208.2.4, 208.3.1 et 208.5.1. | |
 | PV | Points de vie d'un Hero ; voir 202.3.7 et 204.1.8. | |
 | Rangée | Alignement de cases du plateau dont toutes les cases sont à la même distance de chaque joueur. | |
 | Rangée centrale | Rangée 3 du plateau, à égale distance des deux joueurs ; voir 205.1.4. | |
@@ -111,7 +112,7 @@
 | Tour | Période de la partie attribuée à un joueur ; voir le chapitre 204. | |
 | Type | Catégorie d'une carte de deck, parmi celles de 202.2.1 ; voir 202.1.3. | |
 | Unit | Type de carte de deck, et pièce du plateau issue d'une carte de ce type ou jeton que désigne l'effet qui le crée ; voir 202.2.2, 202.4.8 et 202.4.10. | |
-| Version du jeu sur écran | Mise en œuvre du jeu où un logiciel affiche la partie sur un écran ; voir 209.4.4f. | |
+| Version du jeu sur écran | Mise en œuvre du jeu où un logiciel affiche la partie sur un écran ; voir 208.6.1, 209.4.4f et 209.4.4g. | |
 | Vide | Se dit de la pile quand aucune annonce ni aucun effet déclenché n'y attend d'être résolu ; voir 208.1.7, 208.5.1 et 208.5.1a. | |
 | Vitesse | Caractéristique que porte une carte Spell, Action ou Réaction, qui fixe les moments où son joueur peut l'annoncer ; voir 207.1.1 et 207.1.2. | |
 | Zone | Emplacement où se trouvent des cartes, sur ou hors du plateau. | |
