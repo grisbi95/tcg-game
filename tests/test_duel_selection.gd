@@ -2,13 +2,14 @@
 
 extends GdUnitTestSuite
 ## DuelSelection sans scène : gestes traduits en intentions validées, éléments à surligner,
-## paiement par les Sources (ruleset 0.35 ; décisions 0023 et 0024).
+## paiement par les Sources, réponse commencée (ruleset 0.36 ; décisions 0023, 0024 et 0029).
 
 const UNIT: StringName = &"selection_unit"
 const UNIT_FORCE: int = 3
 const UNIT_COST: int = 2  # CatalogSamples.unit()
 const TARGETED_SPELL: StringName = &"sample_spell"  # cible une Unit alliée, coût 1
 const PLAIN_SPELL: StringName = &"selection_plain_spell"  # sans effet ni cible, coût 1
+const FREE_SPELL: StringName = &"selection_free_spell"  # Réaction sans effet ni cible, coût 0
 const DEPLOY_CELL: String = "B1"
 const CENTRAL_CELL: String = "B3"
 const UNIT_CELL: String = "A1"
@@ -22,6 +23,7 @@ var _builder: DuelStateBuilder
 var _engine: DuelEngine
 var _selection: DuelSelection
 var _emitted: Array[DuelIntent] = []
+var _response_start_count: int = 0
 
 
 func before_test() -> void:
@@ -30,11 +32,16 @@ func before_test() -> void:
 	catalog.add_card(CardDefinition.from_dict(CatalogSamples.spell()))
 	var plain := CatalogSamples.with_field(CatalogSamples.spell(), "id", String(PLAIN_SPELL))
 	catalog.add_card(CardDefinition.from_dict(CatalogSamples.with_field(plain, "effects", [])))
+	var free := CatalogSamples.with_field(plain, "id", String(FREE_SPELL))
+	free = CatalogSamples.with_field(free, "effects", [])
+	catalog.add_card(CardDefinition.from_dict(CatalogSamples.with_field(free, "cost", 0)))
 	_builder = DuelStateBuilder.new(DuelConfig.new(), catalog)
 	_engine = DuelEngine.new(catalog)
 	_selection = DuelSelection.new()
 	_emitted = []
 	_selection.intent_chosen.connect(func(intent: DuelIntent) -> void: _emitted.append(intent))
+	_response_start_count = 0
+	_selection.response_started.connect(func() -> void: _response_start_count += 1)
 
 
 func test_decision_0023_card_not_covered_by_the_reserve_is_not_playable() -> void:
@@ -204,6 +211,44 @@ func test_decision_0024_gestures_never_change_the_engine_state() -> void:
 	assert_array(DeepCompare.find_clone_defects(snapshot, _engine.get_state())).is_empty()
 	for intent: DuelIntent in _emitted:
 		assert_int(_engine.validate(intent)).is_equal(IntentRejected.RejectReason.NONE)
+
+
+func test_208_6_5_reaction_card_chosen_starts_the_response() -> void:
+	var card_id := _builder.add_to_hand(B, FREE_SPELL)
+	_answer_spell_of_a()
+	_selection.press_card(card_id)
+	assert_int(_selection.snapshot().selection_state).is_equal(SELECTION.CONFIRM)
+	assert_int(_response_start_count).is_equal(1)
+
+
+func test_208_6_5_source_pressed_starts_the_response() -> void:
+	_answer_spell_of_a()
+	_selection.press_source(false)
+	assert_int(_response_start_count).is_equal(1)
+
+
+func test_208_6_5a_cancel_does_not_restart_anything() -> void:
+	_answer_spell_of_a()
+	_selection.press_source(false)
+	_selection.press_cancel()
+	assert_int(_response_start_count).is_equal(1)
+
+
+func test_decision_0029_no_response_outside_an_answer() -> void:
+	var card_id := _builder.add_to_hand(A, UNIT)
+	_builder.with_sources_in_play(A, 1, 0)
+	_builder.with_essence_reserve(A, UNIT_COST)
+	_start(A)
+	_selection.press_card(card_id)
+	_selection.press_source(false)
+	assert_int(_response_start_count).is_equal(0)
+
+
+# 208.2.4 : A a annoncé un Spell ; B, devant l'écran, peut répondre ou passer.
+func _answer_spell_of_a() -> void:
+	_builder.push_spell(_builder.make_card_instance(A, PLAIN_SPELL))
+	_builder.with_priority_player(B)
+	_start(B)
 
 
 func _start(side: DuelState.PlayerSide) -> void:

@@ -10,6 +10,9 @@ extends RefCounted
 
 signal intent_chosen(intent: DuelIntent)
 signal selection_changed
+## 208.6.5, décision 0029 : le joueur qui peut répondre ou passer a choisi une carte ou pressé
+## une Source ; l'écran le transmet à DuelHost, qui arrête le décompte de sa fenêtre de réponse.
+signal response_started
 
 ## Enum journalisable : ajouter à la fin, sans réordonner.
 enum SelectionState {
@@ -73,7 +76,10 @@ func press_card(card_id: int) -> void:
 	elif card_id == _card_id and _selection_state != SelectionState.IDLE:
 		reset()
 	elif _player().find_card_in_hand(card_id) != null:
+		var is_answering := _is_answering()
 		_choose_card(card_id)
+		if is_answering and _selection_state != SelectionState.IDLE:
+			response_started.emit()
 
 
 func press_piece(piece_id: int) -> void:
@@ -114,6 +120,8 @@ func press_stack_entry(stack_entry_id: int) -> void:
 ## Décision 0023 : `is_tilted` dit si la Source pressée est inclinée (elle se recycle) ou
 ## redressée (elle s'incline).
 func press_source(is_tilted: bool) -> void:
+	if _is_answering():
+		response_started.emit()
 	var produced := EssencePayment.new(0, 1) if is_tilted else EssencePayment.new(1, 0)
 	if _is_own_turn():
 		_emit_if_legal(ProduceEssence.new(_side, produced))
@@ -309,6 +317,11 @@ func _copy_draft() -> EssencePayment:
 
 func _is_own_turn() -> bool:
 	return _engine.get_state().active_player == _side
+
+
+# 208.6.1 : le moteur accepterait que le joueur passe.
+func _is_answering() -> bool:
+	return _candidates().is_legal(PassPriority.new(_side))
 
 
 func _has_pending_decision() -> bool:

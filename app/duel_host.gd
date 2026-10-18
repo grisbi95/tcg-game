@@ -7,7 +7,7 @@ extends RefCounted
 ## Aucune règle ici : chaque intention passe par `DuelEngine.submit()`. La scène qui l'anime
 ## appelle `tick()` à chaque image et lui transmet les gestes ; les événements renvoyés sont les
 ## seuls faits de jeu (décision 0006). 209.4.4f : la pendule tourne aussi pendant le relais et
-## l'affichage des événements.
+## l'affichage des événements. Décision 0029 : l'hôte décompte la fenêtre de réponse (208.6).
 
 signal host_state_changed(host_state: HostState)
 
@@ -34,6 +34,12 @@ var _awaited_player: DuelState.PlayerSide = DuelState.PlayerSide.A
 ## Joueur humain devant l'écran ; sans objet tant que `_is_screen_assigned` est faux.
 var _screen_player: DuelState.PlayerSide = DuelState.PlayerSide.A
 var _is_screen_assigned: bool = false
+## Décision 0029 : décompte de la fenêtre de réponse du joueur attendu (208.6.1).
+var _is_response_window_running: bool = false
+var _response_deadline_msec: int = 0
+## Entrée au sommet de la pile à l'ouverture de la dernière fenêtre : retrouver la même occasion
+## de répondre, après une intention qui ne la clôt pas, ne rouvre pas de fenêtre (208.6.5a).
+var _response_stack_entry_id: int = DuelState.NO_ID
 
 
 ## `engine` n'a pas encore démarré de duel ; `clock` est remplacée par une horloge manuelle dans
@@ -64,7 +70,7 @@ func start(setup: DuelSetup) -> Array[DuelEvent]:
 ## À chaque image : décompte le temps réel écoulé, puis fait jouer l'agent attendu. Renvoie les
 ## événements produits, à afficher.
 func tick() -> Array[DuelEvent]:
-	var events := _advance_clock()
+	var events := _count_elapsed_time()
 	if _host_state == HostState.AWAITING_AI:
 		events.append_array(_play_agent())
 	return events
@@ -76,7 +82,7 @@ func submit_human(intent: DuelIntent) -> Array[DuelEvent]:
 	var events: Array[DuelEvent] = []
 	if _host_state != HostState.AWAITING_HUMAN or intent.player != _screen_player:
 		return events
-	events = _advance_clock()
+	events = _count_elapsed_time()
 	if _host_state == HostState.AWAITING_HUMAN:
 		events.append_array(_submit(intent))
 	return events
@@ -88,7 +94,7 @@ func concede(side: DuelState.PlayerSide) -> Array[DuelEvent]:
 	var events: Array[DuelEvent] = []
 	if _agents.has(side) or not _is_duel_running():
 		return events
-	events = _advance_clock()
+	events = _count_elapsed_time()
 	if not _engine.get_state().is_ended():
 		events.append_array(_submit(Concede.new(side)))
 	return events
@@ -107,8 +113,25 @@ func confirm_events_played() -> void:
 func confirm_relay() -> void:
 	if _host_state != HostState.RELAY:
 		return
-	_assign_screen(_awaited_player)
-	_change_state(HostState.AWAITING_HUMAN)
+	_await_human()
+
+
+## 208.6.5 : le joueur devant l'écran commence une réponse ; le décompte de sa fenêtre s'arrête
+## et ne reprend pas (208.6.5a). Sans effet hors d'une fenêtre de réponse.
+func begin_response() -> void:
+	_is_response_window_running = false
+
+
+## Décision 0029 : vrai tant que court le décompte de la fenêtre de réponse (208.6.1, 208.6.5).
+func is_response_window_running() -> bool:
+	return _is_response_window_running
+
+
+## Temps restant de la fenêtre de réponse, à afficher ; 0 hors décompte.
+func get_response_time_left_msec() -> int:
+	if not _is_response_window_running:
+		return 0
+	return maxi(_response_deadline_msec - _clock.now_msec(), 0)
 
 
 func get_host_state() -> HostState:
@@ -130,14 +153,35 @@ func get_screen_player() -> DuelState.PlayerSide:
 	return _screen_player
 
 
+# Décision 0021 : le temps réel écoulé compte avant tout geste ; 208.6.3 : une fenêtre de réponse
+# échue fait d'abord passer son joueur.
+func _count_elapsed_time() -> Array[DuelEvent]:
+	var events := _expire_response_window()
+	events.append_array(_advance_clock_until(_clock.now_msec()))
+	return events
+
+
+# 208.6.3, 209.4.4g : la pendule compte jusqu'à l'échéance, puis le joueur silencieux passe.
+func _expire_response_window() -> Array[DuelEvent]:
+	var events: Array[DuelEvent] = []
+	if not _is_response_window_running or _host_state != HostState.AWAITING_HUMAN:
+		return events
+	if _clock.now_msec() < _response_deadline_msec:
+		return events
+	_is_response_window_running = false
+	events = _advance_clock_until(maxi(_response_deadline_msec, _last_clock_msec))
+	if _host_state == HostState.AWAITING_HUMAN:
+		events.append_array(_submit(PassPriority.new(_awaited_player)))
+	return events
+
+
 # 209.4.4f, décision 0021 : la pendule tourne dans tout état du duel en cours.
-func _advance_clock() -> Array[DuelEvent]:
+func _advance_clock_until(until_msec: int) -> Array[DuelEvent]:
 	var events: Array[DuelEvent] = []
 	if not _is_duel_running() or _engine.get_state().is_ended():
 		return events
-	var now_msec := _clock.now_msec()
-	var elapsed_msec := now_msec - _last_clock_msec
-	_last_clock_msec = now_msec
+	var elapsed_msec := until_msec - _last_clock_msec
+	_last_clock_msec = until_msec
 	_journal.record_elapsed(elapsed_msec)
 	events = _engine.advance_clock(elapsed_msec)
 	if not events.is_empty():
@@ -157,9 +201,11 @@ func _play_agent() -> Array[DuelEvent]:
 
 
 # Une intention refusée ne change rien : l'hôte reste dans son état, et le journal ne la garde pas.
+# Une intention acceptée clôt la fenêtre de réponse : passe (208.6.4) ou réponse (208.6.5).
 func _submit(intent: DuelIntent) -> Array[DuelEvent]:
 	var events := _engine.submit(intent)
 	if not (events.size() == 1 and events[0] is IntentRejected):
+		_is_response_window_running = false
 		_journal.record_intent(intent)
 		_await_display()
 	return events
@@ -184,8 +230,29 @@ func _choose_next_state() -> void:
 	elif _needs_relay():
 		_change_state(HostState.RELAY)
 	else:
-		_assign_screen(_awaited_player)
-		_change_state(HostState.AWAITING_HUMAN)
+		_await_human()
+
+
+# 208.6.1 : entre deux humains, la fenêtre ne s'ouvre qu'une fois l'appareil passé.
+func _await_human() -> void:
+	_assign_screen(_awaited_player)
+	_open_response_window()
+	_change_state(HostState.AWAITING_HUMAN)
+
+
+# 208.6.1, 208.6.6, 208.6.7 : une fenêtre, la même pour tous, s'ouvre à chaque nouvelle occasion
+# de répondre ou passer, et seulement alors ; le moteur seul dit si le joueur peut passer.
+func _open_response_window() -> void:
+	if _engine.validate(PassPriority.new(_awaited_player)) != IntentRejected.RejectReason.NONE:
+		_is_response_window_running = false
+		_response_stack_entry_id = DuelState.NO_ID
+		return
+	var top_entry: StackEntry = _engine.get_state().stack.back()
+	if top_entry.stack_entry_id == _response_stack_entry_id:
+		return
+	_response_stack_entry_id = top_entry.stack_entry_id
+	_response_deadline_msec = _clock.now_msec() + _engine.get_state().config.response_window_msec
+	_is_response_window_running = true
 
 
 # Le relais ne sert qu'entre deux humains, y compris pour appeler le premier à l'écran.
