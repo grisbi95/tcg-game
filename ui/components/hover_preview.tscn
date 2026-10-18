@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://ui/components/hover_preview.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://ui/components/card_view.tscn" id="2_card"]
+
+[node name="HoverPreview" type="PanelContainer"]
+mouse_filter = 2
+script = ExtResource("1_script")
+
+[node name="CardView" parent="." instance=ExtResource("2_card")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 420)
+layout_mode = 2
+mouse_filter = 2

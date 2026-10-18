@@ -14,6 +14,7 @@ const INTENT_SCRIPTS: Dictionary[StringName, GDScript] = {
 	&"EndTurn": preload("res://rules/intents/end_turn.gd"),
 	&"OrderTriggers": preload("res://rules/intents/order_triggers.gd"),
 	&"PassPriority": preload("res://rules/intents/pass_priority.gd"),
+	&"ProduceEssence": preload("res://rules/intents/produce_essence.gd"),
 	&"TakeNormalAction": preload("res://rules/intents/take_normal_action.gd"),
 	&"UseHeroPower": preload("res://rules/intents/use_hero_power.gd"),
 }

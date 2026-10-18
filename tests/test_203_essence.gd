@@ -2,7 +2,7 @@
 
 extends GdUnitTestSuite
 ## EssenceRules : paiement d'un coût en inclinant et en recyclant des Sources (ruleset 0.33,
-## chapitre 203, décision 0003).
+## chapitre 203, décision 0003). La réserve d'Essence (0.35) : test_203_6_essence_reserve.gd.
 
 const TOTAL_SOURCES: int = 10  # 203.5.7
 const MAX_ESSENCE_PER_UPRIGHT_SOURCE: int = 2  # 203.2.7
@@ -162,18 +162,6 @@ func test_payment_leaves_opponent_sources_unchanged() -> void:
 	EssenceRules.apply_payment(state, A, EssencePayment.new(1, 1), _events)
 	var defects := DeepCompare.find_clone_defects(opponent_before, state.get_player(B))
 	assert_array(defects).is_empty()
-
-
-func test_203_1_3_essence_is_not_kept_beyond_the_cost() -> void:
-	var state := _with_sources(2, 0, 8)
-	_assert_rejected(state, EssencePayment.new(1, 1), 1, REASON.PAYMENT_DOES_NOT_MATCH_COST)
-	_assert_rejected(state, EssencePayment.new(2, 0), 1, REASON.PAYMENT_DOES_NOT_MATCH_COST)
-
-
-func test_203_2_4_no_essence_is_produced_without_a_cost_to_pay() -> void:
-	var state := _with_sources(2, 2, 6)
-	_assert_rejected(state, EssencePayment.new(1, 0), 0, REASON.PAYMENT_DOES_NOT_MATCH_COST)
-	_assert_rejected(state, EssencePayment.new(0, 1), 0, REASON.PAYMENT_DOES_NOT_MATCH_COST)
 
 
 func test_203_5_1_each_player_has_his_own_reserve() -> void:

@@ -70,6 +70,15 @@ func clock_owners() -> Array[DuelState.PlayerSide]:
 	return owners
 
 
+## 209.1 : Force actuelle de la pièce `piece_id`, auras et effets compris, pour la vue ;
+## CardDefinition.NO_FORCE si la pièce n'est pas sur le plateau. Pur.
+func current_force(piece_id: int) -> int:
+	var piece := _state.find_piece(piece_id) if _state != null else null
+	if piece == null:
+		return CardDefinition.NO_FORCE
+	return ForceRules.current_force(_state, piece)
+
+
 ## Raison du refus de `intent`, ou NONE si elle est légale. Pur.
 func validate(intent: DuelIntent) -> IntentRejected.RejectReason:
 	var reason := _validate_duel_running()
@@ -119,6 +128,8 @@ func _route_play_validation(intent: DuelIntent) -> IntentRejected.RejectReason:
 		return TurnRules.validate_end_turn(_state, intent as EndTurn)
 	if intent is PassPriority:
 		return StackRules.validate_pass(_state, intent as PassPriority)
+	if intent is ProduceEssence:
+		return EssenceRules.validate_production(_state, intent as ProduceEssence)
 	return _route_announcement_validation(intent)
 
 
@@ -161,6 +172,8 @@ func _apply(intent: DuelIntent, events: Array[DuelEvent]) -> void:
 		TurnRules.apply_end_turn(_state, intent as EndTurn, events)
 	elif intent is PassPriority:
 		StackRules.apply_pass(_state, intent as PassPriority, events)
+	elif intent is ProduceEssence:
+		EssenceRules.apply_production(_state, intent as ProduceEssence, events)
 	elif intent is DeployCard:
 		ActionRules.announce_deploy(_state, intent as DeployCard, events)
 	elif intent is TakeNormalAction:

@@ -88,6 +88,8 @@
 
 **201.4.9** [ACTÉ] Les cartes d'un Écart sont face cachée (décision 0097 ; voir 201.3.9).
 
+**201.4.10** [ACTÉ] Le montant de la réserve d'Essence de chaque joueur est visible des deux joueurs (décision 0194 ; voir 201.4.4 et 203.6.1).
+
 ## 201.5 Appartenance
 
 **201.5.1** [ACTÉ] Une carte appartient au joueur dont le deck ou le Hero la fournit (décision 0022).

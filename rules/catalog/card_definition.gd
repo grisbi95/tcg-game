@@ -29,6 +29,8 @@ enum Keyword {
 	RAMPART,  # 210.4.2 : Rempart X
 }
 
+## Décision 0010 : valeur d'un mot-clé qui n'en porte pas (210.1.1).
+const NO_KEYWORD_VALUE: int = 0
 ## Valeur de `force` d'une carte sans Force (202.1.7, 202.1.8).
 const NO_FORCE: int = -1
 const _ID_PATTERN: String = "^[a-z][a-z0-9_]*$"
@@ -72,9 +74,9 @@ static func from_dict(data: Dictionary) -> CardDefinition:
 	return card
 
 
-## Valeur X du mot-clé ; 0 s'il est absent ou sans valeur.
+## Valeur X du mot-clé ; NO_KEYWORD_VALUE s'il est absent ou sans valeur.
 func keyword_value(keyword: Keyword) -> int:
-	return keywords.get(keyword, 0)
+	return keywords.get(keyword, NO_KEYWORD_VALUE)
 
 
 func has_keyword(keyword: Keyword) -> bool:

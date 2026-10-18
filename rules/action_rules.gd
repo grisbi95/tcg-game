@@ -22,12 +22,13 @@ static func validate_deploy(state: DuelState, intent: DeployCard) -> IntentRejec
 	return EssenceRules.validate_payment(state, intent.player, intent.payment, definition.cost)
 
 
-## 203.3.2, 201.3.8, 205.1.5, 208.4.1 : paie le coût, puis la carte quitte la main pour la
+## 203.3.2, 203.3.2a, 201.3.8, 205.1.5, 208.4.1 : paie le coût, puis la carte quitte la main pour la
 ## pile avec sa case. Suppose l'intention validée.
 static func announce_deploy(state: DuelState, intent: DeployCard, events: Array[DuelEvent]) -> void:
-	EssenceRules.apply_payment(state, intent.player, intent.payment, events)
 	var player := state.get_player(intent.player)
 	var card := player.find_card_in_hand(intent.card_instance_id)
+	var cost := state.catalog.get_card(card.definition_id).cost
+	events.append_array(EssenceRules.pay_cost(state, intent.player, intent.payment, cost))
 	player.hand.erase(card)
 	events.append(DeployAnnounced.new(intent.player, card.card_instance_id, intent.cell))
 	var entry := StackEntry.new()

@@ -156,12 +156,14 @@ static func _hero_power_candidates(
 	return intents
 
 
-## Décision 0003 : paiement de `cost` qui incline d'abord, puis recycle le reste.
+## Décisions 0003 et 0026 : paiement de `cost` qui prend d'abord la réserve d'Essence (203.3.2a),
+## puis incline, puis recycle le reste.
 static func simple_payment(
 	state: DuelState, side: DuelState.PlayerSide, cost: int
 ) -> EssencePayment:
-	var inclined := mini(cost, state.get_player(side).sources_upright)
-	return EssencePayment.new(inclined, cost - inclined)
+	var to_produce := EssenceRules.essence_still_needed(state, side, cost)
+	var inclined := mini(to_produce, state.get_player(side).sources_upright)
+	return EssencePayment.new(inclined, to_produce - inclined)
 
 
 static func _target_variants(state: DuelState) -> Array[TargetVariant]:

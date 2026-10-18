@@ -19,6 +19,9 @@ var sources_upright: int = 0
 var sources_tilted: int = 0
 ## 203.5.2, 203.5.3 : Sources recyclées, hors jeu pour toujours (203.5.4).
 var sources_in_fonte: int = 0
+## 203.6.1 : Essence produite pendant son tour et pas encore dépensée ; nulle pendant le tour
+## adverse (203.6.2). Visible des deux joueurs (201.4.10).
+var essence_reserve: int = 0
 ## 203.4.2 : recyclages du tour en cours.
 var sources_recycled_this_turn: int = 0
 ## 202.3.14, 202.3.17 : le pouvoir du Hero compte dès son annonce.
@@ -55,6 +58,7 @@ func clone() -> PlayerState:
 	copy.sources_upright = sources_upright
 	copy.sources_tilted = sources_tilted
 	copy.sources_in_fonte = sources_in_fonte
+	copy.essence_reserve = essence_reserve
 	copy.sources_recycled_this_turn = sources_recycled_this_turn
 	copy.hero_power_used_this_turn = hero_power_used_this_turn
 	copy.normal_action_used_this_turn = normal_action_used_this_turn

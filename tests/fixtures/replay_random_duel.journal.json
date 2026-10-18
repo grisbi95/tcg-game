@@ -8102,7 +8102,7 @@
 		}
 	],
 	"format_version": 1,
-	"ruleset_edition": "0.34",
+	"ruleset_edition": "0.35",
 	"setup": {
 		"deck_a": [
 			"recrue",

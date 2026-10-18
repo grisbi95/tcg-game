@@ -1,0 +1,16 @@
+[gd_resource type="Theme" format=3]
+
+[resource]
+default_font_size = 20
+CardTextLabel/base_type = &"Label"
+CardTextLabel/font_sizes/font_size = 16
+ClockLabel/base_type = &"Label"
+ClockLabel/font_sizes/font_size = 32
+LargeCardTextLabel/base_type = &"Label"
+LargeCardTextLabel/font_sizes/font_size = 22
+LargeLabel/base_type = &"Label"
+LargeLabel/font_sizes/font_size = 28
+SmallLabel/base_type = &"Label"
+SmallLabel/font_sizes/font_size = 16
+TinyLabel/base_type = &"Label"
+TinyLabel/font_sizes/font_size = 14

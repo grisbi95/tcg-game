@@ -1,10 +1,10 @@
 # Protocole du premier playtest
 
-> Rôle : fixer avant la première partie les decks, la taille de la série, la fiche de relevé et les seuils de jugement du premier playtest du ruleset. Statut : rédigé, decks composés dans [decks-de-test.md](decks-de-test.md) ; aucune partie jouée. Créé le 16 octobre 2026, complété le 16 octobre 2026 ; édition courante 0.28. Ce document ne contient aucune règle de jeu : il renvoie aux identifiants de [20-regles-completes/](../20-regles-completes/).
+> Rôle : fixer avant la première partie les decks, la taille de la série, la fiche de relevé et les seuils de jugement du premier playtest du ruleset. Statut : rédigé, decks composés dans [decks-de-test.md](decks-de-test.md) ; aucune partie jouée. Créé le 16 octobre 2026, complété le 16 octobre 2026 (édition 0.28) et le 18 octobre 2026 (édition 0.35, mesure de l'Essence perdue, décision 0195). Ce document ne contient aucune règle de jeu : il renvoie aux identifiants de [20-regles-completes/](../20-regles-completes/).
 
 ## Objet
 
-Le premier playtest éprouve les règles de base. Il mesure les 20 règles PROVISOIRE des règles complètes, listées dans la section Couverture des règles PROVISOIRE. Il repose sur vingt-trois décisions du 16 octobre 2026.
+Le premier playtest éprouve les règles de base. Il mesure les 20 règles PROVISOIRE des règles complètes, listées dans la section Couverture des règles PROVISOIRE. Il repose sur vingt-trois décisions du 16 octobre 2026 et sur une décision du 18 octobre 2026.
 
 | Sujet | Décision | Section |
 | --- | --- | --- |
@@ -31,6 +31,7 @@ Le premier playtest éprouve les règles de base. Il mesure les 20 règles PROVI
 | Ajustements et noms des decks de test | [0173](../40-decisions/0173-ajustements-et-noms-des-decks-de-test.md) | Decks de test, Fiche de relevé, Cibles et seuils |
 | Texte de Martyr | [0174](../40-decisions/0174-texte-de-martyr.md) | Decks de test |
 | Dernier souffle observé en playtest | [0175](../40-decisions/0175-dernier-souffle-observe-en-playtest.md) | Fiche de relevé, Cibles et seuils |
+| Mesure de l'Essence perdue en playtest | [0195](../40-decisions/0195-mesure-de-l-essence-perdue-en-playtest.md) | Fiche de relevé, Cibles et seuils |
 
 ## Decks de test
 
@@ -98,6 +99,7 @@ Une fiche par partie, avec un relevé léger à chaque tour (décisions 0155, 01
 | Rang du tour | début du tour | rang du tour du joueur actif parmi ses propres tours, le premier étant 1 : « tour N » est le N-ième tour de chaque joueur (décision 0159) |
 | Joueur actif | début du tour | A ou B |
 | Essence inutilisée du joueur actif | début du tour, juste avant qu'il redresse ses Sources (204.3.2) | nombre de Sources redressées en jeu à cet instant, soit celles restées redressées pendant son tour précédent et pendant le tour adverse ; une Source gardée pour répondre (207.1.6) et utilisée n'est pas comptée (décision 0160) |
+| Essence perdue du joueur actif | fin du tour, juste avant que l'Essence de sa réserve d'Essence soit perdue (204.5.7a) | montant de sa réserve d'Essence à cet instant (203.6.1), 0 s'il n'a produit aucune Essence ou l'a toute dépensée (décision 0195) |
 | Cartes en main, pour chaque joueur | fin du tour | nombre de cartes dans sa main (201.3.2) |
 | Sources en jeu, pour chaque joueur | fin du tour | nombre de Sources en jeu (203.5.4) |
 | Sources recyclées, pour chaque joueur | fin du tour | nombre de Sources qu'il a recyclées pendant le tour (203.2.2) |
@@ -105,6 +107,8 @@ Une fiche par partie, avec un relevé léger à chaque tour (décisions 0155, 01
 | Carte jouée du joueur actif | fin du tour | oui si ce joueur a joué au moins une carte de sa main depuis son tour précédent, pendant son tour ou en réponse pendant le tour adverse, sinon non ; le pouvoir du Hero ne compte pas (décisions 0161, 0168 et 0173) |
 
 L'Essence inutilisée se relève sur la ligne du tour qui commence, pour le seul joueur actif ; la cellule de l'autre joueur reste vide.
+
+L'Essence perdue se relève sur la ligne du tour qui se termine, pour le seul joueur actif ; la cellule de l'autre joueur reste vide (décision 0195).
 
 « Carte jouée » se relève seulement sur la ligne du propre tour du joueur, puisqu'elle couvre tout ce qu'il a joué depuis son tour précédent ; la cellule du joueur non actif reste vide (décision 0173).
 
@@ -129,11 +133,11 @@ L'Essence inutilisée se relève sur la ligne du tour qui commence, pour le seul
 
 Partie n° : ______ · Date : ______ · A : ______ · B : ______
 
-| Rang du tour | Joueur actif | A : Essence inutilisée | A : Cartes en main | A : Sources en jeu | A : Sources recyclées | A : Combat | A : Carte jouée | B : Essence inutilisée | B : Cartes en main | B : Sources en jeu | B : Sources recyclées | B : Combat | B : Carte jouée |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| | | | | | | | | | | | | | |
+| Rang du tour | Joueur actif | A : Essence inutilisée | A : Essence perdue | A : Cartes en main | A : Sources en jeu | A : Sources recyclées | A : Combat | A : Carte jouée | B : Essence inutilisée | B : Essence perdue | B : Cartes en main | B : Sources en jeu | B : Sources recyclées | B : Combat | B : Carte jouée |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| | | | | | | | | | | | | | | | |
 
-Sur chaque ligne, les cellules « Essence inutilisée » et « Carte jouée » du joueur non actif restent vides (décisions 0160 et 0173).
+Sur chaque ligne, les cellules « Essence inutilisée », « Essence perdue » et « Carte jouée » du joueur non actif restent vides (décisions 0160, 0173 et 0195).
 
 Note sur Dernier souffle : une ligne par déclenchement, vide si Dernier souffle ne se déclenche pas pendant la partie (décision 0175).
 
@@ -155,7 +159,7 @@ Note sur Dernier souffle : une ligne par déclenchement, vide si Dernier souffle
 
 ## Cibles et seuils
 
-Chaque mesure reçoit, avant le playtest, une cible et un seuil d'alerte (décision 0156). Après la série, une valeur qui tient sa cible peut passer en ACTÉ par une décision. Une valeur qui franchit son seuil d'alerte ouvre une question dans [02-questions-ouvertes.md](../02-questions-ouvertes.md). Une valeur comprise entre sa cible et son seuil d'alerte reste PROVISOIRE et est mesurée à nouveau à la série suivante ; elle n'ouvre pas de question et ne passe pas en ACTÉ (décision 0162). La note sur Dernier souffle de la fiche n'est pas une mesure du tableau : elle n'a ni cible ni seuil d'alerte (décision 0175).
+Chaque mesure reçoit, avant le playtest, une cible et un seuil d'alerte (décision 0156). Après la série, une valeur qui tient sa cible peut passer en ACTÉ par une décision. Une valeur qui franchit son seuil d'alerte ouvre une question dans [02-questions-ouvertes.md](../02-questions-ouvertes.md). Une valeur comprise entre sa cible et son seuil d'alerte reste PROVISOIRE et est mesurée à nouveau à la série suivante ; elle n'ouvre pas de question et ne passe pas en ACTÉ (décision 0162). La note sur Dernier souffle de la fiche n'est pas une mesure du tableau : elle n'a ni cible ni seuil d'alerte (décision 0175). La mesure de l'Essence perdue vise des règles ACTÉ et n'a ni cible ni seuil chiffrés avant les premiers playtests : elle ne passe pas en ACTÉ et n'ouvre pas de question avant que la décision qui fixe sa cible et son seuil d'alerte soit prise (décision 0195).
 
 ### Lecture de « tour »
 
@@ -170,7 +174,7 @@ Dans le protocole, « tour N » veut dire le N-ième tour de chaque joueur, soit
 
 ### Tableau
 
-Tableau validé tel quel le 16 octobre 2026 (décision 0157), complété le même jour sur ses règles visées par les règles 204.1.12 et 204.1.13 (décision 0163) et sur l'intitulé de la mesure de l'Essence inutilisée (décision 0168), révisable après la première série par une décision.
+Tableau validé tel quel le 16 octobre 2026 (décision 0157), complété le même jour sur ses règles visées par les règles 204.1.12 et 204.1.13 (décision 0163) et sur l'intitulé de la mesure de l'Essence inutilisée (décision 0168), complété le 18 octobre 2026 par la mesure de l'Essence perdue, sans cible ni seuil chiffrés (décision 0195), révisable après la première série par une décision.
 
 | Mesure | Règles visées | Cible | Seuil d'alerte |
 | --- | --- | --- | --- |
@@ -178,6 +182,7 @@ Tableau validé tel quel le 16 octobre 2026 (décision 0157), complété le mêm
 | Parties perdues au temps | 209.4.3, 209.4.3a | 0 ou 1 sur 20 | 3 ou plus |
 | Temps restant en fin de partie (médiane) | 209.4.3 | 2 min ou plus | moins de 1 min |
 | Essence inutilisée, à partir du tour 3 (moyenne) | 203.5.7, 204.1.12, 204.1.13, 204.3.1 | 1 ou moins | 3 ou plus |
+| Essence perdue en fin de tour (moyenne) | 203.6.1, 204.5.7a | à fixer après les premiers playtests | à fixer après les premiers playtests |
 | Tour de fin de partie (moyenne) | 204.1.2, 204.1.12, 204.1.13, 204.3.1 | tours 8 à 12 | avant le tour 6 ou après le tour 15 |
 | Victoires du premier joueur | 204.3.4 | 10 sur 20 (indicatif) | 13 ou plus, ou 7 ou moins |
 | Mains de départ remplacées par un mulligan | 204.1.15 | 1 sur 3 ou moins | plus de la moitié |
@@ -200,6 +205,8 @@ Ces termes ne figurent pas au glossaire. Ils ne valent que pour ce protocole.
 | Partie décidée le tour d'un recyclage de 3 Sources ou plus | Partie qui prend fin pendant un tour où le joueur actif a fait un recyclage de 3 Sources ou plus. |
 | Essence inutilisée | Nombre de Sources redressées en jeu d'un joueur au début de son tour, juste avant qu'il redresse ses Sources (204.3.2), soit l'Essence qu'il aurait pu produire selon 203.2.1 pendant son tour précédent et pendant le tour adverse sans la produire ; une Source gardée pour répondre (207.1.6) et utilisée n'est pas comptée (décision 0160). La mesure s'appelait « Essence inutilisée en fin de tour » dans le tableau de la décision 0157 ; elle est renommée par la décision 0168. |
 | Moyenne de l'Essence inutilisée | Moyenne des relevés d'Essence inutilisée des deux joueurs, à partir du tour 3 de chaque joueur ; on note aussi, dans le bilan de la série, si un seul des deux joueurs dépasse le seuil d'alerte, sans champ de fiche, ce fait se calculant à partir des relevés par joueur (décisions 0168 et 0173). |
+| Essence perdue | Montant de la réserve d'Essence du joueur actif à la fin de son tour, juste avant que cette Essence soit perdue selon 204.5.7a (décision 0195). |
+| Moyenne de l'Essence perdue | Moyenne des relevés d'Essence perdue des deux joueurs, sur tous leurs tours (décision 0195). |
 | Carte jouée | Valeur de la fiche : oui si le joueur a joué au moins une carte de sa main depuis son tour précédent, pendant son tour ou en réponse pendant le tour adverse ; le pouvoir du Hero ne compte pas, la mesure portant sur les cartes du deck (201.6.1 et 201.6.2 ; décision 0168) ; relevée seulement sur la ligne du propre tour du joueur (décision 0173). |
 | Deux tours sans rien jouer | Deux tours consécutifs du même joueur, pendant lesquels la valeur « Carte jouée » de ce joueur est non (décision 0168). |
 | Tour passé à main pleine | Tour d'un joueur à la fin duquel il a 7 cartes en main (201.3.4) ; définition validée par la décision 0161. |
@@ -239,6 +246,7 @@ Ces termes ne figurent pas au glossaire. Ils ne valent que pour ce protocole.
 | Parties perdues au temps | Cause de fin |
 | Temps restant en fin de partie (médiane) | Temps restant |
 | Essence inutilisée | Essence inutilisée (relevée au début du tour), Rang du tour |
+| Essence perdue en fin de tour | Essence perdue (relevée à la fin du tour), Rang du tour |
 | Tour de fin de partie | Rang du tour, dernière ligne du relevé |
 | Victoires du premier joueur | Vainqueur, Premier joueur |
 | Mains de départ remplacées par un mulligan | Nombre de mulligans |

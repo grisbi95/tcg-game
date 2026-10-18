@@ -93,10 +93,12 @@ static func is_end_of_turn_ready(state: DuelState) -> bool:
 	)
 
 
-## 204.5.7, 204.5.2 : la pile vide, les effets qui durent jusqu'à la fin du tour prennent fin ;
-## l'adversaire du joueur actif commence son tour.
+## 204.5.7, 204.5.7a, 204.5.2 : la pile vide, les effets qui durent jusqu'à la fin du tour
+## prennent fin et l'Essence non dépensée est perdue ; l'adversaire du joueur actif commence son
+## tour.
 static func finish_end_of_turn(state: DuelState, events: Array[DuelEvent]) -> void:
 	_end_until_end_of_turn_effects(state, events)
+	EssenceRules.lose_reserve(state, events)
 	_start_turn(state, DuelState.opponent_of(state.active_player), events)
 
 

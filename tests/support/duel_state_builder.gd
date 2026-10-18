@@ -129,6 +129,11 @@ func with_sources_in_fonte(side: DuelState.PlayerSide, count: int) -> DuelStateB
 	return self
 
 
+func with_essence_reserve(side: DuelState.PlayerSide, essence: int) -> DuelStateBuilder:
+	_state.get_player(side).essence_reserve = essence
+	return self
+
+
 func with_recycled_this_turn(side: DuelState.PlayerSide, count: int) -> DuelStateBuilder:
 	_state.get_player(side).sources_recycled_this_turn = count
 	return self

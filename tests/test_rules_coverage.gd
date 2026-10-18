@@ -171,6 +171,12 @@ const RULES_WITHOUT_OWN_TEST: Dictionary[String, String] = {
 		"Sans test possible : aucun déclencheur ne réagit au début du tour (décision 0017) ; "
 		+ "DuelEngine appelle settle_after_triggers après chaque intention, sans rien à ajouter."
 	),
+	"201.4.10":
+	(
+		"Information publique : le moteur est omniscient (201.4) et la réserve d'Essence est "
+		+ "un champ de l'état (test_203_6_3_inclining_a_source_adds_to_the_reserve) ; la vue "
+		+ "l'affiche pour les deux joueurs (étape 2.3)."
+	),
 	"201.1.2b":
 	(
 		"Inaccessible depuis 209.4.2d : hors du mulligan, une seule pendule tourne à la fois "

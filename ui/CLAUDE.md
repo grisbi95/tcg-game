@@ -5,8 +5,9 @@ Complète le `CLAUDE.md` racine pour `ui/`. Décisions 0001 et 0006 ; patron de 
 ## Règles
 
 - Aucune règle du jeu ici. Une vue affiche l'état et émet des gestes (`cell_pressed`, `card_pressed`, `pass_pressed`) ; elle ne construit jamais une intention.
-- `DuelSelection` (`RefCounted`, testé sans scène) est une machine à états explicite : `IDLE`, `CARD_CHOSEN`, `PIECE_CHOSEN`, `TARGET_PENDING`, `CONFIRM`. Elle énumère les intentions candidates et ne garde que celles que `engine.validate()` accepte ; les cases et cibles légales affichées en découlent.
-- Après `submit()`, `EventPlayer` joue les événements un par un avec `await`, commandes bloquées ; puis chaque vue se recale sur `get_state()`, qui fait foi. Jamais de relecture de l'état dans `_process()`.
+- `DuelSelection` (`RefCounted`, testé sans scène, décisions 0023 et 0024) est une machine à états explicite : `IDLE`, `CARD_CHOSEN`, `PIECE_CHOSEN`, `TARGET_PENDING`, `CONFIRM`. Elle reçoit les gestes (`press_card`, `press_source`…), émet `intent_chosen` avec une intention déjà validée, et `snapshot()` rend un `SelectionSnapshot` : ce que les vues surlignent, sans rien en déduire. `SelectionCandidates` fabrique les intentions candidates et ne garde que celles que `engine.validate()` accepte ; `SelectionTarget` porte une cible. Une Source pressée produit de l'Essence pendant son tour, et prépare le paiement de la réponse pendant le tour adverse.
+- Après `submit()`, `EventPlayer` joue les événements un par un avec `await`, commandes bloquées ; puis chaque vue se recale sur `get_state()`, qui fait foi. Jamais de relecture de l'état dans `_process()`, sauf la pendule : elle avance au temps réel sans événement (décision 0021), et ne se redessine que si son affichage change.
+- Tailles de police et autres réglages de style : variations du thème unique `ui/theme/duel_theme.tres` (`theme_type_variation`), jamais de `theme_override` dans une scène (décision 0025).
 - Les valeurs dérivées (Force actuelle, pendule qui tourne) viennent des requêtes en lecture de `DuelEngine`, jamais recalculées.
 - `DuelViewModel` par joueur masque main, deck et Écart adverses ; le moteur est omniscient, la vue filtre.
 
