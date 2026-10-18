@@ -26,8 +26,14 @@ static func cells_in_display_order() -> Array[Vector2i]:
 	return cells
 
 
-## Ajoute à `root` une marge et le conteneur `content`, en haut, à la hauteur de ses composants.
+## Ajoute à `root` le fond de table, une marge et le conteneur `content`, en haut, à la hauteur
+## de ses composants.
 static func frame(root: Control, content: Container) -> void:
+	var table := ColorRect.new()
+	table.color = DuelPalette.TABLE_COLOR
+	table.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	table.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(table)
 	var margin := MarginContainer.new()
 	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	for side: String in ["margin_left", "margin_top", "margin_right", "margin_bottom"]:

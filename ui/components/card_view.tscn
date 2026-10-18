@@ -3,35 +3,109 @@
 [ext_resource type="Script" path="res://ui/components/card_view.gd" id="1_script"]
 
 [node name="CardView" type="PanelContainer"]
-custom_minimum_size = Vector2(180, 250)
+custom_minimum_size = Vector2(158, 220)
 script = ExtResource("1_script")
 
-[node name="Lines" type="VBoxContainer" parent="."]
+[node name="Layout" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"CardColumn"
+
+[node name="Header" type="HBoxContainer" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"CardRow"
+
+[node name="CostPill" type="PanelContainer" parent="Layout/Header"]
+unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
 
-[node name="NameLabel" type="Label" parent="Lines"]
+[node name="CostLabel" type="Label" parent="Layout/Header/CostPill"]
 unique_name_in_owner = true
 layout_mode = 2
-autowrap_mode = 3
+theme_type_variation = &"CardPillLabel"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="CostLabel" type="Label" parent="Lines"]
+[node name="NameLabel" type="Label" parent="Layout/Header"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"CardNameLabel"
+text_overrun_behavior = 3
+clip_text = true
 
-[node name="TypeLabel" type="Label" parent="Lines"]
+[node name="StatPill" type="PanelContainer" parent="Layout/Header"]
 unique_name_in_owner = true
 layout_mode = 2
-autowrap_mode = 3
+mouse_filter = 2
 
-[node name="KeywordsLabel" type="Label" parent="Lines"]
+[node name="StatRow" type="HBoxContainer" parent="Layout/Header/StatPill"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="HeartIcon" type="Control" parent="Layout/Header/StatPill/StatRow"]
 unique_name_in_owner = true
 layout_mode = 2
-autowrap_mode = 3
+mouse_filter = 2
 
-[node name="TextLabel" type="Label" parent="Lines"]
+[node name="StatLabel" type="Label" parent="Layout/Header/StatPill/StatRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"CardPillLabel"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Art" type="PanelContainer" parent="Layout"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-theme_type_variation = &"CardTextLabel"
-autowrap_mode = 3
+mouse_filter = 2
+
+[node name="ArtIcon" type="Control" parent="Layout/Art"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 2
+
+[node name="Band" type="HBoxContainer" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"CardRow"
+
+[node name="BandIcon" type="Control" parent="Layout/Band"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+
+[node name="TypeLabel" type="Label" parent="Layout/Band"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"CardBandLabel"
+
+[node name="SpeedLabel" type="Label" parent="Layout/Band"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"CardBandLabel"
+
+[node name="TextPanel" type="PanelContainer" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+
+[node name="TextLabel" type="RichTextLabel" parent="Layout/TextPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"CardBodyText"
+bbcode_enabled = true
+fit_content = true
+scroll_active = false

@@ -1,38 +1,85 @@
 class_name StackView
-extends PanelContainer
-## Pile (208) : une ligne par entrée, le sommet en haut ; une entrée se presse quand la sélection
-## la propose (cible d'un Contrecarrer, ordre des effets déclenchés).
+extends VBoxContainer
+## Pile (208 ; décision 0028) : une ligne par entrée, la dernière en haut, à la teinte de sa carte
+## et liserée de la couleur de son joueur. Une entrée se presse quand la sélection la propose
+## (cible d'un Contrecarrer, ordre des effets déclenchés), marquée d'un anneau jaune (DuelMarks) ;
+## son survol montre sa carte dans l'aperçu. L'écran ne la montre que non vide.
 
 signal stack_entry_pressed(stack_entry_id: int)
+signal stack_entry_hovered(stack_entry_id: int)
+signal stack_entry_unhovered(stack_entry_id: int)
 
-const EMPTY_TEXT: String = "Pile vide"
-
-@onready var _entry_list: VBoxContainer = %EntryList
-
-
-func _ready() -> void:
-	add_theme_stylebox_override("panel", DuelPalette.panel_style(DuelPalette.NEUTRAL_COLOR, false))
+const ICON_SIZE: float = 16.0
+const PADDING: float = 8.0
 
 
-## `entry_ids` et `labels` vont de la base au sommet de la pile ; `highlighted_ids` peuvent se
-## presser.
-func show_entries(
-	entry_ids: Array[int], labels: PackedStringArray, highlighted_ids: Array[int]
-) -> void:
-	ViewNodes.free_children(_entry_list)
-	if entry_ids.is_empty():
-		var empty := Label.new()
-		empty.text = EMPTY_TEXT
-		_entry_list.add_child(empty)
-	for index: int in range(entry_ids.size() - 1, -1, -1):
-		var entry_id := entry_ids[index]
-		_entry_list.add_child(_make_entry(entry_id, labels[index], highlighted_ids.has(entry_id)))
+## Une entrée de la pile telle que l'écran la montre.
+class StackLine:
+	extends RefCounted
+	var stack_entry_id: int = DuelState.NO_ID
+	var label: String = ""
+	var tint: DuelPalette.Tint = DuelPalette.Tint.SPELL
+	var owner: DuelState.PlayerSide = DuelState.PlayerSide.A
+
+	func _init(
+		entry_id: int, entry_label: String, entry_tint: DuelPalette.Tint, side: DuelState.PlayerSide
+	) -> void:
+		stack_entry_id = entry_id
+		label = entry_label
+		tint = entry_tint
+		owner = side
 
 
-func _make_entry(entry_id: int, label: String, is_highlighted: bool) -> Button:
-	var entry := Button.new()
-	entry.text = label
-	entry.disabled = not is_highlighted
-	entry.alignment = HORIZONTAL_ALIGNMENT_LEFT
-	entry.pressed.connect(func() -> void: stack_entry_pressed.emit(entry_id))
+## `lines` vont de la base au sommet de la pile ; `highlighted_ids` peuvent se presser.
+func show_entries(lines: Array[StackLine], highlighted_ids: Array[int]) -> void:
+	ViewNodes.free_children(self)
+	for index: int in range(lines.size() - 1, -1, -1):
+		var line := lines[index]
+		add_child(_make_entry(line, highlighted_ids.has(line.stack_entry_id)))
+
+
+func _make_entry(line: StackLine, is_highlighted: bool) -> PanelContainer:
+	var entry := PanelContainer.new()
+	var border := DuelPalette.player_color(line.owner)
+	entry.add_theme_stylebox_override(
+		"panel",
+		DuelPalette.tinted_style(line.tint, border, DuelPalette.PLAYER_BORDER_WIDTH, PADDING)
+	)
+	var row := HBoxContainer.new()
+	row.theme_type_variation = &"CardRow"
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	entry.add_child(row)
+	var icon := Control.new()
+	icon.custom_minimum_size = Vector2.ONE * ICON_SIZE
+	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(icon)
+	var ink := DuelPalette.TINT_INKS[line.tint]
+	DuelIcons.bind(
+		icon,
+		func() -> DuelIcons.Icon: return DuelIcons.TINT_ICONS[line.tint],
+		func() -> Color: return ink
+	)
+	var label := Label.new()
+	label.text = line.label
+	label.theme_type_variation = &"StackEntryLabel"
+	label.add_theme_color_override("font_color", ink)
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	label.clip_text = true
+	row.add_child(label)
+	if is_highlighted:
+		entry.draw.connect(
+			func() -> void:
+				var rect := Rect2(Vector2.ZERO, entry.size)
+				DuelMarks.draw(entry, rect, DuelMarks.Mark.HIGHLIGHTED, 0.0)
+		)
+	entry.mouse_entered.connect(func() -> void: stack_entry_hovered.emit(line.stack_entry_id))
+	entry.mouse_exited.connect(func() -> void: stack_entry_unhovered.emit(line.stack_entry_id))
+	if is_highlighted:
+		entry.gui_input.connect(
+			func(event: InputEvent) -> void:
+				if ViewInput.is_left_click(event):
+					stack_entry_pressed.emit(line.stack_entry_id)
+		)
 	return entry

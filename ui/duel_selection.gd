@@ -94,7 +94,13 @@ func press_piece(piece_id: int) -> void:
 		_enter(SelectionState.PIECE_CHOSEN, DuelState.NO_ID, piece_id)
 
 
+## Décision 0027 : un clic sur une pièce est un geste sur sa case. La case compte d'abord quand la
+## sélection la propose (déploiement, action normale, cible) ; sinon, sa pièce.
 func press_cell(cell: Vector2i) -> void:
+	var piece := _engine.get_state().piece_at(cell)
+	if piece != null and not snapshot().legal_cells.has(cell):
+		press_piece(piece.piece_id)
+		return
 	if _is_awaiting(DECISION.CHOOSE_TARGETS):
 		_emit_if_legal(_candidates().targets_answer(SelectionTarget.of_cell(cell)))
 		return

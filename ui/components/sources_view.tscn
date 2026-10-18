@@ -2,20 +2,94 @@
 
 [ext_resource type="Script" path="res://ui/components/sources_view.gd" id="1_script"]
 
-[node name="SourcesView" type="PanelContainer"]
-custom_minimum_size = Vector2(320, 100)
+[node name="SourcesView" type="VBoxContainer"]
+theme_type_variation = &"SourcesColumn"
 script = ExtResource("1_script")
 
-[node name="Lines" type="VBoxContainer" parent="."]
-layout_mode = 2
-
-[node name="SourceRow" type="HBoxContainer" parent="Lines"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 56)
-layout_mode = 2
-alignment = 1
-
-[node name="SupplyLabel" type="Label" parent="Lines"]
+[node name="Counters" type="HBoxContainer" parent="."]
 unique_name_in_owner = true
 layout_mode = 2
-horizontal_alignment = 1
+theme_type_variation = &"CardRow"
+
+[node name="EssenceChip" type="PanelContainer" parent="Counters"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+
+[node name="EssenceRow" type="HBoxContainer" parent="Counters/EssenceChip"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"CardRow"
+
+[node name="EssenceIcon" type="Control" parent="Counters/EssenceChip/EssenceRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(18, 18)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+
+[node name="EssenceLabel" type="Label" parent="Counters/EssenceChip/EssenceRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"CounterLabel"
+text = "Essence"
+
+[node name="EssenceValue" type="Label" parent="Counters/EssenceChip/EssenceRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"CounterValueLabel"
+
+[node name="ReserveChip" type="PanelContainer" parent="Counters"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ReserveRow" type="HBoxContainer" parent="Counters/ReserveChip"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"CardRow"
+
+[node name="ReserveLabel" type="Label" parent="Counters/ReserveChip/ReserveRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"CounterLabel"
+text = "Réserve"
+
+[node name="ReserveValue" type="Label" parent="Counters/ReserveChip/ReserveRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"CounterValueLabel"
+
+[node name="FonteChip" type="PanelContainer" parent="Counters"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+
+[node name="FonteRow" type="HBoxContainer" parent="Counters/FonteChip"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"CardRow"
+
+[node name="FonteLabel" type="Label" parent="Counters/FonteChip/FonteRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"CounterLabel"
+text = "Fonte"
+
+[node name="FonteValue" type="Label" parent="Counters/FonteChip/FonteRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"CounterValueLabel"
+
+[node name="CancelButton" type="Button" parent="Counters"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"SmallButton"
+text = "Annuler"
+
+[node name="SlotGrid" type="GridContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SourceGrid"
+columns = 5

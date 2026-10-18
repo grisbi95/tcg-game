@@ -103,6 +103,26 @@ func test_decision_0024_piece_moves_to_a_legal_cell() -> void:
 	assert_object(action.cell).is_equal(_cell(MOVE_CELL))
 
 
+func test_decision_0027_pressing_an_occupied_cell_chooses_its_piece() -> void:
+	var piece_id := _builder.place_piece(A, Piece.PieceKind.UNIT, _cell(UNIT_CELL), UNIT)
+	_start(A)
+	_selection.press_cell(_cell(UNIT_CELL))
+	var shown := _selection.snapshot()
+	assert_int(shown.selection_state).is_equal(SELECTION.PIECE_CHOSEN)
+	assert_int(shown.chosen_piece_id).is_equal(piece_id)
+
+
+func test_decision_0027_pressing_an_enemy_piece_cell_attacks_it() -> void:
+	var piece_id := _builder.place_piece(A, Piece.PieceKind.UNIT, _cell(UNIT_CELL), UNIT)
+	_builder.place_piece(B, Piece.PieceKind.UNIT, _cell(MOVE_CELL), UNIT)
+	_start(A)
+	_selection.press_piece(piece_id)
+	assert_array(_selection.snapshot().legal_cells).contains([_cell(MOVE_CELL)])
+	_selection.press_cell(_cell(MOVE_CELL))
+	assert_object(_emitted[0]).is_instanceof(TakeNormalAction)
+	assert_int((_emitted[0] as TakeNormalAction).piece_id).is_equal(piece_id)
+
+
 func test_decision_0024_targeted_spell_waits_for_target_then_confirmation() -> void:
 	var piece_id := _builder.place_piece(A, Piece.PieceKind.UNIT, _cell(UNIT_CELL), UNIT)
 	var card_id := _builder.add_to_hand(A, TARGETED_SPELL)

@@ -1,0 +1,35 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://ui/components/card_back_view.gd" id="1_script"]
+
+[node name="CardBackView" type="Control"]
+custom_minimum_size = Vector2(158, 220)
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 1
+script = ExtResource("1_script")
+
+[node name="CountColumn" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="CountLabel" type="Label" parent="CountColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"DeckCountLabel"
+horizontal_alignment = 1
+
+[node name="CardsLabel" type="Label" parent="CountColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"CounterLabel"
+text = "cartes"
+horizontal_alignment = 1

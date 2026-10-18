@@ -1,9 +1,12 @@
 extends Control
-## Essai de CardView : chaque carte des decks de test, puis un dos de carte. Un clic fait passer
-## une carte de normale à surlignée, puis à choisie.
+## Essai de CardView (décision 0027) : chaque carte des decks de test, le Hero, un jeton Unit et un
+## jeton Building. Survoler une carte l'entoure d'un anneau clair ; un clic la fait passer de
+## normale à surlignée (anneau jaune), puis à choisie (deux anneaux verts).
 
 const CARD_SCENE: PackedScene = preload("res://ui/components/card_view.tscn")
 const MARK_STEPS: int = 3
+const UNIT_TOKEN_FORCE: int = 2
+const BUILDING_TOKEN_FORCE: int = 3
 
 var _mark_steps: Dictionary[CardView, int] = {}
 
@@ -14,10 +17,10 @@ func _ready() -> void:
 	var catalog := TrySamples.catalog()
 	var card_ids := catalog.card_ids()
 	for index: int in card_ids.size():
-		var side := DuelState.PlayerSide.A if index % 2 == 0 else DuelState.PlayerSide.B
-		var card := _add_card(flow)
-		card.show_card(index, catalog.get_card(card_ids[index]), side)
-	_add_card(flow).show_hidden(card_ids.size(), DuelState.PlayerSide.B)
+		_add_card(flow).show_card(index, catalog.get_card(card_ids[index]))
+	_add_card(flow).show_hero(catalog.get_hero(TrySamples.HERO_ID))
+	_add_card(flow).show_token(CardDefinition.CardType.UNIT, UNIT_TOKEN_FORCE)
+	_add_card(flow).show_token(CardDefinition.CardType.BUILDING, BUILDING_TOKEN_FORCE)
 
 
 func _add_card(flow: HFlowContainer) -> CardView:
