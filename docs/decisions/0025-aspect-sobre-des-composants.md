@@ -1,6 +1,6 @@
 # 0025 — Aspect sobre des composants
 
-- Statut : acceptée
+- Statut : remplacée par 0027 (aspect des cartes et des pièces)
 - Date : 2026-10-18
 - Décideur : créateur du projet
 - Périmètre : habillage des composants de vue (`ui/components/`, `ui/theme/`)
@@ -27,4 +27,4 @@ Option A, recommandée et choisie par le créateur le 18 octobre 2026.
 
 ## Références
 
-Décision 0011 (vues par capture) ; `ui/CLAUDE.md` ; roadmap étape 2.2.
+Décisions 0011 (vues par capture) et 0027 ; `ui/CLAUDE.md` ; roadmap étape 2.2.
