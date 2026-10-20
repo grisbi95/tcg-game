@@ -28,8 +28,12 @@ var _journal: DuelJournal = DuelJournal.new()
 var _agents: Dictionary[DuelState.PlayerSide, DuelAgent] = {}
 var _host_state: HostState = HostState.NOT_STARTED
 var _last_clock_msec: int = 0
-## Lots d'événements renvoyés dont la scène n'a pas encore confirmé l'affichage.
+## Lots d'événements renvoyés dont la scène n'a pas encore confirmé l'affichage. Un lot est ce
+## que renvoie un appel public (`start`, `tick`, `submit_human`, `concede`), même s'il réunit
+## plusieurs étapes (passe automatique puis fin de la pendule, par exemple).
 var _unplayed_batch_count: int = 0
+## Vrai quand l'appel public en cours a déjà compté son lot.
+var _is_batch_counted: bool = false
 var _awaited_player: DuelState.PlayerSide = DuelState.PlayerSide.A
 ## Joueur humain devant l'écran ; sans objet tant que `_is_screen_assigned` est faux.
 var _screen_player: DuelState.PlayerSide = DuelState.PlayerSide.A
@@ -57,6 +61,7 @@ func set_agent(side: DuelState.PlayerSide, agent: DuelAgent) -> void:
 ## Décision 0012 : démarre le duel et renvoie ses premiers événements, à afficher. Un setup
 ## refusé laisse l'hôte en NOT_STARTED.
 func start(setup: DuelSetup) -> Array[DuelEvent]:
+	_is_batch_counted = false
 	var events := _engine.start_new_duel(setup)
 	if events.any(func(event: DuelEvent) -> bool: return event is DuelSetupRejected):
 		return events
@@ -70,6 +75,7 @@ func start(setup: DuelSetup) -> Array[DuelEvent]:
 ## À chaque image : décompte le temps réel écoulé, puis fait jouer l'agent attendu. Renvoie les
 ## événements produits, à afficher.
 func tick() -> Array[DuelEvent]:
+	_is_batch_counted = false
 	var events := _count_elapsed_time()
 	if _host_state == HostState.AWAITING_AI:
 		events.append_array(_play_agent())
@@ -79,6 +85,7 @@ func tick() -> Array[DuelEvent]:
 ## Intention de l'humain devant l'écran, après décompte du temps écoulé jusque-là. Ignorée, sans
 ## aucun événement, hors AWAITING_HUMAN ou si elle vient d'un autre joueur.
 func submit_human(intent: DuelIntent) -> Array[DuelEvent]:
+	_is_batch_counted = false
 	var events: Array[DuelEvent] = []
 	if _host_state != HostState.AWAITING_HUMAN or intent.player != _screen_player:
 		return events
@@ -91,6 +98,7 @@ func submit_human(intent: DuelIntent) -> Array[DuelEvent]:
 ## 209.2.5 : un joueur humain abandonne, à tout moment du duel en cours, même hors de son
 ## tour ; le temps écoulé jusque-là est d'abord décompté. Ignoré pour un joueur confié à un agent.
 func concede(side: DuelState.PlayerSide) -> Array[DuelEvent]:
+	_is_batch_counted = false
 	var events: Array[DuelEvent] = []
 	if _agents.has(side) or not _is_duel_running():
 		return events
@@ -216,7 +224,9 @@ func _submit(intent: DuelIntent) -> Array[DuelEvent]:
 # fin du duel par la pendule (209.4.5).
 func _await_display() -> void:
 	_is_response_window_running = false
-	_unplayed_batch_count += 1
+	if not _is_batch_counted:
+		_unplayed_batch_count += 1
+		_is_batch_counted = true
 	_change_state(HostState.PLAYING_EVENTS)
 
 

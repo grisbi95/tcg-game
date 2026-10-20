@@ -62,35 +62,19 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"PieceNameLabel"
+vertical_alignment = 1
 text_overrun_behavior = 3
 clip_text = true
 
-[node name="PrintedLabel" type="Label" parent="MiniCard/Layout/Header"]
+[node name="StatBadge" type="Control" parent="MiniCard/Layout/Header"]
 unique_name_in_owner = true
-visible = false
-layout_mode = 2
-theme_type_variation = &"PiecePrintedLabel"
-
-[node name="StatPill" type="PanelContainer" parent="MiniCard/Layout/Header"]
-unique_name_in_owner = true
-layout_mode = 2
-mouse_filter = 2
-
-[node name="StatRow" type="HBoxContainer" parent="MiniCard/Layout/Header/StatPill"]
-layout_mode = 2
-mouse_filter = 2
-alignment = 1
-
-[node name="HeartIcon" type="Control" parent="MiniCard/Layout/Header/StatPill/StatRow"]
-unique_name_in_owner = true
-visible = false
 layout_mode = 2
 size_flags_vertical = 4
 mouse_filter = 2
 
-[node name="StatLabel" type="Label" parent="MiniCard/Layout/Header/StatPill/StatRow"]
+[node name="StatLabel" type="Label" parent="MiniCard/Layout/Header/StatBadge"]
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 1
 theme_type_variation = &"PiecePillLabel"
 horizontal_alignment = 1
 vertical_alignment = 1

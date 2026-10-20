@@ -44,10 +44,6 @@ const RULES_WITHOUT_OWN_TEST: Dictionary[String, String] = {
 		+ "test_201_5_3_destroyed_cards_stay_with_their_owner, "
 		+ "test_202_2_12_replaced_gear_goes_to_discard)."
 	),
-	"201.4.1": "Règle de vue : le moteur est omniscient (201.4), la vue masque les decks.",
-	"201.4.2": "Règle de vue : le moteur est omniscient (201.4), la vue masque les mains.",
-	"201.4.3":
-	"Règle de vue : défausses publiques, l'état les expose en entier " + "(PlayerState.discard).",
 	"201.4.4":
 	(
 		"Règle de vue : l'état expose Sources redressées et inclinées "
@@ -63,13 +59,6 @@ const RULES_WITHOUT_OWN_TEST: Dictionary[String, String] = {
 		"Règle de vue : l'état expose le nombre de Sources de la Fonte "
 		+ "(PlayerState.sources_in_fonte)."
 	),
-	"201.4.7": "Règle de vue : la pile est publique, l'état l'expose en entier (DuelState.stack).",
-	"201.4.8":
-	(
-		"Règle de vue : l'événement d'annonce porte la carte (SpellAnnounced, "
-		+ "DeployAnnounced, GearAnnounced), la vue la montre."
-	),
-	"201.4.9": "Règle de vue : le moteur est omniscient (201.4), la vue masque l'Écart.",
 	"202.2.23":
 	(
 		"Vérifiée sous 202.2.14 et 202.2.24 (tests : test_202_2_14_gear_only_on_own_unit, "

@@ -18,14 +18,15 @@ layout_mode = 2
 mouse_filter = 2
 theme_type_variation = &"CardRow"
 
-[node name="CostPill" type="PanelContainer" parent="Layout/Header"]
+[node name="CostBadge" type="Control" parent="Layout/Header"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_vertical = 4
 mouse_filter = 2
 
-[node name="CostLabel" type="Label" parent="Layout/Header/CostPill"]
+[node name="CostLabel" type="Label" parent="Layout/Header/CostBadge"]
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 1
 theme_type_variation = &"CardPillLabel"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -35,27 +36,19 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"CardNameLabel"
+vertical_alignment = 1
 text_overrun_behavior = 3
 clip_text = true
 
-[node name="StatPill" type="PanelContainer" parent="Layout/Header"]
+[node name="StatBadge" type="Control" parent="Layout/Header"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_vertical = 4
 mouse_filter = 2
 
-[node name="StatRow" type="HBoxContainer" parent="Layout/Header/StatPill"]
-layout_mode = 2
-mouse_filter = 2
-alignment = 1
-
-[node name="HeartIcon" type="Control" parent="Layout/Header/StatPill/StatRow"]
+[node name="StatLabel" type="Label" parent="Layout/Header/StatBadge"]
 unique_name_in_owner = true
-layout_mode = 2
-mouse_filter = 2
-
-[node name="StatLabel" type="Label" parent="Layout/Header/StatPill/StatRow"]
-unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 1
 theme_type_variation = &"CardPillLabel"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -107,5 +100,4 @@ layout_mode = 2
 mouse_filter = 2
 theme_type_variation = &"CardBodyText"
 bbcode_enabled = true
-fit_content = true
 scroll_active = false

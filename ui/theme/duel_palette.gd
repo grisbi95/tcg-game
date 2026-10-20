@@ -13,6 +13,14 @@ enum Tint {
 	HERO,
 }
 
+## Ajouter à la fin, sans réordonner.
+enum ButtonState {
+	NORMAL,
+	HOVER,
+	PRESSED,
+	DISABLED,
+}
+
 const PLAYER_A_COLOR := Color("2f7fd8")
 ## Décision 0027 : le rouge ne sert qu'au joueur B.
 const PLAYER_B_COLOR := Color("d23a3a")
@@ -40,6 +48,11 @@ const SOURCE_COLOR := Color("3b424e")
 const SOURCE_HOVER_COLOR := Color("46505e")
 const SOURCE_TILTED_LINE_COLOR := Color("6b7380")
 const BAR_TRACK_COLOR := Color("3a414c")
+## Panneau de consigne de la colonne de duel.
+const HINT_COLOR := Color("1f242b")
+## Écart de luminosité du grand bouton survolé (plus clair) et pressé (plus sombre).
+const BUTTON_HOVER_LIGHTEN: float = 0.12
+const BUTTON_PRESSED_DARKEN: float = 0.12
 ## Décision 0028 : Source inclinée et pendule arrêtée estompées.
 const DIMMED_ALPHA: float = 0.55
 
@@ -67,25 +80,31 @@ const CARD_TINTS: Dictionary[CardDefinition.CardType, Tint] = {
 const ART_COLOR := Color(1.0, 1.0, 1.0, 0.75)
 const CARD_FACE_COLOR := Color("ffffff")
 const CARD_TEXT_COLOR := Color("1c1d20")
-const COST_INK_COLOR := Color("1e5fae")
+## Goutte du coût : bleu clair, contour bleu, chiffre bleu sombre (9:1 sur le remplissage).
+const COST_FILL_COLOR := Color("c9e1f9")
+const COST_OUTLINE_COLOR := Color("1e5fae")
+const COST_INK_COLOR := Color("0c3566")
+## Losange de la Force, toujours le même ; seule l'encre du chiffre change selon la Force actuelle
+## (neutre 13,7:1 sur le remplissage, vert 5,4:1, orange foncé 4,8:1). Pas de rouge : joueur B.
+const FORCE_FILL_COLOR := Color("e4e8ee")
+const FORCE_OUTLINE_COLOR := Color("4a525e")
+const FORCE_UP_INK := Color("1a6b1a")
+const FORCE_DOWN_INK := Color("a34a00")
+## Cœur des PV du Hero, aux teintes du Hero.
+const HEALTH_FILL_COLOR := Color("f2a3bd")
+const HEALTH_OUTLINE_COLOR := Color("8a2c4c")
+const HEALTH_INK_COLOR := Color("4a0f26")
 ## Décision 0027 : une seule couleur sombre pour tous les mots-clés.
 const KEYWORD_BACKGROUND := Color("24252a")
 const KEYWORD_INK := Color("ffffff")
-const FORCE_UP_BACKGROUND := Color("e3f1d3")
-const FORCE_UP_INK := Color("2f5a0c")
-const FORCE_DOWN_BACKGROUND := Color("ffe1c2")
-const FORCE_DOWN_INK := Color("9a4700")
 const CARD_BACK_COLOR := Color("343b46")
 const CARD_BACK_STRIPE_COLOR := Color("2c323b")
 const CELL_HOVER_COLOR := Color("333a44")
-const PILL_BORDER_COLOR := Color(0.0, 0.0, 0.0, 0.18)
 
 const LINE_WIDTH: int = 1
 const BORDER_WIDTH: int = 2
 const PLAYER_BORDER_WIDTH: int = 4
 const CORNER_RADIUS: int = 8
-## Pastille ronde : rayon d'au moins la moitié de sa taille.
-const PILL_RADIUS: int = CORNER_RADIUS * 4
 ## Variation de Label déclarée dans ui/theme/duel_theme.tres (thème unique).
 const SMALL_LABEL: StringName = &"SmallLabel"
 const CONTENT_MARGIN: int = 8
@@ -145,9 +164,14 @@ static func tinted_style(
 	return framed_style(TINT_BACKGROUNDS[tint], border, border_width, margin)
 
 
-## Pastille ronde d'un nombre (coût, Force, PV), de fond `background`.
-static func pill_style(background: Color) -> StyleBoxFlat:
-	var style := fill_style(background, PILL_RADIUS, 0.0)
-	style.border_color = PILL_BORDER_COLOR
-	style.set_border_width_all(LINE_WIDTH)
-	return style
+## Fond d'un grand bouton aux couleurs fixes de `side` (décision 0032) dans l'état `state`.
+static func player_button_style(side: DuelState.PlayerSide, state: ButtonState) -> StyleBoxFlat:
+	var color := player_color(side)
+	match state:
+		ButtonState.HOVER:
+			color = color.lightened(BUTTON_HOVER_LIGHTEN)
+		ButtonState.PRESSED:
+			color = color.darkened(BUTTON_PRESSED_DARKEN)
+		ButtonState.DISABLED:
+			color = player_soft(side)
+	return fill_style(color, CORNER_RADIUS, CONTENT_MARGIN)

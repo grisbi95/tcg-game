@@ -166,9 +166,10 @@ func _fill_side_panel(panel: VBoxContainer) -> void:
 		_clocks[side].setup(side, player_name, config.clock_duration_msec)
 		_sources[side] = SOURCES_SCENE.instantiate()
 		panel.add_child(_sources[side])
-		_sources[side].setup(side, true, config.total_sources_per_player)
+		_sources[side].setup(
+			side, SourcesView.CounterPlacement.ABOVE, config.total_sources_per_player
+		)
 		_sources[side].source_pressed.connect(_selection.press_source)
-		_sources[side].cancel_pressed.connect(_selection.press_cancel)
 	panel.add_child(_make_buttons())
 	_stack_view = STACK_SCENE.instantiate()
 	panel.add_child(_stack_view)
@@ -298,7 +299,7 @@ func _refresh_sources(side: DuelState.PlayerSide, shown: SelectionSnapshot) -> v
 	# Décision 0028 : réserve d'Essence pendant son tour, paiement préparé pendant le tour adverse.
 	var is_drafting := is_screen_player and _engine.get_state().active_player != side
 	var essence := shown.draft_payment.essence_produced() if is_drafting else player.essence_reserve
-	_sources[side].show_essence(essence, is_drafting and essence > 0)
+	_sources[side].show_essence(essence)
 	_sources[side].set_interactive(is_screen_player)
 
 

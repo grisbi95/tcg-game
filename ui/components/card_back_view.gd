@@ -9,7 +9,11 @@ const DECK_SIZE := Vector2(158, 220)
 const HAND_SIZE := Vector2(50, 70)
 const STRIPE_WIDTH: float = 8.0
 
-var _owner: DuelState.PlayerSide = DuelState.PlayerSide.A
+## Libellé sous le nombre : « carte » au singulier pour 0 et 1, « cartes » au-delà.
+const CARD_WORD_SINGULAR: String = "carte"
+const CARD_WORD_PLURAL: String = "cartes"
+
+var _player: DuelState.PlayerSide = DuelState.PlayerSide.A
 
 @onready var _count_column: VBoxContainer = %CountColumn
 @onready var _count_label: Label = %CountLabel
@@ -24,15 +28,18 @@ func _ready() -> void:
 func _draw() -> void:
 	var rect := Rect2(Vector2.ZERO, size)
 	var back := DuelPalette.framed_style(
-		DuelPalette.CARD_BACK_COLOR, DuelPalette.player_color(_owner), DuelPalette.BORDER_WIDTH, 0.0
+		DuelPalette.CARD_BACK_COLOR,
+		DuelPalette.player_color(_player),
+		DuelPalette.BORDER_WIDTH,
+		0.0
 	)
 	draw_style_box(back, rect)
 	_draw_stripes(rect.grow(-DuelPalette.BORDER_WIDTH))
 
 
-## Dos d'une carte du joueur `owner`, de taille `back_size` (DECK_SIZE ou HAND_SIZE).
-func show_back(owner: DuelState.PlayerSide, back_size: Vector2) -> void:
-	_owner = owner
+## Dos d'une carte du joueur `player`, de taille `back_size` (DECK_SIZE ou HAND_SIZE).
+func show_back(player: DuelState.PlayerSide, back_size: Vector2) -> void:
+	_player = player
 	custom_minimum_size = back_size
 	queue_redraw()
 
@@ -40,6 +47,7 @@ func show_back(owner: DuelState.PlayerSide, back_size: Vector2) -> void:
 ## Nombre de cartes du deck, écrit au centre du dos.
 func show_count(card_count: int) -> void:
 	_count_label.text = str(card_count)
+	_cards_label.text = CARD_WORD_SINGULAR if card_count <= 1 else CARD_WORD_PLURAL
 	_count_column.visible = true
 
 

@@ -1,6 +1,6 @@
 # 0023 — Paiement à l'écran : clics sur les Sources
 
-- Statut : acceptée ; geste de recyclage modifié par 0028
+- Statut : acceptée ; modifiée par 0028 et 0032
 - Date : 2026-10-18
 - Décideur : créateur du projet
 - Périmètre : paiement des coûts en Essence dans la vue (étape 2.2)
