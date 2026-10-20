@@ -1,6 +1,6 @@
 # Vue — consignes locales
 
-Complète le `CLAUDE.md` racine pour `ui/`. Décisions 0001 et 0006 ; patron de vue repris du prototype (sa décision 0010).
+Complète le `CLAUDE.md` racine pour `ui/`. Décisions 0001 et 0006 ; patron de vue repris du prototype `tactical_tcg` (sa décision 0010, sans rapport avec la 0010 du projet).
 
 ## Règles
 
@@ -13,7 +13,9 @@ Complète le `CLAUDE.md` racine pour `ui/`. Décisions 0001 et 0006 ; patron de 
 
 ## Composants (`ui/components/`)
 
-`CardView`, `CardBackView`, `PieceView`, `CellView`, `BoardView`, `HandView`, `OpponentHandView`, `DeckCornerView`, `HeroCardView`, `SourcesView`, `ClockView`, `StackView`, `HoverPreview`, `RelayCurtainView`, `ConcedeConfirmView`, `EndPanelView`, `LogView` (bac à sable seulement, décision 0028). Survol, surlignage et choix se marquent par des anneaux (`DuelMarks`) qui laissent visible le liseré du joueur ; un clic sur une pièce est un geste sur sa case (`cell_pressed`, décision 0030), que `DuelSelection.press_cell` rapporte à la pièce quand la case n'est pas proposée. `PlayerNames` (même dossier) est un utilitaire de noms (« Joueur A »), pas un composant : ni scène ni essai. Chacun des composants : une scène, un script du même nom, une méthode `setup(...)` ou `show_*(...)`, des signals au passé, et une scène d'essai `ui/components/_try/try_<nom>.tscn` qui l'instancie seul avec des données factices.
+`CardView`, `CardBackView`, `PieceView`, `CellView`, `BoardView`, `HandView`, `OpponentHandView`, `DeckCornerView`, `HeroCardView`, `SourcesView`, `ClockView`, `DuelColumnView`, `StackView`, `HoverPreview`, `RelayCurtainView`, `ConcedeConfirmView`, `EndPanelView`, `LogView` (bac à sable seulement, décision 0028). Survol, surlignage et choix se marquent par des anneaux (`DuelMarks`) qui laissent visible le liseré du joueur ; un clic sur une pièce est un geste sur sa case (`cell_pressed`, décision 0030), que `DuelSelection.press_cell` rapporte à la pièce quand la case n'est pas proposée. Chacun des composants : une scène, un script du même nom, une méthode `setup(...)` ou `show_*(...)`, des signals au passé, et une scène d'essai `ui/components/_try/try_<nom>.tscn` qui l'instancie seul avec des données factices.
+
+Un utilitaire n'a ni scène ni essai et ne figure pas dans la liste ci-dessus : `PlayerNames` (noms « Joueur A »), `ControlMarks`, `StatBadgeBinding`, `ViewInput`, `ViewNodes` (`ui/components/`) ; `BadgeLook`, `DashedOutline`, `DuelIcons`, `DuelMarks`, `DuelPalette` (`ui/theme/`) ; `CardText`, `EventText`, `DuelScreenLayout` (`ui/`). Dans `_try/` : `TrySamples` (cartes et Hero des decks de test), `DuelScenarios` (situations rares par intentions validées), `ScenarioRecorder` (enregistre les gestes d'un duel joué à blanc), `try_duel_screen_scenarios` (relance `duel_screen.tscn` sur chaque scénario) et `try_duel_sandbox` (bac à sable d'avant 2.3).
 
 ## Câblage
 

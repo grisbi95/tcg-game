@@ -54,7 +54,7 @@ const EFFECTS: Dictionary[StringName, Array] = {
 	&"levee": [KIND.CREATE_TOKEN, 0],
 	&"lame": [KIND.MODIFY_FORCE, 1],
 }
-## Exemplaires de chaque carte, colonne Nombre de « Liste des cartes » (décision 0171).
+## Exemplaires de chaque carte, colonne Nombre de « Liste des cartes » (décision 0171 du ruleset).
 const DECK_COPIES: Dictionary[StringName, int] = {
 	&"recrue": 2,
 	&"soldat": 3,

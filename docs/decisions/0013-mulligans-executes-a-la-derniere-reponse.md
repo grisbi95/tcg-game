@@ -1,6 +1,6 @@
 # 0013 — Mulligans exécutés à la dernière réponse
 
-- Statut : acceptée
+- Statut : acceptée ; modifiée par 0015
 - Date : 2026-10-16
 - Décideur : créateur du projet
 - Périmètre : mulligan simultané (204.2) ; complète la décision 0009

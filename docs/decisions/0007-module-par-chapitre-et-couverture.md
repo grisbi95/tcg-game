@@ -1,6 +1,6 @@
 # 0007 — Un module de règles par chapitre, couverture par identifiant
 
-- Statut : acceptée
+- Statut : acceptée ; précisée par 0014
 - Date : 2026-10-16
 - Décideur : créateur du projet
 - Périmètre : découpage du moteur et traçabilité ruleset ↔ code

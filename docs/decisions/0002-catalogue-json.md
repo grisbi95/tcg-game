@@ -1,6 +1,6 @@
 # 0002 — Catalogue de cartes en JSON
 
-- Statut : acceptée
+- Statut : acceptée ; précisée par 0010
 - Date : 2026-10-16
 - Décideur : créateur du projet
 - Périmètre : format des données de cartes et de Heroes

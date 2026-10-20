@@ -1,6 +1,6 @@
 # 0014 — Le ruleset est fusionné dans le dépôt tcg-game, dans docs/ruleset/
 
-- Statut : acceptée
+- Statut : acceptée ; point ouvert réglé le 2026-10-20 : l'édition se lit dans `docs/ruleset/README.md` (`test_catalog_loader.gd`, hook de session), le test de couverture ne la lit pas, `RULESET_EDITION` n'existe pas
 - Date : 2026-10-16
 - Décideur : créateur du projet
 - Périmètre : emplacement et édition du ruleset ; précise les décisions 0001 et 0007 pour la partie « copie épinglée et synchronisée »

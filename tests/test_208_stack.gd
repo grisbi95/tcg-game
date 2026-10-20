@@ -1,6 +1,6 @@
 extends GdUnitTestSuite
-## Pile et priorité sans effet déclenché (ruleset 0.36, chapitre 208, décision 0197 ; 209.2.1 et
-## 209.2.3).
+## Pile et priorité sans effet déclenché (ruleset 0.36, chapitre 208, décision 0197 du ruleset ;
+## 209.2.1 et 209.2.3).
 ##
 ## Les entrées sont posées par le builder ou par StackRules.add_to_stack, comme des annonces
 ## déjà faites, avec un Spell sans effet : ces suites ne vérifient que la mécanique de la pile.

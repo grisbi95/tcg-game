@@ -1,6 +1,6 @@
 # 0006 — Un autoload AppEvents de signals seuls
 
-- Statut : acceptée
+- Statut : acceptée ; exception par 0011
 - Date : 2026-10-16
 - Décideur : créateur du projet
 - Périmètre : communication entre objets éloignés (bus d'événements)
