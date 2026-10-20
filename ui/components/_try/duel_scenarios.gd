@@ -22,6 +22,8 @@ enum Scenario {
 
 const A := DuelState.PlayerSide.A
 const B := DuelState.PlayerSide.B
+## Le Hero des deux joueurs dans tous les scénarios.
+const HERO_ID: StringName = &"capitaine"
 const DEV_DECK_SIZE: int = 12
 ## Deck court et main de départ réduite : les pioches vident le deck sans remplir la main (201.3.5),
 ## puis la fatigue commence (209.5).
@@ -87,7 +89,7 @@ static func name_of(scenario: Scenario) -> String:
 ## Catalogue de `data/cards/` et carte de développement.
 static func load_catalog() -> Catalog:
 	var loader := CatalogLoader.new()
-	loader.load_directory(ProvisionalDuelLaunch.CARDS_DIRECTORY)
+	loader.load_directory(GameLibrary.CARDS_DIRECTORY)
 	loader.load_text(BEACON_JSON, "DuelScenarios")
 	for error: String in loader.find_errors():
 		push_error("DuelScenarios : " + error)
@@ -136,8 +138,8 @@ static func _make_setup(spec: ScenarioSpec, rng_seed: int) -> DuelSetup:
 	var duel_setup := DuelSetup.new()
 	duel_setup.deck_a = _deck_of(spec.copies_a, spec.deck_size)
 	duel_setup.deck_b = _deck_of(spec.copies_b, spec.deck_size)
-	duel_setup.hero_a = ProvisionalDuelLaunch.HERO_ID
-	duel_setup.hero_b = ProvisionalDuelLaunch.HERO_ID
+	duel_setup.hero_a = HERO_ID
+	duel_setup.hero_b = HERO_ID
 	duel_setup.rng_seed = rng_seed
 	duel_setup.impose_first_player(spec.first_player)
 	return duel_setup
@@ -261,7 +263,7 @@ static func _plan_preview_piles(recorder: ScenarioRecorder) -> bool:
 
 # Au second tour de A : une Unit alliée et de quoi payer le pouvoir, qui est utilisable.
 static func _plan_hero_power(recorder: ScenarioRecorder) -> bool:
-	var hero := recorder.state().catalog.get_hero(ProvisionalDuelLaunch.HERO_ID)
+	var hero := recorder.state().catalog.get_hero(HERO_ID)
 	return (
 		recorder.deploy(A, &"recrue")
 		and recorder.resolve_stack()

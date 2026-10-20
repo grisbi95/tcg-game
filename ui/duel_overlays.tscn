@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://ui/duel_overlays.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://ui/components/relay_curtain_view.tscn" id="2_relay_curtain"]
+[ext_resource type="PackedScene" path="res://ui/components/concede_confirm_view.tscn" id="3_concede_confirm"]
+[ext_resource type="PackedScene" path="res://ui/components/end_panel_view.tscn" id="4_end_panel"]
+
+[node name="DuelOverlays" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_script")
+
+[node name="RelayCurtain" parent="." instance=ExtResource("2_relay_curtain")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="ConcedeConfirm" parent="." instance=ExtResource("3_concede_confirm")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="EndPanel" parent="." instance=ExtResource("4_end_panel")]
+unique_name_in_owner = true
+layout_mode = 1

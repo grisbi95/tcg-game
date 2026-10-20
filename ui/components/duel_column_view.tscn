@@ -16,6 +16,13 @@ theme_type_variation = &"ColumnStack"
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="TopConcedeButton" type="Button" parent="Column"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"ConcedeButton"
+
 [node name="Center" type="VBoxContainer" parent="Column"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -102,6 +109,13 @@ layout_mode = 2
 theme_type_variation = &"ColumnHintLabel"
 horizontal_alignment = 1
 autowrap_mode = 3
+
+[node name="BottomConcedeButton" type="Button" parent="Column"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"ConcedeButton"
 
 [node name="BottomClock" parent="Column" instance=ExtResource("2_clock")]
 unique_name_in_owner = true

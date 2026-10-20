@@ -8,21 +8,27 @@ extends Control
 ##
 ## Flux : geste → `DuelSelection` → `intent_chosen` → `DuelHost.submit_human` → événements →
 ## `EventPlayer` → `batch_played` → `confirm_events_played` → recalage. `InputShield` bloque les
-## commandes pendant la lecture et hors du tour d'un humain. `OverlayLayer` reste vide (étape 2.4).
+## commandes pendant la lecture et hors du tour d'un humain. `OverlayLayer`, au-dessus du bouclier,
+## porte le rideau de relais, la confirmation d'abandon et le panneau de fin (décision 0036).
+
+## Le panneau de fin demande une nouvelle partie : l'autre joueur commence, nouvelle graine.
+signal rematch_requested
+## Le panneau de fin demande de revenir à la préparation.
+signal setup_requested
 
 const PIECE_SCENE: PackedScene = preload("res://ui/components/piece_view.tscn")
-
-## Faux pour que l'appelant démarre lui-même le duel par `start_duel` (étape 2.4, outils).
-@export var is_autostart: bool = true
 
 var _catalog: Catalog
 var _engine: DuelEngine
 var _host: DuelHost
 var _selection: DuelSelection = DuelSelection.new()
+var _previewer: DuelPreviewer = DuelPreviewer.new()
 var _model: DuelViewModel
 var _piece_views: Dictionary[int, PieceView] = {}
-var _center_state: DuelColumnView.CenterState = DuelColumnView.CenterState.TURN
+var _center: DuelCenterPresenter = DuelCenterPresenter.new()
 var _scripted_intents: Array[DuelIntent] = []
+## Événements du lot qui a terminé le duel : la raison du panneau de fin s'en déduit.
+var _final_events: Array[DuelEvent] = []
 
 @onready var _table: ColorRect = %Table
 @onready var _board: BoardView = %Board
@@ -32,6 +38,7 @@ var _scripted_intents: Array[DuelIntent] = []
 @onready var _preview: HoverPreview = %Preview
 @onready var _input_shield: Control = %InputShield
 @onready var _event_player: EventPlayer = %EventPlayer
+@onready var _overlays: DuelOverlays = %OverlayLayer
 @onready var _right_column_a: VBoxContainer = %RightColumnA
 @onready var _right_column_b: VBoxContainer = %RightColumnB
 @onready var _sources: Dictionary[DuelState.PlayerSide, SourcesView] = {
@@ -56,9 +63,7 @@ func _ready() -> void:
 	_event_player.batch_played.connect(_on_batch_played)
 	_connect_gestures()
 	_connect_previews()
-	if is_autostart:
-		var catalog := ProvisionalDuelLaunch.load_catalog()
-		start_duel(ProvisionalDuelLaunch.make_setup(catalog), DuelConfig.new(), catalog)
+	_connect_overlays()
 
 
 # Décisions 0021 et 0029 : le temps réel avance sans événement ; pendule et décompte se relisent.
@@ -66,21 +71,21 @@ func _process(_delta: float) -> void:
 	if _host == null or _engine.get_state() == null:
 		return
 	_event_player.play(_host.tick())
-	_refresh_clocks()
-	_refresh_response_countdown()
+	_center.refresh_clocks()
+	_center.refresh_response_countdown()
+	_refresh_concede_button()
 
 
-## Démarre le duel de `duel_setup`, une seule fois, après l'entrée de l'écran dans l'arbre ;
-## `catalog` null : les cartes de `data/cards/`. Sert à l'étape 2.4 et aux outils de développement.
-func start_duel(
-	duel_setup: DuelSetup, config: DuelConfig = DuelConfig.new(), catalog: Catalog = null
-) -> void:
+## Démarre le duel de `duel_setup`, une seule fois, après l'entrée de l'écran dans l'arbre.
+func start_duel(duel_setup: DuelSetup, config: DuelConfig, catalog: Catalog) -> void:
 	if _host != null:
 		push_error("DuelScreen : le duel est déjà démarré")
 		return
-	_catalog = catalog if catalog != null else ProvisionalDuelLaunch.load_catalog()
+	_catalog = catalog
 	_engine = DuelEngine.new(_catalog, config)
+	_previewer.setup(_preview, _engine)
 	_host = DuelHost.new(_engine)
+	_center.setup(_column, _engine, _host)
 	_host.host_state_changed.connect(_on_host_state_changed)
 	var first_events := _host.start(duel_setup)
 	if _engine.get_state() == null:
@@ -89,7 +94,7 @@ func start_duel(
 	_setup_views(duel_setup)
 	_selection.setup(_engine, DuelState.PlayerSide.A)
 	_selection.selection_changed.connect(_refresh_marks)
-	_refresh_zones()
+	_refresh_zones_hiding_hand()
 	_event_player.play(first_events)
 
 
@@ -157,15 +162,23 @@ func _connect_gestures() -> void:
 
 
 func _connect_previews() -> void:
-	_hand.card_hovered.connect(_preview_card)
-	_hand.card_unhovered.connect(_hide_preview)
-	_column.stack_entry_hovered.connect(_preview_stack_entry)
-	_column.stack_entry_unhovered.connect(_hide_preview)
+	_hand.card_hovered.connect(_previewer.show_card)
+	_hand.card_unhovered.connect(_previewer.hide_preview)
+	_column.stack_entry_hovered.connect(_previewer.show_stack_entry)
+	_column.stack_entry_unhovered.connect(_previewer.hide_preview)
 	for side: DuelState.PlayerSide in DuelState.SIDES:
-		_deck_corners[side].discard_hovered.connect(_preview_card)
-		_deck_corners[side].discard_unhovered.connect(_hide_preview)
-		_hero_cards[side].hero_card_hovered.connect(_preview_hero.bind(side))
-		_hero_cards[side].hero_card_unhovered.connect(_hide_preview)
+		_deck_corners[side].discard_hovered.connect(_previewer.show_card)
+		_deck_corners[side].discard_unhovered.connect(_previewer.hide_preview)
+		_hero_cards[side].hero_card_hovered.connect(_previewer.show_hero.bind(side))
+		_hero_cards[side].hero_card_unhovered.connect(_previewer.hide_preview)
+
+
+func _connect_overlays() -> void:
+	_column.concede_pressed.connect(_on_concede_pressed)
+	_overlays.relay_confirmed.connect(_on_relay_confirmed)
+	_overlays.concede_confirmed.connect(_on_concede_confirmed)
+	_overlays.rematch_pressed.connect(rematch_requested.emit)
+	_overlays.setup_pressed.connect(setup_requested.emit)
 
 
 func _on_intent_chosen(intent: DuelIntent) -> void:
@@ -187,32 +200,109 @@ func _submit_next_scripted_intent() -> void:
 	_on_intent_chosen(intent)
 
 
-# Le relais entre deux humains est automatique (l'étape 2.4 fera son écran) ; les commandes ne
-# passent que pendant le tour d'un humain.
+# Décision 0036 : les commandes ne passent que pendant le tour d'un humain ; le relais attend le
+# clic du joueur attendu sur le rideau, sauf tant que des intentions scriptées restent.
 func _on_host_state_changed(host_state: DuelHost.HostState) -> void:
 	_input_shield.visible = host_state != DuelHost.HostState.AWAITING_HUMAN
+	_refresh_overlays(host_state)
 	match host_state:
 		DuelHost.HostState.RELAY:
-			_host.confirm_relay.call_deferred()
+			_start_relay()
 		DuelHost.HostState.AWAITING_HUMAN:
 			_selection.set_player(_host.get_screen_player())
 			_refresh_zones()
 			_submit_next_scripted_intent.call_deferred()
 		DuelHost.HostState.ENDED:
 			_refresh_zones()
+			_show_end_panel()
+
+
+# Rideau et confirmation ne vivent que dans l'état qui les appelle.
+func _refresh_overlays(host_state: DuelHost.HostState) -> void:
+	if host_state != DuelHost.HostState.RELAY:
+		_overlays.hide_relay()
+	if host_state != DuelHost.HostState.AWAITING_HUMAN:
+		_overlays.hide_concede_confirm()
+	_refresh_concede_button()
+
+
+# Décision 0036 : « Abandonner » est pour le joueur qui a l'appareil, en AWAITING_HUMAN, et reste
+# caché tant que sa fenêtre de réponse décompte (208.6) : la passe automatique fermerait la
+# confirmation sans rien dire.
+func _refresh_concede_button() -> void:
+	var can_concede := (
+		_host.get_host_state() == DuelHost.HostState.AWAITING_HUMAN
+		and not _host.is_response_window_running()
+	)
+	if can_concede:
+		_column.show_concede(_host.get_screen_player())
+	else:
+		_column.hide_concede()
+
+
+func _start_relay() -> void:
+	if not _scripted_intents.is_empty():
+		_host.confirm_relay.call_deferred()
+		return
+	_refresh_zones_hiding_hand()
+	_overlays.show_relay(_host.get_awaited_player())
+
+
+func _on_relay_confirmed() -> void:
+	_overlays.hide_relay()
+	_host.confirm_relay()
+
+
+func _on_concede_pressed() -> void:
+	_overlays.show_concede_confirm(_host.get_screen_player())
+
+
+# 209.2.5 : le joueur qui a l'appareil abandonne.
+func _on_concede_confirmed() -> void:
+	_overlays.hide_concede_confirm()
+	_event_player.play(_host.concede(_host.get_screen_player()))
+
+
+func _show_end_panel() -> void:
+	var state := _engine.get_state()
+	var elapsed_msec := _host.get_journal().total_elapsed_msec()
+	_overlays.show_end(
+		state.result,
+		DuelViewModel.result_text(state.result),
+		EndSummary.reason_text(_final_events, state),
+		EndSummary.details_text(state.turn_number, elapsed_msec)
+	)
 
 
 # L'hôte attend la confirmation de chaque lot ; c'est son changement d'état qui recale l'écran.
-func _on_batch_played(_events: Array[DuelEvent]) -> void:
+func _on_batch_played(events: Array[DuelEvent]) -> void:
+	if events.any(func(event: DuelEvent) -> bool: return event is DuelEnded):
+		_final_events = events
 	_host.confirm_events_played()
 
 
 # Recalage sur l'état, zone par zone, après des événements ou un changement d'appareil.
 func _refresh_zones() -> void:
-	_hide_preview()
+	_use_viewer_model()
+	_refresh_zones_around(_model.hand_cards())
+
+
+# Pendant le relais, l'appareil montre encore le joueur d'avant : sa main ne reste pas affichée sous
+# le rideau (201.4.2).
+func _refresh_zones_hiding_hand() -> void:
+	_use_viewer_model()
+	_refresh_zones_around([])
+
+
+func _use_viewer_model() -> void:
+	_previewer.hide_preview()
 	_model = DuelViewModel.new(_engine.get_state(), _catalog, _host.get_screen_player())
+	_previewer.use_model(_model)
+
+
+func _refresh_zones_around(hand_cards: Array[HandView.HandCard]) -> void:
 	_refresh_pieces()
-	_hand.show_cards(_model.hand_cards())
+	_hand.show_cards(hand_cards)
 	_opponent_hand.show_hand(_model.get_opponent(), _model.opponent_hand_size())
 	_refresh_piles()
 	_refresh_marks()
@@ -229,7 +319,7 @@ func _refresh_marks() -> void:
 	_hand.show_marks(shown.playable_card_ids, _chosen_card_ids(shown))
 	_refresh_sources(shown)
 	_refresh_hero_cards(shown)
-	_refresh_center(shown)
+	_center.show_center(_model, shown)
 
 
 func _chosen_card_ids(shown: SelectionSnapshot) -> Array[int]:
@@ -246,8 +336,8 @@ func _refresh_pieces() -> void:
 		var piece_view: PieceView = PIECE_SCENE.instantiate()
 		_board.put_piece(piece.cell, piece_view)
 		_fill_piece(piece_view, piece)
-		piece_view.piece_hovered.connect(_preview_piece)
-		piece_view.piece_unhovered.connect(_hide_preview)
+		piece_view.piece_hovered.connect(_previewer.show_piece)
+		piece_view.piece_unhovered.connect(_previewer.hide_preview)
 		_piece_views[piece.piece_id] = piece_view
 
 
@@ -300,101 +390,3 @@ func _refresh_hero_cards(shown: SelectionSnapshot) -> void:
 		_hero_cards[side].set_clickable(is_viewer)
 		_hero_cards[side].set_power_usable(is_viewer and shown.can_use_hero_power)
 		_hero_cards[side].set_power_chosen(is_viewer and shown.is_hero_power_chosen)
-
-
-func _refresh_center(shown: SelectionSnapshot) -> void:
-	var state := _engine.get_state()
-	_center_state = DuelViewModel.center_state_of(state)
-	match _center_state:
-		DuelColumnView.CenterState.TURN:
-			_column.show_turn(state.turn_number, state.active_player, shown.can_end_turn)
-		DuelColumnView.CenterState.STACK:
-			var lines := _model.stack_lines()
-			_column.show_stack(
-				lines, shown.legal_stack_entry_ids, state.priority_player, shown.can_pass
-			)
-			_refresh_response_countdown()
-		DuelColumnView.CenterState.MULLIGAN:
-			_column.show_mulligan(_model.get_viewer(), shown.can_confirm)
-		DuelColumnView.CenterState.CHOICE:
-			_show_choice(shown)
-		DuelColumnView.CenterState.ENDED:
-			_column.show_ended(DuelViewModel.result_text(state.result))
-
-
-# Décision 0032, point 6 : l'ordre des effets déclenchés se choisit dans la pile, leurs rangs
-# numérotés au fil des clics.
-func _show_choice(shown: SelectionSnapshot) -> void:
-	var decision := _engine.get_state().pending_decision
-	var ordered_candidate_ids: Array[int] = []
-	if decision.kind == PendingDecision.DecisionKind.ORDER_TRIGGERS:
-		ordered_candidate_ids.assign(decision.candidate_ids)
-	var lines := _model.stack_lines(ordered_candidate_ids, shown.ordered_entry_ids)
-	var instruction := DuelViewModel.choice_instruction(decision.kind)
-	_column.show_choice(instruction, lines, shown.legal_stack_entry_ids)
-
-
-# La pendule est relue à chaque image sans événement (décision 0021) ; la colonne ne redessine
-# une pendule que si ses secondes changent.
-func _refresh_clocks() -> void:
-	var state := _engine.get_state()
-	_column.show_clocks(
-		state.get_player(DuelState.PlayerSide.A).clock_remaining_msec,
-		state.get_player(DuelState.PlayerSide.B).clock_remaining_msec,
-		_engine.clock_owners()
-	)
-
-
-# Décision 0029 : le décompte de la fenêtre de réponse se lit auprès de l'hôte à chaque image,
-# tant que le joueur peut répondre ; la colonne ne se redessine que si l'affichage change.
-func _refresh_response_countdown() -> void:
-	if _center_state != DuelColumnView.CenterState.STACK:
-		return
-	if _host.get_host_state() != DuelHost.HostState.AWAITING_HUMAN:
-		return
-	if _host.is_response_window_running():
-		var window_msec := _engine.get_state().config.response_window_msec
-		_column.show_response_time(_host.get_response_time_left_msec(), window_msec)
-	else:
-		_column.show_response_stopped()
-
-
-func _preview_card(card_instance_id: int) -> void:
-	var definition := _model.visible_definition(card_instance_id)
-	if definition != null:
-		_preview.show_card(definition)
-
-
-func _preview_hero(side: DuelState.PlayerSide) -> void:
-	_preview.show_hero(_model.hero_definition(side))
-
-
-func _preview_piece(piece_id: int) -> void:
-	var piece := _engine.get_state().find_piece(piece_id)
-	if piece == null:
-		return
-	var gear := _model.gear_definition(piece)
-	match DuelViewModel.piece_form_of(piece):
-		DuelViewModel.PieceForm.HERO:
-			_preview.show_hero(_model.hero_definition(piece.owner), gear)
-		DuelViewModel.PieceForm.TOKEN:
-			var force := _engine.current_force(piece_id)
-			_preview.show_token(_model.token_card_type(piece), force, gear)
-		DuelViewModel.PieceForm.CARD:
-			_preview.show_card(_model.piece_definition(piece), gear)
-
-
-func _preview_stack_entry(stack_entry_id: int) -> void:
-	var entry := _model.find_entry(stack_entry_id)
-	if entry == null:
-		return
-	if entry.kind == StackEntry.StackEntryKind.HERO_POWER:
-		_preview.show_hero(_model.hero_definition(entry.owner))
-		return
-	var definition := _model.entry_definition(entry)
-	if definition != null:
-		_preview.show_card(definition)
-
-
-func _hide_preview(_ignored_id: int = DuelState.NO_ID) -> void:
-	_preview.hide_preview()

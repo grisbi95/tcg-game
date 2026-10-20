@@ -33,7 +33,6 @@ func _launch(chosen: DuelScenarios.Scenario) -> void:
 		return
 	print("Scénario %d : %s" % [chosen + 1, DuelScenarios.name_of(chosen)])
 	_screen = SCREEN_SCENE.instantiate()
-	_screen.is_autostart = false
 	add_child(_screen)
 	_screen.start_duel(data.setup, data.config, data.catalog)
 	_screen.play_scripted_intents(data.intents)

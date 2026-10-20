@@ -3,7 +3,8 @@ extends GdUnitTestSuite
 ## 201.6, 202.1, 202.3, 210 ; décisions 0002, 0010 et 0012). Le chargement sans erreur dans
 ## l'édition courante est vérifié par test_catalog_loader.gd.
 ##
-## Les valeurs des tables sont recopiées de decks-de-test.md.
+## Les valeurs des tables sont recopiées de decks-de-test.md. Le deck est lu dans
+## data/decks/deck_de_test.json (ruleset 0.36, décisions 0037 et 0171 du ruleset).
 
 const DECK_SIZE: int = 30  # 201.6.1
 const CAPTAIN_HEALTH: int = 15  # 202.3.7
@@ -52,6 +53,26 @@ const EFFECTS: Dictionary[StringName, Array] = {
 	&"contre": [KIND.COUNTER_SPELL, 0],
 	&"levee": [KIND.CREATE_TOKEN, 0],
 	&"lame": [KIND.MODIFY_FORCE, 1],
+}
+## Exemplaires de chaque carte, colonne Nombre de « Liste des cartes » (décision 0171).
+const DECK_COPIES: Dictionary[StringName, int] = {
+	&"recrue": 2,
+	&"soldat": 3,
+	&"veteran": 3,
+	&"champion": 2,
+	&"colosse": 2,
+	&"pillard": 2,
+	&"gardien": 2,
+	&"heraut": 1,
+	&"martyr": 1,
+	&"palissade": 1,
+	&"bastion": 1,
+	&"campement": 2,
+	&"renfort": 2,
+	&"frappe": 2,
+	&"contre": 1,
+	&"levee": 1,
+	&"lame": 2,
 }
 const STRIKE_MAX_FORCE: int = 3  # Frappe
 const LEVY_TOKEN_FORCE: int = 2  # Levée
@@ -119,6 +140,16 @@ func test_201_6_1_test_deck_has_thirty_cards() -> void:
 func test_201_6_2_test_deck_is_valid() -> void:
 	var errors := _catalog.find_deck_errors(TestCatalog.deck(), DuelConfig.new())
 	assert_array(Array(errors)).is_empty()
+
+
+func test_decision_0037_test_deck_file_matches_the_playtest_table() -> void:
+	var loader := DeckLoader.new()
+	loader.load_directory(TestCatalog.DECKS_DIRECTORY)
+	var deck := loader.find_deck(TestCatalog.DECK_ID)
+	assert_object(deck).is_not_null()
+	assert_dict(deck.copies).is_equal(DECK_COPIES)
+	assert_str(String(deck.hero_id)).is_equal("capitaine")
+	assert_array(deck.card_ids()).is_equal(TestCatalog.deck())
 
 
 func test_202_3_7_captain_has_fifteen_health() -> void:

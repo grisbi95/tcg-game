@@ -50,6 +50,8 @@ const SOURCE_TILTED_LINE_COLOR := Color("6b7380")
 const BAR_TRACK_COLOR := Color("3a414c")
 ## Panneau de consigne de la colonne de duel.
 const HINT_COLOR := Color("1f242b")
+## Voile sombre posé sur le jeu figé : fin de partie, confirmation d'abandon.
+const SCRIM_COLOR := Color(0.06, 0.07, 0.09, 0.72)
 ## Écart de luminosité du grand bouton survolé (plus clair) et pressé (plus sombre).
 const BUTTON_HOVER_LIGHTEN: float = 0.12
 const BUTTON_PRESSED_DARKEN: float = 0.12
@@ -101,6 +103,20 @@ const CARD_BACK_COLOR := Color("343b46")
 const CARD_BACK_STRIPE_COLOR := Color("2c323b")
 const CELL_HOVER_COLOR := Color("333a44")
 
+const BUTTON_COLOR_NAMES: Array[StringName] = [
+	&"font_color",
+	&"font_hover_color",
+	&"font_pressed_color",
+	&"font_hover_pressed_color",
+	&"font_focus_color",
+]
+const BUTTON_STATE_STYLES: Dictionary[ButtonState, StringName] = {
+	ButtonState.NORMAL: &"normal",
+	ButtonState.HOVER: &"hover",
+	ButtonState.PRESSED: &"pressed",
+	ButtonState.DISABLED: &"disabled",
+}
+
 const LINE_WIDTH: int = 1
 const BORDER_WIDTH: int = 2
 const PLAYER_BORDER_WIDTH: int = 4
@@ -108,6 +124,8 @@ const CORNER_RADIUS: int = 8
 ## Variation de Label déclarée dans ui/theme/duel_theme.tres (thème unique).
 const SMALL_LABEL: StringName = &"SmallLabel"
 const CONTENT_MARGIN: int = 8
+## Marge intérieure d'un panneau centré (fin de partie, confirmation, rideau de relais).
+const MODAL_MARGIN: float = 32.0
 
 
 static func player_color(side: DuelState.PlayerSide) -> Color:
@@ -120,6 +138,26 @@ static func player_soft(side: DuelState.PlayerSide) -> Color:
 
 static func player_ink(side: DuelState.PlayerSide) -> Color:
 	return PLAYER_A_INK if side == DuelState.PlayerSide.A else PLAYER_B_INK
+
+
+## Couleur du vainqueur de `result` ; neutre pour une égalité ou sans résultat.
+static func result_color(result: DuelState.DuelResult) -> Color:
+	match result:
+		DuelState.DuelResult.PLAYER_A_WINS:
+			return PLAYER_A_COLOR
+		DuelState.DuelResult.PLAYER_B_WINS:
+			return PLAYER_B_COLOR
+	return NEUTRAL_COLOR
+
+
+## Encre du vainqueur de `result`, comme `result_color`.
+static func result_ink(result: DuelState.DuelResult) -> Color:
+	match result:
+		DuelState.DuelResult.PLAYER_A_WINS:
+			return PLAYER_A_INK
+		DuelState.DuelResult.PLAYER_B_WINS:
+			return PLAYER_B_INK
+	return INK_COLOR
 
 
 static func tint_of(card_type: CardDefinition.CardType) -> Tint:
@@ -175,3 +213,20 @@ static func player_button_style(side: DuelState.PlayerSide, state: ButtonState) 
 		ButtonState.DISABLED:
 			color = player_soft(side)
 	return fill_style(color, CORNER_RADIUS, CONTENT_MARGIN)
+
+
+## Cadre d'un panneau centré (fin de partie, confirmation, rideau, préparation) : fond
+## `background`, bordure `accent`.
+static func modal_style(accent: Color, background: Color = PANEL_COLOR) -> StyleBoxFlat:
+	return framed_style(background, accent, PLAYER_BORDER_WIDTH, MODAL_MARGIN)
+
+
+## Habille `button` aux couleurs fixes de `side` : fonds de ses quatre états et texte.
+static func apply_player_button(button: Button, side: DuelState.PlayerSide) -> void:
+	for state: ButtonState in BUTTON_STATE_STYLES:
+		button.add_theme_stylebox_override(
+			BUTTON_STATE_STYLES[state], player_button_style(side, state)
+		)
+	for color_name: StringName in BUTTON_COLOR_NAMES:
+		button.add_theme_color_override(color_name, INK_COLOR)
+	button.add_theme_color_override("font_disabled_color", MUTED_COLOR)

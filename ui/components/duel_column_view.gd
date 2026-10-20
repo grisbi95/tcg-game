@@ -3,11 +3,13 @@ extends PanelContainer
 ## Colonne de duel (décisions 0028, 0030 et 0032) : pendule de B en haut, de A en bas, et au
 ## centre un seul grand bouton qui change selon le moment. Le parent choisit l'état du centre
 ## (`show_turn`, `show_stack`, `show_mulligan`, `show_choice`, `show_ended`) et dit quelles
-## pendules tournent ; la colonne ne calcule rien et n'a aucune règle.
+## pendules tournent ; la colonne ne calcule rien et n'a aucune règle. Un petit bouton
+## « Abandonner » (décision 0036) se pose près de la pendule du joueur qui a l'appareil.
 
 signal end_turn_pressed
 signal pass_pressed
 signal confirm_pressed
+signal concede_pressed
 signal stack_entry_pressed(stack_entry_id: int)
 signal stack_entry_hovered(stack_entry_id: int)
 signal stack_entry_unhovered(stack_entry_id: int)
@@ -21,6 +23,10 @@ enum CenterState {
 	ENDED,
 }
 
+## Ce que montre la pile sous « Passer » : rien tant que le joueur n'a pas l'appareil (décision
+## 0036), le décompte de sa fenêtre de réponse, ou son arrêt (208.6.5a).
+enum ResponseDisplay { NONE, RUNNING, STOPPED }
+
 const MSEC_PER_SECOND: int = 1000
 const MSEC_PER_TENTH: int = 100
 const TENTHS_PER_SECOND: int = 10
@@ -33,25 +39,15 @@ const HINT_MARGIN: float = 8.0
 const END_TURN_TEXT: String = "Terminer le tour"
 const PASS_TEXT: String = "Passer"
 const CONFIRM_TEXT: String = "Confirmer"
+const CONCEDE_TEXT: String = "Abandonner"
+const CONCEDE_BORDER_WIDTH: int = 1
+const CONCEDE_MARGIN: float = 4.0
 const MULLIGAN_HINT: String = "Mulligan : choisis les cartes à écarter"
 const STOPPED_TEXT: String = "Décompte arrêté : réponds ou passe"
-const BUTTON_COLOR_NAMES: Array[StringName] = [
-	&"font_color",
-	&"font_hover_color",
-	&"font_pressed_color",
-	&"font_hover_pressed_color",
-	&"font_focus_color",
-]
-const BUTTON_STATE_STYLES: Dictionary[DuelPalette.ButtonState, StringName] = {
-	DuelPalette.ButtonState.NORMAL: &"normal",
-	DuelPalette.ButtonState.HOVER: &"hover",
-	DuelPalette.ButtonState.PRESSED: &"pressed",
-	DuelPalette.ButtonState.DISABLED: &"disabled",
-}
 
 var _center_state: CenterState = CenterState.TURN
 var _has_stack: bool = false
-var _is_response_running: bool = false
+var _response_display: ResponseDisplay = ResponseDisplay.NONE
 var _response_tenths: int = -1
 var _response_bar_step: int = -1
 var _clock_seconds: Dictionary[DuelState.PlayerSide, int] = {}
@@ -60,6 +56,10 @@ var _clock_running: Dictionary[DuelState.PlayerSide, bool] = {}
 @onready var _clocks: Dictionary[DuelState.PlayerSide, ClockView] = {
 	DuelState.PlayerSide.A: %BottomClock,
 	DuelState.PlayerSide.B: %TopClock,
+}
+@onready var _concede_buttons: Dictionary[DuelState.PlayerSide, Button] = {
+	DuelState.PlayerSide.A: %BottomConcedeButton,
+	DuelState.PlayerSide.B: %TopConcedeButton,
 }
 @onready var _turn_number_label: Label = %TurnNumberLabel
 @onready var _hint_panel: PanelContainer = %HintPanel
@@ -89,7 +89,10 @@ func _ready() -> void:
 		)
 	)
 	_style_texts()
+	_style_concede_buttons()
 	_big_button.pressed.connect(_on_big_button_pressed)
+	for button: Button in _concede_buttons.values():
+		button.pressed.connect(concede_pressed.emit)
 	_stack_view.stack_entry_pressed.connect(stack_entry_pressed.emit)
 	_stack_view.stack_entry_hovered.connect(stack_entry_hovered.emit)
 	_stack_view.stack_entry_unhovered.connect(stack_entry_unhovered.emit)
@@ -99,7 +102,7 @@ func _ready() -> void:
 ## Pendules de A et de B, qui partent de `clock_duration_msec` (209.4.3).
 func setup(clock_duration_msec: int) -> void:
 	for side: DuelState.PlayerSide in _clocks:
-		_clocks[side].setup(side, "Joueur %s" % _side_letter(side), clock_duration_msec)
+		_clocks[side].setup(side, PlayerNames.display_name(side), clock_duration_msec)
 	_clock_seconds.clear()
 	_clock_running.clear()
 
@@ -117,7 +120,7 @@ func show_clocks(
 func show_turn(turn_number: int, actor: DuelState.PlayerSide, can_end_turn: bool) -> void:
 	_center_state = CenterState.TURN
 	_turn_number_label.text = "Tour %d" % turn_number
-	_set_actor("Au joueur %s" % _side_letter(actor), actor)
+	_set_actor("Au joueur %s" % PlayerNames.letter(actor), actor)
 	_set_button(END_TURN_TEXT, actor, can_end_turn)
 	_refresh_center()
 
@@ -132,7 +135,7 @@ func show_stack(
 ) -> void:
 	_center_state = CenterState.STACK
 	_show_stack_lines(lines, highlighted_ids)
-	_set_actor("Joueur %s peut répondre" % _side_letter(responder), responder)
+	_set_actor("%s peut répondre" % PlayerNames.display_name(responder), responder)
 	_set_button(PASS_TEXT, responder, can_pass)
 	_style_countdown(responder)
 	_refresh_center()
@@ -167,7 +170,7 @@ func show_ended(result_text: String) -> void:
 ## Décompte de la fenêtre de réponse (208.6), à appeler chaque image tant qu'il tourne ; ne
 ## redessine que si les dixièmes de seconde ou la barre changent.
 func show_response_time(time_left_msec: int, window_msec: int) -> void:
-	_set_response_running(true)
+	_set_response_display(ResponseDisplay.RUNNING)
 	var tenths := ceili(maxi(time_left_msec, 0) / float(MSEC_PER_TENTH))
 	var bar_step := roundi(
 		clampf(float(time_left_msec) / maxi(window_msec, 1), 0.0, 1.0) * BAR_STEPS
@@ -184,11 +187,23 @@ func show_response_time(time_left_msec: int, window_msec: int) -> void:
 
 ## Le décompte est arrêté (208.6.5a) : le joueur doit répondre ou passer lui-même.
 func show_response_stopped() -> void:
-	_set_response_running(false)
+	_set_response_display(ResponseDisplay.STOPPED)
 
 
-static func _side_letter(side: DuelState.PlayerSide) -> String:
-	return DuelState.PlayerSide.keys()[side]
+## Aucune fenêtre de réponse à montrer : relais en cours ou événements à l'affichage.
+func hide_response() -> void:
+	_set_response_display(ResponseDisplay.NONE)
+
+
+## Montre « Abandonner » près de la pendule de `side` seulement ; l'autre est caché.
+func show_concede(side: DuelState.PlayerSide) -> void:
+	for button_side: DuelState.PlayerSide in _concede_buttons:
+		_concede_buttons[button_side].visible = button_side == side
+
+
+func hide_concede() -> void:
+	for button: Button in _concede_buttons.values():
+		button.visible = false
 
 
 func _style_texts() -> void:
@@ -200,6 +215,26 @@ func _style_texts() -> void:
 	_countdown_bar.add_theme_stylebox_override(
 		"background", DuelPalette.fill_style(DuelPalette.BAR_TRACK_COLOR, BAR_RADIUS, 0.0)
 	)
+
+
+func _style_concede_buttons() -> void:
+	var fills: Dictionary[DuelPalette.ButtonState, Color] = {
+		DuelPalette.ButtonState.NORMAL: Color.TRANSPARENT,
+		DuelPalette.ButtonState.HOVER: DuelPalette.HINT_COLOR,
+		DuelPalette.ButtonState.PRESSED: DuelPalette.TABLE_COLOR,
+	}
+	for button: Button in _concede_buttons.values():
+		button.text = CONCEDE_TEXT
+		for state: DuelPalette.ButtonState in fills:
+			button.add_theme_stylebox_override(
+				DuelPalette.BUTTON_STATE_STYLES[state],
+				DuelPalette.framed_style(
+					fills[state], DuelPalette.CELL_LINE_COLOR, CONCEDE_BORDER_WIDTH, CONCEDE_MARGIN
+				)
+			)
+		button.add_theme_color_override("font_color", DuelPalette.MUTED_COLOR)
+		button.add_theme_color_override("font_hover_color", DuelPalette.INK_COLOR)
+		button.add_theme_color_override("font_pressed_color", DuelPalette.INK_COLOR)
 
 
 func _style_countdown(responder: DuelState.PlayerSide) -> void:
@@ -216,13 +251,7 @@ func _set_actor(text: String, side: DuelState.PlayerSide) -> void:
 func _set_button(text: String, side: DuelState.PlayerSide, is_enabled: bool) -> void:
 	_big_button.text = text
 	_big_button.disabled = not is_enabled
-	for state: DuelPalette.ButtonState in BUTTON_STATE_STYLES:
-		_big_button.add_theme_stylebox_override(
-			BUTTON_STATE_STYLES[state], DuelPalette.player_button_style(side, state)
-		)
-	for color_name: StringName in BUTTON_COLOR_NAMES:
-		_big_button.add_theme_color_override(color_name, DuelPalette.INK_COLOR)
-	_big_button.add_theme_color_override("font_disabled_color", DuelPalette.MUTED_COLOR)
+	DuelPalette.apply_player_button(_big_button, side)
 
 
 func _show_stack_lines(lines: Array[StackView.StackLine], highlighted_ids: Array[int]) -> void:
@@ -243,10 +272,10 @@ func _show_clock(
 	_clocks[side].show_clock(remaining_msec, is_running)
 
 
-func _set_response_running(is_running: bool) -> void:
-	if is_running == _is_response_running:
+func _set_response_display(response_display: ResponseDisplay) -> void:
+	if response_display == _response_display:
 		return
-	_is_response_running = is_running
+	_response_display = response_display
 	_response_tenths = -1
 	_response_bar_step = -1
 	_refresh_center()
@@ -259,7 +288,11 @@ func _refresh_center() -> void:
 			shown = [_turn_number_label, _actor_label, _big_button]
 		CenterState.STACK:
 			shown = [_stack_title_label, _stack_scroll, _actor_label, _big_button]
-			shown.append(_countdown_row if _is_response_running else _stopped_label)
+			match _response_display:
+				ResponseDisplay.RUNNING:
+					shown.append(_countdown_row)
+				ResponseDisplay.STOPPED:
+					shown.append(_stopped_label)
 		CenterState.MULLIGAN:
 			shown = [_hint_panel, _big_button]
 		CenterState.CHOICE:
