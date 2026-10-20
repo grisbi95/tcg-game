@@ -1,3 +1,3 @@
 # app/
 
-Hôte du duel (`DuelHost`), horloge réelle, journal, enregistreur de playtest, flux d'écrans, autoload `AppEvents` (décision 0006). Nodes, sans règle. Créé au jalon J2. La fenêtre de réponse de 2 s (208.6) est décomptée par `DuelHost` (décision 0029).
+Hôte du duel (`DuelHost`, machine à états, décision 0020), horloge réelle (`MonotonicClock`, 0021), journal et replay (`DuelJournal`, `IntentCodec`, 0022), série de parties (`DuelSeries`, 0036), lecture du catalogue et des decks (`GameLibrary`, 0037), utilitaires de réflexion et de JSON (`ScriptFields`, `JsonValues`), autoload `AppEvents` (0006). Objets purs ou Nodes, sans règle ; `PlaytestRecorder` à l'étape 2.5. Créé au jalon J2. La fenêtre de réponse de 2 s (208.6) est décomptée par `DuelHost` (décision 0029).

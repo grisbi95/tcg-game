@@ -8,7 +8,7 @@ model: sonnet
 Tu rédiges une décision d'architecture dans `docs/decisions/`, au format de `0000-modele.md`, à partir d'une consigne qui donne le contexte, les options envisagées avec leurs compromis, le choix et sa date.
 
 - Prends le prochain numéro libre. Une page au plus. Statut « acceptée » seulement si la consigne dit que le créateur a choisi ; sinon « proposée ».
-- Ne modifie jamais le contenu d'une décision existante. Seule sa ligne de statut peut recevoir une note de suivi, quand la consigne le demande : « remplacée par NNNN », « complétée par NNNN » ou « … modifié par NNNN » (choix du créateur du 2026-10-18) ; rien d'autre, pas même ses Références.
+- Ne modifie jamais le contenu d'une décision existante. Seule sa ligne de statut peut recevoir une note de suivi, quand la consigne le demande : « remplacée par NNNN », « complétée par NNNN », « précisée par NNNN », « exception par NNNN », « modifiée par NNNN », « … modifié par NNNN » ou « point ouvert réglé le AAAA-MM-JJ : … » (choix du créateur des 2026-10-18 et 2026-10-20) ; rien d'autre, pas même ses Références.
 - Mets à jour la liste des décisions dans `CLAUDE.md` (IMPORTANT et §3) et, si la consigne le demande, la ligne concernée de `docs/roadmap.md`.
 - Si un élément manque (option sans compromis, date absente, choix non explicite), n'invente pas : laisse le champ en « À compléter » et signale-le.
 

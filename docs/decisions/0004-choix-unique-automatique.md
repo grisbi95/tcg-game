@@ -1,6 +1,6 @@
 # 0004 — Décision à choix unique prise par le moteur
 
-- Statut : acceptée
+- Statut : acceptée ; complétée par 0017
 - Date : 2026-10-16
 - Décideur : créateur du projet
 - Périmètre : points d'interruption PendingDecision (208.4, 207.5)

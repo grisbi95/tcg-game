@@ -1,6 +1,6 @@
 # 0003 — Paiement porté par l'intention
 
-- Statut : acceptée
+- Statut : acceptée ; complétée par 0026
 - Date : 2026-10-16
 - Décideur : créateur du projet
 - Périmètre : paiement des coûts en Essence (203)

@@ -1,6 +1,6 @@
 ---
 name: tests
-description: Lance les suites GdUnit4 en headless avec la sortie filtrée aux échecs et au résumé. Usage : /tests ou /tests test_205_actions
+description: Lance les suites GdUnit4 en headless avec la sortie filtrée aux échecs et au résumé. Usage : /tests ou /tests test_208_stack
 ---
 
 # Lancer les tests

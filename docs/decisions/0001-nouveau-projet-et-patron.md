@@ -1,6 +1,6 @@
 # 0001 — Nouveau projet tcg-game, patron du prototype repris
 
-- Statut : acceptée
+- Statut : acceptée ; précisée par 0014
 - Date : 2026-10-16
 - Décideur : créateur du projet
 - Périmètre : fondation du projet et architecture générale

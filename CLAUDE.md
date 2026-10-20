@@ -51,13 +51,14 @@ Guide détaillé, pourquoi et signaux d'alerte : `docs/code-guidelines.md` (synt
 data/cards/      JSON des cartes et Heroes (0002)
 data/decks/      JSON des decks (0037)
 rules/           moteur, état, modules par chapitre ; rules/CLAUDE.md
-ai/              agents de jeu (J4)
+ai/              agents de jeu (aléatoire, 0019 ; IA au J4)
 app/             DuelHost, horloge, journal, AppEvents (J2)
-ui/              scènes ; ui/components/ ; ui/CLAUDE.md
-tests/           suites GdUnit4 ; tests/support/ ; tests/CLAUDE.md
-docs/            README (carte), roadmap, decisions/, code-guidelines, ruleset/ (règles, 0014), maquettes/
-tools/           run_tests.sh, lint.sh, setup_gdtoolkit.sh
+ui/              scènes ; ui/components/ (essais dans _try/) ; ui/theme/ ; ui/CLAUDE.md
+tests/           suites GdUnit4 ; tests/support/ ; tests/fixtures/ (replay) ; tests/CLAUDE.md
+docs/            README (carte), roadmap, backlog, decisions/, code-guidelines, ruleset/ (règles, 0014), maquettes/
+tools/           run_tests.sh, lint.sh, check_typing.sh, setup_gdtoolkit.sh, record_replay_fixture.gd
 .claude/         settings, hooks, agents, skills
+.github/         workflows/ci.yml
 ```
 
 Créer un dossier au premier fichier qui y entre ; tout autre dossier racine se valide d'abord.
