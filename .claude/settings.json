@@ -19,14 +19,28 @@
       "Bash(find:*)",
       "Bash(head:*)",
       "Bash(tail:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(tools/check_typing.sh:*)",
+      "Bash(python3 -B -m unittest discover -s .claude/hooks:*)",
+      "Bash(git fetch:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr checks:*)",
+      "Bash(gh run list:*)"
     ],
     "deny": [
       "Edit(/addons/**)",
       "Edit(/.godot/**)",
       "Edit(/.venv/**)",
       "Edit(/**/*.uid)",
-      "Edit(/**/*.import)"
+      "Edit(/**/*.import)",
+      "Bash(rm -rf:*)",
+      "Bash(rm -fr:*)",
+      "Bash(rm -Rf:*)",
+      "Bash(rm -fR:*)",
+      "Bash(rm -r -f:*)",
+      "Bash(rm -f -r:*)"
     ]
   },
   "hooks": {

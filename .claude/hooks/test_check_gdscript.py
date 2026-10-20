@@ -92,13 +92,20 @@ class HookTests(unittest.TestCase):
         self.assertEqual(self.calls, [])
 
     def test_external_and_missing_paths(self):
-        self.assertEqual(self.run_hook(path=self.root.parent/'outside.gd')[0], 2)
+        outside = self.root.parent / 'outside.gd'
+        self.assertEqual(self.run_hook(path=outside)[0], 0)
+        self.assertEqual(self.calls, [])
+        code, _, stderr = self.run_hook(cli=[str(outside)])
+        self.assertEqual((code, 'extérieur' in stderr), (2, True))
         self.assertEqual(self.run_hook(path=self.root/'missing.gd')[0], 2)
 
-    def test_symlink_outside_rejected(self):
+    def test_symlink_outside_ignored_by_hook_rejected_by_cli(self):
         link = self.root / 'link.gd'
         link.symlink_to(self.root.parent/'outside.gd')
-        self.assertEqual(self.run_hook(path=link)[0], 2)
+        self.assertEqual(self.run_hook(path=link)[0], 0)
+        self.assertEqual(self.calls, [])
+        code, _, stderr = self.run_hook(cli=[str(link)])
+        self.assertEqual((code, 'extérieur' in stderr), (2, True))
 
     def test_cli_and_argument_count(self):
         self.assertEqual(self.run_hook(cli=['res://scripts with spaces/card.gd'])[0], 0)
