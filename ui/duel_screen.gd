@@ -15,6 +15,9 @@ extends Control
 
 const PIECE_SCENE: PackedScene = preload("res://ui/components/piece_view.tscn")
 
+## Faux pour que l'appelant démarre lui-même le duel par `start_duel` (étape 2.4, outils).
+@export var is_autostart: bool = true
+
 var _catalog: Catalog
 var _engine: DuelEngine
 var _host: DuelHost
@@ -22,6 +25,7 @@ var _selection: DuelSelection = DuelSelection.new()
 var _model: DuelViewModel
 var _piece_views: Dictionary[int, PieceView] = {}
 var _center_state: DuelColumnView.CenterState = DuelColumnView.CenterState.TURN
+var _scripted_intents: Array[DuelIntent] = []
 
 @onready var _table: ColorRect = %Table
 @onready var _board: BoardView = %Board
@@ -50,14 +54,28 @@ var _center_state: DuelColumnView.CenterState = DuelColumnView.CenterState.TURN
 func _ready() -> void:
 	_table.color = DuelPalette.TABLE_COLOR
 	_place_zones()
-	_catalog = TestDuelLaunch.load_catalog()
-	_engine = DuelEngine.new(_catalog)
-	_host = DuelHost.new(_engine)
 	_selection.intent_chosen.connect(_on_intent_chosen)
-	_selection.response_started.connect(_host.begin_response)
-	_host.host_state_changed.connect(_on_host_state_changed)
+	_selection.response_started.connect(func() -> void: _host.begin_response())
 	_event_player.batch_played.connect(_on_batch_played)
-	var duel_setup := TestDuelLaunch.make_setup(_catalog)
+	_connect_gestures()
+	_connect_previews()
+	if is_autostart:
+		var catalog := TestDuelLaunch.load_catalog()
+		start_duel(TestDuelLaunch.make_setup(catalog), DuelConfig.new(), catalog)
+
+
+## Démarre le duel de `duel_setup`, une seule fois, après l'entrée de l'écran dans l'arbre ;
+## `catalog` null : les cartes de `data/cards/`. Sert à l'étape 2.4 et aux outils de développement.
+func start_duel(
+	duel_setup: DuelSetup, config: DuelConfig = DuelConfig.new(), catalog: Catalog = null
+) -> void:
+	if _host != null:
+		push_error("DuelScreen : le duel est déjà démarré")
+		return
+	_catalog = catalog if catalog != null else TestDuelLaunch.load_catalog()
+	_engine = DuelEngine.new(_catalog, config)
+	_host = DuelHost.new(_engine)
+	_host.host_state_changed.connect(_on_host_state_changed)
 	var first_events := _host.start(duel_setup)
 	if _engine.get_state() == null:
 		push_error("DuelScreen : le duel n'a pas démarré")
@@ -65,16 +83,20 @@ func _ready() -> void:
 	_setup_views(duel_setup)
 	_selection.setup(_engine, DuelState.PlayerSide.A)
 	_selection.selection_changed.connect(_refresh_marks)
-	_connect_gestures()
-	_connect_previews()
 	_refresh_zones()
 	_event_player.play(first_events)
+
+
+## Outil de développement, juste après `start_duel` : `intents` sont soumis un par un, chacun quand
+## l'hôte attend son joueur ; un refus de `DuelEngine.validate()` arrête la suite.
+func play_scripted_intents(intents: Array[DuelIntent]) -> void:
+	_scripted_intents.append_array(intents)
 
 
 # Le temps réel avance sans événement (décisions 0021 et 0029) : l'hôte le décompte, et seuls la
 # pendule et le décompte de la fenêtre de réponse sont relus à chaque image.
 func _process(_delta: float) -> void:
-	if _engine.get_state() == null:
+	if _host == null or _engine.get_state() == null:
 		return
 	_event_player.play(_host.tick())
 	_refresh_clocks()
@@ -154,6 +176,17 @@ func _on_intent_chosen(intent: DuelIntent) -> void:
 	_event_player.play(_host.submit_human(intent))
 
 
+func _submit_next_scripted_intent() -> void:
+	if _scripted_intents.is_empty():
+		return
+	var intent: DuelIntent = _scripted_intents.pop_front()
+	if _engine.validate(intent) != IntentRejected.RejectReason.NONE:
+		push_error("DuelScreen : intention scriptée refusée, la suite est abandonnée")
+		_scripted_intents.clear()
+		return
+	_on_intent_chosen(intent)
+
+
 # Le relais entre deux humains est automatique (l'étape 2.4 fera son écran) ; les commandes ne
 # passent que pendant le tour d'un humain.
 func _on_host_state_changed(host_state: DuelHost.HostState) -> void:
@@ -164,6 +197,7 @@ func _on_host_state_changed(host_state: DuelHost.HostState) -> void:
 		DuelHost.HostState.AWAITING_HUMAN:
 			_selection.set_player(_host.get_screen_player())
 			_refresh_zones()
+			_submit_next_scripted_intent.call_deferred()
 		DuelHost.HostState.ENDED:
 			_refresh_zones()
 
@@ -265,6 +299,7 @@ func _refresh_hero_cards(shown: SelectionSnapshot) -> void:
 		var is_viewer := side == _model.get_viewer()
 		_hero_cards[side].set_clickable(is_viewer)
 		_hero_cards[side].set_power_usable(is_viewer and shown.can_use_hero_power)
+		_hero_cards[side].set_power_chosen(is_viewer and shown.is_hero_power_chosen)
 
 
 func _refresh_center(shown: SelectionSnapshot) -> void:

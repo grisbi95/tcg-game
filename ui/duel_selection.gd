@@ -175,6 +175,10 @@ func snapshot() -> SelectionSnapshot:
 	shown.can_end_turn = candidates.is_legal(EndTurn.new(_side))
 	shown.can_confirm = _can_confirm(candidates)
 	shown.can_use_hero_power = (not _has_pending_decision() and candidates.is_hero_power_possible())
+	shown.is_hero_power_chosen = (
+		_selection_state == SelectionState.TARGET_PENDING
+		and _subject == AnnouncementSubject.HERO_POWER
+	)
 	return shown
 
 
@@ -235,8 +239,11 @@ func _emit_if_legal(intent: DuelIntent) -> void:
 	intent_chosen.emit(intent)
 
 
+# Une sélection en cours éteint les marques « jouable » : seul ce qui est choisi reste marqué.
 func _playable_card_ids(candidates: SelectionCandidates) -> Array[int]:
 	var card_ids: Array[int] = []
+	if _selection_state != SelectionState.IDLE:
+		return card_ids
 	for card: CardInstance in _player().hand:
 		var card_id := card.card_instance_id
 		if _is_awaiting(DECISION.MULLIGAN):

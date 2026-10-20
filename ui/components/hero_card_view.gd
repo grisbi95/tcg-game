@@ -13,6 +13,8 @@ signal hero_card_unhovered
 
 var _player: DuelState.PlayerSide = DuelState.PlayerSide.A
 var _is_clickable: bool = false
+var _is_power_usable: bool = false
+var _is_power_chosen: bool = false
 var _marks := ControlMarks.new(self, DuelMarks.RING_WIDTH + DuelMarks.RING_GAP)
 
 @onready var _card: CardView = %Card
@@ -53,7 +55,14 @@ func set_clickable(is_clickable: bool) -> void:
 
 ## Anneau jaune quand le pouvoir du Hero est utilisable maintenant.
 func set_power_usable(is_usable: bool) -> void:
-	_marks.set_marks(is_usable, false)
+	_is_power_usable = is_usable
+	_marks.set_marks(_is_power_usable, _is_power_chosen)
+
+
+## Deux anneaux verts tant que le pouvoir du Hero attend sa cible ; ils remplacent l'anneau jaune.
+func set_power_chosen(is_chosen: bool) -> void:
+	_is_power_chosen = is_chosen
+	_marks.set_marks(_is_power_usable, _is_power_chosen)
 
 
 func _draw_frame() -> void:

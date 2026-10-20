@@ -68,6 +68,7 @@ var _clock_stamps: Dictionary[DuelState.PlayerSide, int] = {}
 @onready var _stack_view: StackView = %StackView
 @onready var _actor_label: Label = %ActorLabel
 @onready var _big_button: Button = %BigButton
+@onready var _response_zone: VBoxContainer = %ResponseZone
 @onready var _countdown_row: HBoxContainer = %CountdownRow
 @onready var _countdown_bar: ProgressBar = %CountdownBar
 @onready var _countdown_label: Label = %CountdownLabel
@@ -268,6 +269,9 @@ func _refresh_center() -> void:
 			shown = [_hint_panel]
 	for node: Control in _center_nodes():
 		node.visible = shown.has(node)
+	var is_stacked := _center_state == CenterState.STACK
+	_countdown_row.visible = is_stacked and _is_response_running
+	_stopped_label.visible = is_stacked and not _is_response_running
 
 
 func _center_nodes() -> Array[Control]:

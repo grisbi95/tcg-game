@@ -70,12 +70,17 @@ layout_mode = 2
 focus_mode = 0
 theme_type_variation = &"BigButton"
 
-[node name="CountdownRow" type="HBoxContainer" parent="Column/Center"]
+[node name="ResponseZone" type="VBoxContainer" parent="Column/Center"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+
+[node name="CountdownRow" type="HBoxContainer" parent="Column/Center/ResponseZone"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"CardRow"
 
-[node name="CountdownBar" type="ProgressBar" parent="Column/Center/CountdownRow"]
+[node name="CountdownBar" type="ProgressBar" parent="Column/Center/ResponseZone/CountdownRow"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
@@ -86,12 +91,12 @@ max_value = 1.0
 step = 0.0
 show_percentage = false
 
-[node name="CountdownLabel" type="Label" parent="Column/Center/CountdownRow"]
+[node name="CountdownLabel" type="Label" parent="Column/Center/ResponseZone/CountdownRow"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"CountdownLabel"
 
-[node name="StoppedLabel" type="Label" parent="Column/Center"]
+[node name="StoppedLabel" type="Label" parent="Column/Center/ResponseZone"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"ColumnHintLabel"
