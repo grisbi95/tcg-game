@@ -8,7 +8,8 @@
 | --- | --- | --- |
 | [ruleset/](ruleset/README.md) | Ruleset (décision 0014), édition dans son `README.md` : vision, glossaire, questions ouvertes, livret, règles complètes 200 à 210, décisions de design, protocole et decks de test, changelog. **Fait foi sur les règles.** Édité par l'agent `ruleset-editor` seulement. | Avant tout travail de gameplay ; pour nommer tests et fonctions. |
 | [roadmap.md](roadmap.md) | Jalons, étapes et **État actuel**. Seul plan. | Au début de chaque session. |
-| [decisions/](decisions/) | Décisions d'architecture acceptées (`0001` à `0037`) et modèle `0000`. | Avant de créer ou modifier un système. |
+| [backlog.md](backlog.md) | Dettes techniques (décision 0038) : une ligne par dette, référence, priorité, cible. | À la clôture d'une étape ; avant de choisir un travail de fond. |
+| [decisions/](decisions/) | Décisions d'architecture acceptées (`0001` à `0038`) et modèle `0000`. | Avant de créer ou modifier un système. |
 | [maquettes/](maquettes/) | Maquettes HTML de référence visuelle (1920×1080, à ouvrir dans un navigateur) ; jamais intégrées au jeu, figées : une nouvelle version est un nouveau fichier. Les cotes des décisions priment (0028, 0030). | Pour réaliser ou relire un écran. |
 | [code-guidelines.md](code-guidelines.md) | Pourquoi et comment des consignes de code ; signaux d'alerte en relecture. Synthèse des articles de The Shaggy Dev. | Pour concevoir ou relire du code. |
 | [../CLAUDE.md](../CLAUDE.md) | Consignes impératives de développement, courtes. Compléments : `rules/CLAUDE.md`, `ui/CLAUDE.md`, `tests/CLAUDE.md`, `.claude/README.md`. | Toujours chargé. |
@@ -29,6 +30,7 @@ En cas d'écart, le document de rang supérieur prévaut.
 | Règle ou arbitrage de jeu | `ruleset/`, par l'agent `ruleset-editor` ; question ouverte si le point n'est pas tranché. |
 | Décision d'architecture | `decisions/`, copie de `0000-modele.md` au prochain numéro, via l'agent `adr-writer`. |
 | Étape, état, périmètre | `roadmap.md`. |
+| Dette technique | `backlog.md` ; jamais dans « État actuel ». |
 | Consigne de développement | `CLAUDE.md` si impérative et courte ; sinon `code-guidelines.md` ou le `CLAUDE.md` local. |
 | Recette répétable | `.claude/skills/<nom>/SKILL.md`. |
 
