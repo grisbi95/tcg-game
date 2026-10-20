@@ -40,7 +40,7 @@ while IFS= read -r file; do
 	elif [ "$status" -ne 0 ]; then
 		problems+="Godot s'est arrêté avec le code $status sur $file"$'\n'
 	fi
-done < <(find rules ai app ui tests -name '*.gd' 2>/dev/null | sort)
+done < <(find rules ai app ui tests tools -name '*.gd' 2>/dev/null | sort)
 if [ "$count" -eq 0 ]; then
 	echo "Aucun .gd trouvé : contrôle impossible."
 	exit 2

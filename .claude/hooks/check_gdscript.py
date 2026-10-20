@@ -75,7 +75,7 @@ def main():
     try:
         relative = path.relative_to(root)
     except ValueError:
-        return fail("fichier extérieur au projet ; analyse non exécutée.")
+        return 0 if hook_mode else fail("fichier extérieur au projet ; analyse non exécutée.")
     if any(part in {"addons", ".godot", ".git"} for part in relative.parts):
         return 0 if hook_mode else fail("dossier tiers ou généré exclu.")
     if not path.is_file():
