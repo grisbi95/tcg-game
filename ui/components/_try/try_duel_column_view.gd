@@ -1,6 +1,7 @@
 extends Control
 ## Essai de DuelColumnView (décisions 0029, 0030 et 0032) : cinq colonnes côte à côte, une par état
-## du centre (Tour, Pile, Mulligan, Choix, Fin), pendule de B estompée et pendule de A vive. Les
+## du centre (Tour, Pile, Mulligan, Choix, Fin), pendule de B estompée et pendule de A vive,
+## « Abandonner » près de la pendule de A (Tour) puis de B (Pile). Les
 ## nombres sont factices : un clic ne fait qu'écrire dans la sortie.
 
 const COLUMN_SCENE: PackedScene = preload("res://ui/components/duel_column_view.tscn")
@@ -18,10 +19,13 @@ func _ready() -> void:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", SPACING)
 	TrySamples.frame(self, row)
-	_add_column(row).show_turn(TURN_NUMBER, DuelState.PlayerSide.A, true)
+	var turn_column := _add_column(row)
+	turn_column.show_turn(TURN_NUMBER, DuelState.PlayerSide.A, true)
+	turn_column.show_concede(DuelState.PlayerSide.A)
 	var stack_column := _add_column(row)
 	stack_column.show_stack(_stack_lines(), [], DuelState.PlayerSide.B, true)
 	stack_column.show_response_time(RESPONSE_LEFT_MSEC, RESPONSE_WINDOW_MSEC)
+	stack_column.show_concede(DuelState.PlayerSide.B)
 	_add_column(row).show_mulligan(DuelState.PlayerSide.A, false)
 	var choice_column := _add_column(row)
 	choice_column.show_choice("Héraut : choisis une Unit ennemie à cibler")
@@ -36,6 +40,7 @@ func _add_column(row: HBoxContainer) -> DuelColumnView:
 	column.end_turn_pressed.connect(func() -> void: print("Terminer le tour pressé"))
 	column.pass_pressed.connect(func() -> void: print("Passer pressé"))
 	column.confirm_pressed.connect(func() -> void: print("Confirmer pressé"))
+	column.concede_pressed.connect(func() -> void: print("Abandonner pressé"))
 	column.stack_entry_pressed.connect(func(id: int) -> void: print("Entrée pressée : ", id))
 	column.stack_entry_hovered.connect(func(id: int) -> void: print("Entrée survolée : ", id))
 	column.stack_entry_unhovered.connect(func(id: int) -> void: print("Entrée quittée : ", id))

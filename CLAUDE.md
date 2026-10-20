@@ -3,7 +3,7 @@
 ## IMPORTANT
 
 - **Le ruleset fait foi.** Il vit dans `docs/ruleset/` (édition dans son `README.md`, décision 0014) et ne s'édite que par l'agent `ruleset-editor`. Un point non tranché par le ruleset ne devient jamais un comportement implicite : arrêter, et le signaler comme question ouverte du ruleset.
-- **Une décision avant un système nouveau** : 2 ou 3 options avec compromis, choix du créateur, consignation dans `docs/decisions/`. Décisions acceptées : `0001` à `0035` ; les respecter.
+- **Une décision avant un système nouveau** : 2 ou 3 options avec compromis, choix du créateur, consignation dans `docs/decisions/`. Décisions acceptées : `0001` à `0037` ; les respecter.
 - **GDScript typé partout** : paramètres, retours, variables, collections. Les warnings `untyped_declaration` et `unsafe_*` sont des erreurs à corriger ; `tools/check_typing.sh` les contrôle.
 - **Un identifiant de règle sur chaque fonction de règle et chaque test** : `# 206.3.6`, `test_206_3_6_tie_destroys_both`.
 
@@ -20,11 +20,11 @@
 - Tests : GdUnit4 6.2.1 dans `addons/gdUnit4/`, headless ; plugin éditeur non activé.
 - MCP `godot-ai` (scope local, inscrit par le plugin) : plugin Godot AI 4.3.0 dans `addons/godot_ai/`, activé ; n'agit que si l'éditeur est ouvert sur le projet. Sert aux vues : lancer, capturer, lire les logs (0011, `ui/CLAUDE.md`). Plugin et serveur changent de version ensemble.
 - Lint et format : gdtoolkit 4 dans `.venv/` (`tools/setup_gdtoolkit.sh`), configuration `.gdlintrc`.
-- Aucune scène principale ni preset d'export pour l'instant ; `project.godot` ne se modifie que sur demande explicite.
+- Scène principale `ui/main.tscn` (0036), aucun preset d'export pour l'instant ; `project.godot` ne se modifie que sur demande explicite.
 
-## 3. Architecture (décisions 0001 à 0035)
+## 3. Architecture (décisions 0001 à 0037)
 
-- **Couches** : `data/` (cartes JSON) ← `rules/` (moteur pur, `RefCounted`, sans Node) ← `ai/` ← `app/` (hôte, horloge, journal) ← `ui/` (scènes). Une couche ne connaît que celles qui la précèdent. `rules/` ne lit jamais l'heure, n'importe aucun Node, ne tire au hasard que par `state.rng`.
+- **Couches** : `data/` (cartes et decks JSON) ← `rules/` (moteur pur, `RefCounted`, sans Node) ← `ai/` ← `app/` (hôte, horloge, journal) ← `ui/` (scènes). Une couche ne connaît que celles qui la précèdent. `rules/` ne lit jamais l'heure, n'importe aucun Node, ne tire au hasard que par `state.rng`.
 - **Flux** : intentions → `DuelEngine.submit(intent) -> Array[DuelEvent]` → événements. Seul le moteur et ses modules modifient `DuelState`. Une intention illégale produit un unique `IntentRejected` avec sa raison et ne change rien. `validate(intent)` est public et pur. Un duel démarre par `start_new_duel` avec un `DuelSetup` : decks, Heroes, graine, premier joueur optionnel, sinon tiré (0012).
 - **Un module de règles par chapitre** du ruleset (`EssenceRules` 203, `ActionRules` 205, `StackRules` 208…) ; carte dans `rules/CLAUDE.md`.
 - **État** en classes typées avec `clone()` complet ; identifiants entiers jamais réutilisés ; une seule classe `Piece` pour Hero, Units, Buildings et jetons (0008) ; `PendingDecision`, objet nul hors attente (0009), quand le moteur attend un choix d'un joueur (ordre des déclencheurs, cibles) ; mulligans exécutés à la dernière réponse, joueur A puis B (0013, 0015) ; `DuelConfig` porte une valeur par règle PROVISOIRE.
@@ -49,6 +49,7 @@ Guide détaillé, pourquoi et signaux d'alerte : `docs/code-guidelines.md` (synt
 
 ```text
 data/cards/      JSON des cartes et Heroes (0002)
+data/decks/      JSON des decks (0037)
 rules/           moteur, état, modules par chapitre ; rules/CLAUDE.md
 ai/              agents de jeu (J4)
 app/             DuelHost, horloge, journal, AppEvents (J2)

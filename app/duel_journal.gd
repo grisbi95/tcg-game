@@ -50,6 +50,14 @@ func record_elapsed(elapsed_msec: int) -> void:
 	entries.append(entry)
 
 
+## Décision 0036 : durée du duel affichée en fin de partie, somme des temps écoulés.
+func total_elapsed_msec() -> int:
+	var total_msec := 0
+	for entry: Entry in entries:
+		total_msec += entry.elapsed_msec
+	return total_msec
+
+
 ## Rejoue le duel dans `engine`, neuf, et renvoie tous ses événements, dans l'ordre.
 func replay_into(engine: DuelEngine) -> Array[DuelEvent]:
 	var events := engine.start_new_duel(setup)

@@ -74,6 +74,17 @@ func test_decision_0022_consecutive_elapsed_times_are_merged() -> void:
 	assert_int(journal.entries[2].elapsed_msec).is_equal(50)
 
 
+func test_decision_0036_total_elapsed_msec_sums_the_elapsed_times() -> void:
+	var journal := DuelJournal.new()
+	assert_int(journal.total_elapsed_msec()).is_equal(0)
+	journal.record_elapsed(100)
+	journal.record_elapsed(200)
+	journal.record_intent(PassPriority.new(A))
+	assert_int(journal.total_elapsed_msec()).is_equal(300)
+	journal.record_elapsed(50)
+	assert_int(journal.total_elapsed_msec()).is_equal(350)
+
+
 func test_decision_0022_rejected_intents_are_not_recorded() -> void:
 	var host := DuelHost.new(DuelEngine.new(SetupSamples.catalog()), ManualClock.new())
 	host.start(SetupSamples.setup())

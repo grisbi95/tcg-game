@@ -1,0 +1,25 @@
+{
+	"edition": "0.36",
+	"id": "deck_de_test",
+	"name": "Deck de test",
+	"hero": "capitaine",
+	"cards": {
+		"recrue": 2,
+		"soldat": 3,
+		"veteran": 3,
+		"champion": 2,
+		"colosse": 2,
+		"pillard": 2,
+		"gardien": 2,
+		"heraut": 1,
+		"martyr": 1,
+		"palissade": 1,
+		"bastion": 1,
+		"campement": 2,
+		"renfort": 2,
+		"frappe": 2,
+		"contre": 1,
+		"levee": 1,
+		"lame": 2
+	}
+}
