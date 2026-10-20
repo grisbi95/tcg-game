@@ -1,6 +1,6 @@
 class_name DeckCornerView
 extends VBoxContainer
-## Coin deck et défausse d'un joueur (201.4.1, 201.4.4 ; décisions 0030 et 0032) : deux
+## Coin deck et défausse d'un joueur (201.4.1, 201.4.3 ; décisions 0030 et 0032) : deux
 ## emplacements de la taille d'une carte de main, écart de 10 px ; le deck face cachée avec son
 ## nombre de cartes, la défausse avec sa carte du dessus (emplacement vide en pointillé sans
 ## carte). Le libellé est du côté du plateau ; à partir d'une fatigue de 1 (209.5), il l'annonce.

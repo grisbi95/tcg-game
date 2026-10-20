@@ -74,7 +74,10 @@ func _ready() -> void:
 	_essence_chip.add_theme_stylebox_override(
 		"panel",
 		DuelPalette.framed_style(
-			DuelPalette.ESSENCE_BACKGROUND, DuelPalette.ESSENCE_COLOR, 1, CHIP_PADDING
+			DuelPalette.ESSENCE_BACKGROUND,
+			DuelPalette.ESSENCE_COLOR,
+			DuelPalette.LINE_WIDTH,
+			CHIP_PADDING
 		)
 	)
 	for label: Label in [_essence_label, _essence_value]:
@@ -82,12 +85,11 @@ func _ready() -> void:
 
 
 ## Sources du joueur `player`, compteurs à `counter_placement` du bloc ; `slot_count` : Sources
-## d'un joueur (203.5.7). Le compteur Essence est montré, à 0, jusqu'à `hide_essence`.
+## d'un joueur (203.5.7). Le compteur Essence part à 0.
 func setup(
 	player: DuelState.PlayerSide, counter_placement: CounterPlacement, slot_count: int
 ) -> void:
 	_player = player
-	_essence_chip.visible = true
 	move_child(_counters, 0 if counter_placement == CounterPlacement.ABOVE else 1)
 	ViewNodes.free_children(_slot_grid)
 	_slots.clear()
@@ -121,12 +123,6 @@ func show_supply(sources_in_reserve: int, sources_in_fonte: int) -> void:
 ## paiement préparé de celui qui a l'appareil (décision 0032).
 func show_essence(essence: int) -> void:
 	_essence_value.text = str(essence)
-	_essence_chip.visible = true
-
-
-## Cache le compteur Essence quand le bloc n'a rien à y montrer.
-func hide_essence() -> void:
-	_essence_chip.visible = false
 
 
 ## Sources pressables seulement quand le joueur devant l'écran peut s'en servir.

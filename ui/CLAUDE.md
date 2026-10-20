@@ -19,6 +19,7 @@ Complète le `CLAUDE.md` racine pour `ui/`. Décisions 0001 et 0006 ; patron de 
 
 - Le parent câble ses enfants directs à l'initialisation (`setup(...)`, connexions de signals), puis s'efface. Pas de `get_parent()`, de `../`, de `/root/`, ni de chemin profond ; `$Enfant` et `%NomUnique` admis dans la scène possédée.
 - Les objets éloignés (écrans, audio) passent par `AppEvents` (signals seuls, `app/`).
+- `ProvisionalDuelLaunch` (`ui/provisional_duel_launch.gd`) est un lancement provisoire (catalogue et préparation de test, graine tirée), à remplacer par la préparation de partie à l'étape 2.4.
 - `Control` et `Container` partout ; vérifier le redimensionnement ; thème unique dans `ui/theme/`.
 
 ## Vérifier avec le MCP `godot-ai` (0011)

@@ -135,7 +135,11 @@ func press_source(is_tilted: bool) -> void:
 
 
 func press_hero_power() -> void:
-	if not _has_pending_decision():
+	if _has_pending_decision():
+		return
+	if _is_hero_power_chosen():
+		reset()
+	else:
 		_choose_announcement(AnnouncementSubject.HERO_POWER, DuelState.NO_ID)
 
 
@@ -174,11 +178,13 @@ func snapshot() -> SelectionSnapshot:
 	shown.can_pass = candidates.is_legal(PassPriority.new(_side))
 	shown.can_end_turn = candidates.is_legal(EndTurn.new(_side))
 	shown.can_confirm = _can_confirm(candidates)
-	shown.can_use_hero_power = (not _has_pending_decision() and candidates.is_hero_power_possible())
-	shown.is_hero_power_chosen = (
-		_selection_state == SelectionState.TARGET_PENDING
-		and _subject == AnnouncementSubject.HERO_POWER
+	shown.can_use_hero_power = (
+		_selection_state == SelectionState.IDLE
+		and not _has_pending_decision()
+		and candidates.is_hero_power_possible()
 	)
+	shown.is_hero_power_chosen = _is_hero_power_chosen()
+	shown.is_drafting_payment = not _is_own_turn()
 	return shown
 
 
@@ -318,6 +324,13 @@ func _shown_tilted_sources() -> int:
 
 func _copy_draft() -> EssencePayment:
 	return EssencePayment.new(_draft_payment.incline_count, _draft_payment.recycle_count)
+
+
+func _is_hero_power_chosen() -> bool:
+	return (
+		_selection_state == SelectionState.TARGET_PENDING
+		and _subject == AnnouncementSubject.HERO_POWER
+	)
 
 
 func _is_own_turn() -> bool:

@@ -31,8 +31,7 @@ const CHIP_PADDING: float = 2.0
 var _piece_id: int = DuelState.NO_ID
 var _tint: DuelPalette.Tint = DuelPalette.Tint.UNIT
 var _owner_color: Color = DuelPalette.NEUTRAL_COLOR
-var _stat_shape: DuelIcons.Badge = DuelIcons.Badge.DIAMOND
-var _stat_look: BadgeLook = BadgeLook.force(0, 0)
+var _stat: StatBadgeBinding
 var _marks := ControlMarks.new(self, CELL_MARGIN)
 
 @onready var _gear_panel: PanelContainer = %GearPanel
@@ -52,6 +51,7 @@ var _marks := ControlMarks.new(self, CELL_MARGIN)
 
 func _ready() -> void:
 	_marks.hover_changed.connect(_on_hover_changed)
+	_stat = StatBadgeBinding.new(_stat_badge, _stat_label)
 	_bind_icons()
 	_size_parts()
 	_style_fixed_parts()
@@ -91,12 +91,14 @@ func show_hero(piece_id: int, hero: HeroDefinition, owner: DuelState.PlayerSide)
 ## Décision 0027 : `force` actuelle (209.1, lue par `DuelEngine.current_force`) sur un losange ;
 ## le chiffre est sombre si elle égale `printed_force`, vert au-dessus, orange en dessous.
 func show_force(force: int, printed_force: int) -> void:
-	_set_stat(DuelIcons.Badge.DIAMOND, BadgeLook.force(force, printed_force), force)
+	_stat.show_force(force, printed_force)
+	_stat_badge.custom_minimum_size = Vector2.ONE * STAT_BADGE_SIZE
 
 
 ## PV du Hero (202.3.7), sur un cœur, à la place de la Force.
 func show_health(health: int) -> void:
-	_set_stat(DuelIcons.Badge.HEART, BadgeLook.health(), health)
+	_stat.show_health(health)
+	_stat_badge.custom_minimum_size = Vector2.ONE * HEART_BADGE_SIZE
 
 
 ## Nom du Gear attaché (202.2.10, un seul au plus) ; vide sans Gear.
@@ -131,24 +133,8 @@ func _show_keywords(keywords: String) -> void:
 	_keyword_chip.visible = not keywords.is_empty()
 
 
-func _set_stat(badge: DuelIcons.Badge, look: BadgeLook, value: int) -> void:
-	_stat_shape = badge
-	_stat_look = look
-	_stat_label.text = str(value)
-	_stat_label.add_theme_color_override("font_color", look.ink)
-	DuelIcons.fit_label(_stat_label, badge)
-	var side := HEART_BADGE_SIZE if badge == DuelIcons.Badge.HEART else STAT_BADGE_SIZE
-	_stat_badge.custom_minimum_size = Vector2.ONE * side
-	_stat_badge.queue_redraw()
-
-
 func _bind_icons() -> void:
 	DuelIcons.bind_tinted([_art_icon, _band_icon], func() -> DuelPalette.Tint: return _tint)
-	DuelIcons.bind_badge(
-		_stat_badge,
-		func() -> DuelIcons.Badge: return _stat_shape,
-		func() -> BadgeLook: return _stat_look
-	)
 	DuelIcons.bind(
 		_gear_icon,
 		func() -> DuelIcons.Icon: return DuelIcons.Icon.GEAR,

@@ -297,7 +297,7 @@ func _refresh_sources(side: DuelState.PlayerSide, shown: SelectionSnapshot) -> v
 		_sources[side].show_sources(player.sources_upright, player.sources_tilted)
 	_sources[side].show_supply(player.sources_in_reserve, player.sources_in_fonte)
 	# Décision 0028 : réserve d'Essence pendant son tour, paiement préparé pendant le tour adverse.
-	var is_drafting := is_screen_player and _engine.get_state().active_player != side
+	var is_drafting := is_screen_player and shown.is_drafting_payment
 	var essence := shown.draft_payment.essence_produced() if is_drafting else player.essence_reserve
 	_sources[side].show_essence(essence)
 	_sources[side].set_interactive(is_screen_player)

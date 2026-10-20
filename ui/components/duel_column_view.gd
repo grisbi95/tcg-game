@@ -54,7 +54,8 @@ var _has_stack: bool = false
 var _is_response_running: bool = false
 var _response_tenths: int = -1
 var _response_bar_step: int = -1
-var _clock_stamps: Dictionary[DuelState.PlayerSide, int] = {}
+var _clock_seconds: Dictionary[DuelState.PlayerSide, int] = {}
+var _clock_running: Dictionary[DuelState.PlayerSide, bool] = {}
 
 @onready var _clocks: Dictionary[DuelState.PlayerSide, ClockView] = {
 	DuelState.PlayerSide.A: %BottomClock,
@@ -68,7 +69,6 @@ var _clock_stamps: Dictionary[DuelState.PlayerSide, int] = {}
 @onready var _stack_view: StackView = %StackView
 @onready var _actor_label: Label = %ActorLabel
 @onready var _big_button: Button = %BigButton
-@onready var _response_zone: VBoxContainer = %ResponseZone
 @onready var _countdown_row: HBoxContainer = %CountdownRow
 @onready var _countdown_bar: ProgressBar = %CountdownBar
 @onready var _countdown_label: Label = %CountdownLabel
@@ -100,7 +100,8 @@ func _ready() -> void:
 func setup(clock_duration_msec: int) -> void:
 	for side: DuelState.PlayerSide in _clocks:
 		_clocks[side].setup(side, "Joueur %s" % _side_letter(side), clock_duration_msec)
-	_clock_stamps.clear()
+	_clock_seconds.clear()
+	_clock_running.clear()
 
 
 ## Temps restant de chaque joueur ; `running_owners` sont ceux dont la pendule tourne (209.4.4).
@@ -137,7 +138,7 @@ func show_stack(
 	_refresh_center()
 
 
-## Mulligan (205.2) de `player` : la consigne et « Confirmer », actif si `can_confirm`.
+## Mulligan (204.2) de `player` : la consigne et « Confirmer », actif si `can_confirm`.
 func show_mulligan(player: DuelState.PlayerSide, can_confirm: bool) -> void:
 	_center_state = CenterState.MULLIGAN
 	_hint_label.text = MULLIGAN_HINT
@@ -235,10 +236,10 @@ func _show_clock(
 ) -> void:
 	var is_running := running_owners.has(side)
 	var seconds := ceili(maxi(remaining_msec, 0) / float(MSEC_PER_SECOND))
-	var stamp := seconds * 2 + (1 if is_running else 0)
-	if _clock_stamps.get(side, -1) == stamp:
+	if _clock_seconds.get(side, -1) == seconds and _clock_running.get(side, null) == is_running:
 		return
-	_clock_stamps[side] = stamp
+	_clock_seconds[side] = seconds
+	_clock_running[side] = is_running
 	_clocks[side].show_clock(remaining_msec, is_running)
 
 
@@ -269,9 +270,6 @@ func _refresh_center() -> void:
 			shown = [_hint_panel]
 	for node: Control in _center_nodes():
 		node.visible = shown.has(node)
-	var is_stacked := _center_state == CenterState.STACK
-	_countdown_row.visible = is_stacked and _is_response_running
-	_stopped_label.visible = is_stacked and not _is_response_running
 
 
 func _center_nodes() -> Array[Control]:

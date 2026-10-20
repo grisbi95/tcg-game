@@ -1,17 +1,14 @@
 class_name DuelScreen
 extends Control
 ## Écran de duel de l'étape 2.3 (décisions 0020, 0028 à 0032) : assemble les composants de
-## `ui/components/` aux cotes de 0030 (repère 1920×1080, marges de 16 px, joueur A toujours en
-## bas), les câble à `DuelSelection` et à `DuelHost`, et les recale sur `get_state()` après chaque
-## lot d'événements joué par `EventPlayer`. Aucune règle ici : un geste de vue devient une
-## intention par `DuelSelection` seul, et `DuelViewModel` filtre ce que le joueur qui a l'appareil
-## voit (201.4).
+## `ui/components/` aux cotes de 0030 (repère 1920×1080, marges de 16 px, joueur A en bas), les
+## câble à `DuelSelection` et à `DuelHost`, et les recale sur `get_state()` après chaque lot
+## d'événements joué par `EventPlayer`. Aucune règle ici : seul `DuelSelection` fait d'un geste une
+## intention, et `DuelViewModel` filtre ce que voit le joueur de l'appareil (201.4).
 ##
 ## Flux : geste → `DuelSelection` → `intent_chosen` → `DuelHost.submit_human` → événements →
-## `EventPlayer` → `batch_played` → `confirm_events_played` → recalage. Pendant la lecture et hors
-## du tour d'un humain, `InputShield` bloque les commandes. `OverlayLayer` reste vide : l'étape 2.4
-## y mettra les écrans de relais et de fin. Pour l'instant le relais entre deux humains est
-## automatique et la fin tient en une ligne au centre de la colonne (décision 0032, point 8).
+## `EventPlayer` → `batch_played` → `confirm_events_played` → recalage. `InputShield` bloque les
+## commandes pendant la lecture et hors du tour d'un humain. `OverlayLayer` reste vide (étape 2.4).
 
 const PIECE_SCENE: PackedScene = preload("res://ui/components/piece_view.tscn")
 
@@ -60,8 +57,17 @@ func _ready() -> void:
 	_connect_gestures()
 	_connect_previews()
 	if is_autostart:
-		var catalog := TestDuelLaunch.load_catalog()
-		start_duel(TestDuelLaunch.make_setup(catalog), DuelConfig.new(), catalog)
+		var catalog := ProvisionalDuelLaunch.load_catalog()
+		start_duel(ProvisionalDuelLaunch.make_setup(catalog), DuelConfig.new(), catalog)
+
+
+# Décisions 0021 et 0029 : le temps réel avance sans événement ; pendule et décompte se relisent.
+func _process(_delta: float) -> void:
+	if _host == null or _engine.get_state() == null:
+		return
+	_event_player.play(_host.tick())
+	_refresh_clocks()
+	_refresh_response_countdown()
 
 
 ## Démarre le duel de `duel_setup`, une seule fois, après l'entrée de l'écran dans l'arbre ;
@@ -72,7 +78,7 @@ func start_duel(
 	if _host != null:
 		push_error("DuelScreen : le duel est déjà démarré")
 		return
-	_catalog = catalog if catalog != null else TestDuelLaunch.load_catalog()
+	_catalog = catalog if catalog != null else ProvisionalDuelLaunch.load_catalog()
 	_engine = DuelEngine.new(_catalog, config)
 	_host = DuelHost.new(_engine)
 	_host.host_state_changed.connect(_on_host_state_changed)
@@ -91,16 +97,6 @@ func start_duel(
 ## l'hôte attend son joueur ; un refus de `DuelEngine.validate()` arrête la suite.
 func play_scripted_intents(intents: Array[DuelIntent]) -> void:
 	_scripted_intents.append_array(intents)
-
-
-# Le temps réel avance sans événement (décisions 0021 et 0029) : l'hôte le décompte, et seuls la
-# pendule et le décompte de la fenêtre de réponse sont relus à chaque image.
-func _process(_delta: float) -> void:
-	if _host == null or _engine.get_state() == null:
-		return
-	_event_player.play(_host.tick())
-	_refresh_clocks()
-	_refresh_response_countdown()
 
 
 # Décision 0030 : chaque zone est ancrée au coin ou au bord le plus proche, pour suivre un écran
@@ -180,6 +176,10 @@ func _submit_next_scripted_intent() -> void:
 	if _scripted_intents.is_empty():
 		return
 	var intent: DuelIntent = _scripted_intents.pop_front()
+	if intent.player != _host.get_screen_player():
+		push_error("DuelScreen : intention scriptée d'un autre joueur que celui de l'écran")
+		_scripted_intents.clear()
+		return
 	if _engine.validate(intent) != IntentRejected.RejectReason.NONE:
 		push_error("DuelScreen : intention scriptée refusée, la suite est abandonnée")
 		_scripted_intents.clear()
@@ -289,7 +289,7 @@ func _refresh_sources(shown: SelectionSnapshot) -> void:
 		var player := _engine.get_state().get_player(side)
 		view.show_sources(_model.upright_sources(side, shown), _model.tilted_sources(side, shown))
 		view.show_supply(player.sources_in_reserve, player.sources_in_fonte)
-		view.show_essence(_model.essence_shown(side, shown.draft_payment))
+		view.show_essence(_model.essence_shown(side, shown))
 		view.set_interactive(side == _model.get_viewer())
 
 

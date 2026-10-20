@@ -96,17 +96,6 @@ func announce(side: DuelState.PlayerSide, definition_id: StringName) -> bool:
 	return _try(_press_card_then_target.bind(card_id))
 
 
-## `side` lance le pouvoir de son Hero sur la première cible que le moteur propose.
-func use_hero_power(side: DuelState.PlayerSide) -> bool:
-	_selection.set_player(side)
-	return _try(_press_hero_power_then_target)
-
-
-## Une carte de `side` dans sa main est de définition `definition_id`.
-func has_in_hand(side: DuelState.PlayerSide, definition_id: StringName) -> bool:
-	return _find_in_hand(side, definition_id) != DuelState.NO_ID
-
-
 # Produit de l'Essence, une à la fois, jusqu'à ce que la carte soit jouable ; rend son identifiant.
 func _prepare_card(side: DuelState.PlayerSide, definition_id: StringName) -> int:
 	_selection.set_player(side)
@@ -127,11 +116,6 @@ func _find_in_hand(side: DuelState.PlayerSide, definition_id: StringName) -> int
 
 func _press_card_then_target(card_id: int) -> void:
 	_selection.press_card(card_id)
-	_press_first_target()
-
-
-func _press_hero_power_then_target() -> void:
-	_selection.press_hero_power()
 	_press_first_target()
 
 

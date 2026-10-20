@@ -10,8 +10,10 @@ const HERO_POWER_COST: int = 2  # CatalogSamples.hero(), power_cost
 const UNIT_CELL: String = "A1"
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
+const B: DuelState.PlayerSide = DuelState.PlayerSide.B
 const SELECTION := DuelSelection.SelectionState
 
+var _catalog: Catalog
 var _builder: DuelStateBuilder
 var _engine: DuelEngine
 var _selection: DuelSelection
@@ -19,12 +21,12 @@ var _emitted: Array[DuelIntent] = []
 
 
 func before_test() -> void:
-	var catalog := Catalog.new()
-	SetupSamples.add_unit(catalog, UNIT, 3)
-	catalog.add_card(CardDefinition.from_dict(CatalogSamples.spell()))
-	catalog.add_hero(HeroDefinition.from_dict(CatalogSamples.hero()))
-	_builder = DuelStateBuilder.new(DuelConfig.new(), catalog)
-	_engine = DuelEngine.new(catalog)
+	_catalog = Catalog.new()
+	SetupSamples.add_unit(_catalog, UNIT, 3)
+	_catalog.add_card(CardDefinition.from_dict(CatalogSamples.spell()))
+	_catalog.add_hero(HeroDefinition.from_dict(CatalogSamples.hero()))
+	_builder = DuelStateBuilder.new(DuelConfig.new(), _catalog)
+	_engine = DuelEngine.new(_catalog)
 	_selection = DuelSelection.new()
 	_emitted = []
 	_selection.intent_chosen.connect(func(intent: DuelIntent) -> void: _emitted.append(intent))
@@ -107,6 +109,45 @@ func test_decision_0024_no_playable_mark_while_a_target_is_pending() -> void:
 	assert_array(_selection.snapshot().playable_card_ids).contains_exactly([card_id])
 	_selection.press_card(card_id)
 	assert_array(_selection.snapshot().playable_card_ids).is_empty()
+
+
+func test_decision_0032_hero_card_pressed_again_deselects_the_power() -> void:
+	_builder.place_piece(A, Piece.PieceKind.UNIT, _cell(UNIT_CELL), UNIT)
+	_builder.with_essence_reserve(A, HERO_POWER_COST)
+	_builder.with_hero_definition(A, HERO)
+	_start(A)
+	_selection.press_hero_power()
+	assert_bool(_selection.snapshot().is_hero_power_chosen).is_true()
+	_selection.press_hero_power()
+	var shown := _selection.snapshot()
+	assert_int(shown.selection_state).is_equal(SELECTION.IDLE)
+	assert_bool(shown.is_hero_power_chosen).is_false()
+	assert_array(_emitted).is_empty()
+
+
+func test_decision_0032_hero_power_not_marked_during_another_selection() -> void:
+	var card_id := _builder.add_to_hand(A, UNIT)
+	_builder.with_essence_reserve(A, HERO_POWER_COST)
+	_builder.with_hero_definition(A, HERO)
+	_builder.place_piece(A, Piece.PieceKind.UNIT, _cell(UNIT_CELL), UNIT)
+	_start(A)
+	assert_bool(_selection.snapshot().can_use_hero_power).is_true()
+	_selection.press_card(card_id)
+	assert_int(_selection.snapshot().selection_state).is_equal(SELECTION.CARD_CHOSEN)
+	assert_bool(_selection.snapshot().can_use_hero_power).is_false()
+	_selection.press_cancel()
+	assert_bool(_selection.snapshot().can_use_hero_power).is_true()
+
+
+func test_decision_0032_drafting_payment_only_in_the_opponent_turn() -> void:
+	_builder.with_active_player(B).with_priority_player(A)
+	_builder.push_spell(_builder.make_card_instance(B, TARGETED_SPELL))
+	_start(A)
+	assert_bool(_selection.snapshot().is_drafting_payment).is_true()
+	_builder = DuelStateBuilder.new(DuelConfig.new(), _catalog)
+	_builder.with_active_player(A)
+	_start(A)
+	assert_bool(_selection.snapshot().is_drafting_payment).is_false()
 
 
 func _start(side: DuelState.PlayerSide) -> void:

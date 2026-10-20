@@ -104,38 +104,45 @@ func test_decision_0032_result_text_per_result() -> void:
 
 func test_decision_0032_essence_in_own_turn_is_the_real_reserve() -> void:
 	_builder.with_active_player(A).with_essence_reserve(A, 4).with_essence_reserve(B, 1)
-	var draft := EssencePayment.new(2, 1)
-	assert_int(_model(A).essence_shown(A, draft)).is_equal(4)
+	var shown := _drafting_snapshot(false, EssencePayment.new(2, 1))
+	assert_int(_model(A).essence_shown(A, shown)).is_equal(4)
 
 
 func test_decision_0032_essence_in_opponent_turn_is_the_draft_payment() -> void:
 	_builder.with_active_player(B).with_essence_reserve(A, 4)
-	var draft := EssencePayment.new(2, 1)
-	assert_int(_model(A).essence_shown(A, draft)).is_equal(3)
+	var shown := _drafting_snapshot(true, EssencePayment.new(2, 1))
+	assert_int(_model(A).essence_shown(A, shown)).is_equal(3)
 
 
 func test_decision_0032_empty_draft_shows_zero_in_opponent_turn() -> void:
 	_builder.with_active_player(B).with_essence_reserve(A, 4)
-	assert_int(_model(A).essence_shown(A, EssencePayment.new())).is_equal(0)
+	var shown := _drafting_snapshot(true, EssencePayment.new())
+	assert_int(_model(A).essence_shown(A, shown)).is_equal(0)
 
 
 func test_decision_0032_other_player_shows_his_real_reserve() -> void:
 	_builder.with_active_player(A).with_essence_reserve(B, 5)
-	var draft := EssencePayment.new(2, 1)
-	assert_int(_model(A).essence_shown(B, draft)).is_equal(5)
+	var shown := _drafting_snapshot(false, EssencePayment.new(2, 1))
+	assert_int(_model(A).essence_shown(B, shown)).is_equal(5)
 
 
 func test_decision_0032_other_player_in_his_own_turn_shows_his_real_reserve() -> void:
 	_builder.with_active_player(B).with_essence_reserve(B, 2)
-	var draft := EssencePayment.new(2, 1)
-	assert_int(_model(A).essence_shown(B, draft)).is_equal(2)
+	var shown := _drafting_snapshot(true, EssencePayment.new(2, 1))
+	assert_int(_model(A).essence_shown(B, shown)).is_equal(2)
 
 
 func test_decision_0032_viewer_b_drafts_in_the_turn_of_a() -> void:
 	_builder.with_active_player(A).with_essence_reserve(B, 6)
-	var draft := EssencePayment.new(1, 1)
-	assert_int(_model(B).essence_shown(B, draft)).is_equal(2)
-	assert_int(_model(B).essence_shown(A, draft)).is_equal(0)
+	var shown := _drafting_snapshot(true, EssencePayment.new(1, 1))
+	assert_int(_model(B).essence_shown(B, shown)).is_equal(2)
+	assert_int(_model(B).essence_shown(A, shown)).is_equal(0)
+
+
+func test_decision_0032_draft_is_ignored_when_the_snapshot_is_not_drafting() -> void:
+	_builder.with_active_player(B).with_essence_reserve(A, 4)
+	var shown := _drafting_snapshot(false, EssencePayment.new(2, 1))
+	assert_int(_model(A).essence_shown(A, shown)).is_equal(4)
 
 
 func test_decision_0032_viewer_sources_come_from_the_snapshot() -> void:
@@ -221,7 +228,7 @@ func test_207_3_2_triggered_effect_line_names_its_source_card() -> void:
 	assert_int(line.tint).is_equal(DuelPalette.Tint.UNIT)
 
 
-func test_207_3_3_triggered_effect_of_an_unknown_source_has_a_plain_label() -> void:
+func test_decision_0030_triggered_effect_of_an_unknown_source_has_a_plain_label() -> void:
 	_push_trigger(A, &"vm_vanished_source")
 	var line := _model(A).stack_lines()[0]
 	assert_str(line.label).is_equal(TRIGGERED_EFFECT_LABEL)
@@ -290,6 +297,13 @@ func test_201_4_8_entry_definition_is_the_announced_card() -> void:
 
 func _model(viewer: DuelState.PlayerSide) -> DuelViewModel:
 	return DuelViewModel.new(_builder.build(), _catalog, viewer)
+
+
+func _drafting_snapshot(is_drafting: bool, draft: EssencePayment) -> SelectionSnapshot:
+	var shown := SelectionSnapshot.new()
+	shown.is_drafting_payment = is_drafting
+	shown.draft_payment = draft
+	return shown
 
 
 func _decision(kind: PendingDecision.DecisionKind) -> PendingDecision:

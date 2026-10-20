@@ -30,10 +30,11 @@ var _host_state: HostState = HostState.NOT_STARTED
 var _last_clock_msec: int = 0
 ## Lots d'événements renvoyés dont la scène n'a pas encore confirmé l'affichage. Un lot est ce
 ## que renvoie un appel public (`start`, `tick`, `submit_human`, `concede`), même s'il réunit
-## plusieurs étapes (passe automatique puis fin de la pendule, par exemple).
+## plusieurs étapes (passe automatique puis fin de la pendule, par exemple) ; il est compté à un
+## seul endroit, `_close_batch()`, par lequel sort chacun de ces appels.
 var _unplayed_batch_count: int = 0
-## Vrai quand l'appel public en cours a déjà compté son lot.
-var _is_batch_counted: bool = false
+## Vrai quand l'appel public en cours a des événements à afficher, pas encore comptés.
+var _is_display_pending: bool = false
 var _awaited_player: DuelState.PlayerSide = DuelState.PlayerSide.A
 ## Joueur humain devant l'écran ; sans objet tant que `_is_screen_assigned` est faux.
 var _screen_player: DuelState.PlayerSide = DuelState.PlayerSide.A
@@ -61,51 +62,25 @@ func set_agent(side: DuelState.PlayerSide, agent: DuelAgent) -> void:
 ## Décision 0012 : démarre le duel et renvoie ses premiers événements, à afficher. Un setup
 ## refusé laisse l'hôte en NOT_STARTED.
 func start(setup: DuelSetup) -> Array[DuelEvent]:
-	_is_batch_counted = false
-	var events := _engine.start_new_duel(setup)
-	if events.any(func(event: DuelEvent) -> bool: return event is DuelSetupRejected):
-		return events
-	_journal = DuelJournal.new(setup, _engine.get_state().catalog.edition)
-	_last_clock_msec = _clock.now_msec()
-	_assign_screen_to_single_human()
-	_await_display()
-	return events
+	return _close_batch(_start_steps(setup))
 
 
 ## À chaque image : décompte le temps réel écoulé, puis fait jouer l'agent attendu. Renvoie les
 ## événements produits, à afficher.
 func tick() -> Array[DuelEvent]:
-	_is_batch_counted = false
-	var events := _count_elapsed_time()
-	if _host_state == HostState.AWAITING_AI:
-		events.append_array(_play_agent())
-	return events
+	return _close_batch(_tick_steps())
 
 
 ## Intention de l'humain devant l'écran, après décompte du temps écoulé jusque-là. Ignorée, sans
 ## aucun événement, hors AWAITING_HUMAN ou si elle vient d'un autre joueur.
 func submit_human(intent: DuelIntent) -> Array[DuelEvent]:
-	_is_batch_counted = false
-	var events: Array[DuelEvent] = []
-	if _host_state != HostState.AWAITING_HUMAN or intent.player != _screen_player:
-		return events
-	events = _count_elapsed_time()
-	if _host_state == HostState.AWAITING_HUMAN:
-		events.append_array(_submit(intent))
-	return events
+	return _close_batch(_submit_human_steps(intent))
 
 
 ## 209.2.5 : un joueur humain abandonne, à tout moment du duel en cours, même hors de son
 ## tour ; le temps écoulé jusque-là est d'abord décompté. Ignoré pour un joueur confié à un agent.
 func concede(side: DuelState.PlayerSide) -> Array[DuelEvent]:
-	_is_batch_counted = false
-	var events: Array[DuelEvent] = []
-	if _agents.has(side) or not _is_duel_running():
-		return events
-	events = _count_elapsed_time()
-	if not _engine.get_state().is_ended():
-		events.append_array(_submit(Concede.new(side)))
-	return events
+	return _close_batch(_concede_steps(side))
 
 
 ## La scène a fini d'afficher le plus ancien lot d'événements qu'elle n'avait pas confirmé.
@@ -162,6 +137,44 @@ func get_awaited_player() -> DuelState.PlayerSide:
 ## Joueur humain devant l'écran, dont la vue montre ce qu'il peut voir (201.4).
 func get_screen_player() -> DuelState.PlayerSide:
 	return _screen_player
+
+
+func _start_steps(setup: DuelSetup) -> Array[DuelEvent]:
+	var events := _engine.start_new_duel(setup)
+	if events.any(func(event: DuelEvent) -> bool: return event is DuelSetupRejected):
+		return events
+	_journal = DuelJournal.new(setup, _engine.get_state().catalog.edition)
+	_last_clock_msec = _clock.now_msec()
+	_assign_screen_to_single_human()
+	_await_display()
+	return events
+
+
+func _tick_steps() -> Array[DuelEvent]:
+	var events := _count_elapsed_time()
+	if _host_state == HostState.AWAITING_AI:
+		events.append_array(_play_agent())
+	return events
+
+
+func _submit_human_steps(intent: DuelIntent) -> Array[DuelEvent]:
+	var events: Array[DuelEvent] = []
+	if _host_state != HostState.AWAITING_HUMAN or intent.player != _screen_player:
+		return events
+	events = _count_elapsed_time()
+	if _host_state == HostState.AWAITING_HUMAN:
+		events.append_array(_submit(intent))
+	return events
+
+
+func _concede_steps(side: DuelState.PlayerSide) -> Array[DuelEvent]:
+	var events: Array[DuelEvent] = []
+	if _agents.has(side) or not _is_duel_running():
+		return events
+	events = _count_elapsed_time()
+	if not _engine.get_state().is_ended():
+		events.append_array(_submit(Concede.new(side)))
+	return events
 
 
 # Décision 0021 : le temps réel écoulé compte avant tout geste ; 208.6.3 : une fenêtre de réponse
@@ -224,10 +237,16 @@ func _submit(intent: DuelIntent) -> Array[DuelEvent]:
 # fin du duel par la pendule (209.4.5).
 func _await_display() -> void:
 	_is_response_window_running = false
-	if not _is_batch_counted:
-		_unplayed_batch_count += 1
-		_is_batch_counted = true
+	_is_display_pending = true
 	_change_state(HostState.PLAYING_EVENTS)
+
+
+# Un appel public qui a des événements à afficher compte un seul lot, quelles que soient ses étapes.
+func _close_batch(events: Array[DuelEvent]) -> Array[DuelEvent]:
+	if _is_display_pending:
+		_unplayed_batch_count += 1
+		_is_display_pending = false
+	return events
 
 
 func _choose_next_state() -> void:

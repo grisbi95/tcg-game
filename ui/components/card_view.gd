@@ -33,8 +33,7 @@ const LAYOUT_GAP_COUNT: int = 3
 var _card_instance_id: int = DuelState.NO_ID
 var _tint: DuelPalette.Tint = DuelPalette.Tint.UNIT
 var _scale: float = 1.0
-var _stat_shape: DuelIcons.Badge = DuelIcons.Badge.DIAMOND
-var _stat_look: BadgeLook = BadgeLook.force(0, 0)
+var _stat: StatBadgeBinding
 var _marks := ControlMarks.new(self, 0.0)
 var _fitted_text_width: float = -1.0
 var _is_text_fit_pending: bool = false
@@ -60,7 +59,8 @@ func _ready() -> void:
 	_marks.hover_changed.connect(_on_hover_changed)
 	_text_label.resized.connect(_on_text_label_resized)
 	DuelIcons.bind_tinted([_art_icon, _band_icon], func() -> DuelPalette.Tint: return _tint)
-	_bind_badges()
+	_stat = StatBadgeBinding.new(_stat_badge, _stat_label)
+	_bind_cost_badge()
 	_text_label.add_theme_color_override("default_color", DuelPalette.CARD_TEXT_COLOR)
 	_apply_scale()
 
@@ -135,28 +135,20 @@ func _show_face(tint: DuelPalette.Tint, card_name: String) -> void:
 
 
 func _show_force(force: int) -> void:
-	_set_stat(DuelIcons.Badge.DIAMOND, BadgeLook.force(force, force), force)
+	_stat_badge.visible = true
+	_stat.show_force(force, force)
 
 
 func _show_health(health: int) -> void:
-	_set_stat(DuelIcons.Badge.HEART, BadgeLook.health(), health)
+	_stat_badge.visible = true
+	_stat.show_health(health)
 
 
 func _hide_stat() -> void:
 	_stat_badge.visible = false
 
 
-func _set_stat(badge: DuelIcons.Badge, look: BadgeLook, value: int) -> void:
-	_stat_shape = badge
-	_stat_look = look
-	_stat_badge.visible = true
-	_stat_label.text = str(value)
-	_stat_label.add_theme_color_override("font_color", look.ink)
-	DuelIcons.fit_label(_stat_label, badge)
-	_stat_badge.queue_redraw()
-
-
-func _bind_badges() -> void:
+func _bind_cost_badge() -> void:
 	var cost_look := BadgeLook.cost()
 	DuelIcons.bind_badge(
 		_cost_badge,
@@ -165,11 +157,6 @@ func _bind_badges() -> void:
 	)
 	_cost_label.add_theme_color_override("font_color", cost_look.ink)
 	DuelIcons.fit_label(_cost_label, DuelIcons.Badge.DROP)
-	DuelIcons.bind_badge(
-		_stat_badge,
-		func() -> DuelIcons.Badge: return _stat_shape,
-		func() -> BadgeLook: return _stat_look
-	)
 
 
 # Les tailles du thème valent pour l'échelle 1 ; la carte agrandie les multiplie par `_scale`.

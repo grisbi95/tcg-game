@@ -1,4 +1,4 @@
-class_name TestDuelLaunch
+class_name ProvisionalDuelLaunch
 extends RefCounted
 ## Lancement provisoire de l'écran de duel (étape 2.3) : les cartes de `data/cards/` et un duel de
 ## deux humains avec le Hero de test des deux côtés. L'étape 2.4 le remplace par la préparation
@@ -12,7 +12,7 @@ static func load_catalog() -> Catalog:
 	var loader := CatalogLoader.new()
 	loader.load_directory(CARDS_DIRECTORY)
 	for error: String in loader.find_errors():
-		push_error("TestDuelLaunch : " + error)
+		push_error("ProvisionalDuelLaunch : " + error)
 	return loader.get_catalog()
 
 

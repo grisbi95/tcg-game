@@ -137,10 +137,9 @@ func visible_definition(card_instance_id: int) -> CardDefinition:
 
 ## 203.6, décision 0032 : pendant son tour, la réserve d'Essence réelle de `side` ; pendant le tour
 ## adverse, le paiement préparé de celui qui a l'appareil ; l'autre bloc montre sa réserve réelle.
-func essence_shown(side: DuelState.PlayerSide, draft_payment: EssencePayment) -> int:
-	var is_drafting := side == _viewer and _state.active_player != side
-	if is_drafting:
-		return draft_payment.essence_produced()
+func essence_shown(side: DuelState.PlayerSide, shown: SelectionSnapshot) -> int:
+	if side == _viewer and shown.is_drafting_payment:
+		return shown.draft_payment.essence_produced()
 	return _state.get_player(side).essence_reserve
 
 
@@ -196,7 +195,8 @@ func stack_lines(
 	var lines: Array[StackView.StackLine] = []
 	for entry: StackEntry in entries:
 		var line := _stack_line(entry)
-		line.order_number = ordered_ids.find(entry.stack_entry_id) + 1  # -1 + 1 : NO_ORDER
+		var index := ordered_ids.find(entry.stack_entry_id)
+		line.order_number = StackView.NO_ORDER if index < 0 else index + 1
 		lines.append(line)
 	return lines
 

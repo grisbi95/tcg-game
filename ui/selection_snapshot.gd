@@ -23,3 +23,5 @@ var can_confirm: bool = false
 var can_use_hero_power: bool = false
 ## Décision 0032 : le pouvoir du Hero est choisi et attend sa cible.
 var is_hero_power_chosen: bool = false
+## Décision 0023 : vrai pendant le tour adverse, quand le joueur qui a l'écran prépare son paiement.
+var is_drafting_payment: bool = false
