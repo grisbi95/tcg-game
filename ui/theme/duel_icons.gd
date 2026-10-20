@@ -99,6 +99,16 @@ static func bind(control: Control, icon_of: Callable, color_of: Callable) -> voi
 	)
 
 
+## Relie les icônes de type `type_icons` et le cœur `heart_icon` d'une carte ou d'une pièce à la
+## teinte rendue par `tint_of`, recalculée à chaque dessin : icône du type et encre de la teinte.
+static func bind_tinted(type_icons: Array[Control], heart_icon: Control, tint_of: Callable) -> void:
+	var type_icon := func() -> Icon: return TINT_ICONS[tint_of.call()]
+	var ink := func() -> Color: return DuelPalette.TINT_INKS[tint_of.call()]
+	for control: Control in type_icons:
+		bind(control, type_icon, ink)
+	bind(heart_icon, func() -> Icon: return Icon.HEART, ink)
+
+
 static func _path(coordinates: Array[float]) -> PackedVector2Array:
 	var points := PackedVector2Array()
 	for index: int in range(0, coordinates.size(), 2):

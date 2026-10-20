@@ -16,7 +16,6 @@ enum Mark {
 const RING_WIDTH: int = 3
 const RING_GAP: float = 1.0
 const RING_RADIUS: int = 10
-const HOVER_COLOR := Color(1.0, 1.0, 1.0, 0.6)
 
 
 ## Marque à montrer : le choix l'emporte sur le surlignage, qui l'emporte sur le survol.
@@ -33,7 +32,7 @@ static func mark_of(is_hovered: bool, is_highlighted: bool, is_selected: bool) -
 static func draw(canvas: CanvasItem, rect: Rect2, mark: Mark, outset: float) -> void:
 	match mark:
 		Mark.HOVERED:
-			_draw_ring(canvas, rect.grow(outset), HOVER_COLOR)
+			_draw_ring(canvas, rect.grow(outset), DuelPalette.MARK_HOVER_COLOR)
 		Mark.HIGHLIGHTED:
 			_draw_ring(canvas, rect.grow(outset), DuelPalette.HIGHLIGHT_COLOR)
 		Mark.SELECTED:

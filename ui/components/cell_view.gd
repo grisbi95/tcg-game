@@ -7,8 +7,8 @@ extends PanelContainer
 
 signal cell_pressed(cell: Vector2i)
 
-## Décision 0028 : une pièce de 129 px au centre d'une case de 143 px.
-const CELL_PADDING: float = 7.0
+## Décision 0028 : une case de 143 px, la pièce au centre à `PieceView.CELL_MARGIN` du bord.
+const CELL_SIZE := PieceView.PIECE_SIZE + Vector2.ONE * PieceView.CELL_MARGIN * 2.0
 const LINE_WIDTH: int = 1
 const HIGHLIGHT_WIDTH: int = 4
 const LEGAL_DOT_RADIUS: float = 8.0
@@ -21,6 +21,7 @@ var _is_hovered: bool = false
 
 
 func _ready() -> void:
+	custom_minimum_size = CELL_SIZE
 	mouse_entered.connect(_on_hover_changed.bind(true))
 	mouse_exited.connect(func() -> void: _on_hover_changed(_is_pointer_inside()))
 	_refresh_frame()
@@ -73,7 +74,9 @@ func _is_pointer_inside() -> bool:
 
 func _refresh_frame() -> void:
 	var background := DuelPalette.CELL_HOVER_COLOR if _is_hovered else DuelPalette.CELL_COLOR
-	var style := DuelPalette.fill_style(background, DuelPalette.CORNER_RADIUS, CELL_PADDING)
+	var style := DuelPalette.fill_style(
+		background, DuelPalette.CORNER_RADIUS, PieceView.CELL_MARGIN
+	)
 	style.border_color = (
 		DuelPalette.HIGHLIGHT_COLOR if _is_highlighted else DuelPalette.CELL_LINE_COLOR
 	)

@@ -3,17 +3,18 @@ extends Control
 ## Pièce sur le plateau (décision 0027) : mini-carte carrée qui remplit sa case, teintée par son
 ## type et liserée de la couleur fixe de son joueur ; nom, Force actuelle ou PV du Hero, icône du
 ## type, bandeau et mots-clés, aucun coût. Un Gear attaché dépasse d'une bande en haut. Un clic
-## passe à la case (cell_pressed) ; survol, surlignage et choix se marquent par des anneaux autour
-## de la mini-carte (DuelMarks), sans cacher le liseré du joueur. Les valeurs
+## passe à la case (cell_pressed, décision 0030) ; survol, surlignage et choix se marquent par des
+## anneaux autour de la mini-carte (DuelMarks), sans cacher le liseré du joueur. Les valeurs
 ## viennent du parent, qui lit la Force actuelle par `DuelEngine.current_force` : rien n'est
 ## calculé ici.
 
 signal piece_hovered(piece_id: int)
 signal piece_unhovered(piece_id: int)
 
+## Décision 0028 : la pièce mesure 129 px ; sa case l'entoure d'une marge où se tracent les
+## anneaux de marque.
 const PIECE_SIZE := Vector2(129, 129)
-## Anneaux de marque tracés dans la marge de 7 px entre la pièce et le bord de sa case.
-const MARK_OUTSET: float = 7.0
+const CELL_MARGIN: float = 7.0
 ## Bande visible du Gear attaché, au-dessus de la mini-carte.
 const GEAR_PEEK_HEIGHT: float = 23.0
 const PILL_SIZE: float = 34.0
@@ -30,9 +31,7 @@ const STRIKE_WIDTH: float = 1.5
 var _piece_id: int = DuelState.NO_ID
 var _tint: DuelPalette.Tint = DuelPalette.Tint.UNIT
 var _owner_color: Color = DuelPalette.NEUTRAL_COLOR
-var _is_hovered: bool = false
-var _is_highlighted: bool = false
-var _is_selected: bool = false
+var _marks := ControlMarks.new(self, CELL_MARGIN)
 
 @onready var _gear_panel: PanelContainer = %GearPanel
 @onready var _gear_icon: Control = %GearIcon
@@ -52,8 +51,7 @@ var _is_selected: bool = false
 
 
 func _ready() -> void:
-	mouse_entered.connect(_on_hover_changed.bind(true))
-	mouse_exited.connect(_on_hover_changed.bind(false))
+	_marks.hover_changed.connect(_on_hover_changed)
 	_bind_icons()
 	_size_parts()
 	_style_fixed_parts()
@@ -62,8 +60,7 @@ func _ready() -> void:
 
 
 func _draw() -> void:
-	var mark := DuelMarks.mark_of(_is_hovered, _is_highlighted, _is_selected)
-	DuelMarks.draw(self, Rect2(Vector2.ZERO, size), mark, MARK_OUTSET)
+	_marks.draw()
 
 
 ## Unit ou Building d'une carte (202.1) ; sa Force suit par `show_force`.
@@ -125,9 +122,7 @@ func show_gear(gear_name: String) -> void:
 
 
 func set_marks(is_highlighted: bool, is_selected: bool) -> void:
-	_is_highlighted = is_highlighted
-	_is_selected = is_selected
-	queue_redraw()
+	_marks.set_marks(is_highlighted, is_selected)
 
 
 func _show(
@@ -164,11 +159,9 @@ func _strike_printed_force() -> void:
 
 
 func _bind_icons() -> void:
-	var type_icon := func() -> DuelIcons.Icon: return DuelIcons.TINT_ICONS[_tint]
-	var ink := func() -> Color: return DuelPalette.TINT_INKS[_tint]
-	DuelIcons.bind(_art_icon, type_icon, ink)
-	DuelIcons.bind(_band_icon, type_icon, ink)
-	DuelIcons.bind(_heart_icon, func() -> DuelIcons.Icon: return DuelIcons.Icon.HEART, ink)
+	DuelIcons.bind_tinted(
+		[_art_icon, _band_icon], _heart_icon, func() -> DuelPalette.Tint: return _tint
+	)
 	DuelIcons.bind(
 		_gear_icon,
 		func() -> DuelIcons.Icon: return DuelIcons.Icon.GEAR,
@@ -204,8 +197,6 @@ func _style_fixed_parts() -> void:
 
 
 func _on_hover_changed(is_hovered: bool) -> void:
-	_is_hovered = is_hovered
-	queue_redraw()
 	if is_hovered:
 		piece_hovered.emit(_piece_id)
 	else:

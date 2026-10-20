@@ -29,6 +29,10 @@ var _owner: DuelState.PlayerSide = DuelState.PlayerSide.A
 var _is_interactive: bool = true
 ## État de chaque emplacement, dans l'ordre de la grille.
 var _slot_states: Array[SlotState] = []
+## Nœuds de chaque emplacement, dans le même ordre que `_slot_states`.
+var _slots: Array[PanelContainer] = []
+var _slot_icons: Array[Control] = []
+var _recycle_buttons: Array[Button] = []
 
 @onready var _counters: HBoxContainer = %Counters
 @onready var _essence_chip: PanelContainer = %EssenceChip
@@ -46,20 +50,18 @@ var _slot_states: Array[SlotState] = []
 func _ready() -> void:
 	_cancel_button.pressed.connect(func() -> void: cancel_pressed.emit())
 	_cancel_button.focus_mode = Control.FOCUS_NONE
+	var counter := DuelPalette.framed_style(
+		DuelPalette.COUNTER_COLOR,
+		DuelPalette.COUNTER_LINE_COLOR,
+		DuelPalette.LINE_WIDTH,
+		CHIP_PADDING
+	)
 	for state: String in ["normal", "hover", "pressed", "focus"]:
-		_cancel_button.add_theme_stylebox_override(
-			state,
-			DuelPalette.framed_style(
-				DuelPalette.COUNTER_COLOR, DuelPalette.COUNTER_LINE_COLOR, 1, CHIP_PADDING
-			)
-		)
+		_cancel_button.add_theme_stylebox_override(state, counter)
 	DuelIcons.bind(
 		_essence_icon,
 		func() -> DuelIcons.Icon: return DuelIcons.Icon.SOURCE,
 		func() -> Color: return DuelPalette.ESSENCE_COLOR
-	)
-	var counter := DuelPalette.framed_style(
-		DuelPalette.COUNTER_COLOR, DuelPalette.COUNTER_LINE_COLOR, 1, CHIP_PADDING
 	)
 	_reserve_chip.add_theme_stylebox_override("panel", counter)
 	_fonte_chip.add_theme_stylebox_override("panel", counter)
@@ -81,6 +83,9 @@ func setup(owner: DuelState.PlayerSide, is_own: bool, slot_count: int) -> void:
 	move_child(_counters, 0 if is_own else 1)
 	ViewNodes.free_children(_slot_grid)
 	_slot_states.clear()
+	_slots.clear()
+	_slot_icons.clear()
+	_recycle_buttons.clear()
 	for index: int in slot_count:
 		_slot_states.append(SlotState.EMPTY)
 		_slot_grid.add_child(_make_slot(index))
@@ -125,6 +130,21 @@ func _make_slot(index: int) -> PanelContainer:
 	var overlay := Control.new()
 	overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	slot.add_child(overlay)
+	var icon := _make_source_icon()
+	overlay.add_child(icon)
+	var recycle := _make_recycle_button()
+	overlay.add_child(recycle)
+	_slots.append(slot)
+	_slot_icons.append(icon)
+	_recycle_buttons.append(recycle)
+	slot.mouse_entered.connect(func() -> void: _refresh_slot(index, true))
+	slot.mouse_exited.connect(func() -> void: _refresh_slot(index, _is_pointer_inside(slot)))
+	slot.gui_input.connect(func(event: InputEvent) -> void: _on_slot_input(index, event))
+	slot.draw.connect(func() -> void: _draw_empty_outline(index))
+	return slot
+
+
+func _make_source_icon() -> Control:
 	var icon := Control.new()
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	icon.set_anchors_preset(Control.PRESET_CENTER)
@@ -133,18 +153,12 @@ func _make_slot(index: int) -> PanelContainer:
 	icon.offset_top = -half
 	icon.offset_right = half
 	icon.offset_bottom = half
-	overlay.add_child(icon)
 	DuelIcons.bind(
 		icon,
 		func() -> DuelIcons.Icon: return DuelIcons.Icon.SOURCE,
 		func() -> Color: return DuelPalette.player_ink(_owner)
 	)
-	overlay.add_child(_make_recycle_button())
-	slot.mouse_entered.connect(func() -> void: _refresh_slot(index, true))
-	slot.mouse_exited.connect(func() -> void: _refresh_slot(index, _is_pointer_inside(slot)))
-	slot.gui_input.connect(func(event: InputEvent) -> void: _on_slot_input(index, event))
-	slot.draw.connect(func() -> void: _draw_empty_outline(index))
-	return slot
+	return icon
 
 
 func _make_recycle_button() -> Button:
@@ -177,32 +191,32 @@ func _on_slot_input(index: int, event: InputEvent) -> void:
 		return
 	if _slot_states[index] == SlotState.UPRIGHT:
 		source_pressed.emit(false)
-		_slot(index).accept_event()
+		_slots[index].accept_event()
 
 
 func _refresh_slot(index: int, is_hovered: bool) -> void:
-	var slot := _slot(index)
 	var state := _slot_states[index]
-	var overlay := slot.get_child(0) as Control
-	var icon := overlay.get_child(0) as Control
-	var recycle := overlay.get_child(1) as Button
-	icon.visible = state != SlotState.EMPTY
-	recycle.visible = state == SlotState.TILTED and is_hovered and _is_interactive
+	var is_lit := is_hovered and _is_interactive
+	_slot_icons[index].visible = state != SlotState.EMPTY
+	_recycle_buttons[index].visible = state == SlotState.TILTED and is_lit
+	_apply_slot_style(_slots[index], state, is_lit)
+	_slots[index].queue_redraw()
+
+
+func _apply_slot_style(slot: PanelContainer, state: SlotState, is_lit: bool) -> void:
 	slot.modulate.a = 1.0
 	match state:
 		SlotState.UPRIGHT:
-			var lit := is_hovered and _is_interactive
-			var background := DuelPalette.SOURCE_HOVER_COLOR if lit else DuelPalette.SOURCE_COLOR
+			var background := DuelPalette.SOURCE_HOVER_COLOR if is_lit else DuelPalette.SOURCE_COLOR
 			slot.add_theme_stylebox_override("panel", _slot_style(background, _owner_border()))
 		SlotState.TILTED:
-			if not (is_hovered and _is_interactive):
+			if not is_lit:
 				slot.modulate.a = DuelPalette.DIMMED_ALPHA
 			slot.add_theme_stylebox_override(
 				"panel", _slot_style(DuelPalette.PANEL_COLOR, DuelPalette.SOURCE_TILTED_LINE_COLOR)
 			)
 		SlotState.EMPTY:
 			slot.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
-	slot.queue_redraw()
 
 
 func _slot_style(background: Color, border: Color) -> StyleBoxFlat:
@@ -214,7 +228,7 @@ func _slot_style(background: Color, border: Color) -> StyleBoxFlat:
 func _draw_empty_outline(index: int) -> void:
 	if _slot_states[index] != SlotState.EMPTY:
 		return
-	var slot := _slot(index)
+	var slot := _slots[index]
 	var corners := PackedVector2Array(
 		[Vector2.ZERO, Vector2(slot.size.x, 0.0), slot.size, Vector2(0.0, slot.size.y)]
 	)
@@ -227,10 +241,6 @@ func _draw_empty_outline(index: int) -> void:
 
 func _owner_border() -> Color:
 	return DuelPalette.player_color(_owner)
-
-
-func _slot(index: int) -> PanelContainer:
-	return _slot_grid.get_child(index) as PanelContainer
 
 
 # Godot signale la sortie quand le pointeur passe sur le bouton enfant : rester survolé tant qu'il

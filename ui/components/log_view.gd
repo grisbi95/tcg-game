@@ -10,7 +10,7 @@ const MAX_LINES: int = 200
 
 
 func _ready() -> void:
-	add_theme_stylebox_override("panel", DuelPalette.panel_style(DuelPalette.NEUTRAL_COLOR, false))
+	add_theme_stylebox_override("panel", DuelPalette.panel_style(DuelPalette.NEUTRAL_COLOR))
 	_scroll.get_v_scroll_bar().changed.connect(_scroll_to_bottom)
 
 

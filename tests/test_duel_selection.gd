@@ -2,7 +2,8 @@
 
 extends GdUnitTestSuite
 ## DuelSelection sans scène : gestes traduits en intentions validées, éléments à surligner,
-## paiement par les Sources, réponse commencée (ruleset 0.36 ; décisions 0023, 0024 et 0029).
+## paiement par les Sources, réponse commencée, annonce sans confirmation (ruleset 0.36 ; décisions
+## 0023, 0024, 0029, 0030 et 0031).
 
 const UNIT: StringName = &"selection_unit"
 const UNIT_FORCE: int = 3
@@ -10,6 +11,7 @@ const UNIT_COST: int = 2  # CatalogSamples.unit()
 const TARGETED_SPELL: StringName = &"sample_spell"  # cible une Unit alliée, coût 1
 const PLAIN_SPELL: StringName = &"selection_plain_spell"  # sans effet ni cible, coût 1
 const FREE_SPELL: StringName = &"selection_free_spell"  # Réaction sans effet ni cible, coût 0
+const FREE_TARGETED_SPELL: StringName = &"selection_free_targeted"  # Réaction ciblée, coût 0
 const DEPLOY_CELL: String = "B1"
 const CENTRAL_CELL: String = "B3"
 const UNIT_CELL: String = "A1"
@@ -24,6 +26,7 @@ var _engine: DuelEngine
 var _selection: DuelSelection
 var _emitted: Array[DuelIntent] = []
 var _response_start_count: int = 0
+var _signal_order: Array[String] = []
 
 
 func before_test() -> void:
@@ -35,13 +38,26 @@ func before_test() -> void:
 	var free := CatalogSamples.with_field(plain, "id", String(FREE_SPELL))
 	free = CatalogSamples.with_field(free, "effects", [])
 	catalog.add_card(CardDefinition.from_dict(CatalogSamples.with_field(free, "cost", 0)))
+	var targeted := CatalogSamples.with_field(
+		CatalogSamples.spell(), "id", String(FREE_TARGETED_SPELL)
+	)
+	catalog.add_card(CardDefinition.from_dict(CatalogSamples.with_field(targeted, "cost", 0)))
 	_builder = DuelStateBuilder.new(DuelConfig.new(), catalog)
 	_engine = DuelEngine.new(catalog)
 	_selection = DuelSelection.new()
 	_emitted = []
-	_selection.intent_chosen.connect(func(intent: DuelIntent) -> void: _emitted.append(intent))
+	_signal_order = []
+	_selection.intent_chosen.connect(
+		func(intent: DuelIntent) -> void:
+			_emitted.append(intent)
+			_signal_order.append("intent_chosen")
+	)
 	_response_start_count = 0
-	_selection.response_started.connect(func() -> void: _response_start_count += 1)
+	_selection.response_started.connect(
+		func() -> void:
+			_response_start_count += 1
+			_signal_order.append("response_started")
+	)
 
 
 func test_decision_0023_card_not_covered_by_the_reserve_is_not_playable() -> void:
@@ -103,7 +119,7 @@ func test_decision_0024_piece_moves_to_a_legal_cell() -> void:
 	assert_object(action.cell).is_equal(_cell(MOVE_CELL))
 
 
-func test_decision_0027_pressing_an_occupied_cell_chooses_its_piece() -> void:
+func test_decision_0030_pressing_an_occupied_cell_chooses_its_piece() -> void:
 	var piece_id := _builder.place_piece(A, Piece.PieceKind.UNIT, _cell(UNIT_CELL), UNIT)
 	_start(A)
 	_selection.press_cell(_cell(UNIT_CELL))
@@ -112,7 +128,7 @@ func test_decision_0027_pressing_an_occupied_cell_chooses_its_piece() -> void:
 	assert_int(shown.chosen_piece_id).is_equal(piece_id)
 
 
-func test_decision_0027_pressing_an_enemy_piece_cell_attacks_it() -> void:
+func test_decision_0030_pressing_an_enemy_piece_cell_attacks_it() -> void:
 	var piece_id := _builder.place_piece(A, Piece.PieceKind.UNIT, _cell(UNIT_CELL), UNIT)
 	_builder.place_piece(B, Piece.PieceKind.UNIT, _cell(MOVE_CELL), UNIT)
 	_start(A)
@@ -123,7 +139,7 @@ func test_decision_0027_pressing_an_enemy_piece_cell_attacks_it() -> void:
 	assert_int((_emitted[0] as TakeNormalAction).piece_id).is_equal(piece_id)
 
 
-func test_decision_0024_targeted_spell_waits_for_target_then_confirmation() -> void:
+func test_decision_0031_targeted_spell_is_announced_once_its_target_is_chosen() -> void:
 	var piece_id := _builder.place_piece(A, Piece.PieceKind.UNIT, _cell(UNIT_CELL), UNIT)
 	var card_id := _builder.add_to_hand(A, TARGETED_SPELL)
 	_builder.with_essence_reserve(A, 1)
@@ -132,20 +148,25 @@ func test_decision_0024_targeted_spell_waits_for_target_then_confirmation() -> v
 	assert_int(_selection.snapshot().selection_state).is_equal(SELECTION.TARGET_PENDING)
 	assert_array(_selection.snapshot().legal_piece_ids).contains([piece_id])
 	_selection.press_piece(piece_id)
-	assert_int(_selection.snapshot().selection_state).is_equal(SELECTION.CONFIRM)
-	_selection.press_confirm()
 	assert_array((_emitted[0] as CastSpell).target_piece_ids).contains_exactly([piece_id])
+	assert_int(_selection.snapshot().selection_state).is_equal(SELECTION.IDLE)
 
 
-func test_decision_0024_spell_without_target_waits_for_confirmation() -> void:
+func test_decision_0031_spell_without_target_is_announced_at_once() -> void:
 	var card_id := _builder.add_to_hand(A, PLAIN_SPELL)
 	_builder.with_essence_reserve(A, 1)
 	_start(A)
 	_selection.press_card(card_id)
-	assert_int(_selection.snapshot().selection_state).is_equal(SELECTION.CONFIRM)
-	assert_bool(_selection.snapshot().can_confirm).is_true()
-	_selection.press_confirm()
 	assert_object(_emitted[0]).is_instanceof(CastSpell)
+	assert_bool(_selection.snapshot().can_confirm).is_false()
+
+
+func test_decision_0031_confirm_is_available_during_the_mulligan() -> void:
+	_builder.add_to_hand(A, UNIT)
+	_await(PendingDecision.DecisionKind.MULLIGAN, [A, B], [])
+	_builder.with_phase(DuelState.DuelPhase.PREPARATION)
+	_start(A)
+	assert_bool(_selection.snapshot().can_confirm).is_true()
 
 
 func test_decision_0023_draft_payment_pays_a_response_in_the_opponent_turn() -> void:
@@ -160,7 +181,6 @@ func test_decision_0023_draft_payment_pays_a_response_in_the_opponent_turn() -> 
 	assert_int(shown.shown_upright_sources).is_equal(1)
 	assert_array(shown.playable_card_ids).contains_exactly([card_id])
 	_selection.press_card(card_id)
-	_selection.press_confirm()
 	_assert_payment((_emitted[0] as CastSpell).payment, 1, 0)
 	_assert_payment(_selection.snapshot().draft_payment, 0, 0)
 
@@ -237,8 +257,37 @@ func test_208_6_5_reaction_card_chosen_starts_the_response() -> void:
 	var card_id := _builder.add_to_hand(B, FREE_SPELL)
 	_answer_spell_of_a()
 	_selection.press_card(card_id)
-	assert_int(_selection.snapshot().selection_state).is_equal(SELECTION.CONFIRM)
+	assert_object(_emitted[0]).is_instanceof(CastSpell)
 	assert_int(_response_start_count).is_equal(1)
+
+
+func test_208_6_5_response_signal_comes_before_the_answer() -> void:
+	var card_id := _builder.add_to_hand(B, FREE_SPELL)
+	_answer_spell_of_a()
+	_selection.press_card(card_id)
+	assert_array(_signal_order).contains_exactly(["response_started", "intent_chosen"])
+
+
+func test_208_6_5_targeted_reaction_starts_the_response() -> void:
+	var unit_id := _builder.place_piece(B, Piece.PieceKind.UNIT, _cell(UNIT_CELL), UNIT)
+	var card_id := _builder.add_to_hand(B, FREE_TARGETED_SPELL)
+	_answer_spell_of_a()
+	_selection.press_card(card_id)
+	assert_int(_selection.snapshot().selection_state).is_equal(SELECTION.TARGET_PENDING)
+	assert_array(_selection.snapshot().legal_piece_ids).contains([unit_id])
+	assert_int(_response_start_count).is_equal(1)
+	assert_array(_emitted).is_empty()
+
+
+func test_208_6_5_unplayable_card_starts_nothing() -> void:
+	var unit_id := _builder.add_to_hand(B, UNIT)  # un déploiement n'est pas une Réaction
+	var dear_id := _builder.add_to_hand(B, PLAIN_SPELL)  # coût 1, aucune Source payée
+	_answer_spell_of_a()
+	_selection.press_card(unit_id)
+	_selection.press_card(dear_id)
+	assert_int(_response_start_count).is_equal(0)
+	assert_array(_emitted).is_empty()
+	assert_int(_selection.snapshot().selection_state).is_equal(SELECTION.IDLE)
 
 
 func test_208_6_5_source_pressed_starts_the_response() -> void:

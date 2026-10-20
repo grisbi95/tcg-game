@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Écran de partie V2</title>
+<style>
+:root{
+  --table:#1d2127;--panel:#262b33;--cell:#2c323b;--cell-hover:#353c47;--cell-line:#3a414c;--ink:#eef0f3;--muted:#a3a9b3;
+  --unit-bg:#dff3ea;--unit-ink:#0b5c47;--building-bg:#f8ecd6;--building-ink:#7a4808;
+  --spell-bg:#ecebfd;--spell-ink:#463ca8;--gear-bg:#fae9e2;--gear-ink:#8d3517;
+  --hero-bg:#fae7ef;--hero-ink:#8a2c4c;
+  --player-a:#2f7fd8;--player-a-soft:#2a3a52;--player-a-ink:#9cc6f2;
+  --player-b:#d23a3a;--player-b-soft:#4a2a2e;--player-b-ink:#f2b8b8;
+  --kw-bg:#24252a;--kw-ink:#fff;--up-bg:#e3f1d3;--up-ink:#2f5a0c;--down-bg:#ffe1c2;--down-ink:#9a4700;
+  --cost-ink:#1e5fae;--card-face:#fff;--card-text:#1c1d20;--essence:#ffd66b;
+  --hl:#f2c14e;--sel:#4ecb71;--note:#ff8fd0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#0f1114;color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden}
+/* Barre d'outils du mockup (hors écran de jeu) */
+#bar{position:fixed;left:0;right:0;top:0;height:92px;padding:8px 14px;background:#15181c;border-bottom:1px solid #2c323b;display:flex;flex-direction:column;gap:6px;z-index:10}
+#bar .row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+#bar button{font:500 13px system-ui;padding:5px 10px;border-radius:6px;border:1px solid #3a414c;background:#232830;color:var(--ink);cursor:pointer}
+#bar button.on{background:#3a4352;border-color:#8a96a8}
+#bar .sep{width:1px;height:22px;background:#3a414c;margin:0 4px}
+#bar .t{font:600 13px system-ui;color:var(--muted);margin-right:4px}
+#note{font:13px/1.35 system-ui;color:#c9ced6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#viewport{position:absolute;left:0;right:0;top:92px;bottom:0;overflow:auto}
+#stage{position:absolute;left:0;top:0;width:1920px;height:1080px;background:var(--table);transform-origin:0 0;overflow:hidden}
+.abs{position:absolute}
+/* Plateau */
+#board{display:grid;grid-template-columns:repeat(5,143px);grid-template-rows:repeat(5,143px);gap:4px}
+.cell{background:var(--cell);border-radius:8px;position:relative;box-shadow:inset 0 0 0 1px var(--cell-line);cursor:pointer}
+.cell:hover{background:var(--cell-hover)}
+.cell.hl{box-shadow:inset 0 0 0 4px var(--hl)}
+.cell.hl.empty::after{content:"";position:absolute;left:50%;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:var(--hl);opacity:.85}
+.cell .target{position:absolute;right:-6px;top:-6px;width:26px;height:26px;border-radius:50%;background:var(--hl);color:#1c1d20;display:flex;align-items:center;justify-content:center;z-index:3;box-shadow:0 0 0 2px var(--table)}
+.coord{position:absolute;font:500 13px system-ui;color:var(--muted)}
+/* Mini-carte */
+.mini{position:absolute;left:7px;right:7px;bottom:7px;border-radius:8px;display:flex;flex-direction:column;overflow:hidden;border:2px solid}
+.mini.sel{outline:4px solid var(--sel);outline-offset:5px}
+.mini .hd{display:flex;align-items:center;gap:5px;padding:5px 6px 4px}
+.mini .nm{font:600 13px system-ui;letter-spacing:-.2px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex:none;background:var(--card-face);color:var(--card-text);border:1px solid rgba(0,0,0,.18)}
+.mini .pill{width:34px;height:34px;font-size:19px}
+.pill.hp{width:auto!important;border-radius:99px;gap:2px}
+.mini .pill.hp{height:30px;font-size:16px;padding:0 5px}
+.mini .art{flex:1;margin:0 6px;border-radius:5px;background:rgba(255,255,255,.75);display:flex;align-items:center;justify-content:center}
+.mini .band{display:flex;align-items:center;gap:4px;padding:4px 6px;font:600 11px system-ui}
+.old{font:600 14px system-ui;text-decoration:line-through;opacity:.75}
+.kw{display:inline-block;padding:1px 6px;border-radius:4px;font-weight:600;background:var(--kw-bg);color:var(--kw-ink);margin-right:4px;white-space:nowrap}
+.gearpeek{position:absolute;left:7px;right:7px;top:7px;height:40px;border-radius:8px;border:2px solid;display:flex;align-items:flex-start;gap:4px;padding:3px 6px;font:600 11px system-ui}
+/* Carte complète */
+.card{position:absolute;border-radius:10px;overflow:hidden;display:flex;flex-direction:column;border:2px solid;box-shadow:0 2px 6px rgba(0,0,0,.35)}
+.card.hand{cursor:pointer}
+.card.hand:hover{outline:2px solid rgba(255,255,255,.75);outline-offset:2px}
+.card.hl{border-width:5px;border-color:var(--hl)!important}
+.card.sel{border-width:5px;border-color:var(--sel)!important;outline:3px solid var(--sel);outline-offset:3px}
+.card .hd{display:flex;align-items:center;gap:calc(4px*var(--k));padding:calc(7px*var(--k)) calc(6px*var(--k))}
+.card .pill{width:calc(26px*var(--k));height:calc(26px*var(--k));font-size:calc(15px*var(--k))}
+.card .pill.hp{padding:0 calc(6px*var(--k))}
+.card .nm{font-weight:700;font-size:calc(14px*var(--k));letter-spacing:-.2px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .art{flex:1;margin:0 calc(7px*var(--k));border-radius:calc(6px*var(--k));background:rgba(255,255,255,.75);display:flex;align-items:center;justify-content:center}
+.card .band{display:flex;align-items:center;gap:calc(4px*var(--k));padding:calc(5px*var(--k)) calc(7px*var(--k));font-weight:700;font-size:calc(12px*var(--k))}
+.card .tx{margin:0 calc(7px*var(--k)) calc(7px*var(--k));padding:calc(6px*var(--k));border-radius:calc(6px*var(--k));background:var(--card-face);color:var(--card-text);font-size:calc(12px*var(--k));line-height:1.3;height:calc(84px*var(--k));overflow:hidden}
+.card .tx .kw{font-size:calc(11px*var(--k))}
+.back{position:absolute;border-radius:10px;border:2px solid;background:repeating-linear-gradient(45deg,#343b46 0 8px,#2c323b 8px 16px);display:flex;align-items:center;justify-content:center;color:var(--ink);font:700 28px system-ui}
+.back small{display:block;font:500 12px system-ui;color:var(--muted);text-align:center}
+.lbl{position:absolute;font:500 14px system-ui;color:var(--muted);white-space:nowrap}
+/* Sources */
+.src{position:absolute;width:74px;height:106px;border-radius:7px;border:2px solid;background:#3b424e;display:flex;align-items:center;justify-content:center}
+.src.mine{cursor:pointer}
+.src.mine.up:hover{background:#46505e}
+.src.tapped{background:#262b33;opacity:.55;border-color:#6b7380!important}
+.src.empty{border:2px dashed #3a414c!important;background:transparent;opacity:1;cursor:default}
+.src .recycle{position:absolute;left:4px;right:4px;bottom:4px;height:26px;border-radius:5px;border:none;background:#eef0f3;color:#1c1d20;font:600 11px system-ui;cursor:pointer;display:none}
+.src .recycle:hover{background:#fff;box-shadow:0 0 0 2px var(--hl)}
+.src.mine.tapped:hover{opacity:1}
+.src.mine.tapped:hover .recycle{display:block}
+.counter{position:absolute;display:flex;align-items:center;gap:8px;font:500 15px system-ui;color:var(--ink)}
+.chip{display:flex;align-items:center;gap:6px;border-radius:7px;padding:2px 10px;border:1px solid #4a525e;background:#2a2f37;height:28px}
+.chip b{font-weight:700;font-size:17px}
+.chip.essence{border-color:var(--essence);color:var(--essence);background:#3a3420}
+.chip.essence.draft{border-style:dashed;border-width:2px}
+.reset{font:500 13px system-ui;padding:3px 9px;height:28px;border-radius:6px;border:1px solid #586273;background:#323a46;color:var(--ink);cursor:pointer}
+.reset:hover{background:#3d4655}
+/* Colonne de duel */
+#duel{background:var(--panel);border-radius:12px;border:1px solid #3a414c;display:flex;flex-direction:column;padding:10px;gap:10px}
+.clock{border-radius:10px;border:3px solid;padding:10px 12px}
+.clock .who{font:600 14px system-ui}
+.clock .time{font:700 44px ui-monospace,Menlo,Consolas,monospace;color:var(--ink);line-height:1.1}
+.clock .bar{height:6px;border-radius:3px;background:#3a414c;margin-top:6px}
+.clock .bar div{height:100%;border-radius:3px}
+.clock.idle{opacity:.55}
+#center{flex:1;display:flex;flex-direction:column;justify-content:center;gap:10px;min-height:0}
+.turn{text-align:center;font:500 15px system-ui;color:var(--muted)}
+.turn strong{display:block;font:600 19px system-ui;margin-top:2px}
+.bigbtn{height:64px;border-radius:10px;border:none;color:#fff;font:600 20px system-ui;cursor:pointer;flex:none}
+.bigbtn:hover{filter:brightness(1.12)}
+.bigbtn:active{filter:brightness(.9)}
+.ghost{height:40px;border-radius:8px;border:1px solid #586273;background:#2d333c;color:var(--ink);font:500 15px system-ui;cursor:pointer;flex:none}
+.ghost:hover{background:#38404b}
+.hint{border-radius:8px;background:#1f242b;border:1px solid #3a414c;padding:8px 10px;font:500 14px/1.3 system-ui;color:var(--ink);text-align:center}
+.sect{font:600 13px system-ui;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.stack{display:flex;flex-direction:column;gap:6px;overflow:auto;min-height:0}
+.entry{display:flex;flex-direction:column;gap:2px;padding:7px 10px;border-radius:8px;border:4px solid;font:600 15px system-ui;cursor:default}
+.entry .l1{display:flex;align-items:center;gap:6px}
+.entry .l2{font:500 12px system-ui;opacity:.9}
+.entry .ord{margin-left:auto;width:22px;height:22px;border-radius:50%;background:#1c1d20;color:#fff;font:700 13px system-ui;display:flex;align-items:center;justify-content:center}
+.entry.hl{outline:4px solid var(--hl);outline-offset:2px;cursor:pointer}
+.countdown{display:flex;align-items:center;gap:8px;font:600 15px ui-monospace,Menlo,monospace;color:var(--ink)}
+.countdown .track{flex:1;height:8px;border-radius:4px;background:#3a414c;overflow:hidden}
+.countdown .track div{height:100%;border-radius:4px}
+.stopped{font:500 13px/1.3 system-ui;color:var(--muted);text-align:center}
+/* Aperçu */
+#preview{position:absolute;left:0;top:0}
+/* Calque d'annotations */
+#ann{position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none;display:none}
+#ann.on{display:block}
+.zone{position:absolute;border:2px dashed var(--note);border-radius:4px}
+.zone span{position:absolute;left:4px;top:-20px;font:600 12px ui-monospace,Menlo,monospace;color:#0f1114;background:var(--note);padding:1px 5px;border-radius:3px;white-space:nowrap}
+.zone span.in{top:4px}
+.zone span.below{top:auto;bottom:-20px}
+.zone span.inb{top:auto;bottom:4px}
+.badge{position:absolute;width:26px;height:26px;border-radius:50%;background:var(--note);color:#0f1114;font:700 14px system-ui;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px #0f1114}
+#legend{position:absolute;left:1578px;top:266px;width:326px;height:524px;background:rgba(15,17,20,.94);border:2px solid var(--note);border-radius:8px;padding:10px 12px;font:12.5px/1.38 system-ui;color:#dfe3e8;overflow:hidden}
+#legend h3{font:700 13px system-ui;color:var(--note);margin-bottom:6px}
+#legend ol{padding-left:20px}
+#legend li{margin-bottom:3px}
+#legend em{color:var(--note);font-style:normal;font-weight:600}
+</style>
+</head>
+<body>
+<div id="bar">
+  <div class="row" id="states"><span class="t">État :</span></div>
+  <div class="row">
+    <span class="t">Calques :</span>
+    <button id="tglAnn">Zones, cotes et repères</button>
+    <button id="tgl720">Taille réelle en 1280×720</button>
+    <span class="sep"></span>
+    <span id="note"></span>
+  </div>
+</div>
+<div id="viewport"><div id="stage"></div></div>
+<script>
+// ---------- Cotes (viewport 1920×1080, spec du créateur) ----------
+const M = 16, CARD_W = 158, CARD_H = 220, CELL = 143, GAP = 4;
+const BOARD = CELL * 5 + GAP * 4;               // 731
+const BOARD_X = 595, BOARD_Y = 94;
+const HAND_X = 424, HAND_Y = 844, HAND_GAP = 5;
+const SRC_W = 74, SRC_H = 106, SRC_GAP_X = 6, SRC_GAP_Y = 8, SRC_BLOCK_W = 394;
+const DUEL_X = 1342, DUEL_W = 220;
+const PILE_X = 1904 - 2 * CARD_W - 10;          // 1578
+const BACK_W = 50, BACK_H = 70, BACK_GAP = 8;
+const PREVIEW_K = 2.2, PREVIEW_X = 120, PREVIEW_Y = 301;   // 348×484
+const PREVIEW_GEAR_K = 1.7;                     // deux cartes 269×374 dans la colonne gauche
+
+const T = {
+  unit: ['--unit-bg', '--unit-ink', 'Unit', 'M14 3l7 7-11 11-4 1 1-4z'],
+  building: ['--building-bg', '--building-ink', 'Building', 'M4 21V9l4-3 4 3 4-3 4 3v12z'],
+  spell: ['--spell-bg', '--spell-ink', 'Spell', 'M12 2l2.5 6.5L21 11l-6.5 2.5L12 20l-2.5-6.5L3 11l6.5-2.5z'],
+  gear: ['--gear-bg', '--gear-ink', 'Gear', 'M4 20l9-9m2-7l5 5-3 3-5-5z'],
+  hero: ['--hero-bg', '--hero-ink', 'Hero', 'M3 18l2-11 5 5 2-7 2 7 5-5 2 11z'],
+};
+const SPEED = { reaction: 'Réaction', action: 'Action' };
+const KW = ['Dernier souffle', 'Avant-poste', 'Assaut', 'Rempart', 'Arrivée'];
+// Cartes de data/cards/test_deck.json : nom, coût, type, Force (PV pour le Hero), vitesse, texte
+const CARDS = {
+  recrue: ['Recrue', 1, 'unit', 2, '', ''],
+  soldat: ['Soldat', 2, 'unit', 3, '', ''],
+  gardien: ['Gardien', 2, 'unit', 2, '', 'Rempart 1'],
+  heraut: ['Héraut', 3, 'unit', 3, '', "Arrivée : une Unit ennemie ciblée a −1 Force jusqu'à la fin du tour."],
+  martyr: ['Martyr', 3, 'unit', 3, '', 'Dernier souffle : une Unit alliée ciblée a +1 Force tant que la pièce est en jeu.'],
+  pillard: ['Pillard', 2, 'unit', 2, '', 'Assaut 1'],
+  palissade: ['Palissade', 2, 'building', 4, '', ''],
+  campement: ['Campement', 3, 'building', 4, '', 'Avant-poste'],
+  renfort: ['Renfort', 1, 'spell', null, 'reaction', "Une Unit alliée ciblée a +2 Force jusqu'à la fin du tour."],
+  frappe: ['Frappe', 3, 'spell', null, 'action', 'Détruisez une Unit ennemie ciblée de Force 3 ou moins.'],
+  contre: ['Contre', 2, 'spell', null, 'reaction', 'Contrecarrez un Spell ciblé.'],
+  levee: ['Levée', 2, 'spell', null, 'action', 'Créez un jeton Unit de Force 2 sur une case libre ciblée de votre première rangée.'],
+  lame: ['Lame', 1, 'gear', null, '', 'La Unit qui porte ce Gear a +1 Force.'],
+  capitaine: ['Capitaine', null, 'hero', 15, '', 'Les Units alliées adjacentes au Hero ont +1 Force.<br><span class="kw">Pouvoir · 2</span>une Unit alliée ciblée a +1 Force jusqu\'à la fin du tour.'],
+};
+const PLAYER = { A: 'var(--player-a)', B: 'var(--player-b)' };
+const INK = { A: 'var(--player-a-ink)', B: 'var(--player-b-ink)' };
+const SOFT = { A: 'var(--player-a-soft)', B: 'var(--player-b-soft)' };
+const other = (p) => (p === 'A' ? 'B' : 'A');
+
+const tint = (t) => `background:var(${T[t][0]});color:var(${T[t][1]});border-color:var(${T[t][1]})`;
+const icon = (t, px) => `<svg width="${px}" height="${px}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="${T[t][3]}"/></svg>`;
+const heart = (px) => `<svg width="${px}" height="${px}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>`;
+const sun = (px, color) => `<svg width="${px}" height="${px}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></svg>`;
+const crosshair = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="12" cy="12" r="7"/><path d="M12 2v5M12 17v5M2 12h5M17 12h5"/></svg>`;
+
+function text(s) {
+  if (!s || s.includes('<')) return s || '';
+  const k = KW.find((w) => s.startsWith(w));
+  if (!k) return s;
+  const rest = s.slice(k.length).match(/^( \d+)?(?: : )?(.*)$/);
+  return `<span class="kw">${k}${rest[1] || ''}</span>${rest[2] || ''}`;
+}
+
+function card(id, x, y, k = 1, cls = '', extra = '') {
+  const [name, cost, type, stat, speed, body] = CARDS[id];
+  const costPill = cost != null ? `<div class="pill" style="color:var(--cost-ink)">${cost}</div>` : '';
+  let statPill = '';
+  if (type === 'hero') statPill = `<div class="pill hp">${heart(Math.round(12 * k))}${stat}</div>`;
+  else if (stat != null) statPill = `<div class="pill">${stat}</div>`;
+  return `<div class="card ${cls}" data-preview="${id}" style="left:${x}px;top:${y}px;width:${Math.round(CARD_W * k)}px;height:${Math.round(CARD_H * k)}px;--k:${k};${tint(type)};${extra}">
+    <div class="hd">${costPill}<div class="nm">${name}</div>${statPill}</div>
+    <div class="art">${icon(type, Math.round(40 * k))}</div>
+    <div class="band">${icon(type, Math.round(14 * k))}${T[type][2]}${speed ? `<span style="margin-left:auto;font-weight:500">${SPEED[speed]}</span>` : ''}</div>
+    <div class="tx">${text(body)}</div></div>`;
+}
+
+function forcePill(now, printed) {
+  if (printed == null || now === printed) return `<div class="pill">${now}</div>`;
+  const up = now > printed;
+  return `<span class="old">${printed}</span><div class="pill" style="background:var(--${up ? 'up' : 'down'}-bg);color:var(--${up ? 'up' : 'down'}-ink)">${now}</div>`;
+}
+
+function mini(p, selected) {
+  const type = p.type === 'token' ? p.tokenOf : p.type;
+  const label = p.type === 'token' ? `${T[type][2]} · Jeton` : T[type][2];
+  const stat = p.type === 'hero' ? `<div class="pill hp">${heart(11)}${p.hp}</div>` : forcePill(p.force, p.printed);
+  const peek = p.gear ? `<div class="gearpeek" style="${tint('gear')}">${icon('gear', 13)}${CARDS[p.gear][0]}</div>` : '';
+  return `${peek}<div class="mini ${selected ? 'sel' : ''}" style="top:${p.gear ? 30 : 7}px;${tint(type)};box-shadow:0 0 0 4px ${PLAYER[p.player]}">
+    <div class="hd" style="color:var(${T[type][1]})"><div class="nm">${p.name}</div>${stat}</div>
+    <div class="art">${icon(type, 30)}</div>
+    <div class="band">${icon(type, 12)}${label}${p.kw ? `<span class="kw" style="margin:0 0 0 auto">${p.kw}</span>` : ''}</div></div>`;
+}
+
+// ---------- Données communes ----------
+const PIECES = {
+  C5: { name: 'Capitaine', type: 'hero', player: 'B', hp: 15, card: 'capitaine' },
+  B4: { name: 'Gardien', type: 'unit', player: 'B', force: 2, kw: 'Rempart 1', card: 'gardien' },
+  D4: { name: 'Héraut', type: 'unit', player: 'B', force: 3, kw: 'Arrivée', card: 'heraut' },
+  E4: { name: 'Jeton', type: 'token', tokenOf: 'unit', player: 'B', force: 1, printed: 2 },
+  B3: { name: 'Soldat', type: 'unit', player: 'A', force: 4, printed: 3, gear: 'lame', card: 'soldat' },
+  A2: { name: 'Jeton', type: 'token', tokenOf: 'unit', player: 'A', force: 2 },
+  D1: { name: 'Palissade', type: 'building', player: 'A', force: 4, card: 'palissade' },
+  C1: { name: 'Capitaine', type: 'hero', player: 'A', hp: 12, card: 'capitaine' },
+};
+const HAND = {
+  A: ['recrue', 'heraut', 'martyr', 'campement', 'renfort', 'contre', 'lame'],
+  B: ['pillard', 'soldat', 'frappe', 'levee', 'renfort', 'gardien'],
+};
+const SIDE = {
+  A: { slots: ['up', 'up', 'up', 'up', 'tapped', 'tapped', 'empty', 'empty', 'empty', 'empty'], reserve: 3, fonte: 1, deck: 16, discard: 'contre' },
+  B: { slots: ['up', 'up', 'up', 'up', 'up', 'empty', 'empty', 'empty', 'empty', 'empty'], reserve: 5, fonte: 0, deck: 19, discard: 'frappe' },
+};
+const clone = (o) => JSON.parse(JSON.stringify(o));
+
+// ---------- États montrés ----------
+const STATES = [
+  {
+    key: 'turn', label: '1 · Mon tour, pile vide',
+    note: "A a l'écran, Tour 7. Essence = réserve réelle du moteur (0028), pas d'« Annuler » (point A ouvert). Cartes jouables surlignées. Survole cartes, pièces, défausse ; clique une Source.",
+    bottom: 'A', turnOf: 'A', turnNo: 7, essence: 2, cancel: false,
+    playable: ['recrue', 'renfort', 'lame'], center: 'turn',
+  },
+  {
+    key: 'piece', label: '2 · Pièce choisie, cases légales',
+    note: "A a choisi Soldat (anneau vert double, liseré bleu conservé). Cases légales : anneau jaune + point si vide, + viseur si une pièce adverse y est. Aperçu : Soldat et son Gear à ×1,7 (deux cartes ne tiennent pas à ×2,2).",
+    bottom: 'A', turnOf: 'A', turnNo: 7, essence: 2, cancel: false,
+    selPiece: 'B3', hlCells: ['A3', 'C3', 'B2'], hlTargets: ['B4'], center: 'chosen', preview: ['soldat', 'lame'],
+  },
+  {
+    key: 'stack', label: '3 · Pile non vide, fenêtre de réponse',
+    note: "Tour 8 de B ; B a annoncé Frappe, A a l'écran et peut répondre. « Passer » bleu, décompte de 2 s lu sur DuelHost (0029). Pile au centre de la colonne, dernière entrée en haut. Aperçu simulé : survol de l'entrée.",
+    bottom: 'A', turnOf: 'B', turnNo: 8, essence: 0, cancel: false, srcA: { slots: ['up', 'up', 'up', 'up', 'up', 'up', 'empty', 'empty', 'empty', 'empty'] },
+    playable: ['renfort', 'contre'], center: 'stack', countdown: 0.7, preview: ['frappe'],
+    stack: [{ card: 'frappe', player: 'B', target: 'Soldat (B3)' }],
+  },
+  {
+    key: 'started', label: '4 · Réponse commencée, paiement préparé',
+    note: "A a cliqué une Source : DuelSelection émet response_started → DuelHost.begin_response(), le décompte s'arrête (208.6.5). Essence = brouillon (tour adverse) : pastille en pointillé + « Annuler », la ligne des compteurs doit tenir dans 394 px. Contre reste jouable.",
+    bottom: 'A', turnOf: 'B', turnNo: 8, essence: 1, cancel: true, draft: true,
+    srcA: { slots: ['up', 'up', 'up', 'up', 'up', 'tapped', 'empty', 'empty', 'empty', 'empty'] },
+    playable: ['renfort', 'contre'], center: 'stack', countdown: null,
+    stack: [{ card: 'frappe', player: 'B', target: 'Soldat (B3)' }],
+  },
+  {
+    key: 'decision', label: '5 · Décision du moteur (proposition C3)',
+    note: "PROPOSITION (C3 non tranché) : une décision en attente occupe le centre de la colonne. Ici, ordre des effets déclenchés : cliquer les entrées dans l'ordre d'ajout à la pile, numéros posés ; le dernier clic l'envoie, sans « Confirmer ». Pas de fenêtre de réponse (208.6.7).",
+    bottom: 'A', turnOf: 'A', turnNo: 7, essence: 0, cancel: false, center: 'decision',
+    stack: [{ card: 'martyr', player: 'A', target: 'Dernier souffle', ord: 1 }, { card: 'heraut', player: 'A', target: 'Arrivée', hl: true }],
+  },
+  {
+    key: 'flip', label: '6 · Relais : B a l\'écran (proposition C1)',
+    note: "PROPOSITION (C1 non tranché) : le joueur qui a l'écran passe en bas. Plateau vu de B (rangée 5 en bas, colonnes E→A), zones échangées ; couleurs fixes inchangées (B rouge, A bleu).",
+    bottom: 'B', turnOf: 'B', turnNo: 8, essence: 1, cancel: false,
+    srcB: { slots: ['up', 'up', 'up', 'up', 'tapped', 'empty', 'empty', 'empty', 'empty', 'empty'] },
+    playable: ['pillard', 'soldat', 'renfort', 'gardien'], center: 'turn',
+  },
+];
+
+let current = STATES[0];
+let live = null;            // Sources modifiées par les clics, par état
+let annotations = false, real720 = false;
+
+const stage = document.getElementById('stage');
+let html = '';
+const add = (h) => { html += h; };
+
+// ---------- Plateau ----------
+function cellKey(colIndex, row) { return 'ABCDE'[colIndex] + row; }
+function renderBoard(st) {
+  const flip = st.bottom === 'B';
+  const rows = flip ? [1, 2, 3, 4, 5] : [5, 4, 3, 2, 1];
+  const cols = flip ? [4, 3, 2, 1, 0] : [0, 1, 2, 3, 4];
+  let cells = '';
+  for (const row of rows) {
+    for (const c of cols) {
+      const key = cellKey(c, row);
+      const p = PIECES[key];
+      const hl = (st.hlCells || []).includes(key) || (st.hlTargets || []).includes(key);
+      const target = (st.hlTargets || []).includes(key) ? `<div class="target">${crosshair}</div>` : '';
+      const prev = p ? (p.card ? (p.gear ? `${p.card}+${p.gear}` : p.card) : '') : '';
+      cells += `<div class="cell ${hl ? 'hl' : ''} ${p ? '' : 'empty'}" title="${key}" ${prev ? `data-preview="${prev}"` : ''}>${p ? mini(p, st.selPiece === key) : ''}${target}</div>`;
+    }
+  }
+  add(`<div id="board" class="abs" style="left:${BOARD_X}px;top:${BOARD_Y}px">${cells}</div>`);
+  cols.forEach((c, i) => add(`<div class="coord" style="left:${BOARD_X + i * (CELL + GAP) + CELL / 2 - 5}px;top:${BOARD_Y + BOARD + 2}px">${'ABCDE'[c]}</div>`));
+  rows.forEach((r, i) => add(`<div class="coord" style="left:${BOARD_X - 18}px;top:${BOARD_Y + i * (CELL + GAP) + CELL / 2 - 9}px">${r}</div>`));
+}
+
+// ---------- Sources et compteurs ----------
+function renderSources(st, side, isBottom) {
+  const data = live[side];
+  const y = isBottom ? HAND_Y : M;
+  const counterY = isBottom ? HAND_Y - 38 : M + CARD_H + 8;
+  const mine = isBottom;
+  data.slots.forEach((s, i) => {
+    const r = Math.floor(i / 5), c = i % 5;
+    const x = M + c * (SRC_W + SRC_GAP_X), sy = y + r * (SRC_H + SRC_GAP_Y);
+    const inner = s === 'empty' ? '' : sun(30, INK[side]);
+    const recycle = mine && s === 'tapped' ? `<button class="recycle" data-recycle="${side}:${i}">Recycler +1</button>` : '';
+    add(`<div class="src ${s} ${mine ? 'mine' : ''}" data-src="${mine ? side + ':' + i : ''}" style="left:${x}px;top:${sy}px;border-color:${PLAYER[side]}">${inner}${recycle}</div>`);
+  });
+  const essence = mine ? `<span class="chip essence ${st.draft ? 'draft' : ''}" title="${st.draft ? 'Paiement préparé (brouillon)' : 'Réserve d\'Essence'}">${sun(18, 'var(--essence)')}Essence <b>${data.essence}</b></span>` : '';
+  const reset = mine && data.cancel && data.essence > 0 ? `<button class="reset" data-reset="1">Annuler</button>` : '';
+  add(`<div class="counter" style="left:${M}px;top:${counterY}px">${essence}<span class="chip">Réserve <b>${data.reserve}</b></span><span class="chip">Fonte <b>${data.fonte}</b></span>${reset}</div>`);
+}
+
+// ---------- Mains ----------
+function renderHand(st, side) {
+  HAND[side].forEach((id, i) => {
+    const cls = ['hand'];
+    if ((st.playable || []).includes(id)) cls.push('hl');
+    add(card(id, HAND_X + i * (CARD_W + HAND_GAP), HAND_Y, 1, cls.join(' ')));
+  });
+}
+function renderBacks(side) {
+  const n = HAND[side].length;
+  const x0 = Math.round((1920 - (n * BACK_W + (n - 1) * BACK_GAP)) / 2);
+  for (let i = 0; i < n; i++) add(`<div class="back" style="left:${x0 + i * (BACK_W + BACK_GAP)}px;top:${M}px;width:${BACK_W}px;height:${BACK_H}px;border-color:${PLAYER[side]}"></div>`);
+}
+
+// ---------- Deck et défausse ----------
+function renderPiles(side, isBottom) {
+  const y = isBottom ? HAND_Y : M;
+  const d = SIDE[side];
+  add(`<div class="back" style="left:${PILE_X}px;top:${y}px;width:${CARD_W}px;height:${CARD_H}px;border-color:${PLAYER[side]}"><div>${d.deck}<small>cartes</small></div></div>`);
+  add(card(d.discard, 1904 - CARD_W, y, 1, '', `box-shadow:0 0 0 3px ${PLAYER[side]}`));
+  add(`<div class="lbl" style="left:${PILE_X}px;top:${isBottom ? HAND_Y - 24 : M + CARD_H + 6}px">Deck · Défausse</div>`);
+}
+
+// ---------- Colonne de duel ----------
+function clock(side, time, ratio, running) {
+  return `<div class="clock ${running ? '' : 'idle'}" style="border-color:${PLAYER[side]};background:${SOFT[side]}">
+    <div class="who" style="color:${INK[side]}">Joueur ${side}</div>
+    <div class="time">${time}</div>
+    <div class="bar"><div style="width:${ratio}%;background:${PLAYER[side]}"></div></div></div>`;
+}
+function stackEntries(st) {
+  return st.stack.slice().reverse().map((e) => {
+    const type = CARDS[e.card][2];
+    const ord = e.ord ? `<span class="ord">${e.ord}</span>` : '';
+    return `<div class="entry ${e.hl ? 'hl' : ''}" data-preview="${e.card}" style="${tint(type)};border-color:${PLAYER[e.player]}">
+      <div class="l1">${icon(type, 16)}${CARDS[e.card][0]}${ord}</div><div class="l2">Joueur ${e.player} · ${e.target}</div></div>`;
+  }).join('');
+}
+function centerHtml(st) {
+  const actor = st.turnOf;
+  const turnHead = `<div class="turn">Tour ${st.turnNo}<strong style="color:${INK[actor]}">Au joueur ${actor}</strong></div>`;
+  const endTurn = `<button class="bigbtn" style="background:${PLAYER[actor]}">Terminer le tour</button>`;
+  const power = `<button class="ghost">Pouvoir du Hero · 2</button>`;
+  switch (st.center) {
+    case 'turn':
+      return `${turnHead}${endTurn}${power}`;
+    case 'chosen':
+      return `${turnHead}<div class="hint">Soldat : choisis une case</div><button class="ghost">Annuler</button>${endTurn}`;
+    case 'stack': {
+      const responder = st.bottom;
+      const cd = st.countdown != null
+        ? `<div class="countdown"><div class="track"><div style="width:${st.countdown * 100}%;background:${PLAYER[responder]}"></div></div>${(st.countdown * 2).toFixed(1).replace('.', ',')} s</div>`
+        : `<div class="stopped">Décompte arrêté :<br>réponds ou passe.</div>`;
+      return `<div class="sect">Pile · ${st.stack.length}</div><div class="stack">${stackEntries(st)}</div>
+        <div class="turn">Tour ${st.turnNo} · au joueur ${st.turnOf}<strong style="color:${INK[responder]}">Joueur ${responder} peut répondre</strong></div>
+        <button class="bigbtn" style="background:${PLAYER[responder]}">Passer</button>${cd}`;
+    }
+    case 'decision':
+      return `<div class="hint">Ordre des effets déclenchés :<br>clique-les dans l'ordre d'ajout à la pile (208.4.6).</div>
+        <div class="stack">${stackEntries(st)}</div>
+        <div class="stopped">Le dernier clic envoie l'ordre, sans « Confirmer ».</div>`;
+  }
+  return '';
+}
+function renderColumn(st) {
+  const top = other(st.bottom), bottom = st.bottom;
+  const running = st.center === 'stack' ? st.bottom : st.turnOf;
+  const times = { A: ['5:03', 63], B: ['4:12', 52] };
+  add(`<div id="duel" class="abs" style="left:${DUEL_X}px;top:${BOARD_Y}px;width:${DUEL_W}px;height:${BOARD}px">
+    ${clock(top, times[top][0], times[top][1], running === top)}
+    <div id="center">${centerHtml(st)}</div>
+    ${clock(bottom, times[bottom][0], times[bottom][1], running === bottom)}</div>`);
+}
+
+// ---------- Aperçu ----------
+function previewHtml(spec) {
+  if (!spec) return '';
+  const ids = spec.split('+');
+  if (ids.length === 1) return card(ids[0], PREVIEW_X, PREVIEW_Y, PREVIEW_K);
+  const w = Math.round(CARD_W * PREVIEW_GEAR_K), h = Math.round(CARD_H * PREVIEW_GEAR_K), gap = 8;
+  const x0 = Math.round((M + 571 - (2 * w + gap)) / 2);
+  const y0 = Math.round(PREVIEW_Y + (Math.round(CARD_H * PREVIEW_K) - h) / 2);
+  return card(ids[0], x0, y0, PREVIEW_GEAR_K) + card(ids[1], x0 + w + gap, y0, PREVIEW_GEAR_K);
+}
+function defaultPreview() { return current.preview ? current.preview.join('+') : ''; }
+function setPreview(spec) { document.getElementById('preview').innerHTML = previewHtml(spec); }
+
+// ---------- Annotations ----------
+function zone(x, y, w, h, label, cls = '') { return `<div class="zone" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px"><span class="${cls}">${label}</span></div>`; }
+function badge(n, x, y) { return `<div class="badge" style="left:${x}px;top:${y}px">${n}</div>`; }
+function annotationsHtml(st) {
+  const flip = st.bottom === 'B';
+  let a = '';
+  a += zone(16, 16, 394, 256, 'TopSources · SourcesView 394×220 + compteurs y244', 'below');
+  a += zone(16, 806, 394, 258, 'BottomSources · SourcesView, compteurs y806 · Sources y844');
+  a += zone(16, 284, 557, 494, 'PreviewSlot · CenterContainer · HoverPreview 348×484 (x120 y301)', 'inb');
+  a += zone(BOARD_X - 24, BOARD_Y, BOARD + 24, BOARD + 24, 'BoardView · 5×5 CellView 143, écart 4 · x595 y94 731×731', 'in');
+  a += zone(DUEL_X, BOARD_Y, DUEL_W, BOARD, 'DuelColumnView 220×731', 'below');
+  a += zone(HAND_X, HAND_Y, 1136, CARD_H, 'BottomHand · HandView 7×158×220');
+  a += zone(1920 / 2 - 200, 16, 400, 70, 'TopHand · OpponentHandView · dos 50×70, écart 8', 'in');
+  a += zone(PILE_X, 16, 326, 244, 'TopPiles · PileView 2×158×220, écart 10', 'in');
+  a += zone(PILE_X, 820, 326, 244, 'BottomPiles · PileView');
+  // repères numérotés
+  const tilted = (flip ? live.B : live.A).slots.indexOf('tapped');
+  if (tilted >= 0) a += badge(1, M + (tilted % 5) * 80 + 50, HAND_Y + Math.floor(tilted / 5) * 114 - 10);
+  const empty = (flip ? live.B : live.A).slots.indexOf('empty');
+  if (empty >= 0) a += badge(2, M + (empty % 5) * 80 + 50, HAND_Y + Math.floor(empty / 5) * 114 - 10);
+  a += badge(3, 318, 807);
+  a += badge(4, HAND_X - 10, HAND_Y - 10);
+  a += badge(5, BOARD_X + 2 * 147 + 100, BOARD_Y + 4 * 147 - 6);
+  if (st.hlCells) a += badge(6, BOARD_X + 2 * 147 + 110, BOARD_Y + 2 * 147 - 6);
+  if (st.selPiece) a += badge(7, BOARD_X + 147 - 16, BOARD_Y + 2 * 147 - 6);
+  a += badge(8, DUEL_X + DUEL_W - 18, BOARD_Y + 300);
+  a += badge(9, PILE_X + CARD_W + 10 - 14, 820 + 10);
+  a += badge(10, 1920 / 2 + 200 - 14, 10);
+  a += `<div id="legend"><h3>Repères</h3><ol>
+    <li><em>Source inclinée</em> : estompée (55 %), bordure grise, sans pivoter ; au survol, bouton « Recycler +1 » (joueur à l'écran seulement).</li>
+    <li><em>Emplacement vide</em> : pointillé ; 10 emplacements fixes.</li>
+    <li><em>Compteurs</em> : Essence (réserve réelle à son tour, brouillon + « Annuler » au tour adverse : point A ouvert), Réserve, Fonte.</li>
+    <li><em>Carte jouable</em> : bordure jaune 5 px ; <em>choisie</em> : verte + contour ; <em>survol</em> : contour blanc (proposé).</li>
+    <li><em>Liseré</em> bleu/rouge = appartenance, jamais la case.</li>
+    <li><em>Case légale</em> : anneau jaune ; point si vide, viseur si une pièce y est (forme en plus de la couleur).</li>
+    <li><em>Pièce choisie</em> : anneau vert double, le liseré du joueur reste visible.</li>
+    <li><em>Centre de colonne</em> : 4 modes (tour, choix en cours, pile, décision) ; bouton principal aux couleurs du joueur qui agit.</li>
+    <li><em>Défausse</em> : carte du dessus ; survol → aperçu.</li>
+    <li><em>Main adverse</em> : un dos par carte, liseré du joueur.</li>
+  </ol><p style="margin-top:6px;color:#9aa2ad">Zone libre d'environ 326×520 (x1578 y266) sous la légende : vide dans la spec.</p></div>`;
+  return a;
+}
+
+// ---------- Rendu ----------
+function render() {
+  html = '';
+  const st = current;
+  const bottom = st.bottom, top = other(bottom);
+  renderBoard(st);
+  renderSources(st, bottom, true);
+  renderSources(st, top, false);
+  renderHand(st, bottom);
+  renderBacks(top);
+  renderPiles(bottom, true);
+  renderPiles(top, false);
+  renderColumn(st);
+  add(`<div id="preview"></div>`);
+  add(`<div id="ann" class="${annotations ? 'on' : ''}">${annotationsHtml(st)}</div>`);
+  stage.innerHTML = html;
+  setPreview(defaultPreview());
+  document.getElementById('note').textContent = st.note;
+  document.getElementById('note').title = st.note;
+}
+
+function resetLive() {
+  live = { A: clone(SIDE.A), B: clone(SIDE.B) };
+  const st = current;
+  if (st.srcA) Object.assign(live.A, clone(st.srcA));
+  if (st.srcB) Object.assign(live.B, clone(st.srcB));
+  live[st.bottom].essence = st.essence;
+  live[st.bottom].cancel = st.cancel;
+  live.initial = clone({ A: live.A, B: live.B });
+}
+
+function select(i) {
+  current = STATES[i];
+  resetLive();
+  render();
+  document.querySelectorAll('#states button').forEach((b, j) => b.classList.toggle('on', j === i));
+}
+
+// ---------- Interactions ----------
+stage.addEventListener('mouseover', (e) => {
+  const el = e.target.closest('[data-preview]');
+  if (el && !el.closest('#preview')) setPreview(el.dataset.preview);
+});
+stage.addEventListener('mouseout', (e) => {
+  const el = e.target.closest('[data-preview]');
+  if (!el || el.closest('#preview')) return;
+  const to = e.relatedTarget && e.relatedTarget.closest ? e.relatedTarget.closest('[data-preview]') : null;
+  if (to !== el) setPreview(defaultPreview());
+});
+// 203.2.1 incliner une Source redressée ; 203.2.2 recycler une Source inclinée (+1 Essence chacune)
+stage.addEventListener('click', (e) => {
+  const side = current.bottom;
+  const data = live[side];
+  const recycle = e.target.closest('[data-recycle]');
+  if (recycle) {
+    const i = +recycle.dataset.recycle.split(':')[1];
+    data.slots.splice(i, 1);
+    data.slots.push('empty');
+    data.fonte += 1;
+    data.essence += 1;
+    render();
+    return;
+  }
+  if (e.target.closest('[data-reset]')) {
+    Object.assign(live[side], clone(live.initial[side]));
+    render();
+    return;
+  }
+  const src = e.target.closest('.src.mine.up');
+  if (src) {
+    data.slots[+src.dataset.src.split(':')[1]] = 'tapped';
+    data.essence += 1;
+    render();
+  }
+});
+
+// ---------- Barre ----------
+const statesRow = document.getElementById('states');
+STATES.forEach((s, i) => {
+  const b = document.createElement('button');
+  b.textContent = s.label;
+  b.addEventListener('click', () => select(i));
+  statesRow.appendChild(b);
+});
+document.getElementById('tglAnn').addEventListener('click', (e) => {
+  annotations = !annotations;
+  e.target.classList.toggle('on', annotations);
+  document.getElementById('ann').classList.toggle('on', annotations);
+});
+document.getElementById('tgl720').addEventListener('click', (e) => {
+  real720 = !real720;
+  e.target.classList.toggle('on', real720);
+  fit();
+});
+
+function fit() {
+  const vp = document.getElementById('viewport');
+  const s = real720 ? 1280 / 1920 : Math.min(vp.clientWidth / 1920, vp.clientHeight / 1080);
+  const x = Math.max(0, (vp.clientWidth - 1920 * s) / 2), y = Math.max(0, (vp.clientHeight - 1080 * s) / 2);
+  stage.style.transform = `translate(${x}px,${y}px) scale(${s})`;
+}
+addEventListener('resize', fit);
+// Adresse « #3,zones » : ouvre l'état 3 avec le calque des zones.
+const hash = location.hash.slice(1).split(',');
+annotations = hash.includes('zones');
+document.getElementById('tglAnn').classList.toggle('on', annotations);
+select(Math.min(Math.max((parseInt(hash[0], 10) || 1) - 1, 0), STATES.length - 1));
+fit();
+</script>
+</body>
+</html>

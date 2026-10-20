@@ -27,4 +27,4 @@ Option A, recommandée et choisie par le créateur le 18 octobre 2026.
 
 ## Références
 
-Décisions 0011 (vues par capture) et 0027 ; `ui/CLAUDE.md` ; roadmap étape 2.2.
+Décision 0011 (vues par capture) ; `ui/CLAUDE.md` ; roadmap étape 2.2.

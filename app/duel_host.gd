@@ -38,7 +38,7 @@ var _is_screen_assigned: bool = false
 var _is_response_window_running: bool = false
 var _response_deadline_msec: int = 0
 ## Entrée au sommet de la pile à l'ouverture de la dernière fenêtre : retrouver la même occasion
-## de répondre, après une intention qui ne la clôt pas, ne rouvre pas de fenêtre (208.6.5a).
+## de répondre, après un coup qui ne la change pas (Essence produite), n'en rouvre pas (208.6.5a).
 var _response_stack_entry_id: int = DuelState.NO_ID
 
 
@@ -117,8 +117,11 @@ func confirm_relay() -> void:
 
 
 ## 208.6.5 : le joueur devant l'écran commence une réponse ; le décompte de sa fenêtre s'arrête
-## et ne reprend pas (208.6.5a). Sans effet hors d'une fenêtre de réponse.
+## et ne reprend pas (208.6.5a). Sans effet hors d'une fenêtre de réponse, ou après son échéance :
+## la passe automatique du prochain `tick()` l'emporte (208.6.3).
 func begin_response() -> void:
+	if _host_state != HostState.AWAITING_HUMAN or _clock.now_msec() >= _response_deadline_msec:
+		return
 	_is_response_window_running = false
 
 
@@ -201,17 +204,18 @@ func _play_agent() -> Array[DuelEvent]:
 
 
 # Une intention refusée ne change rien : l'hôte reste dans son état, et le journal ne la garde pas.
-# Une intention acceptée clôt la fenêtre de réponse : passe (208.6.4) ou réponse (208.6.5).
 func _submit(intent: DuelIntent) -> Array[DuelEvent]:
 	var events := _engine.submit(intent)
 	if not (events.size() == 1 and events[0] is IntentRejected):
-		_is_response_window_running = false
 		_journal.record_intent(intent)
 		_await_display()
 	return events
 
 
+# Des événements à afficher closent la fenêtre de réponse : passe (208.6.4), réponse (208.6.5) ou
+# fin du duel par la pendule (209.4.5).
 func _await_display() -> void:
+	_is_response_window_running = false
 	_unplayed_batch_count += 1
 	_change_state(HostState.PLAYING_EVENTS)
 
@@ -241,10 +245,10 @@ func _await_human() -> void:
 
 
 # 208.6.1, 208.6.6, 208.6.7 : une fenêtre, la même pour tous, s'ouvre à chaque nouvelle occasion
-# de répondre ou passer, et seulement alors ; le moteur seul dit si le joueur peut passer.
+# de répondre ou passer, et seulement alors ; le moteur seul dit si le joueur peut passer. Celle
+# d'avant s'est fermée à l'affichage des événements ; la même occasion ne la rouvre pas (208.6.5a).
 func _open_response_window() -> void:
 	if _engine.validate(PassPriority.new(_awaited_player)) != IntentRejected.RejectReason.NONE:
-		_is_response_window_running = false
 		_response_stack_entry_id = DuelState.NO_ID
 		return
 	var top_entry: StackEntry = _engine.get_state().stack.back()

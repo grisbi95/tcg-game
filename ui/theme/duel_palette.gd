@@ -1,8 +1,8 @@
 class_name DuelPalette
 extends RefCounted
 ## Couleurs et cadres des composants : teintes des cinq types de carte et couleurs fixes des
-## joueurs (décision 0027), reprises de `docs/maquettes/ecran-de-partie-v1.html` (0028) ; bordures
-## qui signalent ce qui peut être choisi ou ce qui est choisi.
+## joueurs (décision 0027), reprises de `docs/maquettes/ecran-de-partie-v1.html` (0028), et fabrique
+## de cadres. Survol, surlignage et choix sont des anneaux tracés par `DuelMarks`.
 
 ## Ajouter à la fin, sans réordonner.
 enum Tint {
@@ -30,6 +30,8 @@ const INK_COLOR := Color("eef0f3")
 const MUTED_COLOR := Color("a3a9b3")
 const HIGHLIGHT_COLOR := Color("f2c14e")
 const SELECTED_COLOR := Color("4ecb71")
+## Anneau de survol (`DuelMarks`).
+const MARK_HOVER_COLOR := Color(1.0, 1.0, 1.0, 0.6)
 const ESSENCE_COLOR := Color("ffd66b")
 const ESSENCE_BACKGROUND := Color("3a3420")
 const COUNTER_COLOR := Color("2a2f37")
@@ -78,11 +80,12 @@ const CARD_BACK_STRIPE_COLOR := Color("2c323b")
 const CELL_HOVER_COLOR := Color("333a44")
 const PILL_BORDER_COLOR := Color(0.0, 0.0, 0.0, 0.18)
 
+const LINE_WIDTH: int = 1
 const BORDER_WIDTH: int = 2
-const MARKED_BORDER_WIDTH: int = 5
 const PLAYER_BORDER_WIDTH: int = 4
 const CORNER_RADIUS: int = 8
-const SOURCE_CORNER_RADIUS: int = 4
+## Pastille ronde : rayon d'au moins la moitié de sa taille.
+const PILL_RADIUS: int = CORNER_RADIUS * 4
 ## Variation de Label déclarée dans ui/theme/duel_theme.tres (thème unique).
 const SMALL_LABEL: StringName = &"SmallLabel"
 const CONTENT_MARGIN: int = 8
@@ -104,18 +107,18 @@ static func tint_of(card_type: CardDefinition.CardType) -> Tint:
 	return CARD_TINTS[card_type]
 
 
-## Cadre d'un composant : bordure `border`, plus épaisse s'il est surligné ou choisi.
-static func panel_style(border: Color, is_marked: bool) -> StyleBoxFlat:
+## Cadre d'un composant, bordé de `border`.
+static func panel_style(border: Color) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
 	style.bg_color = PANEL_COLOR
 	style.border_color = border
-	style.set_border_width_all(MARKED_BORDER_WIDTH if is_marked else BORDER_WIDTH)
+	style.set_border_width_all(BORDER_WIDTH)
 	style.set_corner_radius_all(CORNER_RADIUS)
 	style.set_content_margin_all(CONTENT_MARGIN)
 	return style
 
 
-## Fond `background` bordé de `border` sur `border_width`, coins de `radius`, marge `margin`.
+## Fond `background` bordé de `border` sur `border_width`, coins de `CORNER_RADIUS`, marge `margin`.
 static func framed_style(
 	background: Color, border: Color, border_width: int, margin: float
 ) -> StyleBoxFlat:
@@ -144,7 +147,7 @@ static func tinted_style(
 
 ## Pastille ronde d'un nombre (coût, Force, PV), de fond `background`.
 static func pill_style(background: Color) -> StyleBoxFlat:
-	var style := fill_style(background, CORNER_RADIUS * 4, 0.0)
+	var style := fill_style(background, PILL_RADIUS, 0.0)
 	style.border_color = PILL_BORDER_COLOR
-	style.set_border_width_all(1)
+	style.set_border_width_all(LINE_WIDTH)
 	return style

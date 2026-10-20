@@ -23,10 +23,8 @@ const ART_RADIUS: int = 6
 
 var _card_instance_id: int = DuelState.NO_ID
 var _tint: DuelPalette.Tint = DuelPalette.Tint.UNIT
-var _is_hovered: bool = false
-var _is_highlighted: bool = false
-var _is_selected: bool = false
 var _scale: float = 1.0
+var _marks := ControlMarks.new(self, 0.0)
 
 @onready var _layout: VBoxContainer = %Layout
 @onready var _header: HBoxContainer = %Header
@@ -47,13 +45,10 @@ var _scale: float = 1.0
 
 
 func _ready() -> void:
-	mouse_entered.connect(_on_hover_changed.bind(true))
-	mouse_exited.connect(_on_hover_changed.bind(false))
-	var type_icon := func() -> DuelIcons.Icon: return DuelIcons.TINT_ICONS[_tint]
-	var ink := func() -> Color: return DuelPalette.TINT_INKS[_tint]
-	DuelIcons.bind(_art_icon, type_icon, ink)
-	DuelIcons.bind(_band_icon, type_icon, ink)
-	DuelIcons.bind(_heart_icon, func() -> DuelIcons.Icon: return DuelIcons.Icon.HEART, ink)
+	_marks.hover_changed.connect(_on_hover_changed)
+	DuelIcons.bind_tinted(
+		[_art_icon, _band_icon], _heart_icon, func() -> DuelPalette.Tint: return _tint
+	)
 	_cost_label.add_theme_color_override("font_color", DuelPalette.COST_INK_COLOR)
 	_stat_label.add_theme_color_override("font_color", DuelPalette.CARD_TEXT_COLOR)
 	_text_label.add_theme_color_override("default_color", DuelPalette.CARD_TEXT_COLOR)
@@ -61,8 +56,7 @@ func _ready() -> void:
 
 
 func _draw() -> void:
-	var mark := DuelMarks.mark_of(_is_hovered, _is_highlighted, _is_selected)
-	DuelMarks.draw(self, Rect2(Vector2.ZERO, size), mark, 0.0)
+	_marks.draw()
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -77,7 +71,10 @@ func show_card(card_instance_id: int, definition: CardDefinition) -> void:
 	_show_face(DuelPalette.tint_of(definition.card_type), definition.card_name)
 	_cost_pill.visible = true
 	_cost_label.text = str(definition.cost)
-	_show_stat(definition.force != CardDefinition.NO_FORCE, definition.force, false)
+	if definition.force != CardDefinition.NO_FORCE:
+		_show_force(definition.force)
+	else:
+		_hide_stat()
 	_type_label.text = CardText.type_name(definition.card_type)
 	_speed_label.text = CardText.speed_name(definition)
 	_text_label.text = CardText.body_bbcode(definition)
@@ -88,7 +85,7 @@ func show_hero(hero: HeroDefinition) -> void:
 	_card_instance_id = DuelState.NO_ID
 	_show_face(DuelPalette.Tint.HERO, hero.hero_name)
 	_cost_pill.visible = false
-	_show_stat(true, hero.health, true)
+	_show_health(hero.health)
 	_type_label.text = CardText.HERO_TYPE_NAME
 	_speed_label.text = ""
 	_text_label.text = CardText.hero_body_bbcode(hero)
@@ -99,7 +96,7 @@ func show_token(card_type: CardDefinition.CardType, force: int) -> void:
 	_card_instance_id = DuelState.NO_ID
 	_show_face(DuelPalette.tint_of(card_type), CardText.TOKEN_NAME)
 	_cost_pill.visible = false
-	_show_stat(true, force, false)
+	_show_force(force)
 	_type_label.text = CardText.token_type_name(card_type)
 	_speed_label.text = ""
 	_text_label.text = ""
@@ -113,9 +110,7 @@ func set_card_scale(card_scale: float) -> void:
 
 ## Surlignée : la carte peut être choisie ; choisie : elle l'est.
 func set_marks(is_highlighted: bool, is_selected: bool) -> void:
-	_is_highlighted = is_highlighted
-	_is_selected = is_selected
-	queue_redraw()
+	_marks.set_marks(is_highlighted, is_selected)
 
 
 func _show_face(tint: DuelPalette.Tint, card_name: String) -> void:
@@ -129,10 +124,21 @@ func _show_face(tint: DuelPalette.Tint, card_name: String) -> void:
 	_refresh_frame()
 
 
-func _show_stat(is_shown: bool, value: int, is_health: bool) -> void:
-	_stat_pill.visible = is_shown
-	_heart_icon.visible = is_health
-	_stat_label.text = str(value)
+func _show_force(force: int) -> void:
+	_stat_pill.visible = true
+	_heart_icon.visible = false
+	_stat_label.text = str(force)
+
+
+func _show_health(health: int) -> void:
+	_stat_pill.visible = true
+	_heart_icon.visible = true
+	_stat_label.text = str(health)
+
+
+func _hide_stat() -> void:
+	_stat_pill.visible = false
+	_heart_icon.visible = false
 
 
 # Les tailles du thème valent pour l'échelle 1 ; la carte agrandie les multiplie par `_scale`.
@@ -183,8 +189,6 @@ func _scale_constant(
 
 
 func _on_hover_changed(is_hovered: bool) -> void:
-	_is_hovered = is_hovered
-	queue_redraw()
 	if is_hovered:
 		card_hovered.emit(_card_instance_id)
 	else:

@@ -3,7 +3,6 @@
 [ext_resource type="Script" path="res://ui/components/cell_view.gd" id="1_script"]
 
 [node name="CellView" type="PanelContainer"]
-custom_minimum_size = Vector2(143, 143)
 script = ExtResource("1_script")
 
 [node name="PieceSlot" type="CenterContainer" parent="."]

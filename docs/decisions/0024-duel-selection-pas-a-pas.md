@@ -1,6 +1,6 @@
 # 0024 — DuelSelection pas à pas
 
-- Statut : acceptée
+- Statut : acceptée ; modifiée par 0031
 - Date : 2026-10-18
 - Décideur : créateur du projet
 - Périmètre : traduction des gestes en intentions (`ui/`, étape 2.2)

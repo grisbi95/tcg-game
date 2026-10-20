@@ -16,6 +16,9 @@ const STACK_SCENE: PackedScene = preload("res://ui/components/stack_view.tscn")
 const LOG_SCENE: PackedScene = preload("res://ui/components/log_view.tscn")
 const PREVIEW_SCENE: PackedScene = preload("res://ui/components/hover_preview.tscn")
 const HAND_HEIGHT: int = 230
+const RESPONSE_FORMAT: String = "Réponse : %.1f s"
+const DECIMAL_POINT: String = "."
+const DECIMAL_COMMA: String = ","
 const SIDE_PANEL_WIDTH: int = 560
 const TOKEN_TYPES: Dictionary[Piece.PieceKind, CardDefinition.CardType] = {
 	Piece.PieceKind.UNIT: CardDefinition.CardType.UNIT,
@@ -60,6 +63,8 @@ var _status: Label = Label.new()
 var _buttons: Dictionary[Command, Button] = {}
 ## Textes affichés par les pendules, pour ne les redessiner que quand ils changent.
 var _shown_clock_texts: PackedStringArray = PackedStringArray()
+## Décompte de la fenêtre de réponse affiché dans l'état, vide quand elle ne tourne pas.
+var _shown_response_text: String = ""
 
 
 func _ready() -> void:
@@ -70,6 +75,7 @@ func _ready() -> void:
 	_selection.setup(_engine, DuelState.PlayerSide.A)
 	_selection.intent_chosen.connect(_on_intent_chosen)
 	_selection.selection_changed.connect(_refresh)
+	_selection.response_started.connect(_host.begin_response)
 	_host.host_state_changed.connect(_on_host_state_changed)
 	_log_view.append_events(_host.start(_make_setup()))
 
@@ -80,6 +86,7 @@ func _process(_delta: float) -> void:
 	if not events.is_empty():
 		_log_view.append_events(events)
 	_refresh_clocks()
+	_refresh_response_countdown()
 
 
 func _on_intent_chosen(intent: DuelIntent) -> void:
@@ -221,31 +228,45 @@ func _refresh_board(shown: SelectionSnapshot) -> void:
 func _put_piece(cell_view: CellView, piece: Piece, shown: SelectionSnapshot) -> void:
 	var piece_view: PieceView = PIECE_SCENE.instantiate()
 	cell_view.put_piece(piece_view)
-	var force := _engine.current_force(piece.piece_id)
 	var gear: CardDefinition = null
 	if piece.attached_gear != null:
 		gear = _catalog.get_card(piece.attached_gear.definition_id)
 		piece_view.show_gear(gear.card_name)
 	var show_preview := Callable()
 	if piece.kind == Piece.PieceKind.HERO:
-		var hero := _catalog.get_hero(piece.card.definition_id)
-		piece_view.show_hero(piece.piece_id, hero, piece.owner)
-		piece_view.show_health(piece.health)
-		show_preview = func(_id: int) -> void: _preview.show_hero(hero, gear)
+		show_preview = _show_hero_piece(piece_view, piece, gear)
 	elif piece.is_token():
-		var token_type := TOKEN_TYPES[piece.kind]
-		piece_view.show_token(piece.piece_id, token_type, piece.owner)
-		piece_view.show_force(force, piece.token_force)
-		show_preview = func(_id: int) -> void: _preview.show_token(token_type, force, gear)
+		show_preview = _show_token_piece(piece_view, piece, gear)
 	else:
-		var definition := _catalog.get_card(piece.card.definition_id)
-		piece_view.show_card_piece(piece.piece_id, definition, piece.owner)
-		piece_view.show_force(force, definition.force)
-		show_preview = func(_id: int) -> void: _preview.show_card(definition, gear)
+		show_preview = _show_card_piece(piece_view, piece, gear)
 	var is_highlighted := shown.legal_piece_ids.has(piece.piece_id)
 	piece_view.set_marks(is_highlighted, shown.chosen_piece_id == piece.piece_id)
 	piece_view.piece_hovered.connect(show_preview)
 	piece_view.piece_unhovered.connect(func(_id: int) -> void: _preview.hide_preview())
+
+
+# Les trois fonctions suivantes remplissent la vue et rendent l'appel d'aperçu de la pièce.
+func _show_hero_piece(piece_view: PieceView, piece: Piece, gear: CardDefinition) -> Callable:
+	var hero := _catalog.get_hero(piece.card.definition_id)
+	piece_view.show_hero(piece.piece_id, hero, piece.owner)
+	piece_view.show_health(piece.health)
+	return func(_id: int) -> void: _preview.show_hero(hero, gear)
+
+
+func _show_token_piece(piece_view: PieceView, piece: Piece, gear: CardDefinition) -> Callable:
+	var force := _engine.current_force(piece.piece_id)
+	var token_type := TOKEN_TYPES[piece.kind]
+	piece_view.show_token(piece.piece_id, token_type, piece.owner)
+	piece_view.show_force(force, piece.token_force)
+	return func(_id: int) -> void: _preview.show_token(token_type, force, gear)
+
+
+func _show_card_piece(piece_view: PieceView, piece: Piece, gear: CardDefinition) -> Callable:
+	var force := _engine.current_force(piece.piece_id)
+	var definition := _catalog.get_card(piece.card.definition_id)
+	piece_view.show_card_piece(piece.piece_id, definition, piece.owner)
+	piece_view.show_force(force, definition.force)
+	return func(_id: int) -> void: _preview.show_card(definition, gear)
 
 
 func _refresh_hand(side: DuelState.PlayerSide, shown: SelectionSnapshot) -> void:
@@ -322,6 +343,7 @@ func _refresh_buttons(shown: SelectionSnapshot) -> void:
 
 
 func _refresh_status() -> void:
+	_shown_response_text = _response_text()
 	var state := _engine.get_state()
 	if state.is_ended():
 		_status.text = "Duel terminé : %s." % DuelState.DuelResult.find_key(state.result)
@@ -331,6 +353,8 @@ func _refresh_status() -> void:
 	if state.pending_decision != null:
 		hint = DECISION_HINTS[state.pending_decision.kind]
 	_status.text = "Tour %d. Au joueur %s. %s" % [state.turn_number, player, hint]
+	if not _shown_response_text.is_empty():
+		_status.text += " " + _shown_response_text
 
 
 # ui/CLAUDE.md : la pendule est la seule valeur relue à chaque image, le temps avançant sans
@@ -349,6 +373,21 @@ func _refresh_clocks() -> void:
 	for side: DuelState.PlayerSide in DuelState.SIDES:
 		var remaining_msec := _engine.get_state().get_player(side).clock_remaining_msec
 		_clocks[side].show_clock(remaining_msec, running.has(side))
+
+
+# Comme la pendule : le temps restant avance sans événement (décision 0029), relu à chaque image
+# et réécrit seulement quand le texte change.
+func _refresh_response_countdown() -> void:
+	if _engine.get_state() == null or _response_text() == _shown_response_text:
+		return
+	_refresh_status()
+
+
+func _response_text() -> String:
+	if not _host.is_response_window_running():
+		return ""
+	var time_left_seconds := float(_host.get_response_time_left_msec()) / ClockView.MSEC_PER_SECOND
+	return (RESPONSE_FORMAT % time_left_seconds).replace(DECIMAL_POINT, DECIMAL_COMMA)
 
 
 func _card_name(card: CardInstance) -> String:

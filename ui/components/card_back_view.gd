@@ -8,8 +8,6 @@ extends Control
 const DECK_SIZE := Vector2(158, 220)
 const HAND_SIZE := Vector2(50, 70)
 const STRIPE_WIDTH: float = 8.0
-const BORDER_WIDTH: int = 2
-const CORNER_RADIUS: int = 8
 
 var _owner: DuelState.PlayerSide = DuelState.PlayerSide.A
 
@@ -26,11 +24,10 @@ func _ready() -> void:
 func _draw() -> void:
 	var rect := Rect2(Vector2.ZERO, size)
 	var back := DuelPalette.framed_style(
-		DuelPalette.CARD_BACK_COLOR, DuelPalette.player_color(_owner), BORDER_WIDTH, 0.0
+		DuelPalette.CARD_BACK_COLOR, DuelPalette.player_color(_owner), DuelPalette.BORDER_WIDTH, 0.0
 	)
-	back.set_corner_radius_all(CORNER_RADIUS)
 	draw_style_box(back, rect)
-	_draw_stripes(rect.grow(-BORDER_WIDTH))
+	_draw_stripes(rect.grow(-DuelPalette.BORDER_WIDTH))
 
 
 ## Dos d'une carte du joueur `owner`, de taille `back_size` (DECK_SIZE ou HAND_SIZE).

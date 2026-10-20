@@ -21,7 +21,8 @@ const SPEED_NAMES: Dictionary[CardDefinition.SpellSpeed, String] = {
 }
 const SEPARATOR: String = " · "
 const HERO_TYPE_NAME: String = "Hero"
-const TOKEN_NAME: String = "Jeton"  # 202.4.2 : un jeton n'a pas de nom ; décision 0027
+## Décision 0027 : nom affiché d'un jeton, qui ne correspond à aucune carte (202.4.2).
+const TOKEN_NAME: String = "Jeton"
 ## 202.3.13 : le texte d'un Hero annonce son pouvoir ainsi : « Pouvoir (2 Essence) : … ».
 const POWER_PATTERN: String = "Pouvoir \\(\\d+ Essence\\)\\s*:\\s*"
 const POWER_CHIP: String = "Pouvoir · %d"
