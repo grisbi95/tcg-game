@@ -13,6 +13,10 @@ const AGENT_STEP_MSEC: int = 1_000
 ## Les deux pendules s'épuisent bien avant : l'hôte qui avance sans bloquer atteint ENDED.
 const MAX_HOST_STEPS: int = 5_000
 const UNKNOWN_HERO: StringName = &"unknown_hero"
+const RESPONSE_WINDOW_MSEC: int = 2_000  # 208.6.2
+const SHORT_CLOCK_MSEC: int = 3_000  # 209.4.3 réduite : plus que la fenêtre
+const OVERRUN_MSEC: int = 5_000  # temps écoulé au-delà de l'échéance, plus que la pendule de A
+const UNIT_COST: int = 2  # CatalogSamples.unit()
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
 const B: DuelState.PlayerSide = DuelState.PlayerSide.B
@@ -133,6 +137,18 @@ func test_decision_0020_each_event_batch_needs_its_confirmation() -> void:
 	assert_int(_host.get_host_state()).is_equal(HOST.ENDED)
 
 
+func test_decision_0020_one_confirmation_per_call_after_pass_and_clock_end() -> void:
+	_reach_window_of_b_with_short_clock()
+	_clock.advance(RESPONSE_WINDOW_MSEC + OVERRUN_MSEC)
+	var labels := EventLog.describe(_host.tick())  # 208.6.3 puis 209.4.5 dans un même appel
+	assert_str(labels[0]).is_equal("PriorityPassed:B")
+	assert_array(labels).contains(["TimeExpired:A", "DuelEnded"])
+	assert_int(labels.find("TimeExpired:A")).is_greater(0)
+	assert_int(_host.get_host_state()).is_equal(HOST.PLAYING_EVENTS)
+	_host.confirm_events_played()
+	assert_int(_host.get_host_state()).is_equal(HOST.ENDED)
+
+
 func test_decision_0020_state_changes_are_signaled() -> void:
 	var states: Array[DuelHost.HostState] = []
 	_host.host_state_changed.connect(
@@ -247,6 +263,30 @@ func _reach_first_turn_of_a() -> void:
 	_host.submit_human(ChooseMulligan.new(B))
 	_host.confirm_events_played()
 	_host.confirm_relay()
+
+
+# 209.4.3 : pendule réduite, assez longue pour que B passe à l'échéance de sa fenêtre (208.6.3) et
+# trop courte pour que A, attendu ensuite, survive au reste du temps écoulé. A a déployé une Unit,
+# B a pris l'appareil et reçoit sa fenêtre de réponse.
+func _reach_window_of_b_with_short_clock() -> void:
+	var config := DuelConfig.new()
+	config.clock_duration_msec = SHORT_CLOCK_MSEC
+	_engine = DuelEngine.new(SetupSamples.catalog(), config)
+	_host = DuelHost.new(_engine, _clock)
+	_reach_human_a()
+	ResponseWindowSamples.accept_mulligans(_host)
+	var is_deployed := false
+	for card: CardInstance in _engine.get_state().get_player(A).hand:
+		is_deployed = (
+			is_deployed or ResponseWindowSamples.try_deploy(_host, _engine, card, UNIT_COST)
+		)
+		if is_deployed:
+			break
+	assert_bool(is_deployed).is_true()
+	_host.confirm_events_played()
+	_host.confirm_relay()
+	assert_bool(_host.is_response_window_running()).is_true()
+	assert_int(_host.get_awaited_player()).is_equal(B)
 
 
 # Décision 0012 : A commence, pour des tests qui ne dépendent pas du tirage.

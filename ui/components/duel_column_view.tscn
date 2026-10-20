@@ -1,0 +1,108 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://ui/components/duel_column_view.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://ui/components/clock_view.tscn" id="2_clock"]
+[ext_resource type="PackedScene" path="res://ui/components/stack_view.tscn" id="3_stack"]
+
+[node name="DuelColumnView" type="PanelContainer"]
+custom_minimum_size = Vector2(220, 731)
+script = ExtResource("1_script")
+
+[node name="Column" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_type_variation = &"ColumnStack"
+
+[node name="TopClock" parent="Column" instance=ExtResource("2_clock")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Center" type="VBoxContainer" parent="Column"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+theme_type_variation = &"ColumnStack"
+
+[node name="TurnNumberLabel" type="Label" parent="Column/Center"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"TurnNumberLabel"
+horizontal_alignment = 1
+
+[node name="HintPanel" type="PanelContainer" parent="Column/Center"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HintLabel" type="Label" parent="Column/Center/HintPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"ColumnHintLabel"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="StackTitleLabel" type="Label" parent="Column/Center"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"TurnNumberLabel"
+
+[node name="StackScroll" type="ScrollContainer" parent="Column/Center"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="StackView" parent="Column/Center/StackScroll" instance=ExtResource("3_stack")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ActorLabel" type="Label" parent="Column/Center"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"TurnActorLabel"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="BigButton" type="Button" parent="Column/Center"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"BigButton"
+
+[node name="ResponseZone" type="VBoxContainer" parent="Column/Center"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+
+[node name="CountdownRow" type="HBoxContainer" parent="Column/Center/ResponseZone"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"CardRow"
+
+[node name="CountdownBar" type="ProgressBar" parent="Column/Center/ResponseZone/CountdownRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+mouse_filter = 2
+max_value = 1.0
+step = 0.0
+show_percentage = false
+
+[node name="CountdownLabel" type="Label" parent="Column/Center/ResponseZone/CountdownRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"CountdownLabel"
+
+[node name="StoppedLabel" type="Label" parent="Column/Center/ResponseZone"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"ColumnHintLabel"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="BottomClock" parent="Column" instance=ExtResource("2_clock")]
+unique_name_in_owner = true
+layout_mode = 2

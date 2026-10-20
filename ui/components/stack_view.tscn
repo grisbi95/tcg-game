@@ -2,18 +2,6 @@
 
 [ext_resource type="Script" path="res://ui/components/stack_view.gd" id="1_script"]
 
-[node name="StackView" type="PanelContainer"]
-custom_minimum_size = Vector2(300, 200)
+[node name="StackView" type="VBoxContainer"]
+theme_type_variation = &"CardColumn"
 script = ExtResource("1_script")
-
-[node name="Lines" type="VBoxContainer" parent="."]
-layout_mode = 2
-
-[node name="TitleLabel" type="Label" parent="Lines"]
-layout_mode = 2
-text = "Pile"
-
-[node name="EntryList" type="VBoxContainer" parent="Lines"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3

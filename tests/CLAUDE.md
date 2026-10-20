@@ -24,6 +24,8 @@ Complète le `CLAUDE.md` racine pour `tests/`. GdUnit4 6.2.1 ; commandes dans `t
 | `DeepCompare` | `find_clone_defects(a, b)` par réflexion ; `find_fields_never_set` protège le test de `clone()` |
 | `ManualClock` | horloge de `DuelHost` dont le temps n'avance que par `advance(msec)` (décision 0021) |
 | `ReplayFingerprint` | empreinte d'un duel rejoué : événements et état final par réflexion, SHA-256, `find_differences` |
+| `ResponseWindowProbe` | fenêtre de réponse de `DuelHost` menée jusqu'à son échéance (décision 0029) : temps restant à l'ouverture et juste avant l'échéance, événements ; `count_castable` pour les Réactions jouables |
+| `ResponseWindowSamples` | catalogues d'essai (Réaction sans effet, Héraut), carte ajoutée à la main d'un duel démarré, déploiement de A et mulligans passés par l'hôte, nombre d'intentions journalisées d'un hôte |
 | `ReplayFixture` | duel de non-régression (décision 0022) : `play()`, `fingerprint_of(journal)`, fichiers de `tests/fixtures/` |
 
 ## Motifs

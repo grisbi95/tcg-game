@@ -1,6 +1,6 @@
 class_name DuelSelection
 extends RefCounted
-## Sélection d'un joueur à l'écran (décisions 0023 et 0024) : machine à états qui traduit ses
+## Sélection d'un joueur à l'écran (décisions 0023, 0024 et 0031) : machine à états qui traduit ses
 ## gestes en intentions, pas à pas, et n'émet que celles que DuelEngine.validate() accepte ;
 ## `snapshot()` dit aux vues quoi surligner.
 ##
@@ -10,6 +10,9 @@ extends RefCounted
 
 signal intent_chosen(intent: DuelIntent)
 signal selection_changed
+## 208.6.5, décision 0029 : le joueur qui peut répondre ou passer a choisi une carte ou pressé
+## une Source ; l'écran le transmet à DuelHost, qui arrête le décompte de sa fenêtre de réponse.
+signal response_started
 
 ## Enum journalisable : ajouter à la fin, sans réordonner.
 enum SelectionState {
@@ -17,10 +20,9 @@ enum SelectionState {
 	CARD_CHOSEN,  # Unit ou Building choisi, en attente de sa case
 	PIECE_CHOSEN,  # pièce choisie, en attente de la case de son action normale
 	TARGET_PENDING,  # Spell, Gear ou pouvoir du Hero choisi, en attente de sa cible
-	CONFIRM,  # annonce complète, en attente de confirmation
 }
 
-## Ce qu'annonce la sélection en TARGET_PENDING ou CONFIRM.
+## Ce qu'annonce la sélection en TARGET_PENDING.
 enum AnnouncementSubject {
 	CARD,  # Spell ou Gear de la main
 	HERO_POWER,  # 202.3.13
@@ -34,7 +36,6 @@ var _selection_state: SelectionState = SelectionState.IDLE
 var _subject: AnnouncementSubject = AnnouncementSubject.CARD
 var _card_id: int = DuelState.NO_ID
 var _piece_id: int = DuelState.NO_ID
-var _target: SelectionTarget = SelectionTarget.new()
 ## Décision 0023 : paiement préparé pendant le tour adverse ; vide pendant son tour.
 var _draft_payment: EssencePayment = EssencePayment.new()
 ## 204.2.4 : cartes à écarter, pendant le mulligan.
@@ -73,6 +74,8 @@ func press_card(card_id: int) -> void:
 	elif card_id == _card_id and _selection_state != SelectionState.IDLE:
 		reset()
 	elif _player().find_card_in_hand(card_id) != null:
+		if _is_answering() and _candidates().is_card_playable(card_id):
+			response_started.emit()
 		_choose_card(card_id)
 
 
@@ -88,7 +91,13 @@ func press_piece(piece_id: int) -> void:
 		_enter(SelectionState.PIECE_CHOSEN, DuelState.NO_ID, piece_id)
 
 
+## Décision 0030 : un clic sur une pièce est un geste sur sa case. La case compte d'abord quand la
+## sélection la propose (déploiement, action normale, cible) ; sinon, sa pièce.
 func press_cell(cell: Vector2i) -> void:
+	var piece := _engine.get_state().piece_at(cell)
+	if piece != null and not snapshot().legal_cells.has(cell):
+		press_piece(piece.piece_id)
+		return
 	if _is_awaiting(DECISION.CHOOSE_TARGETS):
 		_emit_if_legal(_candidates().targets_answer(SelectionTarget.of_cell(cell)))
 		return
@@ -114,6 +123,8 @@ func press_stack_entry(stack_entry_id: int) -> void:
 ## Décision 0023 : `is_tilted` dit si la Source pressée est inclinée (elle se recycle) ou
 ## redressée (elle s'incline).
 func press_source(is_tilted: bool) -> void:
+	if _is_answering():
+		response_started.emit()
 	var produced := EssencePayment.new(0, 1) if is_tilted else EssencePayment.new(1, 0)
 	if _is_own_turn():
 		_emit_if_legal(ProduceEssence.new(_side, produced))
@@ -124,7 +135,11 @@ func press_source(is_tilted: bool) -> void:
 
 
 func press_hero_power() -> void:
-	if not _has_pending_decision():
+	if _has_pending_decision():
+		return
+	if _is_hero_power_chosen():
+		reset()
+	else:
 		_choose_announcement(AnnouncementSubject.HERO_POWER, DuelState.NO_ID)
 
 
@@ -136,11 +151,10 @@ func press_end_turn() -> void:
 	_emit_if_legal(EndTurn.new(_side))
 
 
+## Décision 0031 : seul le mulligan se confirme ; une annonce part dès qu'elle est complète.
 func press_confirm() -> void:
 	if _is_awaiting(DECISION.MULLIGAN):
 		_emit_if_legal(ChooseMulligan.new(_side, _set_aside_card_ids.duplicate()))
-	elif _selection_state == SelectionState.CONFIRM:
-		_emit_if_legal(_announcement(_candidates(), _target))
 
 
 func press_cancel() -> void:
@@ -164,35 +178,38 @@ func snapshot() -> SelectionSnapshot:
 	shown.can_pass = candidates.is_legal(PassPriority.new(_side))
 	shown.can_end_turn = candidates.is_legal(EndTurn.new(_side))
 	shown.can_confirm = _can_confirm(candidates)
-	shown.can_use_hero_power = (not _has_pending_decision() and candidates.is_hero_power_possible())
+	shown.can_use_hero_power = (
+		_selection_state == SelectionState.IDLE
+		and not _has_pending_decision()
+		and candidates.is_hero_power_possible()
+	)
+	shown.is_hero_power_chosen = _is_hero_power_chosen()
+	shown.is_drafting_payment = not _is_own_turn()
 	return shown
 
 
 func _choose_card(card_id: int) -> void:
 	if _candidates().is_announced_card(card_id):
 		_choose_announcement(AnnouncementSubject.CARD, card_id)
-	elif not _candidates().deploy_cells(card_id).is_empty():
+	elif _candidates().is_card_playable(card_id):
 		_enter(SelectionState.CARD_CHOSEN, card_id, DuelState.NO_ID)
 
 
-# Une annonce sans cible attend sa confirmation ; avec cible, le choix de la cible.
+# Décision 0031 : une annonce sans cible part aussitôt ; avec cible, elle attend sa cible.
 func _choose_announcement(subject: AnnouncementSubject, card_id: int) -> void:
 	_subject = subject
 	_card_id = card_id
 	var candidates := _candidates()
-	if candidates.is_legal(_announcement(candidates, SelectionTarget.new())):
-		_enter(SelectionState.CONFIRM, card_id, DuelState.NO_ID)
+	var untargeted := _announcement(candidates, SelectionTarget.new())
+	if candidates.is_legal(untargeted):
+		_emit_if_legal(untargeted)
 	elif not _announcement_targets(candidates).is_empty():
 		_enter(SelectionState.TARGET_PENDING, card_id, DuelState.NO_ID)
 
 
+# Décision 0031 : l'annonce part dès que sa cible est choisie.
 func _choose_target(target: SelectionTarget) -> void:
-	var candidates := _candidates()
-	if not candidates.is_legal(_announcement(candidates, target)):
-		return
-	_target = target
-	_selection_state = SelectionState.CONFIRM
-	selection_changed.emit()
+	_emit_if_legal(_announcement(_candidates(), target))
 
 
 func _toggle_set_aside(card_id: int) -> void:
@@ -217,7 +234,6 @@ func _enter(selection_state: SelectionState, card_id: int, piece_id: int) -> voi
 	_selection_state = selection_state
 	_card_id = card_id
 	_piece_id = piece_id
-	_target = SelectionTarget.new()
 	selection_changed.emit()
 
 
@@ -229,8 +245,11 @@ func _emit_if_legal(intent: DuelIntent) -> void:
 	intent_chosen.emit(intent)
 
 
+# Une sélection en cours éteint les marques « jouable » : seul ce qui est choisi reste marqué.
 func _playable_card_ids(candidates: SelectionCandidates) -> Array[int]:
 	var card_ids: Array[int] = []
+	if _selection_state != SelectionState.IDLE:
+		return card_ids
 	for card: CardInstance in _player().hand:
 		var card_id := card.card_instance_id
 		if _is_awaiting(DECISION.MULLIGAN):
@@ -283,9 +302,9 @@ func _announcement_targets(candidates: SelectionCandidates) -> Array[SelectionTa
 
 
 func _can_confirm(candidates: SelectionCandidates) -> bool:
-	if _is_awaiting(DECISION.MULLIGAN):
-		return candidates.is_legal(ChooseMulligan.new(_side, _set_aside_card_ids.duplicate()))
-	return _selection_state == SelectionState.CONFIRM
+	if not _is_awaiting(DECISION.MULLIGAN):
+		return false
+	return candidates.is_legal(ChooseMulligan.new(_side, _set_aside_card_ids.duplicate()))
 
 
 # Décision 0023 : pendant son tour, le coût est pris dans la réserve d'Essence.
@@ -307,8 +326,20 @@ func _copy_draft() -> EssencePayment:
 	return EssencePayment.new(_draft_payment.incline_count, _draft_payment.recycle_count)
 
 
+func _is_hero_power_chosen() -> bool:
+	return (
+		_selection_state == SelectionState.TARGET_PENDING
+		and _subject == AnnouncementSubject.HERO_POWER
+	)
+
+
 func _is_own_turn() -> bool:
 	return _engine.get_state().active_player == _side
+
+
+# 208.6.1 : le moteur accepterait que le joueur passe.
+func _is_answering() -> bool:
+	return _candidates().is_legal(PassPriority.new(_side))
 
 
 func _has_pending_decision() -> bool:

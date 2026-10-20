@@ -30,7 +30,7 @@
 
 ## 5. Machines à états
 
-- Dès que des booléens et des `if` imbriqués décrivent « où en est » un objet, une machine à états (`enum` + `match`). Le projet en nomme trois : le moteur (`DuelPhase` et `PendingDecision`), la sélection (`DuelSelection` : `IDLE`, `CARD_CHOSEN`, `PIECE_CHOSEN`, `TARGET_PENDING`, `CONFIRM`), l'hôte (`DuelHost` : `AWAITING_HUMAN`, `PLAYING_EVENTS`, `AWAITING_AI`, `RELAY`, `ENDED`).
+- Dès que des booléens et des `if` imbriqués décrivent « où en est » un objet, une machine à états (`enum` + `match`). Le projet en nomme trois : le moteur (`DuelPhase` et `PendingDecision`), la sélection (`DuelSelection` : `IDLE`, `CARD_CHOSEN`, `PIECE_CHOSEN`, `TARGET_PENDING`), l'hôte (`DuelHost` : `AWAITING_HUMAN`, `PLAYING_EVENTS`, `AWAITING_AI`, `RELAY`, `ENDED`).
 - Médiateur : `DuelEngine` coordonne les modules de règles ; s'il grossit, il délègue plutôt que de devenir un fourre-tout.
 - Référence : Game Programming Patterns, chapitre par chapitre au moment du besoin.
 

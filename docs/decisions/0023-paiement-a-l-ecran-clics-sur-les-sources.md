@@ -1,6 +1,6 @@
 # 0023 — Paiement à l'écran : clics sur les Sources
 
-- Statut : acceptée ; geste de recyclage modifié par 0028
+- Statut : acceptée ; modifiée par 0028 et 0032
 - Date : 2026-10-18
 - Décideur : créateur du projet
 - Périmètre : paiement des coûts en Essence dans la vue (étape 2.2)
@@ -29,4 +29,4 @@ Autre voie que A, B ou C, décrite et choisie par le créateur le 18 octobre 202
 
 ## Références
 
-Ruleset 203, 204.5.7, décisions de design 0190 à 0193 ; décisions 0003, 0024, 0026, 0028 ; roadmap étape 2.2.
+Ruleset 203, 204.5.7, décisions de design 0190 à 0193 ; décisions 0003, 0024, 0026 ; roadmap étape 2.2.

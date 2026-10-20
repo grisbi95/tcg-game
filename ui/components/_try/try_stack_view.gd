@@ -1,23 +1,28 @@
 extends Control
-## Essai de StackView : trois entrées, le sommet en haut, celle du milieu pressable ; puis une
-## pile vide.
+## Essai de StackView (décision 0028) : trois entrées, la dernière en haut, chacune à la teinte de
+## sa carte et liserée de son joueur ; celle du milieu pressable, la dernière déjà numérotée.
 
 const STACK_SCENE: PackedScene = preload("res://ui/components/stack_view.tscn")
+const COLUMN_WIDTH: float = 200.0
 
 
 func _ready() -> void:
-	var row := HBoxContainer.new()
-	TrySamples.frame(self, row)
+	var column := VBoxContainer.new()
+	column.custom_minimum_size.x = COLUMN_WIDTH
+	column.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	TrySamples.frame(self, column)
 	var stack: StackView = STACK_SCENE.instantiate()
-	row.add_child(stack)
-	var labels := PackedStringArray(
-		["A : déploiement de Soldat", "B : Spell Frappe", "A : Spell Contre"]
-	)
-	var entry_ids: Array[int] = [1, 2, 3]
+	column.add_child(stack)
+	var lines: Array[StackView.StackLine] = [
+		StackView.StackLine.new(1, "Soldat", DuelPalette.Tint.UNIT, DuelState.PlayerSide.A),
+		StackView.StackLine.new(2, "Frappe", DuelPalette.Tint.SPELL, DuelState.PlayerSide.B),
+		(
+			StackView
+			. StackLine
+			. new(3, "Contre", DuelPalette.Tint.SPELL, DuelState.PlayerSide.A)
+			. with_order(1)
+		),
+	]
 	var highlighted_ids: Array[int] = [2]
-	stack.show_entries(entry_ids, labels, highlighted_ids)
+	stack.show_entries(lines, highlighted_ids)
 	stack.stack_entry_pressed.connect(func(entry_id: int) -> void: print("entrée ", entry_id))
-	var empty: StackView = STACK_SCENE.instantiate()
-	row.add_child(empty)
-	var no_ids: Array[int] = []
-	empty.show_entries(no_ids, PackedStringArray(), no_ids)

@@ -1,11 +1,9 @@
 extends Control
-## Essai de CellView : un plateau 5×5 (201.2), deux pièces posées, la première rangée de A
-## surlignée. Un clic sur une case inverse son surlignage.
+## Essai de CellView : un plateau 5×5 (201.2, décision 0028), deux pièces posées, la première
+## rangée de A surlignée. Un clic sur une case inverse son surlignage.
 
 const CELL_SCENE: PackedScene = preload("res://ui/components/cell_view.tscn")
 const PIECE_SCENE: PackedScene = preload("res://ui/components/piece_view.tscn")
-const HERO_HEALTH: int = 15
-const UNIT_FORCE: int = 3
 
 var _highlighted_cells: Array[Vector2i] = []
 
@@ -26,14 +24,19 @@ func _ready() -> void:
 
 
 func _place_sample_piece(cell_view: CellView, cell: Vector2i) -> void:
+	var catalog := TrySamples.catalog()
 	if cell == BoardGeometry.hero_start_cell(DuelState.PlayerSide.A):
 		var hero: PieceView = PIECE_SCENE.instantiate()
 		cell_view.put_piece(hero)
-		hero.show_hero(0, "Capitaine", DuelState.PlayerSide.A, HERO_HEALTH)
+		var definition := catalog.get_hero(TrySamples.HERO_ID)
+		hero.show_hero(0, definition, DuelState.PlayerSide.A)
+		hero.show_health(definition.health)
 	elif cell == BoardGeometry.hero_start_cell(DuelState.PlayerSide.B):
 		var unit: PieceView = PIECE_SCENE.instantiate()
 		cell_view.put_piece(unit)
-		unit.show_unit(1, "Soldat", DuelState.PlayerSide.B, UNIT_FORCE)
+		var soldier := catalog.get_card(&"soldat")
+		unit.show_card_piece(1, soldier, DuelState.PlayerSide.B)
+		unit.show_force(soldier.force, soldier.force)
 
 
 func _toggle(cell_view: CellView, cell: Vector2i) -> void:

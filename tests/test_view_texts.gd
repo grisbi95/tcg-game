@@ -1,6 +1,6 @@
 extends GdUnitTestSuite
-## Textes de la vue sans scène : phrases du journal, lignes des cartes (ruleset 0.35 ; décision
-## 0025 ; ui/CLAUDE.md, fonctions statiques des vues).
+## Textes de la vue sans scène : phrases du journal, textes des cartes (ruleset 0.36 ; décisions
+## 0025 et 0027 ; ui/CLAUDE.md, fonctions statiques des vues).
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
 const B: DuelState.PlayerSide = DuelState.PlayerSide.B
@@ -28,13 +28,35 @@ func test_decision_0025_other_event_has_a_plain_sentence() -> void:
 	assert_str(EventText.describe(DuelEnded.new())).is_equal("Le duel est terminé.")
 
 
-func test_decision_0025_card_lines() -> void:
+func test_decision_0027_type_and_speed_names() -> void:
 	var unit := CardDefinition.from_dict(CatalogSamples.unit())
-	assert_str(CardText.cost_line(unit)).is_equal("Coût 2")
-	assert_str(CardText.type_line(unit)).is_equal("Unit · Force 3")
+	assert_str(CardText.type_name(unit.card_type)).is_equal("Unit")
+	assert_str(CardText.speed_name(unit)).is_empty()
 	var spell := CardDefinition.from_dict(CatalogSamples.spell())
-	assert_str(CardText.type_line(spell)).is_equal("Spell · Réaction")
+	assert_str(CardText.speed_name(spell)).is_equal("Réaction")
 	assert_str(CardText.keywords_line(spell)).is_empty()
+	var building := CardDefinition.CardType.BUILDING
+	assert_str(CardText.token_type_name(building)).is_equal("Building · Jeton")
+
+
+func test_decision_0027_keyword_chip_replaces_its_written_name() -> void:
+	var unit := CardDefinition.from_dict(CatalogSamples.unit())
+	unit.keywords[CardDefinition.Keyword.ARRIVAL] = CardDefinition.NO_KEYWORD_VALUE
+	unit.text = "Arrivée : une Unit ennemie ciblée a −1 Force."
+	assert_str(CardText.body_bbcode(unit)).is_equal(
+		CardText.chip("Arrivée") + " une Unit ennemie ciblée a −1 Force."
+	)
+	unit.text = "Arrivée"
+	assert_str(CardText.body_bbcode(unit)).is_equal(CardText.chip("Arrivée"))
+
+
+func test_decision_0027_hero_power_follows_its_chip() -> void:
+	var hero := HeroDefinition.from_dict(CatalogSamples.hero())
+	hero.power_cost = 2
+	hero.text = "Passif. Pouvoir (2 Essence) : effet [rare]."
+	assert_str(CardText.hero_body_bbcode(hero)).is_equal(
+		"Passif.\n" + CardText.chip("Pouvoir · 2") + " effet [lb]rare]."
+	)
 
 
 func test_decision_0025_keywords_line_names_each_keyword_with_its_value() -> void:

@@ -23,6 +23,7 @@ var cards_drawn_per_turn: int = 2  # 204.3.6
 ## 206.3.6, dont 206.3.3a et 206.3.4a portent le statut : option A de la décision 0053 du
 ## ruleset, seule définie par les règles ; `find_errors()` refuse toute autre valeur.
 var tie_destroys_both: bool = true
+var response_window_msec: int = 2_000  # 208.6.2 : 2 secondes, décomptées par DuelHost (0029)
 var clock_duration_msec: int = 600_000  # 209.4.3 : 10 minutes
 var clock_bonus_msec: int = 0  # 209.4.3a
 var starting_fatigue: int = 0  # 209.5.1

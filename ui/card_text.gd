@@ -1,6 +1,6 @@
 class_name CardText
 extends RefCounted
-## Lignes de texte d'une carte à l'écran (composants CardView et HoverPreview, décision 0025).
+## Textes d'une carte à l'écran (CardView, PieceView, HoverPreview ; décisions 0025 et 0027).
 
 const KEYWORD_NAMES: Dictionary[CardDefinition.Keyword, String] = {
 	CardDefinition.Keyword.OUTPOST: "Avant-poste",  # 210.2.1
@@ -20,33 +20,96 @@ const SPEED_NAMES: Dictionary[CardDefinition.SpellSpeed, String] = {
 	CardDefinition.SpellSpeed.REACTION: "Réaction",  # 207.1.2
 }
 const SEPARATOR: String = " · "
-
-
-static func cost_line(definition: CardDefinition) -> String:
-	return "Coût %d" % definition.cost
-
-
-## « Unit · Force 3 », « Spell · Réaction », « Gear ».
-static func type_line(definition: CardDefinition) -> String:
-	var parts := PackedStringArray([TYPE_NAMES[definition.card_type]])
-	if definition.force != CardDefinition.NO_FORCE:
-		parts.append(force_line(definition.force))
-	if SPEED_NAMES.has(definition.speed):
-		parts.append(SPEED_NAMES[definition.speed])
-	return SEPARATOR.join(parts)
-
-
-## « Force 3 », pour une carte ou une pièce (209.1).
-static func force_line(force: int) -> String:
-	return "Force %d" % force
+const HERO_TYPE_NAME: String = "Hero"
+## Décision 0027 : nom affiché d'un jeton, qui ne correspond à aucune carte (202.4.2).
+const TOKEN_NAME: String = "Jeton"
+## 202.3.13 : le texte d'un Hero annonce son pouvoir ainsi : « Pouvoir (2 Essence) : … ».
+const POWER_PATTERN: String = "Pouvoir \\(\\d+ Essence\\)\\s*:\\s*"
+const POWER_CHIP: String = "Pouvoir · %d"
+const KEYWORD_SEPARATOR: String = ":"
 
 
 ## « Assaut 2 · Avant-poste » ; vide sans mot-clé.
 static func keywords_line(definition: CardDefinition) -> String:
 	var parts := PackedStringArray()
 	for keyword: CardDefinition.Keyword in definition.keywords:
-		var value := definition.keywords[keyword]
-		var name := KEYWORD_NAMES[keyword]
-		var has_value := value != CardDefinition.NO_KEYWORD_VALUE
-		parts.append("%s %d" % [name, value] if has_value else name)
+		parts.append(keyword_label(keyword, definition.keywords[keyword]))
 	return SEPARATOR.join(parts)
+
+
+## « Unit », « Building », « Spell », « Gear ».
+static func type_name(card_type: CardDefinition.CardType) -> String:
+	return TYPE_NAMES[card_type]
+
+
+## 202.4.2, décision 0027 : « Unit · Jeton » ou « Building · Jeton ».
+static func token_type_name(card_type: CardDefinition.CardType) -> String:
+	return type_name(card_type) + SEPARATOR + TOKEN_NAME
+
+
+## « Action » ou « Réaction » pour un Spell (207.1.2) ; vide sinon.
+static func speed_name(definition: CardDefinition) -> String:
+	return SPEED_NAMES.get(definition.speed, "")
+
+
+## Décision 0027 : texte en BBCode, chaque mot-clé en étiquette en tête ; le nom du mot-clé déjà
+## écrit au début du texte n'est pas répété.
+static func body_bbcode(definition: CardDefinition) -> String:
+	var chips := PackedStringArray()
+	var text := definition.text.strip_edges()
+	for keyword: CardDefinition.Keyword in definition.keywords:
+		var label := keyword_label(keyword, definition.keywords[keyword])
+		chips.append(chip(label))
+		text = _without_prefix(text, label)
+	return _joined(chips, text)
+
+
+## Décision 0027 : texte d'un Hero, son pouvoir à la ligne derrière l'étiquette « Pouvoir · N ».
+static func hero_body_bbcode(hero: HeroDefinition) -> String:
+	var power_marker := RegEx.create_from_string(POWER_PATTERN)
+	var found := power_marker.search(hero.text)
+	var power_chip := chip(POWER_CHIP % hero.power_cost)
+	if found == null:
+		return _joined(PackedStringArray(), hero.text.strip_edges()) + "\n" + power_chip
+	var passive := hero.text.substr(0, found.get_start()).strip_edges()
+	var power := hero.text.substr(found.get_end()).strip_edges()
+	return escaped(passive) + "\n" + _joined(PackedStringArray([power_chip]), power)
+
+
+## « Assaut 2 », « Avant-poste ».
+static func keyword_label(keyword: CardDefinition.Keyword, value: int) -> String:
+	var name := KEYWORD_NAMES[keyword]
+	return name if value == CardDefinition.NO_KEYWORD_VALUE else "%s %d" % [name, value]
+
+
+## Étiquette sombre, la même pour tous les mots-clés (décision 0027).
+static func chip(label: String) -> String:
+	return (
+		"[bgcolor=#%s][color=#%s] %s [/color][/bgcolor]"
+		% [
+			DuelPalette.KEYWORD_BACKGROUND.to_html(false),
+			DuelPalette.KEYWORD_INK.to_html(false),
+			escaped(label),
+		]
+	)
+
+
+## Texte affiché tel quel par un RichTextLabel en BBCode.
+static func escaped(text: String) -> String:
+	return text.replace("[", "[lb]")
+
+
+static func _without_prefix(text: String, label: String) -> String:
+	if not text.begins_with(label):
+		return text
+	var rest := text.substr(label.length()).strip_edges()
+	if rest.begins_with(KEYWORD_SEPARATOR):
+		rest = rest.substr(KEYWORD_SEPARATOR.length()).strip_edges()
+	return rest
+
+
+static func _joined(chips: PackedStringArray, text: String) -> String:
+	var parts := chips.duplicate()
+	if not text.is_empty():
+		parts.append(escaped(text))
+	return " ".join(parts)
