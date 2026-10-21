@@ -1,6 +1,6 @@
 class_name EventText
 extends RefCounted
-## Phrase du journal à l'écran pour chaque événement du duel (composant LogView). Aucune
+## Phrase pour chaque événement du duel ; plus de journal à l'écran depuis la décision 0041. Aucune
 ## information cachée : une carte piochée ou écartée n'est jamais nommée (201.4).
 
 ## Une phrase par classe d'événement ; `%s` reçoit le joueur concerné d'un PlayerEvent.

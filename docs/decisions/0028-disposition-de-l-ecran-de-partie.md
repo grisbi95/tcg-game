@@ -1,6 +1,6 @@
 # 0028 — Disposition de l'écran de partie
 
-- Statut : acceptée ; complétée par 0030 ; modifiée par 0032
+- Statut : acceptée ; complétée par 0030 ; modifiée par 0032 ; modifiée par 0041
 - Date : 2026-10-18
 - Décideur : créateur du projet
 - Périmètre : écran de duel (`ui/`, étape 2.3)

@@ -14,29 +14,14 @@ signal card_unhovered(card_instance_id: int)
 
 ## Décision 0028 : carte de la main et de la défausse, au format 63:88 ; l'aperçu l'agrandit.
 const CARD_SIZE := Vector2(158, 220)
-const COST_BADGE_SIZE: float = 34.0
-const STAT_BADGE_SIZE: float = 42.0
-const ART_ICON_SIZE: float = 40.0
-const BAND_ICON_SIZE: float = 14.0
-const TEXT_HEIGHT: float = 84.0
 const CARD_MARGIN: float = 7.0
-const TEXT_MARGIN: float = 5.0
-const ART_RADIUS: int = 6
-## Taille de police la plus petite du texte, à l'échelle 1.
-const TEXT_MIN_FONT_SIZE: int = 9
-const HIGHLIGHT_PADDING_NAMES: Array[StringName] = [
-	&"text_highlight_h_padding", &"text_highlight_v_padding"
-]
-## Le Layout compte quatre rangées : en-tête, illustration, bandeau et texte.
-const LAYOUT_GAP_COUNT: int = 3
 
 var _card_instance_id: int = DuelState.NO_ID
 var _tint: DuelPalette.Tint = DuelPalette.Tint.UNIT
 var _scale: float = 1.0
 var _stat: StatBadgeBinding
 var _marks := ControlMarks.new(self, 0.0)
-var _fitted_text_width: float = -1.0
-var _is_text_fit_pending: bool = false
+var _scaler := CardScaler.new()
 
 @onready var _layout: VBoxContainer = %Layout
 @onready var _header: HBoxContainer = %Header
@@ -57,7 +42,7 @@ var _is_text_fit_pending: bool = false
 
 func _ready() -> void:
 	_marks.hover_changed.connect(_on_hover_changed)
-	_text_label.resized.connect(_on_text_label_resized)
+	_scaler.setup(self, _scale_parts(), CARD_SIZE)
 	DuelIcons.bind_tinted([_art_icon, _band_icon], func() -> DuelPalette.Tint: return _tint)
 	_stat = StatBadgeBinding.new(_stat_badge, _stat_label)
 	_bind_cost_badge()
@@ -159,107 +144,29 @@ func _bind_cost_badge() -> void:
 	DuelIcons.fit_label(_cost_label, DuelIcons.Badge.DROP)
 
 
-# Les tailles du thème valent pour l'échelle 1 ; la carte agrandie les multiplie par `_scale`.
 func _apply_scale() -> void:
-	custom_minimum_size = CARD_SIZE * _scale
-	_scale_constant(_layout, &"CardColumn", &"separation")
-	for row: HBoxContainer in [_header, _band]:
-		_scale_constant(row, &"CardRow", &"separation")
-	for label: Label in [_cost_label, _stat_label]:
-		_scale_font(label, &"CardPillLabel", &"font_size")
-	_scale_font(_name_label, &"CardNameLabel", &"font_size")
-	for label: Label in [_type_label, _speed_label]:
-		_scale_font(label, &"CardBandLabel", &"font_size")
-	_text_label.theme_type_variation = &"CardBodyText"
-	_cost_badge.custom_minimum_size = Vector2.ONE * COST_BADGE_SIZE * _scale
-	_header.custom_minimum_size.y = STAT_BADGE_SIZE * _scale
-	_stat_badge.custom_minimum_size = Vector2.ONE * STAT_BADGE_SIZE * _scale
-	_art_icon.custom_minimum_size = Vector2.ONE * ART_ICON_SIZE * _scale
-	_band_icon.custom_minimum_size = Vector2.ONE * BAND_ICON_SIZE * _scale
-	_text_panel.custom_minimum_size.y = TEXT_HEIGHT * _scale
-	var radius := roundi(ART_RADIUS * _scale)
-	_art.add_theme_stylebox_override(
-		"panel", DuelPalette.fill_style(DuelPalette.ART_COLOR, radius, 0.0)
-	)
-	_text_panel.add_theme_stylebox_override(
-		"panel", DuelPalette.fill_style(DuelPalette.CARD_FACE_COLOR, radius, TEXT_MARGIN * _scale)
-	)
+	_scaler.apply_scale(_scale)
 	_refresh_frame()
-	_request_text_fit()
 
 
-func _scale_font(control: Control, variation: StringName, font_size_name: StringName) -> void:
-	control.theme_type_variation = variation
-	control.remove_theme_font_size_override(font_size_name)
-	var base_size := control.get_theme_font_size(font_size_name)
-	control.add_theme_font_size_override(font_size_name, roundi(base_size * _scale))
-
-
-# Le surlignage d'une étiquette déborde de sa ligne de la marge `text_highlight_*_padding`, valable
-# pour la taille de police du thème : elle suit la taille effective du texte.
-func _follow_highlight_padding(font_size: int, theme_font_size: int) -> void:
-	for padding_name: StringName in HIGHLIGHT_PADDING_NAMES:
-		_text_label.remove_theme_constant_override(padding_name)
-		var base_padding := _text_label.get_theme_constant(padding_name)
-		var padding := roundi(base_padding * float(font_size) / theme_font_size)
-		_text_label.add_theme_constant_override(padding_name, padding)
-
-
-func _scale_constant(
-	container: Container, variation: StringName, constant_name: StringName
-) -> void:
-	container.theme_type_variation = variation
-	container.remove_theme_constant_override(constant_name)
-	var base_value := container.get_theme_constant(constant_name)
-	container.add_theme_constant_override(constant_name, roundi(base_value * _scale))
-
-
-func _on_text_label_resized() -> void:
-	if not is_equal_approx(_text_label.size.x, _fitted_text_width):
-		_request_text_fit()
-
-
-# Contournement : la largeur du texte n'est connue qu'après la mise en page des conteneurs, d'où
-# l'appel différé, repris par `resized` tant que la largeur n'a pas été donnée.
-func _request_text_fit() -> void:
-	if _is_text_fit_pending:
-		return
-	_is_text_fit_pending = true
-	_fit_text.call_deferred()
-
-
-# Seuls le texte, la largeur et l'échelle décident de la taille : la mesure est déterministe.
-func _fit_text() -> void:
-	_is_text_fit_pending = false
-	if _text_label.size.x <= 0.0:
-		return
-	_fitted_text_width = _text_label.size.x
-	var panel_margin := _text_panel.get_theme_stylebox(&"panel").get_minimum_size().y
-	var max_text_height := _max_text_panel_height() - panel_margin
-	_text_label.remove_theme_font_size_override(&"normal_font_size")
-	var theme_font_size := _text_label.get_theme_font_size(&"normal_font_size")
-	var font_size := roundi(theme_font_size * _scale)
-	var min_font_size := roundi(TEXT_MIN_FONT_SIZE * _scale)
-	_text_label.add_theme_font_size_override(&"normal_font_size", font_size)
-	while font_size > min_font_size and _text_label.get_content_height() > max_text_height:
-		font_size -= 1
-		_text_label.add_theme_font_size_override(&"normal_font_size", font_size)
-	_follow_highlight_padding(font_size, theme_font_size)
-	var text_height := minf(_text_label.get_content_height(), max_text_height)
-	_text_panel.custom_minimum_size.y = maxf(TEXT_HEIGHT * _scale, text_height + panel_margin)
-
-
-# Place laissée au texte : la carte moins le cadre, l'en-tête, l'illustration à sa taille minimale,
-# le bandeau et les écarts.
-func _max_text_panel_height() -> float:
-	var frame_height := get_theme_stylebox(&"panel").get_minimum_size().y
-	var rows_height := (
-		_header.get_combined_minimum_size().y
-		+ _art.get_combined_minimum_size().y
-		+ _band.get_combined_minimum_size().y
-	)
-	var gaps_height := _layout.get_theme_constant(&"separation") * LAYOUT_GAP_COUNT
-	return CARD_SIZE.y * _scale - frame_height - rows_height - gaps_height
+func _scale_parts() -> CardScaler.Parts:
+	var parts := CardScaler.Parts.new()
+	parts.layout = _layout
+	parts.header = _header
+	parts.band = _band
+	parts.cost_badge = _cost_badge
+	parts.stat_badge = _stat_badge
+	parts.art_icon = _art_icon
+	parts.band_icon = _band_icon
+	parts.art = _art
+	parts.text_panel = _text_panel
+	parts.text_label = _text_label
+	parts.cost_label = _cost_label
+	parts.stat_label = _stat_label
+	parts.name_label = _name_label
+	parts.type_label = _type_label
+	parts.speed_label = _speed_label
+	return parts
 
 
 func _on_hover_changed(is_hovered: bool) -> void:

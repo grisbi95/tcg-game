@@ -24,7 +24,7 @@
 
 ## 4. Composition, injection, héritage
 
-- Petits objets spécialisés, composés, plutôt qu'un monolithe ou une hiérarchie profonde. Côté vue : `CardView`, `PieceView`, `CellView`, `SourcesView`, `ClockView`, `StackView`, `HoverPreview`, `LogView`. Côté moteur : modules par chapitre et objets de données typés.
+- Petits objets spécialisés, composés, plutôt qu'un monolithe ou une hiérarchie profonde. Côté vue : `CardView`, `PieceView`, `CellView`, `SourcesView`, `ClockView`, `StackView`, `HoverPreview`. Côté moteur : modules par chapitre et objets de données typés.
 - L'héritage est réservé aux objets de même nature : bases `DuelIntent`, `DuelEvent`, `PlayerEvent`. Jamais une couche d'héritage pour raccourcir une fonction.
 - Injecter les dépendances (moteur, horloge, catalogue, configuration) par `setup(...)` ou en paramètre. Les modules de `rules/` ne reçoivent que `state`.
 

@@ -1,7 +1,104 @@
-[gd_resource type="Theme" load_steps=2 format=3]
+[gd_resource type="Theme" load_steps=8 format=3]
 
 [sub_resource type="FontVariation" id="FontVariation_bold"]
 variation_embolden = 0.6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_concede_normal"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(1, 1, 1, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.22745098, 0.25490196, 0.29803922, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+anti_aliasing = true
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_concede_hover"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.12156863, 0.14117647, 0.16862745, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.22745098, 0.25490196, 0.29803922, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+anti_aliasing = true
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_concede_pressed"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.11372549, 0.12941176, 0.15294118, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.22745098, 0.25490196, 0.29803922, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+anti_aliasing = true
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bar_track"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.22745098, 0.25490196, 0.29803922, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+anti_aliasing = true
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_column_panel"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.14901961, 0.16862745, 0.2, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.22745098, 0.25490196, 0.29803922, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+anti_aliasing = true
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_column_hint"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+bg_color = Color(0.12156863, 0.14117647, 0.16862745, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.22745098, 0.25490196, 0.29803922, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+anti_aliasing = true
 
 [resource]
 default_font_size = 20
@@ -68,13 +165,19 @@ BigButton/base_type = &"Button"
 BigButton/fonts/font = SubResource("FontVariation_bold")
 BigButton/font_sizes/font_size = 20
 TurnNumberLabel/base_type = &"Label"
+TurnNumberLabel/colors/font_color = Color(0.63921569, 0.6627451, 0.70196078, 1)
 TurnNumberLabel/font_sizes/font_size = 15
 TurnActorLabel/base_type = &"Label"
 TurnActorLabel/fonts/font = SubResource("FontVariation_bold")
 TurnActorLabel/font_sizes/font_size = 19
 ColumnHintLabel/base_type = &"Label"
+ColumnHintLabel/colors/font_color = Color(0.93333333, 0.94117647, 0.95294118, 1)
 ColumnHintLabel/font_sizes/font_size = 14
+ColumnMutedLabel/base_type = &"Label"
+ColumnMutedLabel/colors/font_color = Color(0.63921569, 0.6627451, 0.70196078, 1)
+ColumnMutedLabel/font_sizes/font_size = 14
 CountdownLabel/base_type = &"Label"
+CountdownLabel/colors/font_color = Color(0.93333333, 0.94117647, 0.95294118, 1)
 CountdownLabel/fonts/font = SubResource("FontVariation_bold")
 CountdownLabel/font_sizes/font_size = 15
 ColumnStack/base_type = &"VBoxContainer"
@@ -93,7 +196,19 @@ ModalColumn/base_type = &"VBoxContainer"
 ModalColumn/constants/separation = 18
 ModalRow/base_type = &"HBoxContainer"
 ModalRow/constants/separation = 16
+ColumnPanel/base_type = &"PanelContainer"
+ColumnPanel/styles/panel = SubResource("StyleBoxFlat_column_panel")
+ColumnHintPanel/base_type = &"PanelContainer"
+ColumnHintPanel/styles/panel = SubResource("StyleBoxFlat_column_hint")
 ConcedeButton/base_type = &"Button"
+ConcedeButton/colors/font_color = Color(0.63921569, 0.6627451, 0.70196078, 1)
+ConcedeButton/colors/font_hover_color = Color(0.93333333, 0.94117647, 0.95294118, 1)
+ConcedeButton/colors/font_pressed_color = Color(0.93333333, 0.94117647, 0.95294118, 1)
 ConcedeButton/font_sizes/font_size = 14
+ConcedeButton/styles/hover = SubResource("StyleBoxFlat_concede_hover")
+ConcedeButton/styles/normal = SubResource("StyleBoxFlat_concede_normal")
+ConcedeButton/styles/pressed = SubResource("StyleBoxFlat_concede_pressed")
+CountdownBar/base_type = &"ProgressBar"
+CountdownBar/styles/background = SubResource("StyleBoxFlat_bar_track")
 InlineRow/base_type = &"HBoxContainer"
 InlineRow/constants/separation = 6
