@@ -1,66 +1,13 @@
 class_name TurnRules
 extends RefCounted
-## Préparation, mulligan, début et fin du tour (204 ; décisions 0012, 0013 et 0015).
+## Début et fin du tour (204.3 à 204.5). La préparation et le mulligan (204.1, 204.2) sont dans
+## PreparationRules, qui appelle ce module ; celui-ci n'appelle jamais PreparationRules.
 ##
 ## Le début du tour s'exécute d'un bloc dans `submit()` : aucun joueur ne peut y répondre
 ## (204.3.9). Les compteurs « par tour » des deux joueurs repartent à zéro au début de chaque
 ## tour (convention de l'étape 1.3).
 
 const FIRST_TURN: int = 1
-
-
-## 204.1.9, 204.1.16 : préparation jusqu'à l'attente des mulligans. Suppose `setup` valide
-## (`DuelSetup.find_errors()` vide) pour le catalogue de `state`.
-static func start_preparation(state: DuelState, setup: DuelSetup, events: Array[DuelEvent]) -> void:
-	state.phase = DuelState.DuelPhase.PREPARATION
-	state.first_player_imposed = setup.is_first_player_imposed
-	state.first_player = setup.imposed_first_player
-	for side: DuelState.PlayerSide in DuelState.SIDES:
-		_set_starting_values(state, side)
-		ZoneRules.create_deck(state, side, setup.deck_of(side))
-	for side: DuelState.PlayerSide in DuelState.SIDES:
-		_place_hero(state, side, state.catalog.get_hero(setup.hero_of(side)), events)
-	for side: DuelState.PlayerSide in DuelState.SIDES:
-		_put_setup_sources_into_play(state, side, events)
-	for side: DuelState.PlayerSide in DuelState.SIDES:
-		ZoneRules.shuffle_deck(state, side, events)
-	for side: DuelState.PlayerSide in DuelState.SIDES:
-		_draw_cards(state, side, state.config.opening_hand_size, events)
-	if not state.is_ended():
-		_request_mulligans(state, events)
-
-
-## 204.2.1, 204.2.4, décisions 0009 et 0013 : raison du refus de `intent`, ou NONE. Pur.
-static func validate_mulligan(
-	state: DuelState, intent: ChooseMulligan
-) -> IntentRejected.RejectReason:
-	var reason := PendingDecision.validate_answer(
-		state.pending_decision, PendingDecision.DecisionKind.MULLIGAN, intent.player
-	)
-	if reason != IntentRejected.RejectReason.NONE:
-		return reason
-	var player := state.get_player(intent.player)
-	var seen_ids: Array[int] = []
-	for card_id: int in intent.set_aside_card_ids:
-		if seen_ids.has(card_id):
-			return IntentRejected.RejectReason.DUPLICATE_CARD
-		if player.find_card_in_hand(card_id) == null:
-			return IntentRejected.RejectReason.CARD_NOT_IN_HAND
-		seen_ids.append(card_id)
-	return IntentRejected.RejectReason.NONE
-
-
-## 204.2.2, 204.2.3, décision 0013 : garde le choix caché ; à la dernière réponse, exécute les
-## mulligans, désigne le premier joueur et commence le premier tour (204.1.11).
-static func apply_mulligan(
-	state: DuelState, intent: ChooseMulligan, events: Array[DuelEvent]
-) -> void:
-	var decision := state.pending_decision
-	decision.set_aside_card_ids.append_array(intent.set_aside_card_ids)
-	decision.awaited_players.erase(intent.player)
-	events.append(MulliganDecided.new(intent.player))
-	if decision.awaited_players.is_empty():
-		_finish_preparation(state, decision.set_aside_card_ids, events)
 
 
 ## 204.4.7, convention 1.3 : raison du refus de `intent`, ou NONE. L'attente est contrôlée
@@ -99,104 +46,12 @@ static func is_end_of_turn_ready(state: DuelState) -> bool:
 static func finish_end_of_turn(state: DuelState, events: Array[DuelEvent]) -> void:
 	_end_until_end_of_turn_effects(state, events)
 	EssenceRules.lose_reserve(state, events)
-	_start_turn(state, DuelState.opponent_of(state.active_player), events)
+	start_turn(state, DuelState.opponent_of(state.active_player), events)
 
 
-# 204.1.16, décision 0015 : mulligans joueur A puis B, tirage du premier joueur, premier tour.
-static func _finish_preparation(
-	state: DuelState, set_aside_card_ids: Array[int], events: Array[DuelEvent]
-) -> void:
-	state.pending_decision = null
-	for side: DuelState.PlayerSide in DuelState.SIDES:
-		_execute_mulligan(state, side, _ids_in_hand(state, side, set_aside_card_ids), events)
-		if state.is_ended():
-			return
-	_designate_first_player(state, events)
-	_start_turn(state, state.first_player, events)
-
-
-# 209.4.3, 209.5.1
-static func _set_starting_values(state: DuelState, side: DuelState.PlayerSide) -> void:
-	var player := state.get_player(side)
-	player.clock_remaining_msec = state.config.clock_duration_msec
-	player.fatigue_counter = state.config.starting_fatigue
-
-
-# 204.1.1, 204.1.8 ; 201.5.1 : la carte Hero appartient à son joueur.
-static func _place_hero(
-	state: DuelState, side: DuelState.PlayerSide, hero: HeroDefinition, events: Array[DuelEvent]
-) -> void:
-	var card := CardInstance.new()
-	card.card_instance_id = state.allocate_card_instance_id()
-	card.definition_id = hero.id
-	card.owner = side
-	var piece := Piece.new()
-	piece.piece_id = state.allocate_piece_id()
-	piece.kind = Piece.PieceKind.HERO
-	piece.owner = side
-	piece.cell = BoardGeometry.hero_start_cell(side)
-	piece.card = card
-	piece.health = hero.health
-	state.pieces.append(piece)
-	events.append(HeroPlaced.new(side, piece.piece_id, piece.cell))
-
-
-# 204.1.12, 204.1.13, 204.1.17
-static func _put_setup_sources_into_play(
-	state: DuelState, side: DuelState.PlayerSide, events: Array[DuelEvent]
-) -> void:
-	var player := state.get_player(side)
-	player.sources_upright = state.config.setup_sources_in_play
-	player.sources_in_reserve = state.config.setup_sources_in_reserve
-	events.append(SourcesPutIntoPlay.new(side, player.sources_upright))
-
-
-# 204.2.2 : une seule attente pour les deux joueurs (décision 0009), annoncée à chacun.
-static func _request_mulligans(state: DuelState, events: Array[DuelEvent]) -> void:
-	var decision := PendingDecision.new()
-	decision.kind = PendingDecision.DecisionKind.MULLIGAN
-	decision.awaited_players.assign(DuelState.SIDES)
-	state.pending_decision = decision
-	for side: DuelState.PlayerSide in DuelState.SIDES:
-		events.append(DecisionRequested.new(side, decision.kind))
-
-
-static func _ids_in_hand(
-	state: DuelState, side: DuelState.PlayerSide, card_ids: Array[int]
-) -> Array[int]:
-	var player := state.get_player(side)
-	var ids_in_hand: Array[int] = []
-	for card_id: int in card_ids:
-		if player.find_card_in_hand(card_id) != null:
-			ids_in_hand.append(card_id)
-	return ids_in_hand
-
-
-# 204.2.9 ; 204.2.12 à 204.2.14 : sans carte écartée, le joueur garde sa main et ne mélange pas.
-static func _execute_mulligan(
-	state: DuelState,
-	side: DuelState.PlayerSide,
-	set_aside_ids: Array[int],
-	events: Array[DuelEvent]
-) -> void:
-	if set_aside_ids.is_empty():
-		return
-	ZoneRules.set_aside_cards(state, side, set_aside_ids, events)
-	_draw_cards(state, side, set_aside_ids.size(), events)
-	ZoneRules.return_set_aside_to_deck(state, side, events)
-	ZoneRules.shuffle_deck(state, side, events)
-
-
-# 204.1.14, 204.1.16 ; décision 0012 : aucun tirage si le premier joueur est imposé.
-static func _designate_first_player(state: DuelState, events: Array[DuelEvent]) -> void:
-	if not state.first_player_imposed:
-		state.first_player = DuelState.SIDES[state.rng.randi_range(0, DuelState.SIDES.size() - 1)]
-	events.append(FirstPlayerChosen.new(state.first_player))
-
-
-# 204.3.8 puis 204.4.1 ; 208.4.11 : les effets qui attendaient la fin du début du tour
-# s'ajoutent à la pile dès le début de la phase principale, par DuelEngine.
-static func _start_turn(
+## 204.3.8 puis 204.4.1 ; 208.4.11 : commence le tour de `side`. Les effets qui attendaient la
+## fin du début du tour s'ajoutent à la pile dès le début de la phase principale, par DuelEngine.
+static func start_turn(
 	state: DuelState, side: DuelState.PlayerSide, events: Array[DuelEvent]
 ) -> void:
 	state.phase = DuelState.DuelPhase.TURN_START
@@ -207,9 +62,21 @@ static func _start_turn(
 	events.append(TurnStarted.new(side, state.turn_number))
 	_untap_sources(state, side, events)
 	_receive_sources(state, side, events)
-	_draw_cards(state, side, state.config.cards_drawn_per_turn, events)
+	draw_cards(state, side, state.config.cards_drawn_per_turn, events)
 	if not state.is_ended():
 		state.phase = DuelState.DuelPhase.MAIN
+
+
+## 201.3.5, 209.5.2, 209.5.4 : `side` pioche `count` cartes, chacune séparément ; 209.2.2 : rien
+## après la fin de la partie.
+static func draw_cards(
+	state: DuelState, side: DuelState.PlayerSide, count: int, events: Array[DuelEvent]
+) -> void:
+	for index: int in count:
+		if ZoneRules.draw_card(state, side, events) == ZoneRules.DrawOutcome.DECK_EMPTY:
+			StateCheckRules.apply_fatigue(state, side, events)
+		if state.is_ended():
+			return
 
 
 # 202.3.14, 203.4.2, 204.4.6 : décomptes « par tour » des deux joueurs, remis à zéro au début
@@ -247,17 +114,6 @@ static func _receive_sources(
 		player.sources_in_reserve -= 1
 		player.sources_upright += 1
 		events.append(SourceReceived.new(side))
-
-
-# 201.3.5, 209.5.2, 209.5.4 : chaque carte se pioche séparément ; 209.2.2 : rien après la fin.
-static func _draw_cards(
-	state: DuelState, side: DuelState.PlayerSide, count: int, events: Array[DuelEvent]
-) -> void:
-	for index: int in count:
-		if ZoneRules.draw_card(state, side, events) == ZoneRules.DrawOutcome.DECK_EMPTY:
-			StateCheckRules.apply_fatigue(state, side, events)
-		if state.is_ended():
-			return
 
 
 # 204.5.7

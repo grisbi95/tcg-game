@@ -28,7 +28,7 @@ func start_new_duel(setup: DuelSetup) -> Array[DuelEvent]:
 		return events
 	_state = DuelState.create(_config, _catalog)
 	_state.rng.seed = setup.rng_seed
-	TurnRules.start_preparation(_state, setup, events)
+	PreparationRules.start_preparation(_state, setup, events)
 	return events
 
 
@@ -150,7 +150,7 @@ func _route_validation(intent: DuelIntent) -> IntentRejected.RejectReason:
 	if intent is Concede:
 		return StateCheckRules.validate_concede(_state, intent as Concede)
 	if intent is ChooseMulligan:
-		return TurnRules.validate_mulligan(_state, intent as ChooseMulligan)
+		return PreparationRules.validate_mulligan(_state, intent as ChooseMulligan)
 	if intent is OrderTriggers:
 		return TriggerRules.validate_order(_state, intent as OrderTriggers)
 	if intent is ChooseTargets:
@@ -182,7 +182,7 @@ func _route_announcement_validation(intent: DuelIntent) -> IntentRejected.Reject
 	if intent is TakeNormalAction:
 		return ActionRules.validate_normal_action(_state, intent as TakeNormalAction)
 	if intent is CastSpell:
-		return EffectRules.validate_cast(_state, intent as CastSpell)
+		return SpellRules.validate_cast(_state, intent as CastSpell)
 	return IntentRejected.RejectReason.UNKNOWN_INTENT
 
 
@@ -217,7 +217,7 @@ func _resolve_entry(entry: StackEntry, events: Array[DuelEvent]) -> void:
 		StackEntry.StackEntryKind.NORMAL_ACTION:
 			ActionRules.resolve_normal_action(_state, entry, events)
 		StackEntry.StackEntryKind.SPELL:
-			EffectRules.resolve_spell(_state, entry, events)
+			SpellRules.resolve_spell(_state, entry, events)
 		StackEntry.StackEntryKind.HERO_POWER:
 			CardRules.resolve_hero_power(_state, entry, events)
 		StackEntry.StackEntryKind.ATTACH_GEAR:
@@ -230,7 +230,7 @@ func _apply(intent: DuelIntent, events: Array[DuelEvent]) -> void:
 	if intent is Concede:
 		StateCheckRules.apply_concede(_state, intent as Concede, events)
 	elif intent is ChooseMulligan:
-		TurnRules.apply_mulligan(_state, intent as ChooseMulligan, events)
+		PreparationRules.apply_mulligan(_state, intent as ChooseMulligan, events)
 	elif intent is OrderTriggers:
 		TriggerRules.apply_order(_state, intent as OrderTriggers, events)
 	elif intent is ChooseTargets:
@@ -247,7 +247,7 @@ func _apply(intent: DuelIntent, events: Array[DuelEvent]) -> void:
 	elif intent is TakeNormalAction:
 		ActionRules.announce_normal_action(_state, intent as TakeNormalAction, events)
 	elif intent is CastSpell:
-		EffectRules.announce_spell(_state, intent as CastSpell, events)
+		SpellRules.announce_spell(_state, intent as CastSpell, events)
 	elif intent is AttachGear:
 		CardRules.announce_gear(_state, intent as AttachGear, events)
 	elif intent is UseHeroPower:

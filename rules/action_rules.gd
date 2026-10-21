@@ -46,7 +46,7 @@ static func resolve_deploy(state: DuelState, entry: StackEntry, events: Array[Du
 	var occupant := state.piece_at(cell)
 	var definition := state.catalog.get_card(entry.card.definition_id)
 	if occupant == null:
-		_deploy_on_free_cell(state, entry.card, definition, cell, events)
+		_deploy_on_free_cell(state, entry.card, cell, events)
 	elif definition.card_type == CardDefinition.CardType.UNIT and occupant.owner != entry.owner:
 		_enter_attacking(state, entry.card, occupant, events)
 	else:
@@ -152,13 +152,9 @@ static func _is_in_deploy_zone(
 
 # 205.1.2, 205.1.3 ; 201.5.2 : la pièce est contrôlée par le joueur à qui la carte appartient.
 static func _deploy_on_free_cell(
-	state: DuelState,
-	card: CardInstance,
-	definition: CardDefinition,
-	cell: Vector2i,
-	events: Array[DuelEvent]
+	state: DuelState, card: CardInstance, cell: Vector2i, events: Array[DuelEvent]
 ) -> void:
-	var piece := _make_piece(state, card, definition)
+	var piece := _make_piece(state, card)
 	piece.cell = cell
 	state.pieces.append(piece)
 	events.append(PieceDeployed.new(piece.owner, piece.piece_id, cell))
@@ -171,7 +167,7 @@ static func _deploy_on_free_cell(
 static func _enter_attacking(
 	state: DuelState, card: CardInstance, defender: Piece, events: Array[DuelEvent]
 ) -> void:
-	var piece := _make_piece(state, card, state.catalog.get_card(card.definition_id))
+	var piece := _make_piece(state, card)
 	state.pieces.append(piece)
 	events.append(PieceEnteredAttacking.new(piece.owner, piece.piece_id, defender.cell))
 	TriggerRules.trigger(state, piece, EffectDefinition.TriggerEvent.ARRIVAL, events)
@@ -179,7 +175,8 @@ static func _enter_attacking(
 
 
 # 202.2.2, 202.2.3, 201.5.2 : une Unit ou un Building, contrôlé par le joueur de sa carte.
-static func _make_piece(state: DuelState, card: CardInstance, definition: CardDefinition) -> Piece:
+static func _make_piece(state: DuelState, card: CardInstance) -> Piece:
+	var definition := state.catalog.get_card(card.definition_id)
 	var piece := Piece.new()
 	piece.piece_id = state.allocate_piece_id()
 	piece.kind = (

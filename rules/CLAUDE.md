@@ -10,10 +10,13 @@ Complète le `CLAUDE.md` racine pour `rules/` ; décisions 0001, 0003, 0004, 000
 | `zone_rules.gd` | 201 | zones, limite de main, appartenance, construction du deck, passage d'une pièce sur une case (`move_piece`) |
 | `card_rules.gd` | 202 | Gear (annonce, attachement, remplacement, retour en main), pouvoir du Hero |
 | `essence_rules.gd` | 203 | paiement à l'annonce, incliner, recycler, Fonte, réserve d'Essence (203.6, 0026) |
-| `turn_rules.gd` | 204 | préparation par `DuelSetup` (0012), mulligan simultané exécuté à la dernière réponse, joueur A puis B (0013, 0015) et Écart, début de tour (204.3.8, redressement compris), fin de tour (204.5) |
+| `preparation_rules.gd` | 204.1, 204.2 | préparation par `DuelSetup` (0012), mulligan simultané exécuté à la dernière réponse, joueur A puis B (0013, 0015) et Écart ; appelle `TurnRules` (premier tour, pioche), jamais l'inverse |
+| `turn_rules.gd` | 204.3 à 204.5 | début de tour (204.3.8, redressement compris), pioche, fin de tour (204.5) |
 | `action_rules.gd` | 205 | déploiement (annonce, résolution), action normale, déplacement du Hero, échecs |
 | `combat_rules.gd` | 206 | comparaison, égalité, Hero défenseur, avance, auras lues avant l'avance |
-| `effect_rules.gd` | 207 | Spells et vitesses, cibles et validité, effets à la résolution (Force à durée, destruction, jetons), Contrecarrer |
+| `spell_rules.gd` | 207.1 | Spells : vitesses, annonce, résolution ; appelle `EffectRules`, jamais l'inverse |
+| `effect_rules.gd` | 207.4 à 207.6 | cibles et validité, effets à la résolution (Force à durée, destruction, jetons), Contrecarrer (207.6, avec l'effet COUNTER) |
+| `effect_context.gd` | 207.4, 207.5 | état, entrée de pile, effet et événements de l'effet en cours d'application, passés aux fonctions d'`EffectRules` ; jamais dans l'état |
 | `trigger_rules.gd` | 207.3, 208.4 | effets déclenchés (0017) : attente, ordre d'ajout (`ORDER_TRIGGERS`), cibles (`CHOOSE_TARGETS`), choix unique automatique (0004), « une fois par tour », résolution |
 | `stack_rules.gd` | 208 | annonce, priorité (208.2.4), passe (208.3.1), entrée du sommet et fin de sa résolution (208.3.2), retour au joueur actif (208.5.1) ; n'appelle aucun autre module, la boucle de résolution est dans `DuelEngine` |
 | `state_check_rules.gd` | 209 | Force plancher 0, victoire après chaque effet, abandon, pendule, fatigue |
