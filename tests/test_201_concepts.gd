@@ -189,15 +189,15 @@ func test_201_6_3_hero_does_not_limit_the_deck() -> void:
 
 
 func _normal_action_reason(
-	active: DuelState.PlayerSide, owner: DuelState.PlayerSide, as_token: bool
+	active: DuelState.PlayerSide, piece_owner: DuelState.PlayerSide, as_token: bool
 ) -> IntentRejected.RejectReason:
 	var builder := DuelStateBuilder.new(DuelConfig.new(), _catalog)
 	var cell := DuelStateBuilder.cell("C3")
 	var piece_id := DuelState.NO_ID
 	if as_token:
-		piece_id = builder.place_token(owner, Piece.PieceKind.UNIT, cell, STRONG_FORCE)
+		piece_id = builder.place_token(piece_owner, Piece.PieceKind.UNIT, cell, STRONG_FORCE)
 	else:
-		piece_id = builder.place_piece(owner, Piece.PieceKind.UNIT, cell, SOLDIER)
+		piece_id = builder.place_piece(piece_owner, Piece.PieceKind.UNIT, cell, SOLDIER)
 	builder.with_active_player(active).with_priority_player(active)
 	var engine := DuelEngine.new(_catalog)
 	engine.start_from_state(builder.build())

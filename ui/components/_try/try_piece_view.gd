@@ -40,26 +40,26 @@ func _ready() -> void:
 	_add_card(&"pillard", A, 0).set_marks(false, true)
 
 
-func _add_hero(hero: HeroDefinition, owner: DuelState.PlayerSide) -> PieceView:
+func _add_hero(hero: HeroDefinition, side: DuelState.PlayerSide) -> PieceView:
 	var piece := _add_piece()
-	piece.show_hero(_next_piece_id, hero, owner)
+	piece.show_hero(_next_piece_id, hero, side)
 	return piece
 
 
 # `change` : écart entre la Force montrée et la Force imprimée.
-func _add_card(card_id: StringName, owner: DuelState.PlayerSide, change: int) -> PieceView:
+func _add_card(card_id: StringName, side: DuelState.PlayerSide, change: int) -> PieceView:
 	var definition := _catalog.get_card(card_id)
 	var piece := _add_piece()
-	piece.show_card_piece(_next_piece_id, definition, owner)
+	piece.show_card_piece(_next_piece_id, definition, side)
 	piece.show_force(definition.force + change, definition.force)
 	return piece
 
 
 func _add_token(
-	card_type: CardDefinition.CardType, owner: DuelState.PlayerSide, change: int
+	card_type: CardDefinition.CardType, side: DuelState.PlayerSide, change: int
 ) -> PieceView:
 	var piece := _add_piece()
-	piece.show_token(_next_piece_id, card_type, owner)
+	piece.show_token(_next_piece_id, card_type, side)
 	piece.show_force(TOKEN_FORCE + change, TOKEN_FORCE)
 	return piece
 

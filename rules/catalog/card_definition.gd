@@ -59,9 +59,9 @@ static func from_dict(data: Dictionary) -> CardDefinition:
 	reader.require("text", "202.1.4")
 	card.id = StringName(reader.read_string("id"))
 	card.card_name = reader.read_string("name")
-	card.cost = reader.read_int("cost", 0, 0)
+	card.cost = reader.read_int("cost", CatalogReader.NON_NEGATIVE_MINIMUM, 0)
 	card.text = reader.read_string("text")
-	card.force = reader.read_int("force", 0, NO_FORCE)
+	card.force = reader.read_int("force", CatalogReader.NON_NEGATIVE_MINIMUM, NO_FORCE)
 	var type_value := reader.read_enum("type", CardType)
 	if type_value != CatalogReader.NOT_SET:
 		card.card_type = type_value as CardType
@@ -112,16 +112,16 @@ func _read_keywords(reader: CatalogReader) -> void:
 func _read_keyword(entry: Dictionary, parent: CatalogReader) -> void:
 	var keyword_reader := CatalogReader.new(entry)
 	keyword_reader.require("keyword", "210")
-	var keyword_value := keyword_reader.read_enum("keyword", Keyword)
-	var value := keyword_reader.read_int("value", 0, 0)
+	var keyword := keyword_reader.read_enum("keyword", Keyword)
+	var value := keyword_reader.read_int("value", CatalogReader.NON_NEGATIVE_MINIMUM, 0)
 	for message: String in keyword_reader.finish():
 		parent.fail("mot-clé : " + message)
-	if keyword_value == CatalogReader.NOT_SET:
+	if keyword == CatalogReader.NOT_SET:
 		return
-	if keywords.has(keyword_value as Keyword):
-		parent.fail("210 : mot-clé « %s » en double" % Keyword.find_key(keyword_value))
+	if keywords.has(keyword as Keyword):
+		parent.fail("210 : mot-clé « %s » en double" % Keyword.find_key(keyword))
 		return
-	keywords[keyword_value as Keyword] = value
+	keywords[keyword as Keyword] = value
 
 
 func _read_effects(reader: CatalogReader) -> void:

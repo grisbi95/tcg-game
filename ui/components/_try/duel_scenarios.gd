@@ -167,7 +167,7 @@ static func _spec_of(scenario: Scenario) -> ScenarioSpec:
 			_fill(spec, {&"recrue": DEV_DECK_SIZE}, {&"soldat": DEV_DECK_SIZE}, A)
 			spec.plan = _plan_ended
 		Scenario.PREVIEW_GEAR:
-			var half := DEV_DECK_SIZE / 2
+			var half := floori(DEV_DECK_SIZE / 2.0)
 			_fill(spec, {&"recrue": half, &"lame": half}, {&"soldat": DEV_DECK_SIZE}, A)
 			spec.plan = _plan_preview_gear
 		Scenario.PREVIEW_PILES:

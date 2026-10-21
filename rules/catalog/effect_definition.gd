@@ -122,7 +122,7 @@ func _read_parameters(reader: CatalogReader) -> void:
 	var token_kind_value := reader.read_enum("token_piece_kind", Piece.PieceKind)
 	if token_kind_value != CatalogReader.NOT_SET:
 		token_piece_kind = token_kind_value as Piece.PieceKind
-	token_force = reader.read_int("token_force", 0, NO_TOKEN_FORCE)
+	token_force = reader.read_int("token_force", CatalogReader.NON_NEGATIVE_MINIMUM, NO_TOKEN_FORCE)
 
 
 func _timings_for_kind() -> Array[EffectTiming]:

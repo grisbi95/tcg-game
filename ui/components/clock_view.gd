@@ -17,16 +17,16 @@ var _duration_msec: int = 1
 @onready var _time_bar: ProgressBar = %TimeBar
 
 
-## Pendule de `player_name`, du joueur `owner`, qui part de `duration_msec` (209.4.3).
-func setup(owner: DuelState.PlayerSide, player_name: String, duration_msec: int) -> void:
+## Pendule de `player_name`, du joueur `side`, qui part de `duration_msec` (209.4.3).
+func setup(side: DuelState.PlayerSide, player_name: String, duration_msec: int) -> void:
 	_duration_msec = maxi(duration_msec, 1)
 	_name_label.text = player_name
-	_name_label.add_theme_color_override("font_color", DuelPalette.player_ink(owner))
+	_name_label.add_theme_color_override("font_color", DuelPalette.player_ink(side))
 	_time_label.add_theme_color_override("font_color", DuelPalette.INK_COLOR)
-	var color := DuelPalette.player_color(owner)
+	var color := DuelPalette.player_color(side)
 	add_theme_stylebox_override(
 		"panel",
-		DuelPalette.framed_style(DuelPalette.player_soft(owner), color, BORDER_WIDTH, PADDING)
+		DuelPalette.framed_style(DuelPalette.player_soft(side), color, BORDER_WIDTH, PADDING)
 	)
 	_time_bar.add_theme_stylebox_override(
 		"background", DuelPalette.fill_style(DuelPalette.BAR_TRACK_COLOR, BAR_RADIUS, 0.0)
@@ -44,4 +44,5 @@ func show_clock(remaining_msec: int, is_running: bool) -> void:
 ## « 09:05 » ; les secondes entamées comptent pour une seconde pleine.
 static func format_time(remaining_msec: int) -> String:
 	var seconds := ceili(maxi(remaining_msec, 0) / float(MSEC_PER_SECOND))
-	return "%02d:%02d" % [seconds / SECONDS_PER_MINUTE, seconds % SECONDS_PER_MINUTE]
+	var minutes := floori(seconds / float(SECONDS_PER_MINUTE))
+	return "%02d:%02d" % [minutes, seconds % SECONDS_PER_MINUTE]

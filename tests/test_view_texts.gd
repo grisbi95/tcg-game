@@ -9,12 +9,12 @@ const B: DuelState.PlayerSide = DuelState.PlayerSide.B
 func test_decision_0025_every_event_class_has_a_sentence() -> void:
 	for global_class: Dictionary in ProjectSettings.get_global_class_list():
 		var base: StringName = global_class["base"]
-		var name: StringName = global_class["class"]
-		if name == &"PlayerEvent" or not (base == &"DuelEvent" or base == &"PlayerEvent"):
+		var event_class: StringName = global_class["class"]
+		if event_class == &"PlayerEvent" or not (base == &"DuelEvent" or base == &"PlayerEvent"):
 			continue
 		(
-			assert_bool(EventText.SENTENCES.has(name))
-			. override_failure_message("%s sans phrase dans EventText.SENTENCES" % name)
+			assert_bool(EventText.SENTENCES.has(event_class))
+			. override_failure_message("%s sans phrase dans EventText.SENTENCES" % event_class)
 			. is_true()
 		)
 

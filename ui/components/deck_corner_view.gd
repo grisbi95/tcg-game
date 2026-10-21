@@ -29,7 +29,6 @@ var _player: DuelState.PlayerSide = DuelState.PlayerSide.A
 var _has_discard_card: bool = false
 
 @onready var _label: Label = %PileLabel
-@onready var _piles: HBoxContainer = %Piles
 @onready var _deck: CardBackView = %Deck
 @onready var _discard_slot: Control = %DiscardSlot
 @onready var _discard_card: CardView = %DiscardCard

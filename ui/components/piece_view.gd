@@ -63,10 +63,8 @@ func _draw() -> void:
 
 
 ## Unit ou Building d'une carte (202.1) ; sa Force suit par `show_force`.
-func show_card_piece(
-	piece_id: int, definition: CardDefinition, owner: DuelState.PlayerSide
-) -> void:
-	_show(piece_id, owner, DuelPalette.tint_of(definition.card_type), definition.card_name)
+func show_card_piece(piece_id: int, definition: CardDefinition, side: DuelState.PlayerSide) -> void:
+	_show(piece_id, side, DuelPalette.tint_of(definition.card_type), definition.card_name)
 	_type_label.text = CardText.type_name(definition.card_type)
 	_show_keywords(CardText.keywords_line(definition))
 
@@ -74,16 +72,16 @@ func show_card_piece(
 ## Jeton (202.4) Unit ou Building, nommé « Jeton », sans mot-clé (décision 0137 du ruleset) ; sa
 ## Force suit par `show_force`.
 func show_token(
-	piece_id: int, card_type: CardDefinition.CardType, owner: DuelState.PlayerSide
+	piece_id: int, card_type: CardDefinition.CardType, side: DuelState.PlayerSide
 ) -> void:
-	_show(piece_id, owner, DuelPalette.tint_of(card_type), CardText.TOKEN_NAME)
+	_show(piece_id, side, DuelPalette.tint_of(card_type), CardText.TOKEN_NAME)
 	_type_label.text = CardText.token_type_name(card_type)
 	_show_keywords("")
 
 
 ## Hero (202.3) ; ses PV suivent par `show_health`.
-func show_hero(piece_id: int, hero: HeroDefinition, owner: DuelState.PlayerSide) -> void:
-	_show(piece_id, owner, DuelPalette.Tint.HERO, hero.hero_name)
+func show_hero(piece_id: int, hero: HeroDefinition, side: DuelState.PlayerSide) -> void:
+	_show(piece_id, side, DuelPalette.Tint.HERO, hero.hero_name)
 	_type_label.text = CardText.HERO_TYPE_NAME
 	_show_keywords("")
 
@@ -114,10 +112,10 @@ func set_marks(is_highlighted: bool, is_selected: bool) -> void:
 
 
 func _show(
-	piece_id: int, owner: DuelState.PlayerSide, tint: DuelPalette.Tint, piece_name: String
+	piece_id: int, side: DuelState.PlayerSide, tint: DuelPalette.Tint, piece_name: String
 ) -> void:
 	_piece_id = piece_id
-	_owner_color = DuelPalette.player_color(owner)
+	_owner_color = DuelPalette.player_color(side)
 	_tint = tint
 	_name_label.text = piece_name
 	var ink := DuelPalette.TINT_INKS[tint]

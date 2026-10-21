@@ -378,12 +378,12 @@ func test_210_3_2a_last_breath_is_a_triggered_effect() -> void:
 
 func test_210_unknown_or_duplicate_keyword_is_refused() -> void:
 	var unknown := _with_keywords(CatalogSamples.unit(), [{"keyword": "flying"}])
-	var duplicate := _with_keywords(
+	var duplicated := _with_keywords(
 		CatalogSamples.unit(),
 		[{"keyword": "assault", "value": 1}, {"keyword": "assault", "value": 2}]
 	)
 	assert_bool(_mentions(_card_errors(unknown), "« flying » inconnu")).is_true()
-	assert_bool(_mentions(_card_errors(duplicate), "en double")).is_true()
+	assert_bool(_mentions(_card_errors(duplicated), "en double")).is_true()
 
 
 func test_effect_errors_name_the_effect_index() -> void:

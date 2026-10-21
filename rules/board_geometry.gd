@@ -15,6 +15,8 @@ const NEAR_ROW_COUNT: int = 2  # 205.1.3, 205.3.2
 const HERO_START_COLUMN_INDEX: int = 2  # 204.1.1 : colonne C
 const _FIRST_ROW_NUMBER: int = 1  # 201.2.3
 const _NOTATION_LENGTH: int = 2  # 201.2.4 : une lettre, un chiffre
+const _COLUMN_LETTER_INDEX: int = 0  # 201.2.4 : la lettre d'abord
+const _ROW_DIGIT_INDEX: int = 1  # 201.2.4 : le chiffre ensuite
 
 
 ## 201.0.2 : les 25 cases, colonne par colonne, rangée 1 vers rangée 5.
@@ -41,8 +43,8 @@ static func cell_name(cell: Vector2i) -> String:
 static func parse_cell(notation: String) -> Vector2i:
 	if notation.length() != _NOTATION_LENGTH:
 		return NO_CELL
-	var column := notation.unicode_at(0) - FIRST_COLUMN_LETTER.unicode_at(0)
-	var row := notation.substr(1).to_int() - _FIRST_ROW_NUMBER
+	var column := notation.unicode_at(_COLUMN_LETTER_INDEX) - FIRST_COLUMN_LETTER.unicode_at(0)
+	var row := notation.substr(_ROW_DIGIT_INDEX).to_int() - _FIRST_ROW_NUMBER
 	var cell := Vector2i(column, row)
 	if not is_on_board(cell) or cell_name(cell) != notation:
 		return NO_CELL

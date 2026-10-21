@@ -45,11 +45,11 @@ func test_208_1_2_normal_action_is_announced_on_the_stack() -> void:
 func test_205_2_4_normal_action_costs_no_essence() -> void:
 	var unit_id := _place(A, UNIT_ID, "B2")
 	_start()
-	var before := _engine.get_state().get_player(A).clone()
+	var player_before := _engine.get_state().get_player(A).clone()
 	_engine.submit(_act(unit_id, "B3"))
 	var player := _engine.get_state().get_player(A)
-	assert_int(player.sources_upright).is_equal(before.sources_upright)
-	assert_int(player.sources_tilted).is_equal(before.sources_tilted)
+	assert_int(player.sources_upright).is_equal(player_before.sources_upright)
+	assert_int(player.sources_tilted).is_equal(player_before.sources_tilted)
 
 
 func test_205_2_2_unit_moves_to_free_target_cell() -> void:

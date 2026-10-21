@@ -24,12 +24,12 @@ static func cost() -> BadgeLook:
 ## Losange de la Force `force_value`, le même dans tous les cas ; seul le chiffre change : sombre
 ## si égale à `printed_force`, vert au-dessus, orange foncé en dessous.
 static func force(force_value: int, printed_force: int) -> BadgeLook:
-	var ink := DuelPalette.CARD_TEXT_COLOR
+	var force_ink := DuelPalette.CARD_TEXT_COLOR
 	if force_value > printed_force:
-		ink = DuelPalette.FORCE_UP_INK
+		force_ink = DuelPalette.FORCE_UP_INK
 	elif force_value < printed_force:
-		ink = DuelPalette.FORCE_DOWN_INK
-	return BadgeLook.new(DuelPalette.FORCE_FILL_COLOR, DuelPalette.FORCE_OUTLINE_COLOR, ink)
+		force_ink = DuelPalette.FORCE_DOWN_INK
+	return BadgeLook.new(DuelPalette.FORCE_FILL_COLOR, DuelPalette.FORCE_OUTLINE_COLOR, force_ink)
 
 
 ## Cœur des PV du Hero.

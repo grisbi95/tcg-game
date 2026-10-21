@@ -21,8 +21,8 @@ func _ready() -> void:
 		_add_back(hand, DuelState.PlayerSide.B, CardBackView.HAND_SIZE)
 
 
-func _add_back(row: HBoxContainer, owner: DuelState.PlayerSide, back_size: Vector2) -> CardBackView:
+func _add_back(row: HBoxContainer, side: DuelState.PlayerSide, back_size: Vector2) -> CardBackView:
 	var back: CardBackView = BACK_SCENE.instantiate()
 	row.add_child(back)
-	back.show_back(owner, back_size)
+	back.show_back(side, back_size)
 	return back

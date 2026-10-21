@@ -57,8 +57,8 @@ static func resolve_spell(state: DuelState, entry: StackEntry, events: Array[Due
 static func validate_targets(
 	state: DuelState, entry: StackEntry, spec: TargetSpec
 ) -> IntentRejected.RejectReason:
-	var chosen_count := chosen_count(entry, spec)
-	if chosen_count < spec.count_min or chosen_count > spec.count_max:
+	var target_count := chosen_count(entry, spec)
+	if target_count < spec.count_min or target_count > spec.count_max:
 		return IntentRejected.RejectReason.WRONG_TARGET_COUNT
 	if not _all_targets_legal(state, entry, spec):
 		return IntentRejected.RejectReason.ILLEGAL_TARGET
@@ -265,13 +265,13 @@ static func chosen_count(entry: StackEntry, spec: TargetSpec) -> int:
 
 
 static func _all_targets_legal(state: DuelState, entry: StackEntry, spec: TargetSpec) -> bool:
-	var chosen_count := chosen_count(entry, spec)
+	var target_count := chosen_count(entry, spec)
 	match spec.what:
 		TargetSpec.TargetWhat.CELL:
-			return _valid_cells(state, entry, spec).size() == chosen_count
+			return _valid_cells(state, entry, spec).size() == target_count
 		TargetSpec.TargetWhat.SPELL_ON_STACK:
-			return _valid_spells(state, entry, spec).size() == chosen_count
-	return _valid_pieces(state, entry, spec).size() == chosen_count
+			return _valid_spells(state, entry, spec).size() == target_count
+	return _valid_pieces(state, entry, spec).size() == target_count
 
 
 # 207.5.3, 207.5.6, 207.5.6a

@@ -114,7 +114,7 @@ static func resolve_triggered(
 	EffectRules.resolve_effect(state, entry, effect_of(state, entry), events)
 
 
-## Effet de carte que porte `entry`, entrée d'un effet déclenché.
+## Définition de l'effet que porte `entry`.
 static func effect_of(state: DuelState, entry: StackEntry) -> EffectDefinition:
 	return state.catalog.get_card(entry.source_definition_id).effects[entry.effect_index]
 
@@ -155,6 +155,7 @@ static func _order_next_group(state: DuelState, events: Array[DuelEvent]) -> voi
 		state.triggers_to_add.append(entry)
 
 
+# 208.4.6, 208.4.7 : les effets en attente du joueur actif, sinon ceux de son adversaire.
 static func _next_group(state: DuelState) -> Array[StackEntry]:
 	var active := state.active_player
 	var has_active_effects := state.waiting_triggers.any(
@@ -196,15 +197,15 @@ static func _can_be_added(state: DuelState, entry: StackEntry) -> bool:
 	return legal_count >= effect.target.count_min
 
 
-# Décision 0004 : autant de cibles légales que le minimum exigé, un seul choix est possible ;
-# sinon le joueur à qui appartient l'effet choisit (207.5.2).
+# 207.5.2, 207.5.10, décision 0004 : autant de cibles légales que le minimum exigé, un seul
+# choix est possible ; sinon le joueur à qui appartient l'effet choisit.
 static func _has_unique_targets(state: DuelState, entry: StackEntry, spec: TargetSpec) -> bool:
 	var legal_count := _legal_ids(state, entry, spec).size()
 	legal_count += EffectRules.legal_cells(state, entry.owner, spec).size()
 	return legal_count == spec.count_min
 
 
-# Décision 0004 : le moteur prend toutes les cibles légales, sans demander.
+# 207.5.1b, décision 0004 : le moteur prend toutes les cibles légales, sans demander.
 static func _assign_unique_targets(
 	state: DuelState, entry: StackEntry, spec: TargetSpec, events: Array[DuelEvent]
 ) -> void:
@@ -217,16 +218,19 @@ static func _assign_unique_targets(
 	events.append(DecisionResolvedAutomatically.new(entry.owner, targeting))
 
 
+# 207.3.5a, 207.5.9, 207.5.10 : l'effet est retiré sans avoir lieu, et l'événement le dit.
 static func _skip(list: Array[StackEntry], entry: StackEntry, events: Array[DuelEvent]) -> void:
 	list.erase(entry)
 	events.append(TriggerSkipped.new(entry.owner, entry.stack_entry_id))
 
 
+# 207.5.2, 208.4.6, 208.4.7 : le moteur attend le choix du joueur (décisions 0009 et 0017).
 static func _request(state: DuelState, decision: PendingDecision, events: Array[DuelEvent]) -> void:
 	state.pending_decision = decision
 	events.append(DecisionRequested.new(decision.awaited_players[0], decision.kind))
 
 
+# 208.4.6, 208.4.7 : le joueur à qui appartiennent les effets choisit leur ordre.
 static func _make_order_decision(entries: Array[StackEntry]) -> PendingDecision:
 	var decision := PendingDecision.new()
 	decision.kind = PendingDecision.DecisionKind.ORDER_TRIGGERS
@@ -236,6 +240,7 @@ static func _make_order_decision(entries: Array[StackEntry]) -> PendingDecision:
 	return decision
 
 
+# 207.5.1b, 207.5.2 : le joueur à qui appartient l'effet choisit ses cibles parmi les légales.
 static func _make_targets_decision(
 	state: DuelState, entry: StackEntry, spec: TargetSpec
 ) -> PendingDecision:
@@ -252,17 +257,19 @@ static func _legal_ids(state: DuelState, entry: StackEntry, spec: TargetSpec) ->
 	return EffectRules.legal_target_ids(state, entry.owner, spec, entry.stack_entry_id)
 
 
+# 207.5.1b : l'effet reçoit les cibles choisies.
 static func _assign_targets(entry: StackEntry, intent: ChooseTargets) -> void:
 	entry.target_piece_ids.assign(intent.target_piece_ids)
 	entry.target_cells.assign(intent.target_cells)
 	entry.target_stack_entry_ids.assign(intent.target_stack_entry_ids)
 
 
+# 208.4.6, 208.4.7 : l'effet en attente que désigne `entry_id`.
 static func _find_waiting(state: DuelState, entry_id: int) -> StackEntry:
 	return _find_entry(state.waiting_triggers, entry_id)
 
 
-# L'effet dont l'attente CHOOSE_TARGETS demande les cibles.
+# 207.5.1b : l'effet dont l'attente CHOOSE_TARGETS demande les cibles.
 static func _targeted_entry(state: DuelState) -> StackEntry:
 	return _find_entry(state.triggers_to_add, state.pending_decision.subject_stack_entry_id)
 

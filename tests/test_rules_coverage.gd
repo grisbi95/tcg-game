@@ -10,6 +10,14 @@ const TESTS_DIRECTORY: String = "res://tests"
 const RULE_PATTERN: String = "(?m)^\\*\\*(\\d{3}\\.\\d+\\.\\d+[a-z]?)\\*\\* \\[(ACTÉ|PROVISOIRE)\\]"
 const TEST_PATTERN: String = "(?m)^func (test_\\w+)\\("
 
+## 207.3.4a, 207.3.7a, 207.3.11, 207.3.11a : un jeton ne porte aucun effet déclenché.
+const TOKEN_HAS_NO_TRIGGERED_EFFECT: String = (
+	"Sans test possible : un jeton ne porte aucun effet à sa création (202.4.5) et n'en "
+	+ "reçoit un que d'un Gear, d'un Spell ou d'une aura (202.4.5a) ; un Gear ne porte que "
+	+ "du statique (CardDefinition._allowed_timings) et aucun EffectKind ne donne d'effet "
+	+ "déclenché."
+)
+
 ## Règle sans test à son nom, et pourquoi : règle de structure, ou vérifiée sous d'autres
 ## règles, tests nommés.
 const RULES_WITHOUT_OWN_TEST: Dictionary[String, String] = {
@@ -37,6 +45,12 @@ const RULES_WITHOUT_OWN_TEST: Dictionary[String, String] = {
 		"Invariant garanti par le vocabulaire fermé d'EffectKind (décision 0002) : aucun kind "
 		+ "ne touche à la fin de partie, que seul StateCheckRules décide (chapitre 209)."
 	),
+	"201.1.2b":
+	(
+		"Inaccessible depuis 209.4.2d : hors du mulligan, une seule pendule tourne à la fois "
+		+ "(décision de design 0189 du ruleset, Q-088) ; StateCheckRules.advance_clock reste "
+		+ "général (test_209_4_5_time_runs_out_exactly_at_zero)."
+	),
 	"201.3.3":
 	(
 		"Vérifiée sous 201.3.6a, 201.5.3 et 202.2.12 (tests : "
@@ -58,6 +72,12 @@ const RULES_WITHOUT_OWN_TEST: Dictionary[String, String] = {
 	(
 		"Règle de vue : l'état expose le nombre de Sources de la Fonte "
 		+ "(PlayerState.sources_in_fonte)."
+	),
+	"201.4.10":
+	(
+		"Information publique : le moteur est omniscient (201.4) et la réserve d'Essence est "
+		+ "un champ de l'état (test_203_6_3_inclining_a_source_adds_to_the_reserve) ; la vue "
+		+ "l'affiche pour les deux joueurs (étape 2.3)."
 	),
 	"202.2.23":
 	(
@@ -104,34 +124,10 @@ const RULES_WITHOUT_OWN_TEST: Dictionary[String, String] = {
 		+ "test_209_2_8_player_whose_time_runs_out_loses, "
 		+ "test_201_1_3c_player_wins_when_only_the_opponent_time_runs_out)."
 	),
-	"207.3.4a":
-	(
-		"Sans test possible : un jeton ne porte aucun effet à sa création (202.4.5) et n'en "
-		+ "reçoit un que d'un Gear, d'un Spell ou d'une aura (202.4.5a) ; un Gear ne porte que "
-		+ "du statique (CardDefinition._allowed_timings) et aucun EffectKind ne donne d'effet "
-		+ "déclenché."
-	),
-	"207.3.7a":
-	(
-		"Sans test possible : un jeton ne porte aucun effet à sa création (202.4.5) et n'en "
-		+ "reçoit un que d'un Gear, d'un Spell ou d'une aura (202.4.5a) ; un Gear ne porte que "
-		+ "du statique (CardDefinition._allowed_timings) et aucun EffectKind ne donne d'effet "
-		+ "déclenché."
-	),
-	"207.3.11":
-	(
-		"Sans test possible : un jeton ne porte aucun effet à sa création (202.4.5) et n'en "
-		+ "reçoit un que d'un Gear, d'un Spell ou d'une aura (202.4.5a) ; un Gear ne porte que "
-		+ "du statique (CardDefinition._allowed_timings) et aucun EffectKind ne donne d'effet "
-		+ "déclenché."
-	),
-	"207.3.11a":
-	(
-		"Sans test possible : un jeton ne porte aucun effet à sa création (202.4.5) et n'en "
-		+ "reçoit un que d'un Gear, d'un Spell ou d'une aura (202.4.5a) ; un Gear ne porte que "
-		+ "du statique (CardDefinition._allowed_timings) et aucun EffectKind ne donne d'effet "
-		+ "déclenché."
-	),
+	"207.3.4a": TOKEN_HAS_NO_TRIGGERED_EFFECT,
+	"207.3.7a": TOKEN_HAS_NO_TRIGGERED_EFFECT,
+	"207.3.11": TOKEN_HAS_NO_TRIGGERED_EFFECT,
+	"207.3.11a": TOKEN_HAS_NO_TRIGGERED_EFFECT,
 	"207.4.7":
 	(
 		"Vérifiée sous 207.4.7a, 207.4.7b, 204.5.7, 202.2.21 et 210.3.2b (tests : "
@@ -159,18 +155,6 @@ const RULES_WITHOUT_OWN_TEST: Dictionary[String, String] = {
 	(
 		"Sans test possible : aucun déclencheur ne réagit au début du tour (décision 0017) ; "
 		+ "DuelEngine appelle settle_after_triggers après chaque intention, sans rien à ajouter."
-	),
-	"201.4.10":
-	(
-		"Information publique : le moteur est omniscient (201.4) et la réserve d'Essence est "
-		+ "un champ de l'état (test_203_6_3_inclining_a_source_adds_to_the_reserve) ; la vue "
-		+ "l'affiche pour les deux joueurs (étape 2.3)."
-	),
-	"201.1.2b":
-	(
-		"Inaccessible depuis 209.4.2d : hors du mulligan, une seule pendule tourne à la fois "
-		+ "(décision de design 0189 du ruleset, Q-088) ; StateCheckRules.advance_clock reste "
-		+ "général (test_209_4_5_time_runs_out_exactly_at_zero)."
 	),
 	"209.2.8a": "Inaccessible depuis 209.4.2d, comme 201.1.2b (décision de design 0189).",
 	"209.4.2a":

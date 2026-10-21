@@ -8,6 +8,7 @@ extends RefCounted
 
 ## Renvoyé par `read_enum()` si le champ est absent ou invalide.
 const NOT_SET: int = -1
+const NON_NEGATIVE_MINIMUM: int = 0  # coûts, PV, Forces et comptes ne sont jamais négatifs
 
 var errors: PackedStringArray = PackedStringArray()
 var _data: Dictionary

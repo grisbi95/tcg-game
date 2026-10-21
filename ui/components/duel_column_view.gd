@@ -31,6 +31,7 @@ const MSEC_PER_SECOND: int = 1000
 const MSEC_PER_TENTH: int = 100
 const TENTHS_PER_SECOND: int = 10
 const BAR_STEPS: int = 100
+const NO_SECONDS_SHOWN: int = -1
 const BAR_RADIUS: int = 4
 const PANEL_BORDER_WIDTH: int = 1
 const PANEL_MARGIN: float = 10.0
@@ -178,7 +179,7 @@ func show_response_time(time_left_msec: int, window_msec: int) -> void:
 	if tenths != _response_tenths:
 		_response_tenths = tenths
 		_countdown_label.text = (
-			"%d,%d s" % [tenths / TENTHS_PER_SECOND, tenths % TENTHS_PER_SECOND]
+			"%d,%d s" % [floori(tenths / float(TENTHS_PER_SECOND)), tenths % TENTHS_PER_SECOND]
 		)
 	if bar_step != _response_bar_step:
 		_response_bar_step = bar_step
@@ -265,7 +266,8 @@ func _show_clock(
 ) -> void:
 	var is_running := running_owners.has(side)
 	var seconds := ceili(maxi(remaining_msec, 0) / float(MSEC_PER_SECOND))
-	if _clock_seconds.get(side, -1) == seconds and _clock_running.get(side, null) == is_running:
+	var shown_seconds: int = _clock_seconds.get(side, NO_SECONDS_SHOWN)
+	if shown_seconds == seconds and _clock_running.get(side, null) == is_running:
 		return
 	_clock_seconds[side] = seconds
 	_clock_running[side] = is_running
