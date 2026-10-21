@@ -2,17 +2,17 @@
 
 ## IMPORTANT
 
-- **Le ruleset fait foi.** Il vit dans `docs/ruleset/` (édition dans son `README.md`, décision 0014) et ne s'édite que par l'agent `ruleset-editor`. Un point non tranché par le ruleset ne devient jamais un comportement implicite : arrêter, et le signaler comme question ouverte du ruleset.
+- **Le ruleset fait foi.** Il vit dans `docs/ruleset/` (édition dans son `README.md`, décision 0014) et ne s'édite que par l'agent `ruleset-editor`, selon sa `CHARTE.md`. Un point non tranché par le ruleset ne devient jamais un comportement implicite : arrêter, et le signaler comme question ouverte du ruleset.
 - **Une décision avant un système nouveau** : 2 ou 3 options avec compromis, choix du créateur, consignation dans `docs/decisions/`. Décisions acceptées : `0001` à `0039` ; les respecter.
 - **GDScript typé partout** : paramètres, retours, variables, collections. Les warnings `untyped_declaration` et `unsafe_*` sont des erreurs à corriger ; `tools/check_typing.sh` les contrôle.
-- **Un identifiant de règle sur chaque fonction de règle et chaque test** : `# 206.3.6`, `test_206_3_6_tie_destroys_both`.
+- **Un identifiant de règle sur chaque fonction de règle et chaque test de règle** : `# 206.3.6`, `test_206_3_6_tie_destroys_both`.
 
 ## 1. Projet
 
 - Duel 1v1 sur un plateau 5×5, Hero sur le plateau, Units, Buildings, Spells, Gear, Essence et Sources, pile et priorité, 5 mots-clés. Chapitres 200 à 210 de `docs/ruleset/20-regles-completes/`.
 - Cible : export **Web** d'abord, desktop pour développer. Contraintes Web dès maintenant : rendu GL Compatibility, aucun thread dans le gameplay, pendule indépendante des images rendues.
 - Plan et état : `docs/roadmap.md`, seul plan. Jalons J0 amorçage, J1 moteur, J2 jouable, J3 playtest, J4 IA et catalogue.
-- Hors périmètre tant que la roadmap ne le dit pas : réseau, comptes, IA avancée, boutique, mobile.
+- Hors périmètre : la liste vit dans la section « Périmètre » de `docs/roadmap.md` ; rien de cette liste ne se construit tant que la roadmap ne l'inclut pas.
 
 ## 2. Stack
 
@@ -66,7 +66,7 @@ Créer un dossier au premier fichier qui y entre ; tout autre dossier racine se 
 ## 6. Fichiers Godot
 
 - Éditer les `.gd` avec `Edit` ou `Write` : le hook reformate puis analyse. Après une édition par terminal, lancer `bash .claude/hooks/check_changed_gdscript.sh`, `tools/lint.sh` et `tools/check_typing.sh`.
-- Ne jamais inventer un `uid://` ; ne jamais éditer `.uid`, `.import`, `.godot/`, `addons/` ; `docs/ruleset/` ne s'édite que par `ruleset-editor`, selon sa `CHARTE.md`. Une règle modifiée sans le code qui l'applique se signale dans « État actuel ».
+- Ne jamais inventer un `uid://` ; ne jamais éditer `.uid`, `.import`, `.godot/`, `addons/`. Une règle modifiée sans le code qui l'applique se signale dans « État actuel ».
 - Les `.tscn` s'éditent au strict nécessaire et se vérifient en chargeant la scène.
 - Par le MCP : jamais d'édition de `.gd` (le hook ne passerait pas), de `project.godot` ni d'autoload.
 

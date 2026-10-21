@@ -1,12 +1,12 @@
 # Moteur de duel — consignes locales
 
-Complète le `CLAUDE.md` racine pour `rules/`. Les décisions 0001, 0003, 0004, 0007, 0008, 0009, 0010, 0012, 0013, 0015, 0016, 0017, 0018, 0026 et 0037 priment ; `docs/ruleset/20-regles-completes/` fait foi.
+Complète le `CLAUDE.md` racine pour `rules/` ; décisions 0001, 0003, 0004, 0007, 0008, 0009, 0010, 0012, 0013, 0015, 0016, 0017, 0018, 0026 et 0037.
 
 ## Carte des modules (cible du jalon J1)
 
 | Fichier | Chapitre | Rôle |
 | --- | --- | --- |
-| `duel_engine.gd` | — | Façade : `start_new_duel`, `start_from_state` (tests), `validate`, `submit`, `advance_clock`, `clock_owners`, `awaited_players`, requêtes en lecture pour la vue, aiguillage par classe d'intention. Médiateur (`code-guidelines.md` §5) : aucune règle propre, mais après chaque intention il enchaîne les étapes des modules (effets en attente par `StackRules`, suite de la fin du tour par `TurnRules`), qui ne s'appellent plus entre eux pour cela. |
+| `duel_engine.gd` | — | Façade : `start_new_duel`, `start_from_state` (tests), `validate`, `submit`, `advance_clock`, `clock_owners`, `awaited_players`, requêtes en lecture pour la vue. Médiateur sans règle propre (`code-guidelines.md` §5) : après chaque intention, il enchaîne lui-même les étapes qui la suivent (effets en attente par `StackRules`, suite de la fin du tour par `TurnRules`), que les modules ne déclenchent pas entre eux ; détail au commentaire de `_settle` dans `duel_engine.gd`. |
 | `zone_rules.gd` | 201 | zones, limite de main, appartenance, construction du deck |
 | `card_rules.gd` | 202 | Gear (annonce, attachement, remplacement, retour en main), pouvoir du Hero |
 | `essence_rules.gd` | 203 | paiement à l'annonce, incliner, recycler, Fonte, réserve d'Essence (203.6, 0026) |
@@ -37,7 +37,7 @@ Complète le `CLAUDE.md` racine pour `rules/`. Les décisions 0001, 0003, 0004, 
 ## Ajouter un `kind` d'effet
 
 1. Valeur à la fin de `EffectKind` ; champs exigés déclarés dans `EffectDefinition.find_errors()` (timings admis, cible attendue, paramètres) ; test dans `tests/test_catalog_effects.gd`.
-2. Code et tests dans le module du chapitre **avant** toute carte JSON qui l'emploie (0002). Les cibles exigées passent par `TargetSpec`, validées à l'ajout à la pile et à la résolution (207.5).
+2. Code et tests dans le module du chapitre, avant toute carte JSON (règle racine, 0002). Les cibles exigées passent par `TargetSpec`, validées à l'ajout à la pile et à la résolution (207.5).
 3. Carte JSON ensuite ; le test du catalogue passe.
 
 ## Ajouter un champ d'état
@@ -46,10 +46,10 @@ Le champ **et** sa copie dans `clone()` de la même classe, puis une valeur non 
 
 ## Invariants à ne pas casser
 
-- Tout aléa passe par `state.rng` ; jamais `randi()`, `Array.shuffle()` ni l'heure.
+- Aléa, heure et Node : règle du `CLAUDE.md` racine §3 ; concrètement, jamais `randi()` ni `Array.shuffle()`.
 - Une `CardInstance` est dans une seule zone à la fois : la déplacer, jamais la copier. Une pièce qui revient sur le plateau reçoit un nouveau `piece_id`.
 - La Force actuelle se calcule par `ForceRules`, jamais ne se stocke.
 - Phase `ENDED` ⇒ toute intention refusée ; `state.pending_decision` non null ⇒ seule l'intention qui y répond est acceptée, et `Concede` (209.2.5 : à tout moment).
 - Un Hero ne perd de PV que par `StateCheckRules.lose_health()`, qui vérifie la victoire (209.2.1).
 - Les pendules ne bougent que par `advance_clock()`, jamais pendant un `submit()`.
-- Les modules ne lisent que `state`, le catalogue compris par `state.catalog`, en lecture seule (0016) ; aucune injection, aucun Node, aucun accès à la vue.
+- Les modules ne lisent que `state`, le catalogue compris par `state.catalog`, en lecture seule (0016) ; aucune injection, aucun accès à la vue.

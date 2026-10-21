@@ -1,0 +1,23 @@
+# ui/
+
+Scènes et scripts de la vue ; règles et décisions dans `ui/CLAUDE.md`. Patron de vue repris du prototype `tactical_tcg` (sa décision 0010, sans rapport avec la 0010 du projet).
+
+## Écrans
+
+`MainScreen` (`ui/main.tscn`, décision 0036) est la scène racine : elle lit le catalogue et le deck (`GameLibrary`), tient `DuelSeries` (numéro de partie, premier joueur, graine) et n'a qu'un écran enfant à la fois : `SetupScreen` (préparation, `start_pressed(rng_seed)`), puis `DuelScreen` (`start_duel(setup, config, catalog)`, tous obligatoires, `rematch_requested`, `setup_requested`) ; une erreur de lecture s'affiche à la place (`GameLibrary` rend null en cas d'erreur), et une préparation refusée par `find_errors` s'affiche avec un bouton « Retour » vers la préparation. `DuelScreen` pose le rideau de relais, la confirmation d'abandon et le panneau de fin dans `DuelOverlays` (au-dessus du bouclier d'entrées) ; `DuelPreviewer` et `DuelCenterPresenter` portent l'aperçu et le centre de la colonne. « Abandonner » (près de la pendule du joueur qui a l'appareil) n'est visible qu'en AWAITING_HUMAN et caché tant que la fenêtre de réponse décompte. Le duel démarre main cachée (le premier état de l'hôte est le relais). Le relais attend le clic sur le rideau, sauf tant que `play_scripted_intents` (outil de développement) a des intentions à jouer ; `EndSummary` déduit la raison de fin des événements du dernier lot, sans règle.
+
+## Sélection
+
+Une vue émet des gestes (`cell_pressed`, `card_pressed`, `pass_pressed`) ; `DuelSelection` les reçoit (`press_card`, `press_source`…), émet `intent_chosen` avec une intention déjà validée, et `snapshot()` rend un `SelectionSnapshot` ; `SelectionCandidates` fabrique les intentions candidates, `SelectionTarget` porte une cible. Une Source pressée produit de l'Essence pendant son tour, et prépare le paiement de la réponse pendant le tour adverse. Quand le joueur peut répondre ou passer, une carte choisie ou une Source pressée émet `response_started`, que l'écran transmet à `DuelHost.begin_response()` (décision 0029).
+
+## Écran de duel
+
+Décision 0030 : joueur A toujours en bas, couleurs fixes des joueurs (`DuelPalette`) ; en duel local, la main du bas et les Sources pressables sont celles du joueur qui a l'appareil ; une carte agrandie (aperçu) multiplie les tailles du thème par son échelle, 2,2 seul, 1,7 avec la carte de son Gear, d'après la maquette (décisions 0027 et 0028). Commandes (décision 0032) : un seul grand bouton (« Terminer le tour », « Passer », « Confirmer » au mulligan), aucun « Annuler » ; le pouvoir du Hero se lance par sa carte Hero, le Hero du plateau ne fait que se déplacer. Icônes provisoires tracées en code par `DuelIcons`.
+
+## Composants (`ui/components/`)
+
+`CardView`, `CardBackView`, `PieceView`, `CellView`, `BoardView`, `HandView`, `OpponentHandView`, `DeckCornerView`, `HeroCardView`, `SourcesView`, `ClockView`, `DuelColumnView`, `StackView`, `HoverPreview`, `RelayCurtainView`, `ConcedeConfirmView`, `EndPanelView`, `LogView` (bac à sable seulement, décision 0028). Survol, surlignage et choix se marquent par des anneaux (`DuelMarks`) qui laissent visible le liseré du joueur ; un clic sur une pièce est un geste sur sa case (`cell_pressed`, décision 0030), que `DuelSelection.press_cell` rapporte à la pièce quand la case n'est pas proposée.
+
+## Utilitaires
+
+Sans scène ni essai : `PlayerNames` (noms « Joueur A »), `ControlMarks`, `StatBadgeBinding`, `ViewInput`, `ViewNodes` (`ui/components/`) ; `BadgeLook`, `DashedOutline`, `DuelIcons`, `DuelMarks`, `DuelPalette` (teintes des cinq types, couleurs fixes des joueurs) (`ui/theme/`) ; `CardText`, `EventText`, `DuelScreenLayout` (`ui/`). Dans `_try/` : `TrySamples` (cartes et Hero des decks de test), `DuelScenarios` (situations rares par intentions validées), `ScenarioRecorder` (enregistre les gestes d'un duel joué à blanc), `try_duel_screen_scenarios` (relance `duel_screen.tscn` sur chaque scénario) et `try_duel_sandbox` (bac à sable d'avant 2.3).

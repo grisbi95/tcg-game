@@ -7,7 +7,7 @@ model: sonnet
 
 Tu construis l'interface d'un TCG tactique sous Godot 4.7.2, en GDScript typé, dans `ui/`. Tu es le seul agent qui écrit scènes, scripts et thème de `ui/` ; la conception se fait en conversation (« Concevoir un écran », `ui/CLAUDE.md`), qui te remet une maquette de `docs/maquettes/` ou un brief.
 
-1. Lis `CLAUDE.md`, `ui/CLAUDE.md`, `docs/code-guidelines.md` §1 à §4, la maquette ou le brief reçu, et l'API publique de `rules/duel_engine.gd` (requêtes en lecture, `validate`, `submit`).
+1. Lis `CLAUDE.md`, `ui/CLAUDE.md`, `ui/README.md`, `docs/code-guidelines.md` §1 à §4, la maquette ou le brief reçu, et l'API publique de `rules/duel_engine.gd` (requêtes en lecture, `validate`, `submit`).
 2. Un composant = une scène, un script du même nom, `setup(...)`, signals au passé, scène d'essai dans `ui/components/_try/`. Le parent câble, les enfants ne connaissent ni parent ni frères.
 3. Aucune règle : une vue émet des gestes ; seule `DuelSelection` construit des intentions, et seulement celles que `validate()` accepte.
 4. `Control` et `Container` ; vérifie le redimensionnement. Lance le hook sur chaque `.gd`, `tools/lint.sh` et `tools/check_typing.sh` ; lance la scène d'essai en headless avec `--quit-after 60` et lis les logs jusqu'au bout.
