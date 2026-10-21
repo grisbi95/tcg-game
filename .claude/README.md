@@ -16,6 +16,10 @@ Le serveur `godot-ai==4.3.0`, lancé par `uvx`, est inscrit dans Claude Code en 
 
 Un rôle par agent : `ui-builder` seul construit dans `ui/`, la conception d'écran se fait en conversation (`ui/CLAUDE.md`, « Concevoir un écran ») ; `rules-implementer` et `test-writer` écrivent moteur et tests et lancent eux-mêmes lint, typage et suite ; `card-author` écrit les cartes JSON et lance le test du catalogue ; `verifier` est l'entrée unique des vérifications (`/check` et `/tests` lui délèguent, commandes dans `CLAUDE.md` §7) ; `reviewer` relit sans rien écrire ; `adr-writer` consigne, `ruleset-editor` édite `docs/ruleset/` seul.
 
+## Skills
+
+Rituels du cycle (décision 0039), une recette par skill dans `skills/<nom>/SKILL.md`, dans l'ordre d'une étape : `open-step`, `decision`, `implement`, `cards`, `check`, `tests`, `close-step`, `pr` ; hors cycle, `sync-rule` (règle changée) et `retro` (jalon clos). `pr` ne se lance que par le créateur.
+
 ## Permissions
 
 Autorisés sans demande : `run_tests.sh`, `lint.sh`, `check_typing.sh`, le hook et ses tests, GdUnit4, gdlint et gdformat, Git en lecture plus `fetch` et `branch`, `gh pr` et `gh run` en lecture, le shell en lecture ; `rm -rf` et ses variantes refusés. Refusés aux outils d'édition : `addons/`, `.godot/`, `.venv/`, les `.uid` et `.import`. `docs/ruleset/` s'édite par l'agent `ruleset-editor` seulement (0014). Le chemin du binaire Godot est propre à chaque machine : il va dans `CLAUDE.local.md`.
