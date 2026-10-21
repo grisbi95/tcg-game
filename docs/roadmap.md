@@ -21,7 +21,7 @@
 - [x] gdtoolkit 4 en `.venv`, `.gdlintrc` (100 colonnes, 4 paramètres, 400 lignes), `tools/lint.sh`.
 - [x] `tools/sync_ruleset.sh` et copie `docs/ruleset/` à l'édition 0.28 (script retiré par la décision 0014 : le ruleset vit dans le dépôt).
 - [x] `CLAUDE.md` racine et locaux (`rules/`, `ui/`, `tests/`), `docs/README.md`, `code-guidelines.md` révisé.
-- [x] Agents : `rules-implementer`, `test-writer`, `verifier`, `card-author`, `ui-builder`, `reviewer`, `adr-writer` ; depuis, `ruleset-editor` (0014) et `godot-ui-ux`. Skills : `implement`, `tests`, `check`, `decision`, `close-step`, `cards` ; `sync-ruleset` retirée par 0014.
+- [x] Agents : `rules-implementer`, `test-writer`, `verifier`, `card-author`, `ui-builder`, `reviewer`, `adr-writer` ; depuis, `ruleset-editor` (0014) ; `godot-ui-ux` ajouté puis retiré le 21 octobre 2026, la conception d'écran se fait en conversation (`ui/CLAUDE.md`). Skills : `implement`, `tests`, `check`, `decision`, `close-step`, `cards` ; `sync-ruleset` retirée par 0014.
 - [x] Décisions 0001 à 0007 consignées.
 - [x] CI GitHub Actions écrite (tests, lint).
 - [x] Remote GitHub `grisbi95/tcg-game` (privé) créé, premier push, CI verte le 16 octobre 2026 (`setup-godot` accepte `4.7.2`).

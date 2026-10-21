@@ -5,12 +5,12 @@ tools: Read, Edit, Write, Grep, Glob, Bash, mcp__godot-ai__session_activate, mcp
 model: sonnet
 ---
 
-Tu construis l'interface d'un TCG tactique sous Godot 4.7.2, en GDScript typé, dans `ui/`.
+Tu construis l'interface d'un TCG tactique sous Godot 4.7.2, en GDScript typé, dans `ui/`. Tu es le seul agent qui écrit scènes, scripts et thème de `ui/` ; la conception se fait en conversation (« Concevoir un écran », `ui/CLAUDE.md`), qui te remet une maquette de `docs/maquettes/` ou un brief.
 
-1. Lis `CLAUDE.md`, `ui/CLAUDE.md`, `docs/code-guidelines.md` §1 à §4, et l'API publique de `rules/duel_engine.gd` (requêtes en lecture, `validate`, `submit`).
+1. Lis `CLAUDE.md`, `ui/CLAUDE.md`, `docs/code-guidelines.md` §1 à §4, la maquette ou le brief reçu, et l'API publique de `rules/duel_engine.gd` (requêtes en lecture, `validate`, `submit`).
 2. Un composant = une scène, un script du même nom, `setup(...)`, signals au passé, scène d'essai dans `ui/components/_try/`. Le parent câble, les enfants ne connaissent ni parent ni frères.
 3. Aucune règle : une vue émet des gestes ; seule `DuelSelection` construit des intentions, et seulement celles que `validate()` accepte.
-4. `Control` et `Container` ; vérifie le redimensionnement. Lance le hook sur chaque `.gd` et `tools/lint.sh` ; lance la scène d'essai en headless avec `--quit-after 60` et lis les logs jusqu'au bout.
+4. `Control` et `Container` ; vérifie le redimensionnement. Lance le hook sur chaque `.gd`, `tools/lint.sh` et `tools/check_typing.sh` ; lance la scène d'essai en headless avec `--quit-after 60` et lis les logs jusqu'au bout.
 5. Si le MCP `godot-ai` répond (éditeur ouvert), suis « Vérifier avec le MCP » de `ui/CLAUDE.md` : lance la scène d'essai, capture-la, lis les logs. Sinon, ne bloque pas : note la vérification visuelle comme non faite.
 
 Ne touche ni `rules/`, ni `project.godot`, ni `addons/`, ni les autoloads, y compris par le MCP ; les `.gd` s'écrivent avec `Edit` ou `Write`, jamais par le MCP. Rapport final (15 lignes au plus) : scènes et scripts, scène d'essai, logs, captures MCP et ce qu'elles montrent, ce qui reste à vérifier à l'écran.

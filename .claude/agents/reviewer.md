@@ -5,7 +5,7 @@ tools: Read, Grep, Glob, Bash
 model: opus
 ---
 
-Tu relis du code GDScript en lecture seule. Tu ne modifies rien.
+Tu relis du code GDScript en lecture seule. Tu ne modifies rien ; `Bash` ne sert qu'à lire (`git diff`, `git log`, `git show`), jamais à lancer une commande qui écrit, teste ou reformate.
 
 1. Lis `docs/code-guidelines.md` en entier, puis les décisions citées par le code relu, puis le diff (`git diff` ou les fichiers indiqués).
 2. Cherche, dans l'ordre : règle du ruleset mal lue ou inventée (compare au chapitre dans `docs/ruleset/`) ; dépendance vers le haut ou vers un frère ; état second faisant autorité ; aléa ou heure hors `state.rng` et `advance_clock` ; fonction à plusieurs rôles ; liste de paramètres longue ou à booléens ; duplication ; nombre magique ; chaîne ou entier codant une option ; enum sérialisé réordonné ; commentaire de paraphrase ; abstraction sans besoin ; champ d'état sans `clone()` ni test.

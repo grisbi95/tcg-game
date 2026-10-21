@@ -9,8 +9,12 @@ Le serveur `godot-ai==4.3.0`, lancé par `uvx`, est inscrit dans Claude Code en 
 ## Hooks
 
 - **SessionStart** `hooks/session_start.sh` : édition courante du ruleset, « État actuel » de la roadmap, branche et nombre de fichiers modifiés. Trois lignes, rien d'autre.
-- **PostToolUse** sur `Edit`, `Write`, `MultiEdit` : `hooks/post_edit_gdscript.sh` enchaîne `format_gdscript.py` (gdformat, ignoré si `.venv` absent) puis `check_gdscript.py` (`--headless --check-only`). Un diagnostic renvoie le code 2 : l'édition reste appliquée, Claude doit corriger ; un `.gd` hors du projet est ignoré par le hook (code 2 en ligne de commande). `--check-only` ne remonte pas tous les warnings de typage : vérifier aussi dans l'éditeur.
-- Les éditions faites par terminal ou éditeur externe ne déclenchent pas le hook : lancer `bash .claude/hooks/check_changed_gdscript.sh` et `tools/lint.sh`.
+- **PostToolUse** sur `Edit`, `Write`, `MultiEdit` : `hooks/post_edit_gdscript.sh` enchaîne `format_gdscript.py` (gdformat, ignoré si `.venv` absent) puis `check_gdscript.py` (`--headless --check-only`). Un diagnostic renvoie le code 2 : l'édition reste appliquée, Claude doit corriger ; un `.gd` hors du projet est ignoré par le hook (code 2 en ligne de commande). `--check-only` ne remonte pas tous les warnings de typage : seul `tools/check_typing.sh` les remonte.
+- Les éditions faites par terminal ou éditeur externe ne déclenchent pas le hook : lancer `bash .claude/hooks/check_changed_gdscript.sh`, `tools/lint.sh` et `tools/check_typing.sh` (`CLAUDE.md` §6).
+
+## Agents
+
+Un rôle par agent : `ui-builder` seul construit dans `ui/`, la conception d'écran se fait en conversation (`ui/CLAUDE.md`, « Concevoir un écran ») ; `rules-implementer` et `test-writer` écrivent moteur et tests et lancent eux-mêmes lint, typage et suite ; `card-author` écrit les cartes JSON et lance le test du catalogue ; `verifier` est l'entrée unique des vérifications (`/check` et `/tests` lui délèguent, commandes dans `CLAUDE.md` §7) ; `reviewer` relit sans rien écrire ; `adr-writer` consigne, `ruleset-editor` édite `docs/ruleset/` seul.
 
 ## Permissions
 
