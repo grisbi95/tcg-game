@@ -249,6 +249,7 @@ func _close_batch(events: Array[DuelEvent]) -> Array[DuelEvent]:
 	return events
 
 
+# Décision 0020 : une fois tous les lots affichés, l'hôte attend le joueur que désigne le moteur.
 func _choose_next_state() -> void:
 	if _engine.get_state().is_ended():
 		_change_state(HostState.ENDED)
@@ -258,12 +259,20 @@ func _choose_next_state() -> void:
 		push_error("DuelHost : duel en cours sans joueur attendu")
 		return
 	_awaited_player = owners[0]
+	var next_state := _state_for_awaited_player()
+	match next_state:
+		HostState.AWAITING_HUMAN:
+			_await_human()
+		HostState.AWAITING_AI, HostState.RELAY:
+			_change_state(next_state)
+
+
+func _state_for_awaited_player() -> HostState:
 	if _agents.has(_awaited_player):
-		_change_state(HostState.AWAITING_AI)
-	elif _needs_relay():
-		_change_state(HostState.RELAY)
-	else:
-		_await_human()
+		return HostState.AWAITING_AI
+	if _needs_relay():
+		return HostState.RELAY
+	return HostState.AWAITING_HUMAN
 
 
 # 208.6.1 : entre deux humains, la fenêtre ne s'ouvre qu'une fois l'appareil passé.
