@@ -27,7 +27,7 @@ static func resolve_attack(
 	if _is_attacker_destroyed(state, attacker_force, defender_force):
 		destroy_piece(state, attacker, events)
 	elif defender_destroyed:
-		ActionRules.move_piece(attacker, defender_cell, events)
+		ZoneRules.move_piece(attacker, defender_cell, events)
 
 
 ## 206.3.2, 206.3.2a, 202.2.13 : retire `piece` du plateau ; sa carte et son Gear vont dans la

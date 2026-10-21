@@ -3,8 +3,9 @@ extends RefCounted
 ## Façade du moteur (décisions 0001 et 0012) : démarrage, validation, soumission, lecture.
 ##
 ## Médiateur sans règle propre : chaque intention est aiguillée vers le module de son chapitre,
-## puis `_settle` enchaîne les étapes qui suivent toute intention. Une intention illégale produit
-## un unique IntentRejected et ne change rien.
+## `_resolve_stack` aiguille chaque entrée de pile vers le module de son genre, puis `_settle`
+## enchaîne les étapes qui suivent toute intention. Une intention illégale produit un unique
+## IntentRejected et ne change rien.
 
 var _catalog: Catalog
 var _config: DuelConfig
@@ -185,15 +186,44 @@ func _route_announcement_validation(intent: DuelIntent) -> IntentRejected.Reject
 	return IntentRejected.RejectReason.UNKNOWN_INTENT
 
 
-# 208.4.3, 208.5.1, 204.5.6, 204.5.7 : après chaque intention, les effets en attente s'ajoutent
-# à la pile ; une fin du tour dont la pile est vide se poursuit jusqu'au tour suivant, dont les
-# effets en attente s'ajoutent à leur tour (208.4.11).
+# 208.4.3, 208.5.1, 208.5.1a, 204.5.6, 204.5.7 : après chaque intention, les effets en attente
+# s'ajoutent à la pile ; une fin du tour dont la pile est vide se poursuit jusqu'au tour suivant,
+# dont les effets en attente s'ajoutent à leur tour (208.4.11).
 func _settle(events: Array[DuelEvent]) -> void:
 	while not _state.is_ended():
-		StackRules.settle_after_triggers(_state, events)
+		TriggerRules.add_waiting_triggers(_state, events)
+		StackRules.return_priority_to_active_player(_state)
 		if not TurnRules.is_end_of_turn_ready(_state):
 			return
 		TurnRules.finish_end_of_turn(_state, events)
+
+
+# 208.3.1, 208.3.2, 208.3.3 ; 209.2.1, 209.2.3 : toute la pile se résout d'un bloc, du sommet à
+# la base ; la victoire se vérifie après chaque entrée, et une partie arrêtée laisse le reste.
+func _resolve_stack(events: Array[DuelEvent]) -> void:
+	while not _state.stack.is_empty():
+		var entry := StackRules.take_top_entry(_state)
+		_resolve_entry(entry, events)
+		StackRules.announce_entry_resolved(_state, entry, events)
+		if StateCheckRules.check_victory(_state, events, DuelState.EndReason.HERO_HEALTH_ZERO):
+			return
+
+
+# 208.3.2 : chaque genre d'entrée se résout par le module de son chapitre.
+func _resolve_entry(entry: StackEntry, events: Array[DuelEvent]) -> void:
+	match entry.kind:
+		StackEntry.StackEntryKind.DEPLOY:
+			ActionRules.resolve_deploy(_state, entry, events)
+		StackEntry.StackEntryKind.NORMAL_ACTION:
+			ActionRules.resolve_normal_action(_state, entry, events)
+		StackEntry.StackEntryKind.SPELL:
+			EffectRules.resolve_spell(_state, entry, events)
+		StackEntry.StackEntryKind.HERO_POWER:
+			CardRules.resolve_hero_power(_state, entry, events)
+		StackEntry.StackEntryKind.ATTACH_GEAR:
+			CardRules.resolve_attach_gear(_state, entry, events)
+		StackEntry.StackEntryKind.TRIGGERED_EFFECT:
+			TriggerRules.resolve_triggered(_state, entry, events)
 
 
 func _apply(intent: DuelIntent, events: Array[DuelEvent]) -> void:
@@ -209,6 +239,7 @@ func _apply(intent: DuelIntent, events: Array[DuelEvent]) -> void:
 		TurnRules.apply_end_turn(_state, intent as EndTurn, events)
 	elif intent is PassPriority:
 		StackRules.apply_pass(_state, intent as PassPriority, events)
+		_resolve_stack(events)
 	elif intent is ProduceEssence:
 		EssenceRules.apply_production(_state, intent as ProduceEssence, events)
 	elif intent is DeployCard:
