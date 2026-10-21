@@ -1,6 +1,6 @@
 # Protocole du premier playtest
 
-> Rôle : fixer avant la première partie les decks, la taille de la série, la fiche de relevé et les seuils de jugement du premier playtest du ruleset. Statut : rédigé, decks composés dans [decks-de-test.md](decks-de-test.md) ; aucune partie jouée. Créé le 16 octobre 2026, complété le 16 octobre 2026 (édition 0.28) et le 18 octobre 2026 (édition 0.35, mesure de l'Essence perdue, décision 0195 ; édition 0.36, mesures de la fenêtre de réponse, décision 0198). Ce document ne contient aucune règle de jeu : il renvoie aux identifiants de [20-regles-completes/](../20-regles-completes/).
+> Rôle : fixer avant la première partie les decks, la taille de la série, la fiche de relevé et les seuils de jugement du premier playtest du ruleset. Statut : rédigé, decks composés dans [decks-de-test.md](decks-de-test.md) ; aucune partie jouée. Créé le 16 octobre 2026, complété le 16 octobre 2026 (édition 0.28) et le 18 octobre 2026 (édition 0.35, mesure de l'Essence perdue, décision 0195 ; édition 0.36, mesures de la fenêtre de réponse, décision 0198 ; édition 0.37, mesure de lisibilité du texte des cartes de main). Ce document ne contient aucune règle de jeu : il renvoie aux identifiants de [20-regles-completes/](../20-regles-completes/).
 
 ## Objet
 
@@ -131,6 +131,7 @@ L'Essence perdue se relève sur la ligne du tour qui se termine, pour le seul jo
 | Temps de pendule consommé par les fenêtres de réponse | secondes de pendule consommées pendant la partie par les fenêtres de réponse (208.6.2) de A et de B, relevées dans une version du jeu sur écran (208.6.1) seulement, vide sinon (décision 0198) |
 | Réponses commencées | nombre de fois où A et B ont commencé une réponse pendant une fenêtre de réponse (208.6.5), relevé dans une version du jeu sur écran seulement, vide sinon (décision 0198) |
 | Ressenti du rythme | note libre sur le rythme du déroulé pendant la partie, dans une version du jeu sur écran seulement (décision 0198) |
+| Lisibilité du texte des cartes de main | note libre, relevée dans une version du jeu sur écran avec un affichage en 1280×720, l'aperçu au survol servant à lire le texte : le joueur ouvre-t-il l'aperçu pour lire, le texte se lit-il sans (décision 0035 du projet, hors ruleset, 20 octobre 2026) |
 | Champ libre | situations bloquées ou surprenantes |
 
 ### Modèle de fiche
@@ -162,11 +163,12 @@ Note sur Dernier souffle : une ligne par déclenchement, vide si Dernier souffle
 | Temps de pendule consommé par les fenêtres de réponse, A et B (version sur écran) | |
 | Réponses commencées, A et B (version sur écran) | |
 | Ressenti du rythme (version sur écran) | |
+| Lisibilité du texte des cartes de main (version sur écran, affichage en 1280×720) | |
 | Champ libre | |
 
 ## Cibles et seuils
 
-Chaque mesure reçoit, avant le playtest, une cible et un seuil d'alerte (décision 0156). Après la série, une valeur qui tient sa cible peut passer en ACTÉ par une décision. Une valeur qui franchit son seuil d'alerte ouvre une question dans [02-questions-ouvertes.md](../02-questions-ouvertes.md). Une valeur comprise entre sa cible et son seuil d'alerte reste PROVISOIRE et est mesurée à nouveau à la série suivante ; elle n'ouvre pas de question et ne passe pas en ACTÉ (décision 0162). La note sur Dernier souffle de la fiche n'est pas une mesure du tableau : elle n'a ni cible ni seuil d'alerte (décision 0175). La mesure de l'Essence perdue vise des règles ACTÉ et n'a ni cible ni seuil chiffrés avant les premiers playtests : elle ne passe pas en ACTÉ et n'ouvre pas de question avant que la décision qui fixe sa cible et son seuil d'alerte soit prise (décision 0195). Les mesures de la fenêtre de réponse visent 208.6.2 et ne se relèvent que dans une version du jeu sur écran (décision 0198) : celles qui portent le temps de pendule consommé et les réponses commencées n'ont ni cible ni seuil chiffrés avant les premiers playtests, 208.6.2 reste PROVISOIRE et aucune question ne s'ouvre avant que la décision qui fixe leur cible et leur seuil d'alerte soit prise ; le ressenti du rythme se juge en notes qualitatives.
+Chaque mesure reçoit, avant le playtest, une cible et un seuil d'alerte (décision 0156). Après la série, une valeur qui tient sa cible peut passer en ACTÉ par une décision. Une valeur qui franchit son seuil d'alerte ouvre une question dans [02-questions-ouvertes.md](../02-questions-ouvertes.md). Une valeur comprise entre sa cible et son seuil d'alerte reste PROVISOIRE et est mesurée à nouveau à la série suivante ; elle n'ouvre pas de question et ne passe pas en ACTÉ (décision 0162). La note sur Dernier souffle de la fiche n'est pas une mesure du tableau : elle n'a ni cible ni seuil d'alerte (décision 0175). La mesure de l'Essence perdue vise des règles ACTÉ et n'a ni cible ni seuil chiffrés avant les premiers playtests : elle ne passe pas en ACTÉ et n'ouvre pas de question avant que la décision qui fixe sa cible et son seuil d'alerte soit prise (décision 0195). Les mesures de la fenêtre de réponse visent 208.6.2 et ne se relèvent que dans une version du jeu sur écran (décision 0198) : celles qui portent le temps de pendule consommé et les réponses commencées n'ont ni cible ni seuil chiffrés avant les premiers playtests, 208.6.2 reste PROVISOIRE et aucune question ne s'ouvre avant que la décision qui fixe leur cible et leur seuil d'alerte soit prise ; le ressenti du rythme se juge en notes qualitatives. La mesure de la lisibilité du texte des cartes de main n'est pas une mesure du tableau : elle n'a ni cible ni seuil d'alerte, elle ne vise aucune règle des règles complètes, et le bilan de la série dit s'il faut l'ajouter au tableau (décision 0035 du projet, hors ruleset).
 
 ### Lecture de « tour »
 
@@ -219,6 +221,7 @@ Ces termes ne figurent pas au glossaire. Ils ne valent que pour ce protocole.
 | Moyenne de l'Essence perdue | Moyenne des relevés d'Essence perdue des deux joueurs, sur tous leurs tours (décision 0195). |
 | Temps de pendule consommé par les fenêtres de réponse | Total, pour un joueur et pour une partie, des secondes de pendule qui s'écoulent pendant les fenêtres de réponse qu'on lui montre, y compris quand il passe automatiquement (208.6.3, 209.4.4g ; décision 0198). |
 | Moyenne du temps de pendule consommé par les fenêtres de réponse | Moyenne, sur les parties de la série jouées dans une version du jeu sur écran, du total des deux joueurs (décision 0198). |
+| Aperçu au survol | Carte survolée par le pointeur, affichée en grand dans la colonne de gauche de l'écran, où son texte se lit (décision 0035 du projet, hors ruleset). |
 | Réponse commencée | Réponse que le joueur commence pendant une fenêtre de réponse, ce qui arrête le décompte (208.6.5 ; décision 0198). |
 | Moyenne des réponses commencées | Moyenne, sur les parties de la série jouées dans une version du jeu sur écran, du total des deux joueurs (décision 0198). |
 | Carte jouée | Valeur de la fiche : oui si le joueur a joué au moins une carte de sa main depuis son tour précédent, pendant son tour ou en réponse pendant le tour adverse ; le pouvoir du Hero ne compte pas, la mesure portant sur les cartes du deck (201.6.1 et 201.6.2 ; décision 0168) ; relevée seulement sur la ligne du propre tour du joueur (décision 0173). |
@@ -278,4 +281,9 @@ Ces termes ne figurent pas au glossaire. Ils ne valent que pour ce protocole.
 
 ## Points à trancher avant la première série
 
-Aucun. Q-070 est tranchée le 16 octobre 2026 par la décision 0163 ; Q-071, Q-072, Q-073 et Q-074 sont tranchées le même jour par les décisions 0158 à 0162. Le Passif, le pouvoir et le coût du pouvoir du Hero de test sont fixés par la décision 0170.
+Deux points ouverts dans [02-questions-ouvertes.md](../02-questions-ouvertes.md) :
+
+- Q-102 : le mulligan de la série et le rôle de chaque joueur connu d'avance, à trancher avant la première série (jalon J3) ;
+- Q-103 : le mulligan de deux humains sur un même écran, à trancher avant une série jouée à deux humains.
+
+Q-070 est tranchée le 16 octobre 2026 par la décision 0163 ; Q-071, Q-072, Q-073 et Q-074 sont tranchées le même jour par les décisions 0158 à 0162. Le Passif, le pouvoir et le coût du pouvoir du Hero de test sont fixés par la décision 0170.

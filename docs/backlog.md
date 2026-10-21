@@ -23,20 +23,6 @@ Priorité : **haute** = écart au ruleset ou défaut visible en partie ; **moyen
 | Dette | Référence | Priorité | Cible |
 | --- | --- | --- | --- |
 | Un agent qui ne propose aucune intention légale laisse `DuelHost` en `AWAITING_AI` avec une erreur à chaque image, jusqu'à la fin de sa pendule. | 0020 | moyenne | J4 |
-| `DuelSelection` ne gère qu'une cible par annonce. | 207.5, 0024 | moyenne | première carte à plusieurs cibles |
+| `DuelSelection` ne gère qu'une cible par annonce ; les questions Q-098 et Q-099 du ruleset sont à trancher avant. | 207.5, 0024 | moyenne | première carte à plusieurs cibles |
 | `PieceView` n'affiche que les mots-clés imprimés, aucun pour un jeton ; un mot-clé donné par un Gear, un Spell ou une aura demandera une requête de `DuelEngine`, comme pour la Force. | 202.4.13a | basse | J4 |
 | Pendant un relais, le grand bouton du joueur précédent reste visible, inactif, derrière le rideau. | 0036 | basse | J3 |
-
-## En transit vers leur propriétaire
-
-Questions de règles relevées par l'audit du 20 octobre 2026, à ouvrir par `ruleset-editor` dans `02-questions-ouvertes.md` avant J3, puis à supprimer ici :
-
-- La Force d'un Hero vaut 0 par convention (202.3.9) et le catalogue refuse un effet de Force ou de destruction visant un Hero, faute de règle.
-- Choisir deux fois la même cible n'est pas tranché (aucune carte à plusieurs cibles).
-- Un pouvoir de Hero à plusieurs cibles opposerait 207.5.17 et 207.5.10.
-- Une Unit qui se déploie en attaquant n'a pas de case pendant le combat.
-- 204.5.5 et 208.4.5 disent encore « les joueurs peuvent répondre » aux effets déclenchés, sens restreint par 208.3.1a.
-- Le protocole de playtest impose le premier joueur d'avance, à préciser avant J3 pour respecter 204.1.16.
-- À deux humains, le mulligan se fait A puis B sur le même écran, alors que 204.2.2 dit « en même temps ».
-
-Les dettes d'architecture relevées par le même audit entrent ici si elles restent à faire quand il se clôt.

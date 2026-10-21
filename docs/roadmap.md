@@ -2,7 +2,7 @@
 
 > **Rôle** : plan unique du projet : périmètre, jalons, étapes et état. Les règles font foi dans [ruleset/](ruleset/README.md) ; l'architecture dans [decisions/](decisions/).
 
-**État actuel (20 octobre 2026)** : jalons J0 et J1 terminés ; J2 en cours, étapes 2.1 à 2.4 fusionnées (PR 11 à 16). Prochaine action : étape 2.5 (`PlaytestRecorder`). Décisions à prendre avec 2.5 : la mesure « réponses commencées » (208.6.2) suppose de compter `DuelHost.begin_response()`, non journalisé (0022) ; distinguer « 0 PV par la fatigue » demande une raison portée par `DuelEnded`, aujourd'hui déduite par la vue (`EndSummary`). Dettes techniques dans [backlog.md](backlog.md) (0038) ; questions de règles dans [ruleset/02-questions-ouvertes.md](ruleset/02-questions-ouvertes.md), en transit dans le backlog jusqu'à leur ouverture par `ruleset-editor`.
+**État actuel (21 octobre 2026)** : jalons J0 et J1 terminés ; J2 en cours, étapes 2.1 à 2.4 fusionnées (PR 11 à 16), assainissement en cours (PR 17 à 21). Prochaine action : étape 2.5 (`PlaytestRecorder`). Décisions à prendre avec 2.5 : la mesure « réponses commencées » (208.6.2) suppose de compter `DuelHost.begin_response()`, non journalisé (0022) ; distinguer « 0 PV par la fatigue » demande une raison portée par `DuelEnded`, aujourd'hui déduite par la vue (`EndSummary`). Dettes techniques dans [backlog.md](backlog.md) (0038) ; questions de règles dans [ruleset/02-questions-ouvertes.md](ruleset/02-questions-ouvertes.md).
 
 ## Périmètre
 

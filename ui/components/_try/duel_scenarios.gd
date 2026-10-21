@@ -38,7 +38,7 @@ const MAX_TURNS_TO_FATIGUE: int = 8
 ## `data/cards/` et des decks de test du ruleset, elle ne doit jamais y entrer.
 const BEACON_ID: StringName = &"essai_balise"
 const BEACON_JSON: String = """{
-	"edition": "0.36",
+	"edition": "0.37",
 	"cards": [{
 		"id": "essai_balise", "name": "Balise (essai)", "cost": 1, "type": "building", "force": 4,
 		"text": "Fin du tour : une pièce alliée ciblée a +1 Force jusqu'à la fin du tour.",
