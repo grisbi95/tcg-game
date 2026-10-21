@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Écran de partie V3</title>
+<!--
+  Maquette V3 : première application de docs/direction-artistique/bible.md (brouillon).
+  L'Automate (joueur A, en bas) contre le Revenant (joueur B, en haut).
+  Cotes des décisions 0030 et 0035 ; cartes et textes du deck de test (data/cards/test_deck.json),
+  seuls les noms des deux Heroes sont ceux du casting. Référence visuelle, jamais intégrée au jeu.
+  États : touches 1 (en jeu), 2 (annonce de relais), 3 (affiche de fin), ou ?state=relay / ?state=end.
+-->
+<style>
+:root{
+  --table:#1c1916;--panel:#26221d;--slot:#2f2a24;--floor-in:#463e34;--floor-out:#2b2620;
+  --ink:#15120f;--paper:#efe5cf;--paper-2:#e0d3b6;--paper-3:#c7b896;
+  --gray-1:#8b8274;--gray-2:#5c554b;--on-dark:#cdbfa6;
+  --a:#2f6fd6;--a-ink:#a9c6f0;--b:#d43b2f;--b-ink:#f0b3aa;
+  --essence:#f4c542;--chosen:#57c77a;--up:#2d7a2f;--down:#b0560f;
+  --t-unit:#a8b88f;--t-building:#cfae74;--t-spell:#9ea6c4;--t-gear:#c98f72;--t-hero:#c79aa3;
+  --c-automate:#7d9c95;--c-revenant:#9a8cab;
+  --display:"Inter Display","Inter","Arial Black",sans-serif;
+  --serif:"Bitstream Charter","Charter","Caladea",Georgia,serif;
+  --grain:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .08 0 0 0 0 .07 0 0 0 0 .05 0 0 0 .13 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  --dots:radial-gradient(rgba(21,18,15,.26) 1.3px,transparent 1.8px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#0d0b0a;overflow:hidden}
+#stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;
+  background:
+    radial-gradient(ellipse 1100px 820px at 960px 470px,rgba(255,236,200,.07),transparent 70%),
+    var(--grain),
+    radial-gradient(ellipse 1500px 1000px at 960px 500px,#24201b 0%,var(--table) 55%,#110f0d 100%);}
+.abs{position:absolute}
+.L{position:absolute}
+.scaled{position:absolute;transform-origin:0 0}
+.caps{font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:.14em}
+
+/* Carte complète, dessinée à 316 × 440 puis mise à l'échelle */
+.card{position:relative;width:316px;height:440px}
+.card .rim{inset:0}
+.card .face-in{position:absolute;inset:2px;display:flex;flex-direction:column;
+  background:var(--grain),var(--paper-2)}
+.card .head{height:58px;display:flex;align-items:center;padding:0 74px 0 70px;
+  font:700 27px/1 var(--serif);color:var(--ink);white-space:nowrap;overflow:hidden}
+.card.hero .head{padding-left:16px}
+.card .art{position:relative;height:160px;margin:0 7px;border:3px solid var(--ink);
+  background:var(--dots),color-mix(in srgb,var(--camp) 62%,var(--paper));background-size:7px 7px,auto;overflow:hidden}
+.card .art svg{position:absolute;inset:4px 0 0 0;width:100%;height:100%}
+.card .band{height:36px;margin-top:7px;background:var(--ink);color:var(--paper);display:flex;align-items:center;
+  gap:8px;padding:0 14px;font:700 17px/1 var(--display);letter-spacing:.16em;text-transform:uppercase}
+.card .band svg{width:20px;height:20px;flex:none}
+.card .band .speed{margin-left:auto;font-weight:600;color:var(--paper-3)}
+.card .text{flex:1;padding:12px 14px 0;font:23px/28px var(--serif);color:var(--ink);background:var(--grain),var(--paper)}
+.card.dense .text{font-size:19px;line-height:23px;padding-top:9px}
+.kw{display:inline-block;padding:4px 9px 3px;margin-right:6px;background:var(--ink);color:var(--paper);
+  font:700 15px/1 var(--display);letter-spacing:.12em;text-transform:uppercase;vertical-align:2px;
+  clip-path:polygon(5px 0,calc(100% - 5px) 0,100% 5px,100% calc(100% - 5px),calc(100% - 5px) 100%,5px 100%,0 calc(100% - 5px),0 5px)}
+.badge{position:absolute;overflow:visible}
+
+/* Pièce du plateau, dessinée à 258 × 258 puis réduite de moitié */
+.piece{position:relative;width:258px;height:258px}
+.piece .face-in{position:absolute;inset:2px;display:flex;flex-direction:column;background:var(--grain),var(--paper-2)}
+.piece .head{height:46px;display:flex;align-items:center;padding:0 70px 0 12px;
+  font:700 25px/1 var(--serif);color:var(--ink);white-space:nowrap;overflow:hidden}
+.piece .art{position:relative;flex:1;margin:0 7px;border:3px solid var(--ink);
+  background:var(--dots),color-mix(in srgb,var(--camp) 62%,var(--paper));background-size:7px 7px,auto;overflow:hidden}
+.piece .art svg{position:absolute;left:-15%;top:-8%;width:130%;height:122%}
+.piece .band{height:36px;margin:6px 0 0;background:var(--ink);color:var(--paper);display:flex;align-items:center;gap:7px;
+  padding:0 10px;font:700 16px/1 var(--display);letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}
+.piece .band svg{width:18px;height:18px;flex:none}
+.piece .band .kw{margin:0 0 0 auto;background:var(--paper);color:var(--ink);font-size:13px;padding:4px 7px 3px;vertical-align:0}
+.gear-peek{position:absolute;left:0;right:0;top:0;height:46px;background:var(--ink)}
+.gear-peek .in{position:absolute;inset:4px 4px 0 4px;display:flex;align-items:flex-start;gap:7px;padding:5px 10px;
+  background:repeating-linear-gradient(45deg,var(--t-gear) 0 4px,color-mix(in srgb,var(--t-gear) 60%,#15120f) 4px 6px);
+  font:700 16px/1 var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
+.gear-peek .in span{background:var(--paper);padding:3px 7px 2px}
+.gear-peek svg{width:18px;height:18px;background:var(--paper);padding:1px}
+
+/* Plateau */
+#board{left:595px;top:88px;width:731px;height:731px;display:grid;grid-template-columns:repeat(5,143px);
+  grid-template-rows:repeat(5,143px);gap:4px;background:var(--ink)}
+.cell{position:relative;box-shadow:inset 0 2px 0 rgba(255,240,210,.06),inset 0 -2px 0 rgba(0,0,0,.25)}
+.cell .slot{position:absolute;left:7px;top:7px;width:129px;height:129px}
+.cell svg.marks{position:absolute;inset:0;width:143px;height:143px;pointer-events:none;overflow:visible}
+.coord{position:absolute;font:700 14px/1 var(--display);letter-spacing:.1em;color:var(--gray-1)}
+
+/* Sources et compteurs */
+.src{position:absolute;width:74px;height:106px}
+.counter{position:absolute;height:30px;display:flex;align-items:center;gap:8px;padding:0 12px;
+  background:var(--ink);box-shadow:inset 0 0 0 1px #4a4238;color:var(--on-dark);
+  clip-path:polygon(6px 0,calc(100% - 6px) 0,100% 6px,100% calc(100% - 6px),calc(100% - 6px) 100%,6px 100%,0 calc(100% - 6px),0 6px)}
+.counter .lb{font:700 12px/1 var(--display);letter-spacing:.16em;text-transform:uppercase}
+.counter .nb{font:800 20px/1 var(--display);color:var(--paper)}
+.counter.essence{box-shadow:inset 0 0 0 2px var(--essence)}
+.counter.essence .nb,.counter.essence .lb{color:var(--essence)}
+
+/* Colonne de duel */
+#column{left:1342px;top:88px;width:220px;height:731px}
+.clock{position:absolute;left:10px;width:200px;height:118px}
+.clock .who{position:absolute;left:14px;top:14px;display:flex;align-items:center;gap:8px;
+  font:700 13px/1 var(--display);letter-spacing:.14em;text-transform:uppercase}
+.clock .letter{width:20px;height:20px;display:flex;align-items:center;justify-content:center;color:var(--paper);
+  font:800 12px/1 var(--display);letter-spacing:0}
+.clock .time{position:absolute;left:14px;top:38px;font:800 54px/1 var(--display);letter-spacing:-.01em;color:var(--paper);
+  font-variant-numeric:tabular-nums}
+.clock .track{position:absolute;left:14px;right:14px;bottom:14px;height:7px;background:#3a332b}
+.clock .fill{position:absolute;left:0;top:0;bottom:0}
+.clock.idle .time{color:var(--gray-1)}
+.turn{position:absolute;left:0;right:0;text-align:center}
+.btn{position:absolute}
+.btn .sh{position:absolute;inset:6px -0px -6px 0;background:var(--ink)}
+.btn .fc{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font:800 21px/1 var(--display);color:#fff;letter-spacing:.01em}
+.btn .fc::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 3px var(--ink),inset 0 4px 0 rgba(255,255,255,.18)}
+.btn.ghost .fc{background:transparent;color:var(--on-dark);font:700 13px/1 var(--display);letter-spacing:.16em;text-transform:uppercase}
+.btn.ghost .fc::after{box-shadow:inset 0 0 0 2px #4a4238}
+
+.label{position:absolute;font:700 12px/1 var(--display);letter-spacing:.18em;text-transform:uppercase;color:var(--gray-1)}
+.tag{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--paper);
+  color:var(--ink);box-shadow:0 0 0 3px var(--ink)}
+
+/* Affiches du cérémonial */
+.overlay{position:absolute;inset:0;display:none}
+.overlay.on{display:block}
+.overlay .scrim{position:absolute;inset:0;background:rgba(12,10,9,.84)}
+.poster{position:absolute;left:470px;top:250px;width:980px;height:580px}
+.poster .portrait{position:absolute;left:34px;top:34px;width:400px;height:512px;border:4px solid var(--ink);
+  background:var(--dots),color-mix(in srgb,var(--camp) 62%,var(--paper));background-size:9px 9px,auto;overflow:hidden}
+.poster .portrait svg{position:absolute;left:-10px;top:30px;width:420px;height:420px}
+.poster .copy{position:absolute;left:476px;top:70px;right:40px;color:var(--ink)}
+.poster .kicker{font:800 22px/1 var(--display);letter-spacing:.3em;text-transform:uppercase;color:var(--gray-2)}
+.poster .name{font:800 78px/1 var(--display);letter-spacing:-.02em;margin-top:18px}
+.poster .rule{height:8px;margin:26px 0 24px;background:repeating-linear-gradient(45deg,var(--ink) 0 4px,transparent 4px 8px)}
+.poster .line{font:italic 27px/1.35 var(--serif);color:var(--gray-2)}
+.poster .meta{font:700 18px/1 var(--display);letter-spacing:.16em;text-transform:uppercase;color:var(--gray-2);margin-top:22px}
+
+#toolbar{position:fixed;left:12px;top:12px;z-index:10;display:flex;gap:6px;font:600 13px/1 Inter,sans-serif}
+#toolbar button{padding:7px 10px;background:#2a2520;color:#e0d3b6;border:1px solid #4a4238;cursor:pointer}
+#toolbar button.on{background:#e0d3b6;color:#15120f}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+  <pattern id="dots" width="5" height="5" patternUnits="userSpaceOnUse">
+    <circle cx="2.5" cy="2.5" r="1.1" fill="#15120f" fill-opacity=".38"/>
+  </pattern>
+
+  <!-- L'Automate : rectangle vertical, tête-écran, arrosoir -->
+  <symbol id="f-automate" viewBox="0 0 120 120">
+    <ellipse cx="60" cy="112" rx="36" ry="5" fill="#15120f" opacity=".35"/>
+    <g stroke="#15120f" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+      <rect x="45" y="92" width="10" height="14" fill="#5b746d"/><rect x="65" y="92" width="10" height="14" fill="#5b746d"/>
+      <path d="M40 106h17v6H40zM63 106h17v6H63z" fill="#15120f"/>
+      <rect x="27" y="64" width="10" height="26" fill="#5b746d"/><circle cx="32" cy="93" r="5" fill="#8fa9a1"/>
+      <path d="M38 60h44l3 4v30l-3 3H38l-3-3V64z" fill="#8fa9a1"/>
+      <path d="M66 61h16l2 3v30l-2 2H66z" fill="url(#dots)" stroke="none"/>
+      <rect x="45" y="67" width="22" height="13" fill="#efe5cf"/>
+      <circle cx="51" cy="73.5" r="2.4" fill="#15120f" stroke="none"/><path d="M57 73.5h6" stroke-width="2.6"/>
+      <rect x="53" y="53" width="14" height="8" fill="#5b746d"/>
+      <path d="M28 14h64l4 4v32l-4 4H28l-4-4V18z" fill="#c9d6cf"/>
+      <rect x="32" y="21" width="56" height="27" fill="#15120f"/>
+      <rect x="44" y="30" width="8" height="5" fill="#efe5cf" stroke="none"/><rect x="68" y="30" width="8" height="5" fill="#efe5cf" stroke="none"/>
+      <path d="M53 41h14" stroke="#efe5cf" stroke-width="2.6"/>
+      <circle cx="23" cy="34" r="3" fill="#5b746d"/><circle cx="97" cy="34" r="3" fill="#5b746d"/>
+      <path d="M60 14V7"/><circle cx="60" cy="5" r="3.5" fill="#efe5cf"/>
+      <rect x="83" y="64" width="10" height="16" fill="#5b746d"/>
+      <path d="M90 78c0-9 13-9 13 0" fill="none"/>
+      <path d="M85 78h21l-2 18H88z" fill="#c7b896"/>
+      <path d="M105 84l9-9"/><path d="M111 71l6 6" stroke-width="5"/>
+    </g>
+    <circle cx="117" cy="84" r="1.9" fill="#15120f"/><circle cx="113" cy="90" r="1.9" fill="#15120f"/>
+  </symbol>
+
+  <!-- Le Revenant : diagonale penchée, bras ballants, costume impeccable -->
+  <symbol id="f-revenant" viewBox="0 0 120 120">
+    <ellipse cx="58" cy="112" rx="32" ry="5" fill="#15120f" opacity=".35"/>
+    <g transform="rotate(-9 60 110)" stroke="#15120f" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+      <rect x="47" y="88" width="11" height="19" fill="#332e3b"/><rect x="62" y="88" width="11" height="19" fill="#332e3b"/>
+      <path d="M43 106h16v5H43zM61 106h17v5H61z" fill="#15120f"/>
+      <path d="M41 60l-9 36 8 2 9-34z" fill="#332e3b"/><circle cx="35" cy="100" r="5" fill="#d3cbd9"/>
+      <path d="M79 60l9 36-8 2-9-34z" fill="#332e3b"/><circle cx="85" cy="100" r="5" fill="#d3cbd9"/>
+      <path d="M41 58h38l3 32H38z" fill="#332e3b"/>
+      <path d="M53 58h14l-7 18z" fill="#efe5cf"/>
+      <path d="M60 62l-8-5v10zM60 62l8-5v10z" fill="#9a8cab" stroke-width="3"/>
+      <circle cx="72.5" cy="67" r="3.6" fill="#c7b896" stroke-width="2.6"/>
+      <rect x="55" y="50" width="10" height="9" fill="#ab9fbb"/>
+      <rect x="34" y="16" width="52" height="40" rx="16" fill="#d3cbd9"/>
+      <path d="M70 18c10 3 15 10 15 20s-5 15-15 17z" fill="url(#dots)" stroke="none"/>
+      <path d="M33 34C32 16 47 11 60 11c14 0 27 6 27 23-6-8-15-11-26-11l-3-6c-6 6-15 9-25 17z" fill="#15120f"/>
+      <path d="M43 40h9M66 40h9" stroke-width="3.4"/>
+      <circle cx="47.5" cy="43.5" r="1.9" fill="#15120f" stroke="none"/><circle cx="70.5" cy="43.5" r="1.9" fill="#15120f" stroke="none"/>
+      <path d="M44 47h7M67 47h7" stroke="#ab9fbb" stroke-width="2.2"/>
+      <path d="M55 51h10" stroke-width="3"/>
+      <path d="M79 44v9M76.5 46h5M76.5 50.5h5" stroke-width="1.7"/>
+    </g>
+  </symbol>
+
+  <!-- Units de l'Automate -->
+  <symbol id="f-robot" viewBox="0 0 120 120">
+    <ellipse cx="60" cy="112" rx="34" ry="5" fill="#15120f" opacity=".35"/>
+    <g stroke="#15120f" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+      <rect x="21" y="62" width="13" height="10" fill="#5b746d"/><rect x="86" y="62" width="13" height="10" fill="#5b746d"/>
+      <path d="M36 56h48l3 3v31H33V59z" fill="#8fa9a1"/>
+      <path d="M64 57h20l2 2v30H64z" fill="url(#dots)" stroke="none"/>
+      <path d="M44 67h24M44 76h14" stroke-width="3"/>
+      <path d="M32 90h56l4 6v5l-4 6H32l-4-6v-5z" fill="#15120f"/>
+      <circle cx="42" cy="98.5" r="4" fill="#8fa9a1" stroke-width="2.4"/><circle cx="54" cy="98.5" r="4" fill="#8fa9a1" stroke-width="2.4"/>
+      <circle cx="66" cy="98.5" r="4" fill="#8fa9a1" stroke-width="2.4"/><circle cx="78" cy="98.5" r="4" fill="#8fa9a1" stroke-width="2.4"/>
+      <path d="M40 20h40l4 4v28l-4 4H40l-4-4V24z" fill="#c9d6cf"/>
+      <circle cx="60" cy="37" r="11" fill="#15120f"/><circle cx="63" cy="34" r="3.6" fill="#efe5cf" stroke="none"/>
+      <path d="M47 20l-5-9"/><circle cx="41" cy="9" r="3.2" fill="#efe5cf"/>
+    </g>
+  </symbol>
+  <symbol id="f-robot-herald" viewBox="0 0 120 120">
+    <use href="#f-robot"/>
+    <g stroke="#15120f" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M88 58l21-12v30l-21-12z" fill="#c7b896"/>
+      <rect x="83" y="56" width="7" height="12" fill="#5b746d"/>
+      <path d="M113 47l5-4M114 61h5M113 75l5 4" stroke-width="2.6"/>
+    </g>
+  </symbol>
+  <symbol id="f-drone" viewBox="0 0 120 120">
+    <ellipse cx="60" cy="110" rx="22" ry="4" fill="#15120f" opacity=".3"/>
+    <g stroke="#15120f" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M44 56L28 44M76 56l16-12"/>
+      <ellipse cx="26" cy="42" rx="16" ry="4" fill="#efe5cf"/><ellipse cx="94" cy="42" rx="16" ry="4" fill="#efe5cf"/>
+      <path d="M44 54h32l7 12-7 12H44l-7-12z" fill="#8fa9a1"/>
+      <circle cx="60" cy="66" r="7" fill="#15120f"/><circle cx="62" cy="64" r="2.4" fill="#efe5cf" stroke="none"/>
+      <path d="M48 78l-4 10M72 78l4 10"/>
+    </g>
+  </symbol>
+  <symbol id="f-tower" viewBox="0 0 120 120">
+    <ellipse cx="60" cy="112" rx="36" ry="5" fill="#15120f" opacity=".35"/>
+    <g stroke="#15120f" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M42 102l12-62h12l12 62z" fill="#8fa9a1"/>
+      <path d="M61 41h5l12 61H61z" fill="url(#dots)" stroke="none"/>
+      <path d="M46 86l26-14M48 72l22-12M51 58l17-9M74 86L46 72M72 72L48 60M69 58L52 49" stroke-width="2.4"/>
+      <path d="M28 100h64v9H28z" fill="#15120f"/>
+      <path d="M47 26h26l3 4v11H44V30z" fill="#c9d6cf"/>
+      <rect x="50" y="30" width="20" height="6" fill="#15120f"/>
+      <path d="M76 20a13 13 0 0 1 15 16z" fill="#c7b896"/><path d="M82 29l-6 1"/>
+      <path d="M60 26V11"/><circle cx="60" cy="8" r="3.6" fill="#efe5cf"/>
+    </g>
+  </symbol>
+
+  <!-- Units du Revenant -->
+  <symbol id="f-zombie" viewBox="0 0 120 120">
+    <ellipse cx="58" cy="112" rx="30" ry="5" fill="#15120f" opacity=".35"/>
+    <g transform="rotate(-12 60 110)" stroke="#15120f" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+      <rect x="48" y="88" width="10" height="18" fill="#3a3443"/><rect x="62" y="88" width="10" height="18" fill="#3a3443"/>
+      <path d="M44 105h15v5H44zM61 105h16v5H61z" fill="#15120f"/>
+      <path d="M42 58l-8 34 8 2 8-32z" fill="#6f6585"/><circle cx="37" cy="96" r="5" fill="#d3cbd9"/>
+      <path d="M78 58l8 34-8 2-8-32z" fill="#6f6585"/><circle cx="83" cy="96" r="5" fill="#d3cbd9"/>
+      <path d="M43 56h34l4 34H39z" fill="#6f6585"/>
+      <path d="M62 57h15l3 32H62z" fill="url(#dots)" stroke="none"/>
+      <circle cx="60" cy="66" r="1.8" fill="#15120f" stroke="none"/><circle cx="60" cy="74" r="1.8" fill="#15120f" stroke="none"/><circle cx="60" cy="82" r="1.8" fill="#15120f" stroke="none"/>
+      <circle cx="60" cy="35" r="21" fill="#d3cbd9"/>
+      <path d="M37 31c0-14 10-21 23-21s23 7 23 21z" fill="#15120f"/>
+      <path d="M81 29h14l-2 5H81z" fill="#15120f"/>
+      <circle cx="52" cy="39" r="2.5" fill="#15120f" stroke="none"/>
+      <circle cx="68" cy="39" r="4" fill="#efe5cf" stroke-width="2.2"/><circle cx="68" cy="40" r="1.5" fill="#15120f" stroke="none"/>
+      <path d="M53 48h14" stroke-width="3"/><path d="M57 46v4M62 46v4" stroke-width="1.6"/>
+    </g>
+  </symbol>
+  <symbol id="f-zombie-herald" viewBox="0 0 120 120">
+    <use href="#f-zombie"/>
+    <g transform="rotate(-12 60 110)" stroke="#15120f" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M77 112c0-9 4-13 9-13s9 4 9 13l3 3H74z" fill="#c7b896"/>
+      <path d="M86 99v-4"/><circle cx="86" cy="118" r="2.4" fill="#15120f" stroke="none"/>
+      <path d="M100 100l5-3M101 108h5" stroke-width="2.4"/>
+    </g>
+  </symbol>
+  <symbol id="f-crypt" viewBox="0 0 120 120">
+    <ellipse cx="60" cy="112" rx="38" ry="5" fill="#15120f" opacity=".35"/>
+    <g stroke="#15120f" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M24 98h72v10H24z" fill="#857999"/>
+      <path d="M32 54h56v44H32z" fill="#b5abc2"/>
+      <path d="M66 55h21v42H66z" fill="url(#dots)" stroke="none"/>
+      <path d="M27 54l33-24 33 24z" fill="#b5abc2"/>
+      <path d="M50 98V73c0-7 20-7 20 0v25z" fill="#15120f"/>
+      <path d="M39 59v36M81 59v36" stroke-width="3"/>
+      <path d="M76 62l-4 8 5 6-3 7" stroke-width="2.2"/>
+      <circle cx="60" cy="45" r="4" fill="#efe5cf" stroke-width="2.6"/>
+    </g>
+  </symbol>
+
+  <!-- Spells et Gear -->
+  <symbol id="f-strike" viewBox="0 0 120 120">
+    <g stroke="#15120f" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M60 14l10 35 36 11-36 11-10 35-10-35-36-11 36-11z" fill="#efe5cf"/>
+      <path d="M86 24l-6 9M34 24l6 9M86 96l-6-9M34 96l6-9" stroke-width="3.4"/>
+      <circle cx="60" cy="60" r="8" fill="#15120f"/>
+    </g>
+  </symbol>
+  <symbol id="f-boost" viewBox="0 0 120 120">
+    <g stroke="#15120f" stroke-width="4" stroke-linejoin="round">
+      <path d="M28 66l32-28 32 28-11 10-21-18-21 18z" fill="#efe5cf"/>
+      <path d="M28 94l32-28 32 28-11 10-21-18-21 18z" fill="#c7b896"/>
+      <path d="M60 10v14M53 17h14" stroke-linecap="round" stroke-width="3.4"/>
+    </g>
+  </symbol>
+  <symbol id="f-counter" viewBox="0 0 120 120">
+    <g stroke="#15120f" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+      <circle cx="60" cy="60" r="38" fill="#efe5cf" stroke-width="5"/>
+      <circle cx="60" cy="60" r="27" fill="#c7b896" stroke-width="3"/>
+      <path d="M34 86L86 34" stroke-width="11"/>
+    </g>
+  </symbol>
+  <symbol id="f-blade" viewBox="0 0 120 120">
+    <g stroke="#15120f" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M40 82L88 26l12-4-4 12-56 48z" fill="#efe5cf"/>
+      <path d="M48 76l44-46" stroke-width="2" stroke="#8b8274"/>
+      <path d="M30 70l20 20" stroke-width="8"/>
+      <path d="M38 84L22 100" stroke-width="10"/>
+      <circle cx="19" cy="103" r="5" fill="#c7b896"/>
+    </g>
+  </symbol>
+
+  <!-- Essence -->
+  <symbol id="f-essence" viewBox="0 0 24 24">
+    <path d="M12 2c4 6 7 9 7 13a7 7 0 0 1-14 0c0-4 3-7 7-13z" fill="#f4c542" stroke="#15120f" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M9 15a3 3 0 0 0 3 3" fill="none" stroke="#efe5cf" stroke-width="1.8" stroke-linecap="round"/>
+  </symbol>
+</defs>
+</svg>
+
+<div id="toolbar"></div>
+<div id="stage"></div>
+
+<script>
+const INK = '#15120f';
+const PAPER = '#efe5cf';
+const TYPE = {
+  unit: {tint: 'var(--t-unit)', label: 'Unit', icon: [[14,3,21,10,10,21,6,22,7,18,14,3]]},
+  building: {tint: 'var(--t-building)', label: 'Building', icon: [[4,21,4,9,8,6,12,9,16,6,20,9,20,21,4,21]]},
+  spell: {tint: 'var(--t-spell)', label: 'Spell', icon: [[12,2,14.5,8.5,21,11,14.5,13.5,12,20,9.5,13.5,3,11,9.5,8.5,12,2]]},
+  gear: {tint: 'var(--t-gear)', label: 'Gear', icon: [[4,20,13,11],[15,4,20,9,17,12,12,7,15,4]]},
+  hero: {tint: 'var(--t-hero)', label: 'Hero', icon: [[3,18,5,7,10,12,12,5,14,12,19,7,21,18,3,18]]},
+};
+const CAMP = {A: 'var(--c-automate)', B: 'var(--c-revenant)'};
+const PLAYER = {A: 'var(--a)', B: 'var(--b)'};
+const stage = document.getElementById('stage');
+
+function el(tag, cls, parent, style) {
+  const node = document.createElement(tag);
+  if (cls) node.className = cls;
+  if (style) Object.entries(style).forEach(([key, value]) =>
+    key.startsWith('--') ? node.style.setProperty(key, value) : (node.style[key] = value));
+  if (parent) parent.appendChild(node);
+  return node;
+}
+function chamfer(c) {
+  return `polygon(${c}px 0,calc(100% - ${c}px) 0,100% ${c}px,100% calc(100% - ${c}px),` +
+    `calc(100% - ${c}px) 100%,${c}px 100%,0 calc(100% - ${c}px),0 ${c}px)`;
+}
+function layer(parent, inset, background, cut) {
+  return el('div', 'L', parent, {inset: inset + 'px', background, clipPath: chamfer(cut)});
+}
+function hatch(tint) {
+  return `repeating-linear-gradient(45deg,${tint} 0 4px,color-mix(in srgb,${tint} 58%,#15120f) 4px 6.5px)`;
+}
+function typeIcon(type, color) {
+  const lines = TYPE[type].icon.map(p => {
+    const pts = [];
+    for (let i = 0; i < p.length; i += 2) pts.push(p[i] + ',' + p[i + 1]);
+    return `<polyline points="${pts.join(' ')}"/>`;
+  }).join('');
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round">${lines}</svg>`;
+}
+function figure(id) {
+  return `<svg viewBox="0 0 120 120" preserveAspectRatio="xMidYMid meet"><use href="#f-${id}"/></svg>`;
+}
+
+// Goutte du coût, losange de la Force, cœur des PV : formes des décisions 0033 et 0034.
+function dropPoints(cx, cy, r, tip) {
+  const t = Math.acos(r / tip), arc = 2 * Math.PI - 2 * t, pts = [[cx, cy - tip]];
+  for (let i = 0; i <= 28; i++) {
+    const a = t + arc * i / 28;
+    pts.push([cx + Math.sin(a) * r, cy - Math.cos(a) * r]);
+  }
+  return pts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+}
+function heartPath(cx, cy, s) {
+  const pts = [];
+  for (let i = 0; i <= 40; i++) {
+    const a = 2 * Math.PI * i / 40;
+    const x = 16 * Math.pow(Math.sin(a), 3);
+    const y = 13 * Math.cos(a) - 5 * Math.cos(2 * a) - 2 * Math.cos(3 * a) - Math.cos(4 * a);
+    pts.push((cx + x * s).toFixed(1) + ',' + (cy - y * s).toFixed(1));
+  }
+  return pts.join(' ');
+}
+function badge(parent, kind, value, x, y, size, ink) {
+  const svg = `<svg class="badge" style="left:${x}px;top:${y}px;width:${size}px;height:${size}px" viewBox="0 0 64 64">` + ({
+    drop: `<polygon points="${dropPoints(32, 38, 20, 34)}" fill="${PAPER}" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/>` +
+      `<text x="32" y="48" text-anchor="middle" font-family="Inter Display,Inter,sans-serif" font-weight="800" font-size="25" fill="${INK}">${value}</text>`,
+    diamond: `<polygon points="32,4 60,32 32,60 4,32" fill="${PAPER}" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/>` +
+      `<text x="32" y="41.5" text-anchor="middle" font-family="Inter Display,Inter,sans-serif" font-weight="800" font-size="26" fill="${ink || INK}">${value}</text>`,
+    heart: `<polygon points="${heartPath(32, 30, 1.72)}" fill="#c79aa3" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/>` +
+      `<text x="32" y="38" text-anchor="middle" font-family="Inter Display,Inter,sans-serif" font-weight="800" font-size="23" fill="${INK}">${value}</text>`,
+  })[kind] + '</svg>';
+  parent.insertAdjacentHTML('beforeend', svg);
+}
+function forceInk(current, printed) {
+  if (current > printed) return 'var(--up)';
+  if (current < printed) return 'var(--down)';
+  return INK;
+}
+function place(node, x, y, width, baseWidth) {
+  const wrap = el('div', 'scaled', stage, {left: x + 'px', top: y + 'px', transform: `scale(${width / baseWidth})`});
+  wrap.appendChild(node);
+  return wrap;
+}
+
+// Carte complète (main, aperçu, défausse, carte Hero), 316 × 440.
+function makeCard(c) {
+  const rim = c.side ? 8 : 0;
+  const card = el('div', 'card' + (c.type === 'hero' ? ' hero dense' : '') + (c.dense ? ' dense' : ''), null,
+    {'--camp': CAMP[c.camp]});
+  layer(card, 0, c.side ? PLAYER[c.side] : INK, 17);
+  layer(card, rim, INK, 16 - rim / 3);
+  layer(card, rim + 4, hatch(TYPE[c.type].tint), 14 - rim / 3);
+  const face = layer(card, rim + 13, INK, 10);
+  const inner = el('div', 'face-in', face, {clipPath: chamfer(9)});
+  el('div', 'head', inner).textContent = c.name;
+  el('div', 'art', inner).innerHTML = figure(c.art);
+  const band = el('div', 'band', inner);
+  band.innerHTML = typeIcon(c.type, PAPER) + `<span>${TYPE[c.type].label}</span>` +
+    (c.speed ? `<span class="speed">${c.speed}</span>` : '');
+  el('div', 'text', inner).innerHTML = (c.kw ? `<span class="kw">${c.kw}</span>` : '') + (c.text || '');
+  if (c.cost !== undefined) badge(card, 'drop', c.cost, 6 + rim / 2, 2 + rim / 2, 66);
+  if (c.force !== undefined) badge(card, 'diamond', c.force, 244 - rim / 2, 4 + rim / 2, 66, c.forceInk);
+  if (c.health !== undefined) badge(card, 'heart', c.health, 242 - rim / 2, 2 + rim / 2, 68);
+  return card;
+}
+
+// Pièce du plateau (mini-carte, décision 0027), 258 × 258.
+function makePiece(p) {
+  const piece = el('div', 'piece', null, {'--camp': CAMP[p.side]});
+  const top = p.gear ? 36 : 0;
+  if (p.gear) {
+    const peek = el('div', 'gear-peek', piece, {clipPath: chamfer(12)});
+    el('div', 'in', peek).innerHTML = typeIcon('gear', INK) + `<span>${p.gear}</span>`;
+  }
+  const body = el('div', 'L', piece, {left: 0, right: 0, top: top + 'px', bottom: 0});
+  layer(body, 0, PLAYER[p.side], 16);
+  layer(body, 10, INK, 12);
+  layer(body, 14, hatch(TYPE[p.type].tint), 10);
+  const face = layer(body, 21, INK, 7);
+  const inner = el('div', 'face-in', face, {clipPath: chamfer(6)});
+  el('div', 'head', inner).textContent = p.name;
+  el('div', 'art', inner).innerHTML = figure(p.art);
+  const band = el('div', 'band', inner);
+  band.innerHTML = typeIcon(p.type, PAPER) + `<span>${p.band || TYPE[p.type].label}</span>` +
+    (p.kw ? `<span class="kw">${p.kw}</span>` : '');
+  if (p.health !== undefined) badge(body, 'heart', p.health, 186, -2, 70);
+  else badge(body, 'diamond', p.force, 188, -2, 68, forceInk(p.force, p.printed ?? p.force));
+  return piece;
+}
+
+// Dos de carte : l'arène vue d'en haut, 316 × 440.
+function makeBack(side) {
+  const back = el('div', 'card');
+  layer(back, 0, PLAYER[side], 17);
+  layer(back, 8, INK, 14);
+  const inner = layer(back, 24, '#221e1a', 10);
+  inner.style.backgroundImage = 'radial-gradient(rgba(239,229,207,.10) 1.4px,transparent 1.9px)';
+  inner.style.backgroundSize = '9px 9px';
+  let cells = '';
+  for (let r = 0; r < 5; r++) for (let q = 0; q < 5; q++) {
+    cells += `<rect x="${-46 + q * 19}" y="${-46 + r * 19}" width="16" height="16" fill="${(r + q) % 2 ? '#c7b896' : '#efe5cf'}"/>`;
+  }
+  inner.insertAdjacentHTML('beforeend',
+    `<svg viewBox="-110 -150 220 300" style="position:absolute;inset:0;width:100%;height:100%">
+      <rect x="-104" y="-144" width="208" height="288" fill="none" stroke="#c7b896" stroke-width="2"/>
+      <circle r="78" fill="#15120f" stroke="#c7b896" stroke-width="5"/>
+      <circle r="66" fill="none" stroke="#c7b896" stroke-width="2"/>
+      ${cells}
+    </svg>`);
+  return back;
+}
+
+// Source : Essence sur fond d'encre ; inclinée, elle s'estompe et perd la couleur du joueur.
+function makeSource(parent, x, y, side, state) {
+  const src = el('div', 'src', parent, {left: x + 'px', top: y + 'px'});
+  if (state === 'empty') {
+    layer(src, 0, '#2c2722', 7);
+    layer(src, 2, '#171411', 6).style.boxShadow = 'inset 0 6px 10px rgba(0,0,0,.5)';
+    return;
+  }
+  layer(src, 0, state === 'tilted' ? '#6b6358' : PLAYER[side], 8);
+  const inner = layer(src, 4, INK, 6);
+  inner.style.backgroundImage = 'radial-gradient(rgba(244,197,66,.16) 1.2px,transparent 1.7px)';
+  inner.style.backgroundSize = '6px 6px';
+  inner.insertAdjacentHTML('beforeend',
+    `<svg viewBox="0 0 24 24" style="position:absolute;left:15px;top:30px;width:36px;height:36px"><use href="#f-essence"/></svg>`);
+  if (state === 'tilted') src.style.opacity = '.5';
+}
+function counterRow(x, y) {
+  return el('div', 'abs', stage, {left: x + 'px', top: y + 'px', display: 'flex', gap: '6px'});
+}
+function makeCounter(row, label, value, isEssence) {
+  const counter = el('div', 'counter' + (isEssence ? ' essence' : ''), row, {position: 'relative'});
+  counter.innerHTML = (isEssence ? `<svg viewBox="0 0 24 24" width="18" height="18"><use href="#f-essence"/></svg>` : '') +
+    `<span class="lb">${label}</span><span class="nb">${value}</span>`;
+}
+
+// Anneaux de sélection (0027, 0030) autour d'une pièce, ou bordure et point d'une case proposée.
+function ringPoints(inset, cut) {
+  const a = inset, b = 143 - inset;
+  return `${a + cut},${a} ${b - cut},${a} ${b},${a + cut} ${b},${b - cut} ${b - cut},${b} ${a + cut},${b} ${a},${b - cut} ${a},${a + cut}`;
+}
+function marks(cell, kind) {
+  const svgs = {
+    legal: `<polygon points="${ringPoints(3, 9)}" fill="rgba(244,197,66,.10)" stroke="var(--essence)" stroke-width="4"/>` +
+      `<circle cx="71.5" cy="71.5" r="11" fill="var(--essence)" stroke="${INK}" stroke-width="3.5"/>`,
+    target: `<polygon points="${ringPoints(2, 10)}" fill="none" stroke="var(--essence)" stroke-width="4"/>`,
+    chosen: `<polygon points="${ringPoints(1.5, 10)}" fill="none" stroke="var(--chosen)" stroke-width="3"/>` +
+      `<polygon points="${ringPoints(5, 8)}" fill="none" stroke="var(--chosen)" stroke-width="2.5"/>`,
+  };
+  cell.insertAdjacentHTML('beforeend', `<svg class="marks" viewBox="0 0 143 143">${svgs[kind]}</svg>`);
+}
+
+// ---------- Plateau (0030, 0035 : grille x 595, y 88, cases 143, écart 4) ----------
+const frame = el('div', 'abs', stage, {left: '587px', top: '80px', width: '747px', height: '747px'});
+frame.id = 'board-frame';
+layer(frame, 0, INK, 14);
+layer(frame, 2, '#3a332b', 12);
+layer(frame, 4, INK, 10);
+// Cordes du ring : le côté du joueur B en haut, celui du joueur A en bas.
+el('div', 'abs', frame, {left: '40px', right: '40px', top: '1px', height: '3px', background: 'var(--b)', opacity: '.8'});
+el('div', 'abs', frame, {left: '40px', right: '40px', bottom: '1px', height: '3px', background: 'var(--a)', opacity: '.8'});
+[[0, 0, 'b'], [725, 0, 'b'], [0, 725, 'a'], [725, 725, 'a']].forEach(([x, y, s]) => {
+  const post = el('div', 'abs', frame, {left: x + 'px', top: y + 'px', width: '22px', height: '22px', background: INK});
+  el('div', 'abs', post, {inset: '5px', background: `var(--${s})`});
+});
+
+const board = el('div', 'abs', stage);
+board.id = 'board';
+const cells = {};
+const COLUMNS = 'ABCDE';
+for (let row = 5; row >= 1; row--) {
+  for (let col = 0; col < 5; col++) {
+    const cell = el('div', 'cell', board);
+    const x = col * 147, y = (5 - row) * 147;
+    cell.style.background =
+      `radial-gradient(circle at ${365 - x}px ${330 - y}px,var(--floor-in) 0%,var(--floor-out) 520px)`;
+    cell.style.backgroundImage += ',radial-gradient(rgba(0,0,0,.16) 1.2px,transparent 1.7px)';
+    cell.style.backgroundSize = 'auto,6px 6px';
+    cells[COLUMNS[col] + row] = cell;
+  }
+}
+for (let i = 0; i < 5; i++) {
+  el('div', 'coord', stage, {left: (595 + i * 147 + 66) + 'px', top: '829px'}).textContent = COLUMNS[i];
+  el('div', 'coord', stage, {left: '570px', top: (88 + (4 - i) * 147 + 64) + 'px'}).textContent = i + 1;
+}
+function putPiece(name, spec, mark) {
+  const cell = cells[name];
+  const slot = el('div', 'slot', cell);
+  const wrap = el('div', 'scaled', slot, {left: 0, top: 0, transform: 'scale(.5)'});
+  wrap.appendChild(makePiece(spec));
+  if (mark) marks(cell, mark);
+}
+putPiece('C1', {side: 'A', type: 'hero', name: "L'Automate", art: 'automate', health: 12, band: 'Hero'});
+putPiece('D1', {side: 'A', type: 'building', name: 'Palissade', art: 'tower', force: 4});
+putPiece('B3', {side: 'A', type: 'unit', name: 'Soldat', art: 'robot', force: 4, printed: 3, gear: 'Lame'}, 'chosen');
+putPiece('A2', {side: 'A', type: 'unit', name: 'Jeton', art: 'drone', force: 2, band: 'Unit · Jeton'});
+putPiece('C5', {side: 'B', type: 'hero', name: 'Le Revenant', art: 'revenant', health: 15, band: 'Hero'});
+putPiece('B4', {side: 'B', type: 'unit', name: 'Gardien', art: 'zombie', force: 2, kw: 'Rempart 1'}, 'target');
+putPiece('D4', {side: 'B', type: 'unit', name: 'Héraut', art: 'zombie-herald', force: 3, kw: 'Arrivée'});
+putPiece('E4', {side: 'B', type: 'unit', name: 'Recrue', art: 'zombie', force: 1, printed: 2});
+['A3', 'C3', 'B2'].forEach(name => marks(cells[name], 'legal'));
+
+// ---------- Sources (0030 : blocs 394 × 220, emplacements 74 × 106, écarts 6 et 8) ----------
+function sources(x, y, side, states) {
+  for (let i = 0; i < 10; i++) {
+    makeSource(stage, x + (i % 5) * 80, y + Math.floor(i / 5) * 114, side, states[i] || 'empty');
+  }
+}
+sources(16, 16, 'B', ['up', 'up', 'up', 'up', 'up', 'up']);
+sources(16, 844, 'A', ['tilted', 'tilted', 'up', 'up', 'up']);
+const rowB = counterRow(16, 244);
+makeCounter(rowB, 'Réserve', 4);
+makeCounter(rowB, 'Fonte', 0);
+const rowA = counterRow(16, 806);
+makeCounter(rowA, 'Essence', 2, true);
+makeCounter(rowA, 'Réserve', 3);
+makeCounter(rowA, 'Fonte', 1);
+
+// ---------- Main adverse (dos 50 × 70, écart 8, centrés en haut) ----------
+for (let i = 0; i < 6; i++) place(makeBack('B'), 790 + i * 58, 16, 50, 316);
+
+// ---------- Main du joueur A (cartes 158 × 220, écart 5) ----------
+const HAND = [
+  {type: 'unit', name: 'Recrue', cost: 1, force: 2, art: 'robot'},
+  {type: 'unit', name: 'Héraut', cost: 3, force: 3, art: 'robot-herald', kw: 'Arrivée',
+    text: "une Unit ennemie ciblée a −1 Force jusqu'à la fin du tour."},
+  {type: 'unit', name: 'Martyr', cost: 3, force: 3, art: 'robot', kw: 'Dernier souffle',
+    text: 'une Unit alliée ciblée a +1 Force tant que la pièce est en jeu.', dense: true},
+  {type: 'building', name: 'Campement', cost: 3, force: 4, art: 'tower', kw: 'Avant-poste'},
+  {type: 'spell', name: 'Renfort', cost: 1, art: 'boost', speed: 'Réaction',
+    text: "Une Unit alliée ciblée a +2 Force jusqu'à la fin du tour."},
+  {type: 'spell', name: 'Frappe', cost: 3, art: 'strike', speed: 'Action',
+    text: 'Détruisez une Unit ennemie ciblée de Force 3 ou moins.'},
+];
+HAND.forEach((c, i) => place(makeCard({...c, camp: 'A'}), 505 + i * 163, 844, 158, 316));
+
+// ---------- Aperçu : la pièce choisie et son Gear, côte à côte à 269 × 374 (0030) ----------
+place(makeCard({type: 'unit', name: 'Soldat', cost: 2, force: 3, art: 'robot', camp: 'A'}), 19, 356, 269, 316);
+place(makeCard({type: 'gear', name: 'Lame', cost: 1, art: 'blade', camp: 'A',
+  text: 'La Unit qui porte ce Gear a +1 Force.'}), 300, 356, 269, 316);
+
+// ---------- Deck, défausse et cartes Hero (coin droit de chaque joueur) ----------
+function deckCorner(y, side, count, discard, labelY) {
+  place(makeBack(side), 1578, y, 158, 316);
+  const tag = el('div', 'tag', stage, {left: '1617px', top: (y + 72) + 'px', width: '80px', height: '76px',
+    clipPath: chamfer(8)});
+  tag.innerHTML = `<div style="font:800 38px/1 var(--display)">${count}</div>` +
+    `<div class="caps" style="font-size:10px;margin-top:4px;color:var(--gray-2)">cartes</div>`;
+  place(makeCard({...discard, camp: side}), 1746, y, 158, 316);
+  el('div', 'label', stage, {left: '1578px', top: labelY + 'px'}).textContent = 'Deck · Défausse';
+}
+deckCorner(16, 'B', 19, {type: 'spell', name: 'Contre', cost: 2, art: 'counter', speed: 'Réaction',
+  text: 'Contrecarrez un Spell ciblé.'}, 246);
+deckCorner(844, 'A', 16, {type: 'spell', name: 'Levée', cost: 2, art: 'drone', speed: 'Action',
+  text: 'Créez un jeton Unit de Force 2 sur une case libre ciblée de votre première rangée.', dense: true}, 822);
+const HERO_TEXT = 'Les Units alliées adjacentes au Hero ont +1 Force. ' +
+  "<span class=\"kw\">Pouvoir · 2</span>une Unit alliée ciblée a +1 Force jusqu'à la fin du tour.";
+place(makeCard({type: 'hero', side: 'B', camp: 'B', name: 'Le Revenant', art: 'revenant', health: 15, text: HERO_TEXT}),
+  1578, 270, 158, 316);
+place(makeCard({type: 'hero', side: 'A', camp: 'A', name: "L'Automate", art: 'automate', health: 12, text: HERO_TEXT}),
+  1578, 590, 158, 316);
+
+// ---------- Colonne de duel (x 1342, y 88, 220 × 731) ----------
+const column = el('div', 'abs', stage);
+column.id = 'column';
+layer(column, 0, INK, 12);
+const columnIn = layer(column, 3, 'var(--panel)', 10);
+columnIn.style.backgroundImage = 'var(--grain)';
+function clock(y, side, name, time, ratio, isRunning) {
+  const c = el('div', 'clock' + (isRunning ? '' : ' idle'), column, {top: y + 'px'});
+  layer(c, 0, isRunning ? PLAYER[side] : '#4a4238', 8);
+  layer(c, isRunning ? 4 : 2, INK, 7);
+  const who = el('div', 'who', c, {color: side === 'A' ? 'var(--a-ink)' : 'var(--b-ink)'});
+  who.innerHTML = `<span class="letter" style="background:${PLAYER[side]}">${side}</span>${name}`;
+  el('div', 'time', c).textContent = time;
+  const track = el('div', 'track', c);
+  el('div', 'fill', track, {width: ratio * 100 + '%', background: PLAYER[side], opacity: isRunning ? 1 : .55});
+}
+clock(10, 'B', 'Le Revenant', '4:12', .42, false);
+clock(603, 'A', "L'Automate", '5:03', .5, true);
+el('div', 'turn caps', column, {top: '300px', fontSize: '15px', color: 'var(--gray-1)'}).textContent = 'Tour 7';
+const actor = el('div', 'turn', column, {top: '326px', font: '700 21px/1.2 var(--serif)', color: 'var(--a-ink)'});
+actor.innerHTML = "Au tour de<br>l'Automate";
+function bigButton(parent, x, y, w, h, text, color, ghost) {
+  const b = el('div', 'btn' + (ghost ? ' ghost' : ''), parent,
+    {left: x + 'px', top: y + 'px', width: w + 'px', height: h + 'px'});
+  if (!ghost) el('div', 'sh', b, {clipPath: chamfer(9)});
+  el('div', 'fc', b, {background: color, clipPath: chamfer(9)}).textContent = text;
+  return b;
+}
+bigButton(column, 10, 392, 200, 60, 'Terminer le tour', 'var(--a)');
+el('div', 'turn', column, {top: '478px', font: 'italic 16px/1.35 var(--serif)', color: 'var(--on-dark)', padding: '0 18px'})
+  .textContent = 'Choisissez une case pour le Soldat.';
+bigButton(column, 30, 562, 160, 30, 'Abandonner', 'transparent', true);
+
+// ---------- Cérémonial : annonce de relais et affiche de fin ----------
+function poster(id, side, camp, art, kicker, name, line, meta, buttons) {
+  const overlay = el('div', 'overlay', stage);
+  overlay.id = id;
+  el('div', 'scrim', overlay);
+  const p = el('div', 'poster', overlay, {'--camp': CAMP[camp]});
+  layer(p, 0, PLAYER[side], 22);
+  layer(p, 10, INK, 18);
+  layer(p, 16, hatch(CAMP[camp]), 16);
+  const paper = layer(p, 26, INK, 12);
+  layer(paper, 3, PAPER, 10).style.backgroundImage = 'var(--grain)';
+  el('div', 'portrait', p).innerHTML = figure(art);
+  const copy = el('div', 'copy', p);
+  copy.innerHTML = `<div class="kicker">${kicker}</div><div class="name">${name}</div><div class="rule"></div>` +
+    `<div class="line">${line}</div><div class="meta">${meta}</div>`;
+  buttons.forEach((b, i) => bigButton(p, 476 + i * 236, 452, 220, 64, b.text, b.color, b.ghost));
+  if (buttons.some(b => b.ghost)) {
+    p.querySelectorAll('.btn.ghost .fc').forEach(fc => {
+      fc.style.color = INK; fc.style.font = '800 21px/1 var(--display)'; fc.style.letterSpacing = '.01em';
+      fc.style.textTransform = 'none';
+    });
+    p.querySelectorAll('.btn.ghost .fc').forEach(fc => fc.classList.add('ink-ghost'));
+  }
+}
+poster('relay', 'A', 'A', 'automate', 'Au tour de', "L'Automate",
+  'Joueur A, prenez l’appareil.<br>Le Revenant détourne poliment le regard.', 'Tour 7 · Joueur A',
+  [{text: 'Entrer dans l’arène', color: 'var(--a)'}]);
+poster('end', 'A', 'A', 'automate', 'Victoire', "L'Automate",
+  'Le Revenant tombe à 0 PV.<br>Il a l’habitude.', 'Tour 9 · 12 min 40 s',
+  [{text: 'Revanche', color: 'var(--a)'}, {text: 'Préparation', color: 'transparent', ghost: true}]);
+document.head.insertAdjacentHTML('beforeend',
+  '<style>.ink-ghost::after{box-shadow:inset 0 0 0 3px #15120f !important}</style>');
+
+// ---------- États et mise à l'échelle ----------
+const STATES = [['play', '1 · En jeu'], ['relay', '2 · Annonce de relais'], ['end', '3 · Affiche de fin']];
+const toolbar = document.getElementById('toolbar');
+function show(state) {
+  document.querySelectorAll('.overlay').forEach(o => o.classList.toggle('on', o.id === state));
+  toolbar.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.state === state));
+}
+const params = new URLSearchParams(location.search);
+if (params.has('capture')) toolbar.style.display = 'none';
+STATES.forEach(([state, label]) => {
+  const b = el('button', '', toolbar);
+  b.dataset.state = state;
+  b.textContent = label;
+  b.onclick = () => show(state);
+});
+addEventListener('keydown', e => {
+  const i = ['1', '2', '3'].indexOf(e.key);
+  if (i >= 0) show(STATES[i][0]);
+});
+show(params.get('state') || 'play');
+function fit() {
+  if (params.has('capture')) return;
+  const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+  stage.style.transform = `translate(${(innerWidth - 1920 * s) / 2}px,${(innerHeight - 1080 * s) / 2}px) scale(${s})`;
+}
+addEventListener('resize', fit);
+fit();
+</script>
+</body>
+</html>
