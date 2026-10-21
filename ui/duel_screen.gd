@@ -16,17 +16,15 @@ signal rematch_requested
 ## Le panneau de fin demande de revenir à la préparation.
 signal setup_requested
 
-const PIECE_SCENE: PackedScene = preload("res://ui/components/piece_view.tscn")
-
 var _catalog: Catalog
 var _engine: DuelEngine
 var _host: DuelHost
 var _selection: DuelSelection = DuelSelection.new()
 var _previewer: DuelPreviewer = DuelPreviewer.new()
 var _model: DuelViewModel
-var _piece_views: Dictionary[int, PieceView] = {}
+var _zones: DuelZonesPresenter = DuelZonesPresenter.new()
 var _center: DuelCenterPresenter = DuelCenterPresenter.new()
-var _scripted_intents: Array[DuelIntent] = []
+var _scripted: ScriptedIntentsPlayer = ScriptedIntentsPlayer.new()
 ## Événements du lot qui a terminé le duel : la raison du panneau de fin s'en déduit.
 var _final_events: Array[DuelEvent] = []
 
@@ -60,6 +58,7 @@ func _ready() -> void:
 	_place_zones()
 	_selection.intent_chosen.connect(_on_intent_chosen)
 	_selection.response_started.connect(_on_response_started)
+	_scripted.intent_chosen.connect(_on_intent_chosen)
 	_event_player.batch_played.connect(_on_batch_played)
 	_connect_gestures()
 	_connect_previews()
@@ -83,7 +82,9 @@ func start_duel(duel_setup: DuelSetup, config: DuelConfig, catalog: Catalog) -> 
 	_catalog = catalog
 	_engine = DuelEngine.new(_catalog, config)
 	_previewer.setup(_preview, _engine)
+	_zones.setup(_board, _engine, _previewer.show_piece, _previewer.hide_preview)
 	_host = DuelHost.new(_engine)
+	_scripted.setup(_engine, _host)
 	_center.setup(_column, _engine, _host)
 	_host.host_state_changed.connect(_on_host_state_changed)
 	var first_events := _host.start(duel_setup)
@@ -100,7 +101,7 @@ func start_duel(duel_setup: DuelSetup, config: DuelConfig, catalog: Catalog) -> 
 ## Outil de développement, juste après `start_duel` : `intents` sont soumis un par un, chacun quand
 ## l'hôte attend son joueur ; un refus de `DuelEngine.validate()` arrête la suite.
 func play_scripted_intents(intents: Array[DuelIntent]) -> void:
-	_scripted_intents.append_array(intents)
+	_scripted.add_intents(intents)
 
 
 # Décision 0030 : chaque zone est ancrée au coin ou au bord le plus proche, pour suivre un écran
@@ -146,6 +147,7 @@ func _setup_player_zones(side: DuelState.PlayerSide, duel_setup: DuelSetup) -> v
 	_sources[side].setup(side, counter_placement, source_count)
 	_deck_corners[side].setup(side, label_placement)
 	_hero_cards[side].setup(side, _catalog.get_hero(duel_setup.hero_of(side)))
+	_zones.add_player_zones(side, _sources[side], _deck_corners[side], _hero_cards[side])
 
 
 func _connect_gestures() -> void:
@@ -184,21 +186,6 @@ func _on_intent_chosen(intent: DuelIntent) -> void:
 	_event_player.play(_host.submit_human(intent))
 
 
-func _submit_next_scripted_intent() -> void:
-	if _scripted_intents.is_empty():
-		return
-	var intent: DuelIntent = _scripted_intents.pop_front()
-	if intent.player != _host.get_screen_player():
-		push_error("DuelScreen : intention scriptée d'un autre joueur que celui de l'écran")
-		_scripted_intents.clear()
-		return
-	if _engine.validate(intent) != IntentRejected.RejectReason.NONE:
-		push_error("DuelScreen : intention scriptée refusée, la suite est abandonnée")
-		_scripted_intents.clear()
-		return
-	_on_intent_chosen(intent)
-
-
 # Décision 0036 : les commandes ne passent que pendant le tour d'un humain ; le relais attend le
 # clic du joueur attendu sur le rideau, sauf tant que des intentions scriptées restent.
 func _on_host_state_changed(host_state: DuelHost.HostState) -> void:
@@ -210,7 +197,7 @@ func _on_host_state_changed(host_state: DuelHost.HostState) -> void:
 		DuelHost.HostState.AWAITING_HUMAN:
 			_selection.set_player(_host.get_screen_player())
 			_refresh_zones()
-			_submit_next_scripted_intent.call_deferred()
+			_scripted.submit_next.call_deferred()
 		DuelHost.HostState.ENDED:
 			_refresh_zones()
 			_show_end_panel()
@@ -246,7 +233,7 @@ func _refresh_concede_button() -> void:
 
 
 func _start_relay() -> void:
-	if not _scripted_intents.is_empty():
+	if _scripted.has_pending():
 		_host.confirm_relay.call_deferred()
 		return
 	_refresh_zones_hiding_hand()
@@ -306,10 +293,10 @@ func _use_viewer_model() -> void:
 
 
 func _refresh_zones_around(hand_cards: Array[HandView.HandCard]) -> void:
-	_refresh_pieces()
+	_zones.refresh_pieces(_model)
 	_hand.show_cards(hand_cards)
 	_opponent_hand.show_hand(_model.get_opponent(), _model.opponent_hand_size())
-	_refresh_piles()
+	_zones.refresh_piles(_model)
 	_refresh_marks()
 
 
@@ -317,13 +304,10 @@ func _refresh_zones_around(hand_cards: Array[HandView.HandCard]) -> void:
 func _refresh_marks() -> void:
 	var shown := _selection.snapshot()
 	_board.show_highlighted_cells(shown.legal_cells)
-	for piece_id: int in _piece_views:
-		_piece_views[piece_id].set_marks(
-			shown.legal_piece_ids.has(piece_id), shown.chosen_piece_id == piece_id
-		)
+	_zones.show_piece_marks(shown)
 	_hand.show_marks(shown.playable_card_ids, _chosen_card_ids(shown))
-	_refresh_sources(shown)
-	_refresh_hero_cards(shown)
+	_zones.refresh_sources(_model, shown)
+	_zones.refresh_hero_cards(_model, shown)
 	_center.show_center(_model, shown)
 
 
@@ -332,66 +316,3 @@ func _chosen_card_ids(shown: SelectionSnapshot) -> Array[int]:
 	if shown.chosen_card_id != DuelState.NO_ID:
 		chosen_ids.append(shown.chosen_card_id)
 	return chosen_ids
-
-
-func _refresh_pieces() -> void:
-	_board.clear_pieces()
-	_piece_views.clear()
-	for piece: Piece in _engine.get_state().pieces:
-		var piece_view: PieceView = PIECE_SCENE.instantiate()
-		_board.put_piece(piece.cell, piece_view)
-		_fill_piece(piece_view, piece)
-		piece_view.piece_hovered.connect(_previewer.show_piece)
-		piece_view.piece_unhovered.connect(_previewer.hide_preview)
-		_piece_views[piece.piece_id] = piece_view
-
-
-# La pièce est posée sur sa case avant d'être remplie : ses nœuds n'existent qu'une fois en scène.
-func _fill_piece(piece_view: PieceView, piece: Piece) -> void:
-	var gear := _model.gear_definition(piece)
-	piece_view.show_gear("" if gear == null else gear.card_name)
-	var force := _engine.current_force(piece.piece_id)
-	match DuelViewModel.piece_form_of(piece):
-		DuelViewModel.PieceForm.HERO:
-			var hero := _model.hero_definition(piece.owner)
-			piece_view.show_hero(piece.piece_id, hero, piece.owner)
-			piece_view.show_health(piece.health)
-		DuelViewModel.PieceForm.TOKEN:
-			var card_type := _model.token_card_type(piece)
-			piece_view.show_token(piece.piece_id, card_type, piece.owner)
-			piece_view.show_force(force, piece.token_force)
-		DuelViewModel.PieceForm.CARD:
-			var definition := _model.piece_definition(piece)
-			piece_view.show_card_piece(piece.piece_id, definition, piece.owner)
-			piece_view.show_force(force, definition.force)
-
-
-func _refresh_piles() -> void:
-	for side: DuelState.PlayerSide in DuelState.SIDES:
-		var corner := _deck_corners[side]
-		corner.show_deck(_model.deck_size(side))
-		corner.show_fatigue(_model.fatigue(side))
-		var top := _model.discard_top(side)
-		if top == null:
-			corner.show_empty_discard()
-		else:
-			corner.show_discard(top.card_instance_id, top.definition)
-
-
-func _refresh_sources(shown: SelectionSnapshot) -> void:
-	for side: DuelState.PlayerSide in DuelState.SIDES:
-		var view := _sources[side]
-		var player := _engine.get_state().get_player(side)
-		view.show_sources(_model.upright_sources(side, shown), _model.tilted_sources(side, shown))
-		view.show_supply(player.sources_in_reserve, player.sources_in_fonte)
-		view.show_essence(_model.essence_shown(side, shown))
-		view.set_interactive(side == _model.get_viewer())
-
-
-# Décision 0032, point 3 : seul le joueur qui a l'appareil clique sa carte Hero.
-func _refresh_hero_cards(shown: SelectionSnapshot) -> void:
-	for side: DuelState.PlayerSide in DuelState.SIDES:
-		var is_viewer := side == _model.get_viewer()
-		_hero_cards[side].set_clickable(is_viewer)
-		_hero_cards[side].set_power_usable(is_viewer and shown.can_use_hero_power)
-		_hero_cards[side].set_power_chosen(is_viewer and shown.is_hero_power_chosen)

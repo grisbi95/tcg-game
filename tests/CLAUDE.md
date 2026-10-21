@@ -32,6 +32,7 @@ Complète le `CLAUDE.md` racine pour `tests/` ; commandes dans `CLAUDE.md` §7.
 | `DuelOracle` | oracle des duels aléatoires (1.10) : recalcule depuis l'état, sans `validate()`, conditions du ruleset et invariants |
 | `HostDriver` | fait jouer un `DuelHost` sans scène (0020) : confirme l'affichage, avance `ManualClock`, appelle `tick()` |
 | `TriggerSamples` | catalogue en mémoire des suites d'effets déclenchés (207.3, 208.4, 210.3, 204.5.3) |
+| `ColumnSpy`, `PreviewSpy` | sous-classes sans scène de `DuelColumnView` et `HoverPreview`, jamais ajoutées à l'arbre, qui enregistrent leurs appels, pour `DuelCenterPresenter` et `DuelPreviewer` |
 
 ## Motifs
 

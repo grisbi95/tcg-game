@@ -33,18 +33,10 @@ const TENTHS_PER_SECOND: int = 10
 const BAR_STEPS: int = 100
 const NO_SECONDS_SHOWN: int = -1
 const BAR_RADIUS: int = 4
-const PANEL_BORDER_WIDTH: int = 1
-const PANEL_MARGIN: float = 10.0
-const HINT_BORDER_WIDTH: int = 1
-const HINT_MARGIN: float = 8.0
 const END_TURN_TEXT: String = "Terminer le tour"
 const PASS_TEXT: String = "Passer"
 const CONFIRM_TEXT: String = "Confirmer"
-const CONCEDE_TEXT: String = "Abandonner"
-const CONCEDE_BORDER_WIDTH: int = 1
-const CONCEDE_MARGIN: float = 4.0
 const MULLIGAN_HINT: String = "Mulligan : choisis les cartes à écarter"
-const STOPPED_TEXT: String = "Décompte arrêté : réponds ou passe"
 
 var _center_state: CenterState = CenterState.TURN
 var _has_stack: bool = false
@@ -77,20 +69,6 @@ var _clock_running: Dictionary[DuelState.PlayerSide, bool] = {}
 
 
 func _ready() -> void:
-	add_theme_stylebox_override(
-		"panel",
-		DuelPalette.framed_style(
-			DuelPalette.PANEL_COLOR, DuelPalette.CELL_LINE_COLOR, PANEL_BORDER_WIDTH, PANEL_MARGIN
-		)
-	)
-	_hint_panel.add_theme_stylebox_override(
-		"panel",
-		DuelPalette.framed_style(
-			DuelPalette.HINT_COLOR, DuelPalette.CELL_LINE_COLOR, HINT_BORDER_WIDTH, HINT_MARGIN
-		)
-	)
-	_style_texts()
-	_style_concede_buttons()
 	_big_button.pressed.connect(_on_big_button_pressed)
 	for button: Button in _concede_buttons.values():
 		button.pressed.connect(concede_pressed.emit)
@@ -205,37 +183,6 @@ func show_concede(side: DuelState.PlayerSide) -> void:
 func hide_concede() -> void:
 	for button: Button in _concede_buttons.values():
 		button.visible = false
-
-
-func _style_texts() -> void:
-	for label: Label in [_turn_number_label, _stack_title_label, _stopped_label]:
-		label.add_theme_color_override("font_color", DuelPalette.MUTED_COLOR)
-	_hint_label.add_theme_color_override("font_color", DuelPalette.INK_COLOR)
-	_countdown_label.add_theme_color_override("font_color", DuelPalette.INK_COLOR)
-	_stopped_label.text = STOPPED_TEXT
-	_countdown_bar.add_theme_stylebox_override(
-		"background", DuelPalette.fill_style(DuelPalette.BAR_TRACK_COLOR, BAR_RADIUS, 0.0)
-	)
-
-
-func _style_concede_buttons() -> void:
-	var fills: Dictionary[DuelPalette.ButtonState, Color] = {
-		DuelPalette.ButtonState.NORMAL: Color.TRANSPARENT,
-		DuelPalette.ButtonState.HOVER: DuelPalette.HINT_COLOR,
-		DuelPalette.ButtonState.PRESSED: DuelPalette.TABLE_COLOR,
-	}
-	for button: Button in _concede_buttons.values():
-		button.text = CONCEDE_TEXT
-		for state: DuelPalette.ButtonState in fills:
-			button.add_theme_stylebox_override(
-				DuelPalette.BUTTON_STATE_STYLES[state],
-				DuelPalette.framed_style(
-					fills[state], DuelPalette.CELL_LINE_COLOR, CONCEDE_BORDER_WIDTH, CONCEDE_MARGIN
-				)
-			)
-		button.add_theme_color_override("font_color", DuelPalette.MUTED_COLOR)
-		button.add_theme_color_override("font_hover_color", DuelPalette.INK_COLOR)
-		button.add_theme_color_override("font_pressed_color", DuelPalette.INK_COLOR)
 
 
 func _style_countdown(responder: DuelState.PlayerSide) -> void:
