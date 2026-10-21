@@ -7,7 +7,8 @@ extends RefCounted
 ## Aucune règle ici : chaque intention passe par `DuelEngine.submit()`. La scène qui l'anime
 ## appelle `tick()` à chaque image et lui transmet les gestes ; les événements renvoyés sont les
 ## seuls faits de jeu (décision 0006). 209.4.4f : la pendule tourne aussi pendant le relais et
-## l'affichage des événements. Décision 0029 : l'hôte décompte la fenêtre de réponse (208.6).
+## l'affichage des événements. Décision 0029 : l'hôte décompte la fenêtre de réponse (208.6) ;
+## décision 0042 : il en journalise le temps et les réponses commencées, pour le relevé.
 
 signal host_state_changed(host_state: HostState)
 
@@ -42,6 +43,9 @@ var _is_screen_assigned: bool = false
 ## Décision 0029 : décompte de la fenêtre de réponse du joueur attendu (208.6.1).
 var _is_response_window_running: bool = false
 var _response_deadline_msec: int = 0
+## Décision 0042 : le temps compté depuis cet instant, fenêtre ouverte, s'inscrit au journal
+## comme temps de fenêtre de réponse (208.6.2).
+var _response_opened_msec: int = 0
 ## Entrée au sommet de la pile à l'ouverture de la dernière fenêtre : retrouver la même occasion
 ## de répondre, après un coup qui ne la change pas (Essence produite), n'en rouvre pas (208.6.5a).
 var _response_stack_entry_id: int = DuelState.NO_ID
@@ -100,12 +104,14 @@ func confirm_relay() -> void:
 
 
 ## 208.6.5 : le joueur devant l'écran commence une réponse ; le décompte de sa fenêtre s'arrête
-## et ne reprend pas (208.6.5a). Sans effet hors d'une fenêtre de réponse, ou après son échéance :
-## la passe automatique du prochain `tick()` l'emporte (208.6.3).
+## et ne reprend pas (208.6.5a), et le journal le note (décision 0042). Sans effet hors d'une
+## fenêtre de réponse, ou après son échéance : la passe automatique du prochain `tick()`
+## l'emporte (208.6.3).
 func begin_response() -> void:
-	if _host_state != HostState.AWAITING_HUMAN or _clock.now_msec() >= _response_deadline_msec:
+	if not _is_response_window_running or _clock.now_msec() >= _response_deadline_msec:
 		return
 	_is_response_window_running = false
+	_journal.record_response_begun(_awaited_player)
 
 
 ## Décision 0029 : vrai tant que court le décompte de la fenêtre de réponse (208.6.1, 208.6.5).
@@ -124,7 +130,8 @@ func get_host_state() -> HostState:
 	return _host_state
 
 
-## Décision 0022 : préparation, intentions acceptées et temps écoulé depuis `start()`.
+## Décisions 0022 et 0042 : préparation, puis intentions acceptées, temps écoulé, temps des
+## fenêtres de réponse et réponses commencées depuis `start()`.
 func get_journal() -> DuelJournal:
 	return _journal
 
@@ -192,8 +199,8 @@ func _expire_response_window() -> Array[DuelEvent]:
 		return events
 	if _clock.now_msec() < _response_deadline_msec:
 		return events
-	_is_response_window_running = false
 	events = _advance_clock_until(maxi(_response_deadline_msec, _last_clock_msec))
+	_is_response_window_running = false
 	if _host_state == HostState.AWAITING_HUMAN:
 		events.append_array(_submit(PassPriority.new(_awaited_player)))
 	return events
@@ -204,13 +211,24 @@ func _advance_clock_until(until_msec: int) -> Array[DuelEvent]:
 	var events: Array[DuelEvent] = []
 	if not _is_duel_running() or _engine.get_state().is_ended():
 		return events
-	var elapsed_msec := until_msec - _last_clock_msec
+	var from_msec := _last_clock_msec
 	_last_clock_msec = until_msec
-	_journal.record_elapsed(elapsed_msec)
-	events = _engine.advance_clock(elapsed_msec)
+	_journal_elapsed(from_msec, until_msec)
+	events = _engine.advance_clock(until_msec - from_msec)
 	if not events.is_empty():
 		_await_display()
 	return events
+
+
+# Décision 0042 : la part écoulée fenêtre ouverte s'inscrit comme temps de fenêtre de réponse du
+# joueur attendu (208.6.2, 209.4.4g), le reste comme temps ordinaire.
+func _journal_elapsed(from_msec: int, until_msec: int) -> void:
+	if not _is_response_window_running:
+		_journal.record_elapsed(until_msec - from_msec)
+		return
+	var window_from_msec := clampi(_response_opened_msec, from_msec, until_msec)
+	_journal.record_elapsed(window_from_msec - from_msec)
+	_journal.record_response_window_elapsed(_awaited_player, until_msec - window_from_msec)
 
 
 func _play_agent() -> Array[DuelEvent]:
@@ -293,7 +311,10 @@ func _open_response_window() -> void:
 	if top_entry.stack_entry_id == _response_stack_entry_id:
 		return
 	_response_stack_entry_id = top_entry.stack_entry_id
-	_response_deadline_msec = _clock.now_msec() + _engine.get_state().config.response_window_msec
+	_response_opened_msec = _clock.now_msec()
+	_response_deadline_msec = (
+		_response_opened_msec + _engine.get_state().config.response_window_msec
+	)
 	_is_response_window_running = true
 
 

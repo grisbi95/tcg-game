@@ -1,8 +1,8 @@
-# gdlint: disable=max-public-methods
+# gdlint: disable=max-public-methods,max-file-lines
 
 extends GdUnitTestSuite
-## Fenêtre de réponse à l'écran, décomptée par DuelHost (ruleset 0.36, 208.6 et 209.4.4g ;
-## décision 0029).
+## Fenêtre de réponse à l'écran, décomptée par DuelHost (ruleset 0.37, 208.6 et 209.4.4g ;
+## décisions 0029 et 0042).
 ##
 ## Sans scène : `ManualClock` tient lieu de temps réel. A déploie une Unit à son premier tour ;
 ## B, qui peut alors répondre ou passer, n'a aucune Réaction dans le deck d'essai (208.6.6).
@@ -155,6 +155,110 @@ func test_208_6_5_response_start_ignored_outside_a_window() -> void:
 	_host.confirm_relay()
 	assert_bool(_host.is_response_window_running()).is_true()
 	assert_int(_host.get_response_time_left_msec()).is_equal(RESPONSE_WINDOW_MSEC)
+
+
+func test_208_6_2_window_time_is_journaled_for_the_awaited_player() -> void:
+	_reach_answer_of_b()
+	_clock.advance(PARTIAL_COUNTDOWN_MSEC)
+	_host.tick()
+	var last_entry := _last_journal_entry()
+	assert_int(last_entry.kind).is_equal(DuelJournal.EntryKind.RESPONSE_WINDOW_TIME)
+	assert_int(last_entry.player).is_equal(B)
+	assert_int(last_entry.elapsed_msec).is_equal(PARTIAL_COUNTDOWN_MSEC)
+	assert_int(_host.get_journal().response_window_elapsed_msec(B)).is_equal(PARTIAL_COUNTDOWN_MSEC)
+	assert_int(_host.get_journal().response_window_elapsed_msec(A)).is_equal(0)
+
+
+func test_208_6_3_automatic_pass_counts_the_window_until_its_deadline() -> void:
+	_reach_answer_of_b()
+	_clock.advance(RESPONSE_WINDOW_MSEC + LATE_GESTURE_MSEC)
+	_host.tick()
+	var journal := _host.get_journal()
+	assert_int(journal.response_window_elapsed_msec(B)).is_equal(RESPONSE_WINDOW_MSEC)
+	var entries := journal.entries
+	var window_entry := entries[entries.size() - 3]
+	var pass_entry := entries[entries.size() - 2]
+	var ordinary_entry := entries[entries.size() - 1]
+	assert_int(window_entry.kind).is_equal(DuelJournal.EntryKind.RESPONSE_WINDOW_TIME)
+	assert_int(window_entry.elapsed_msec).is_equal(RESPONSE_WINDOW_MSEC)
+	assert_object(pass_entry.intent).is_instanceof(PassPriority)
+	assert_int(ordinary_entry.kind).is_equal(DuelJournal.EntryKind.ELAPSED_TIME)
+	assert_int(ordinary_entry.elapsed_msec).is_equal(LATE_GESTURE_MSEC)
+
+
+func test_209_4_4g_time_before_the_window_opened_is_ordinary_time() -> void:
+	_reach_first_turn_of_a()
+	_deploy_from_a()
+	_host.confirm_events_played()
+	_clock.advance(HANDOVER_MSEC)
+	_host.confirm_relay()
+	_clock.advance(PARTIAL_COUNTDOWN_MSEC)
+	_host.tick()
+	var entries := _host.get_journal().entries
+	var ordinary_entry := entries[entries.size() - 2]
+	assert_int(ordinary_entry.kind).is_equal(DuelJournal.EntryKind.ELAPSED_TIME)
+	assert_int(ordinary_entry.elapsed_msec).is_equal(HANDOVER_MSEC)
+	var window_entry := entries[entries.size() - 1]
+	assert_int(window_entry.kind).is_equal(DuelJournal.EntryKind.RESPONSE_WINDOW_TIME)
+	assert_int(window_entry.player).is_equal(B)
+	assert_int(window_entry.elapsed_msec).is_equal(PARTIAL_COUNTDOWN_MSEC)
+	assert_int(_host.get_journal().response_window_elapsed_msec(B)).is_equal(PARTIAL_COUNTDOWN_MSEC)
+
+
+func test_208_6_5_started_response_is_journaled_once() -> void:
+	_reach_answer_of_b()
+	var entry_count := _host.get_journal().entries.size()
+	_host.begin_response()
+	var last_entry := _last_journal_entry()
+	assert_int(last_entry.kind).is_equal(DuelJournal.EntryKind.RESPONSE_BEGUN)
+	assert_int(last_entry.player).is_equal(B)
+	assert_int(_host.get_journal().entries.size()).is_equal(entry_count + 1)
+	_host.begin_response()
+	assert_int(_host.get_journal().entries.size()).is_equal(entry_count + 1)
+	assert_int(_host.get_journal().response_begun_count(B)).is_equal(1)
+	assert_int(_host.get_journal().response_begun_count(A)).is_equal(0)
+
+
+func test_208_6_5_response_start_outside_a_window_is_not_journaled() -> void:
+	_reach_first_turn_of_a()
+	var entry_count := _host.get_journal().entries.size()
+	_host.begin_response()  # tour de A, pile vide : aucune fenêtre
+	_deploy_from_a()
+	entry_count += 1  # le déploiement lui-même
+	_host.begin_response()  # PLAYING_EVENTS
+	_host.confirm_events_played()
+	_host.begin_response()  # RELAY
+	assert_int(_host.get_host_state()).is_equal(HOST.RELAY)
+	assert_int(_host.get_journal().entries.size()).is_equal(entry_count)
+	for side: DuelState.PlayerSide in DuelState.SIDES:
+		assert_int(_host.get_journal().response_begun_count(side)).is_equal(0)
+
+
+func test_208_6_5_response_start_after_the_deadline_is_not_journaled() -> void:
+	_reach_answer_of_b()
+	_clock.advance(RESPONSE_WINDOW_MSEC)
+	_host.begin_response()
+	assert_int(_host.get_journal().response_begun_count(B)).is_equal(0)
+	_host.tick()
+	assert_int(_host.get_journal().response_begun_count(B)).is_equal(0)
+
+
+func test_208_6_5_time_after_a_started_response_is_ordinary_time() -> void:
+	_reach_answer_of_b()
+	_clock.advance(PARTIAL_COUNTDOWN_MSEC)
+	_host.tick()
+	_host.begin_response()
+	_clock.advance(CLOCK_LAG_MSEC)
+	_host.tick()
+	var entries := _host.get_journal().entries
+	assert_int(entries[entries.size() - 3].kind).is_equal(
+		DuelJournal.EntryKind.RESPONSE_WINDOW_TIME
+	)
+	assert_int(entries[entries.size() - 2].kind).is_equal(DuelJournal.EntryKind.RESPONSE_BEGUN)
+	var ordinary_entry := entries[entries.size() - 1]
+	assert_int(ordinary_entry.kind).is_equal(DuelJournal.EntryKind.ELAPSED_TIME)
+	assert_int(ordinary_entry.elapsed_msec).is_equal(CLOCK_LAG_MSEC)
+	assert_int(_host.get_journal().response_window_elapsed_msec(B)).is_equal(PARTIAL_COUNTDOWN_MSEC)
 
 
 func test_208_6_5a_stopped_player_answers_or_passes_himself() -> void:
@@ -315,6 +419,10 @@ func test_decision_0029_no_window_for_an_agent() -> void:
 	_host.confirm_events_played()
 	assert_int(_host.get_host_state()).is_equal(HOST.AWAITING_AI)
 	assert_bool(_host.is_response_window_running()).is_false()
+
+
+func _last_journal_entry() -> DuelJournal.Entry:
+	return _host.get_journal().entries.back()
 
 
 # 209.4.3 : pendule de départ réduite, la pendule de B ne tournant que lorsqu'il est attendu.

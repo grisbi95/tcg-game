@@ -15,6 +15,8 @@ extends Control
 signal rematch_requested
 ## Le panneau de fin demande de revenir à la préparation.
 signal setup_requested
+## Le panneau de fin demande la fiche de relevé de la partie.
+signal sheet_requested
 
 var _catalog: Catalog
 var _engine: DuelEngine
@@ -104,6 +106,16 @@ func play_scripted_intents(intents: Array[DuelIntent]) -> void:
 	_scripted.add_intents(intents)
 
 
+## Journal de la partie, d'où se lit la fiche de relevé (décision 0042).
+func get_journal() -> DuelJournal:
+	return _host.get_journal()
+
+
+## Dit au joueur, sous les boutons du panneau de fin, ce qu'est devenue sa demande de fiche.
+func show_sheet_status(text: String) -> void:
+	_overlays.show_sheet_status(text)
+
+
 # Décision 0030 : chaque zone est ancrée au coin ou au bord le plus proche, pour suivre un écran
 # d'une autre proportion.
 func _place_zones() -> void:
@@ -180,6 +192,7 @@ func _connect_overlays() -> void:
 	_overlays.concede_confirmed.connect(_on_concede_confirmed)
 	_overlays.rematch_pressed.connect(rematch_requested.emit)
 	_overlays.setup_pressed.connect(setup_requested.emit)
+	_overlays.sheet_pressed.connect(sheet_requested.emit)
 
 
 func _on_intent_chosen(intent: DuelIntent) -> void:

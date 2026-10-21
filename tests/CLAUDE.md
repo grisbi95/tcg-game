@@ -11,6 +11,7 @@ Complète le `CLAUDE.md` racine pour `tests/` ; commandes dans `CLAUDE.md` §7.
 - Logique de vue : `DuelSelection` et les fonctions statiques des vues se testent sans scène ; aucune suite n'instancie de scène (`test_event_player.gd` ajoute un `Node` nu à l'arbre, pas une scène), `--ignoreHeadlessMode` reste sûr.
 - L'en-tête d'une suite de règles nomme l'édition du ruleset et la décision suivies ; une décision de design du ruleset se cite « décision de design 0197 » ou « décision 0197 du ruleset », jamais « décision 0197 » seul.
 - Ne jamais résoudre dans un test un `kind` que le moteur ne code pas encore.
+- Relevé de playtest (2.5, décision 0042) : `test_playtest_recorder.gd` lit la fiche de journaux rejoués (fixture et `PlaytestScenarios`), un test par mesure nommé par la règle que la mesure vise ; `test_playtest_sheet.gd` contrôle le CSV et les textes de fin.
 - Non-régression (J2, décision 0022) : `test_duel_journal.gd` rejoue `tests/fixtures/replay_random_duel.journal.json` et compare son empreinte. Un écart voulu (règle modifiée) se régénère par `"$GODOT_BIN" --headless --path . -s tools/record_replay_fixture.gd`, en le disant dans le rapport ; un écart non voulu est un bogue.
 
 ## Outils de `tests/support/` (repris du prototype au J1)
@@ -32,6 +33,8 @@ Complète le `CLAUDE.md` racine pour `tests/` ; commandes dans `CLAUDE.md` §7.
 | `DuelOracle` | oracle des duels aléatoires (1.10) : recalcule depuis l'état, sans `validate()`, conditions du ruleset et invariants |
 | `HostDriver` | fait jouer un `DuelHost` sans scène (0020) : confirme l'affichage, avance `ManualClock`, appelle `tick()` |
 | `TriggerSamples` | catalogue en mémoire des suites d'effets déclenchés (207.3, 208.4, 210.3, 204.5.3) |
+| `HumanDuelDriver` | deux humains sur un `DuelHost` à `ManualClock`, sans scène (0020, 0021) : chaque intention est suivie de la confirmation d'affichage et du relais ; `end_turn`, `deploy`, `move`, `pass_priority`, `wait`, `record_sheet` ; sert au relevé de playtest (0042) |
+| `PlaytestScenarios` | duels de deux humains joués par `HumanDuelDriver` sur le catalogue d'essai (tours sans action, déploiement, économie, réponse, marche jusqu'au combat, Martyrs, petit deck), dont les tests du relevé lisent la fiche |
 | `ColumnSpy`, `PreviewSpy` | sous-classes sans scène de `DuelColumnView` et `HoverPreview`, jamais ajoutées à l'arbre, qui enregistrent leurs appels, pour `DuelCenterPresenter` et `DuelPreviewer` |
 
 ## Motifs

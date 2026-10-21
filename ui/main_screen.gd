@@ -10,8 +10,11 @@ const DUEL_SCENE: PackedScene = preload("res://ui/duel_screen.tscn")
 const LOAD_ERROR_TEXT: String = "Impossible de charger le jeu : cartes ou deck de test en erreur."
 const BACK_TEXT: String = "Retour"
 const SETUP_ERROR_FORMAT: String = "Partie impossible : %s"
+const SHEET_SAVED_FORMAT: String = "Fiche enregistrée : %s"
+const SHEET_FAILED_TEXT: String = "Fiche impossible à enregistrer"
 
 var _catalog: Catalog
+var _config: DuelConfig = DuelConfig.new()
 var _series: DuelSeries
 var _screen: Control
 
@@ -62,8 +65,7 @@ func _setup_lines() -> Array[SetupScreen.PlayerLine]:
 
 func _start_duel(rng_seed: int) -> void:
 	var duel_setup := _series.make_setup(rng_seed)
-	var config := DuelConfig.new()
-	var errors := duel_setup.find_errors(_catalog, config)
+	var errors := duel_setup.find_errors(_catalog, _config)
 	if not errors.is_empty():
 		_show_error(SETUP_ERROR_FORMAT % "\n".join(errors), true)
 		return
@@ -71,7 +73,8 @@ func _start_duel(rng_seed: int) -> void:
 	_replace_screen(duel_screen)
 	duel_screen.rematch_requested.connect(_on_rematch_requested)
 	duel_screen.setup_requested.connect(_on_setup_requested)
-	duel_screen.start_duel(duel_setup, config, _catalog)
+	duel_screen.sheet_requested.connect(_on_sheet_requested)
+	duel_screen.start_duel(duel_setup, _config, _catalog)
 
 
 # Décision 0036 : l'autre joueur commence, la graine est tirée de nouveau.
@@ -83,6 +86,23 @@ func _on_rematch_requested() -> void:
 func _on_setup_requested() -> void:
 	_series.advance_to_next_game()
 	_show_setup()
+
+
+# Décision 0042 : la fiche se relit dans le journal de la partie, puis se remet au joueur.
+func _on_sheet_requested() -> void:
+	var duel_screen := _screen as DuelScreen
+	if duel_screen == null:
+		return
+	var recorder := PlaytestRecorder.new(_catalog, _config)
+	var date_text := Time.get_date_string_from_system()
+	var sheet := recorder.record(duel_screen.get_journal(), _series.get_game_number(), date_text)
+	var saved_path := FileDownload.save_text(
+		sheet.file_name(), sheet.to_csv(), PlaytestSheet.MIME_TYPE
+	)
+	if saved_path.is_empty():
+		duel_screen.show_sheet_status(SHEET_FAILED_TEXT)
+	else:
+		duel_screen.show_sheet_status(SHEET_SAVED_FORMAT % saved_path)
 
 
 func _show_load_error() -> void:

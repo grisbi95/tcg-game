@@ -8,6 +8,7 @@ signal relay_confirmed
 signal concede_confirmed
 signal rematch_pressed
 signal setup_pressed
+signal sheet_pressed
 
 @onready var _relay_curtain: RelayCurtainView = %RelayCurtain
 @onready var _concede_confirm: ConcedeConfirmView = %ConcedeConfirm
@@ -24,6 +25,7 @@ func _ready() -> void:
 	_concede_confirm.concede_cancelled.connect(_concede_confirm.hide_confirm)
 	_end_panel.rematch_pressed.connect(rematch_pressed.emit)
 	_end_panel.setup_pressed.connect(setup_pressed.emit)
+	_end_panel.sheet_pressed.connect(sheet_pressed.emit)
 
 
 ## Rideau sur la main du bas : `side` va prendre l'appareil.
@@ -49,3 +51,8 @@ func show_end(
 	result: DuelState.DuelResult, title_text: String, reason_text: String, details_text: String
 ) -> void:
 	_end_panel.show_end(result, title_text, reason_text, details_text)
+
+
+## Dit sous les boutons du panneau de fin où est allée la fiche demandée.
+func show_sheet_status(text: String) -> void:
+	_end_panel.show_sheet_status(text)

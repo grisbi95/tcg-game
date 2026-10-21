@@ -38,7 +38,7 @@ static func add_to_hand(
 static func journaled_intent_count(host: DuelHost) -> int:
 	var count := 0
 	for entry: DuelJournal.Entry in host.get_journal().entries:
-		if not entry.is_elapsed_time():
+		if entry.is_intent():
 			count += 1
 	return count
 
