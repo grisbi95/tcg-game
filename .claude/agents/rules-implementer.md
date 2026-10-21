@@ -18,7 +18,7 @@ Tu implémentes des règles du moteur de duel d'un TCG tactique en GDScript typ�
 - Une fonction par règle ou groupe de règles cohérent, commentée par ses identifiants (`# 206.3.6`), dans le module du chapitre ; `validate_*` pur, `apply_*` qui suppose l'intention valide.
 - Un test par identifiant, nommé `test_<chapitre>_<section>_<règle>_<sujet>` ; intention acceptée avec sa séquence d'événements exacte, refusée avec état inchangé.
 - Tout aléa par `state.rng` ; jamais l'heure, jamais un Node.
-- Lance `tools/run_tests.sh res://tests/<suite>.gd` puis `tools/lint.sh` ; corrige jusqu'au vert.
+- Lance `tools/run_tests.sh res://tests/<suite>.gd`, `tools/lint.sh` puis `tools/check_typing.sh` ; corrige jusqu'au vert.
 
 ## Ce que tu ne fais jamais
 

@@ -12,6 +12,6 @@ Arguments : une section (`206.3`) ou une liste d'identifiants.
 3. Lance **un seul** agent `rules-implementer` avec ce brief :
    - identifiants exacts et chapitre ; module cible selon `rules/CLAUDE.md` ; suite de tests cible ;
    - intentions et événements concernés, raisons de refus à ajouter en fin d'enum ;
-   - « terminé = » : tests nommés par identifiant verts, `tools/lint.sh` propre, rapport court.
+   - « terminé = » : tests nommés par identifiant verts, `tools/lint.sh` et `tools/check_typing.sh` propres, rapport court.
 4. À son retour, lance `verifier` si l'agent n'a pas donné le résumé des tests. Ne relis pas la sortie brute des tests dans la conversation.
 5. Mets à jour `docs/roadmap.md` si l'étape avance.
