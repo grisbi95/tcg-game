@@ -103,17 +103,11 @@ static func resolve_normal_action(
 		return
 	var occupant := state.piece_at(cell)
 	if occupant == null:
-		move_piece(piece, cell, events)
+		ZoneRules.move_piece(piece, cell, events)
 	elif piece.kind == Piece.PieceKind.UNIT and occupant.owner != piece.owner:
 		CombatRules.resolve_attack(state, piece, occupant, events)
 	else:
 		events.append(NormalActionFailed.new(entry.owner, entry.source_piece_id))
-
-
-## 205.2.2, 205.3.1, 206.3.3 : `piece` passe sur `to_cell`.
-static func move_piece(piece: Piece, to_cell: Vector2i, events: Array[DuelEvent]) -> void:
-	events.append(PieceMoved.new(piece.owner, piece.piece_id, piece.cell, to_cell))
-	piece.cell = to_cell
 
 
 # 205.3.2, 205.3.3 ; 202.3.10 : le Hero n'attaque jamais, sa case visée est libre.

@@ -5,7 +5,7 @@ extends RefCounted
 ##
 ## Un effet survenu attend dans `DuelState.waiting_triggers` ; `add_waiting_triggers` l'ajoute à
 ## la pile, joueur actif d'abord, et s'arrête quand un choix est attendu. DuelEngine l'appelle
-## après chaque intention, par `StackRules.settle_after_triggers`, qui rend ensuite la main.
+## après chaque intention, puis rend la main par `StackRules.return_priority_to_active_player`.
 
 ## 208.4.6, 208.4.7 : à partir de deux effets d'un même joueur, l'ordre est un choix.
 const MIN_EFFECTS_TO_ORDER: int = 2

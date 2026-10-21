@@ -3,8 +3,8 @@ extends RefCounted
 ## Pile et priorité (208).
 ##
 ## Une annonce s'ajoute par `add_to_stack`, appelée par le module de son chapitre ; un effet
-## déclenché, par TriggerRules (décision 0017). Ce qu'une entrée fait en se résolvant appartient
-## au module de son genre.
+## déclenché, par TriggerRules (décision 0017). La boucle de résolution vit dans DuelEngine, qui
+## aiguille chaque entrée vers le module de son genre : StackRules n'appelle aucun autre module.
 
 
 ## 208.4.1, 208.2.4 : ajoute `entry` au sommet de la pile ; l'adversaire du joueur à qui elle
@@ -43,47 +43,28 @@ static func validate_pass(state: DuelState, intent: PassPriority) -> IntentRejec
 
 
 ## 208.3.1, 208.3.1a : la passe du joueur qui peut répondre résout toute la pile d'un bloc ; le
-## propriétaire du sommet est considéré comme ayant passé.
-static func apply_pass(state: DuelState, intent: PassPriority, events: Array[DuelEvent]) -> void:
+## propriétaire du sommet est considéré comme ayant passé. La résolution suit, par DuelEngine.
+static func apply_pass(_state: DuelState, intent: PassPriority, events: Array[DuelEvent]) -> void:
 	events.append(PriorityPassed.new(intent.player))
-	_resolve_stack(state, events)
 
 
-# 208.3.1, 208.3.2, 208.3.3, 208.5.1 ; 209.2.1, 209.2.3 : la victoire se vérifie après chaque
-# résolution, et une partie arrêtée laisse le reste de la pile.
-static func _resolve_stack(state: DuelState, events: Array[DuelEvent]) -> void:
-	while not state.stack.is_empty():
-		var entry: StackEntry = state.stack.pop_back()
-		_resolve_entry(state, entry, events)
-		if StateCheckRules.check_victory(state, events, DuelState.EndReason.HERO_HEALTH_ZERO):
-			return
+## 208.3.2 : retire de la pile l'entrée du sommet, la dernière ajoutée, et la renvoie.
+## Suppose la pile non vide.
+static func take_top_entry(state: DuelState) -> StackEntry:
+	return state.stack.pop_back()
 
 
-## 208.4.3, 208.5.1, 208.5.1a : les effets en attente s'ajoutent à la pile ; si elle reste vide
-## sans choix attendu, c'est de nouveau au joueur actif d'agir. Appelée par DuelEngine après
-## chaque intention.
-static func settle_after_triggers(state: DuelState, events: Array[DuelEvent]) -> void:
-	TriggerRules.add_waiting_triggers(state, events)
+## 208.3.2, 209.2.2 : annonce que l'entrée est résolue, sauf si la partie s'est arrêtée pendant
+## sa résolution ; la partie s'arrête alors aussitôt, sans événement de résolution.
+static func announce_entry_resolved(
+	state: DuelState, entry: StackEntry, events: Array[DuelEvent]
+) -> void:
+	if not state.is_ended():
+		events.append(StackEntryResolved.new(entry.owner, entry.stack_entry_id))
+
+
+## 208.5.1, 208.5.1a : pile vide et aucun choix attendu, c'est de nouveau au joueur actif d'agir.
+static func return_priority_to_active_player(state: DuelState) -> void:
 	if state.pending_decision != null or not state.stack.is_empty():
 		return
 	state.priority_player = state.active_player
-
-
-# 208.3.2 : chaque genre se résout par le module de son chapitre.
-static func _resolve_entry(state: DuelState, entry: StackEntry, events: Array[DuelEvent]) -> void:
-	match entry.kind:
-		StackEntry.StackEntryKind.DEPLOY:
-			ActionRules.resolve_deploy(state, entry, events)
-		StackEntry.StackEntryKind.NORMAL_ACTION:
-			ActionRules.resolve_normal_action(state, entry, events)
-		StackEntry.StackEntryKind.SPELL:
-			EffectRules.resolve_spell(state, entry, events)
-		StackEntry.StackEntryKind.HERO_POWER:
-			CardRules.resolve_hero_power(state, entry, events)
-		StackEntry.StackEntryKind.ATTACH_GEAR:
-			CardRules.resolve_attach_gear(state, entry, events)
-		StackEntry.StackEntryKind.TRIGGERED_EFFECT:
-			TriggerRules.resolve_triggered(state, entry, events)
-	# 209.2.2 : une partie arrêtée pendant la résolution s'arrête aussitôt.
-	if not state.is_ended():
-		events.append(StackEntryResolved.new(entry.owner, entry.stack_entry_id))

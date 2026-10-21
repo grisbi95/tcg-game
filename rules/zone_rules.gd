@@ -1,6 +1,7 @@
 class_name ZoneRules
 extends RefCounted
-## Zones hors du plateau : deck, main, Écart, limite de main, appartenance (201.3, 201.5).
+## Zones : deck, main, Écart, limite de main, appartenance (201.3, 201.5) ; et passage d'une
+## pièce d'une case du plateau à une autre, que le module appelant a validé.
 ##
 ## Primitives appelées par les modules des autres chapitres ; aucune intention propre.
 ## Les fonctions qui déplacent des cartes supposent leurs arguments déjà validés.
@@ -104,3 +105,9 @@ static func return_set_aside_to_deck(
 		player.deck.append(card)
 		events.append(CardReturnedToDeck.new(side, card.card_instance_id))
 	player.set_aside.clear()
+
+
+## 205.2.2, 205.3.1, 206.3.3 : `piece` passe sur `to_cell`, que l'appelant a validée.
+static func move_piece(piece: Piece, to_cell: Vector2i, events: Array[DuelEvent]) -> void:
+	events.append(PieceMoved.new(piece.owner, piece.piece_id, piece.cell, to_cell))
+	piece.cell = to_cell
