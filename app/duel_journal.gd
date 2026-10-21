@@ -1,21 +1,38 @@
 class_name DuelJournal
 extends RefCounted
-## Journal d'un duel (décision 0022) : préparation, puis intentions acceptées et temps réel
-## écoulé, dans l'ordre. S'écrit et se lit en JSON ; se rejoue dans un moteur neuf, à
-## l'identique (déterminisme, décision 0001).
+## Journal d'un duel (décisions 0022 et 0042) : préparation, puis, dans l'ordre, intentions
+## acceptées, temps réel écoulé, temps écoulé pendant la fenêtre de réponse d'un joueur et
+## réponses commencées. S'écrit et se lit en JSON ; se rejoue dans un moteur neuf, à l'identique
+## (déterminisme, décision 0001) ; la fiche de playtest s'en déduit (`PlaytestRecorder`).
+
+## Sortes d'entrées, écrites en JSON par leurs clés, jamais par leur numéro.
+enum EntryKind {
+	INTENT,
+	ELAPSED_TIME,
+	RESPONSE_WINDOW_TIME,
+	RESPONSE_BEGUN,
+}
 
 ## Version du format JSON ; un journal d'une autre version est refusé à la lecture.
-const FORMAT_VERSION: int = 1
+const FORMAT_VERSION: int = 2
 
 
-## Une intention acceptée, ou du temps écoulé quand `intent` est null.
+## Une intention acceptée, du temps écoulé, du temps écoulé pendant la fenêtre de réponse de
+## `player`, ou une réponse commencée par `player` (208.6.5).
 class Entry:
 	extends RefCounted
+	var kind: EntryKind = EntryKind.INTENT
 	var intent: DuelIntent = null
 	var elapsed_msec: int = 0
+	## Joueur de la fenêtre de réponse ; sans objet pour une intention et le temps ordinaire.
+	var player: DuelState.PlayerSide = DuelState.PlayerSide.A
 
-	func is_elapsed_time() -> bool:
-		return intent == null
+	func is_intent() -> bool:
+		return kind == EntryKind.INTENT
+
+	## Temps qui fait avancer la pendule, hors ou pendant une fenêtre de réponse.
+	func counts_time() -> bool:
+		return kind == EntryKind.ELAPSED_TIME or kind == EntryKind.RESPONSE_WINDOW_TIME
 
 
 var ruleset_edition: String = ""
@@ -38,15 +55,20 @@ func record_intent(intent: DuelIntent) -> void:
 
 ## Les temps consécutifs se cumulent : les pendules qui tournent ne changent qu'à une soumission.
 func record_elapsed(elapsed_msec: int) -> void:
-	if elapsed_msec <= 0:
-		return
-	if not entries.is_empty():
-		var last_entry: Entry = entries.back()
-		if last_entry.is_elapsed_time():
-			last_entry.elapsed_msec += elapsed_msec
-			return
+	_record_time(EntryKind.ELAPSED_TIME, DuelState.PlayerSide.A, elapsed_msec)
+
+
+## 208.6.2, décision 0042 : temps écoulé pendant la fenêtre de réponse montrée à `player` ; les
+## temps consécutifs d'un même joueur se cumulent.
+func record_response_window_elapsed(player: DuelState.PlayerSide, elapsed_msec: int) -> void:
+	_record_time(EntryKind.RESPONSE_WINDOW_TIME, player, elapsed_msec)
+
+
+## 208.6.5, décision 0042 : `player` a commencé une réponse pendant sa fenêtre de réponse.
+func record_response_begun(player: DuelState.PlayerSide) -> void:
 	var entry := Entry.new()
-	entry.elapsed_msec = elapsed_msec
+	entry.kind = EntryKind.RESPONSE_BEGUN
+	entry.player = player
 	entries.append(entry)
 
 
@@ -54,28 +76,51 @@ func record_elapsed(elapsed_msec: int) -> void:
 func total_elapsed_msec() -> int:
 	var total_msec := 0
 	for entry: Entry in entries:
-		total_msec += entry.elapsed_msec
+		if entry.counts_time():
+			total_msec += entry.elapsed_msec
 	return total_msec
+
+
+## Temps de pendule écoulé pendant les fenêtres de réponse montrées à `player` (208.6.2).
+func response_window_elapsed_msec(player: DuelState.PlayerSide) -> int:
+	var total_msec := 0
+	for entry: Entry in entries:
+		if entry.kind == EntryKind.RESPONSE_WINDOW_TIME and entry.player == player:
+			total_msec += entry.elapsed_msec
+	return total_msec
+
+
+## Nombre de réponses que `player` a commencées pendant une fenêtre de réponse (208.6.5).
+func response_begun_count(player: DuelState.PlayerSide) -> int:
+	var count := 0
+	for entry: Entry in entries:
+		if entry.kind == EntryKind.RESPONSE_BEGUN and entry.player == player:
+			count += 1
+	return count
 
 
 ## Rejoue le duel dans `engine`, neuf, et renvoie tous ses événements, dans l'ordre.
 func replay_into(engine: DuelEngine) -> Array[DuelEvent]:
 	var events := engine.start_new_duel(setup)
 	for entry: Entry in entries:
-		if entry.is_elapsed_time():
-			events.append_array(engine.advance_clock(entry.elapsed_msec))
-		else:
-			events.append_array(engine.submit(entry.intent))
+		events.append_array(replay_entry(engine, entry))
 	return events
+
+
+## Rejoue une entrée dans `engine` : une intention est soumise, un temps avance la pendule, une
+## réponse commencée ne change rien au moteur.
+static func replay_entry(engine: DuelEngine, entry: Entry) -> Array[DuelEvent]:
+	if entry.counts_time():
+		return engine.advance_clock(entry.elapsed_msec)
+	if entry.is_intent():
+		return engine.submit(entry.intent)
+	return []
 
 
 func to_json() -> String:
 	var encoded_entries: Array[Dictionary] = []
 	for entry: Entry in entries:
-		if entry.is_elapsed_time():
-			encoded_entries.append({"elapsed_msec": entry.elapsed_msec})
-		else:
-			encoded_entries.append({"intent": IntentCodec.encode(entry.intent)})
+		encoded_entries.append(_encode_entry(entry))
 	var data := {
 		"format_version": FORMAT_VERSION,
 		"ruleset_edition": ruleset_edition,
@@ -95,6 +140,21 @@ static func find_errors(text: String) -> PackedStringArray:
 	var errors := PackedStringArray()
 	_parse(text, errors)
 	return errors
+
+
+func _record_time(kind: EntryKind, player: DuelState.PlayerSide, elapsed_msec: int) -> void:
+	if elapsed_msec <= 0:
+		return
+	if not entries.is_empty():
+		var last_entry: Entry = entries.back()
+		if last_entry.kind == kind and last_entry.player == player:
+			last_entry.elapsed_msec += elapsed_msec
+			return
+	var entry := Entry.new()
+	entry.kind = kind
+	entry.player = player
+	entry.elapsed_msec = elapsed_msec
+	entries.append(entry)
 
 
 static func _parse(text: String, errors: PackedStringArray) -> DuelJournal:
@@ -129,23 +189,63 @@ func _decode_entries(encoded_entries: Variant, errors: PackedStringArray) -> voi
 		entries.append(entry)
 
 
+static func _encode_entry(entry: Entry) -> Dictionary:
+	match entry.kind:
+		EntryKind.INTENT:
+			return {"intent": IntentCodec.encode(entry.intent)}
+		EntryKind.RESPONSE_WINDOW_TIME:
+			return {"response_window_elapsed_msec": entry.elapsed_msec, "player": entry.player}
+		EntryKind.RESPONSE_BEGUN:
+			return {"response_begun": true, "player": entry.player}
+	return {"elapsed_msec": entry.elapsed_msec}
+
+
+# null si l'entrée n'est d'aucune sorte connue ou si un champ manque ou est mal formé.
 static func _decode_entry(encoded: Variant) -> Entry:
 	if not encoded is Dictionary:
 		return null
 	var data: Dictionary = encoded
 	var entry := Entry.new()
-	var elapsed: Variant = data.get("elapsed_msec")
+	if data.has("intent"):
+		return _decode_intent_entry(data, entry)
+	if data.get("response_begun") == true:
+		entry.kind = EntryKind.RESPONSE_BEGUN
+		return entry if _read_player(data, entry) else null
+	if data.has("response_window_elapsed_msec"):
+		entry.kind = EntryKind.RESPONSE_WINDOW_TIME
+		var is_well_formed := (
+			_read_elapsed(data.get("response_window_elapsed_msec"), entry)
+			and _read_player(data, entry)
+		)
+		return entry if is_well_formed else null
+	entry.kind = EntryKind.ELAPSED_TIME
+	return entry if _read_elapsed(data.get("elapsed_msec"), entry) else null
+
+
+static func _decode_intent_entry(data: Dictionary, entry: Entry) -> Entry:
 	var intent_data: Variant = data.get("intent")
-	if JsonValues.is_number(elapsed) and JsonValues.to_int(elapsed) > 0:
-		entry.elapsed_msec = JsonValues.to_int(elapsed)
-	elif intent_data is Dictionary:
-		var intent_fields: Dictionary = intent_data
-		entry.intent = IntentCodec.decode(intent_fields)
-		if entry.intent == null:
-			return null
-	else:
+	if not intent_data is Dictionary:
 		return null
-	return entry
+	var intent_fields: Dictionary = intent_data
+	entry.intent = IntentCodec.decode(intent_fields)
+	return entry if entry.intent != null else null
+
+
+static func _read_elapsed(elapsed: Variant, entry: Entry) -> bool:
+	if not (JsonValues.is_number(elapsed) and JsonValues.to_int(elapsed) > 0):
+		return false
+	entry.elapsed_msec = JsonValues.to_int(elapsed)
+	return true
+
+
+static func _read_player(data: Dictionary, entry: Entry) -> bool:
+	var side: Variant = data.get("player")
+	if not (
+		JsonValues.is_number(side) and DuelState.PlayerSide.values().has(JsonValues.to_int(side))
+	):
+		return false
+	entry.player = JsonValues.to_int(side) as DuelState.PlayerSide
+	return true
 
 
 # La graine s'écrit en texte : un nombre JSON n'est exact que jusqu'à 2^53.

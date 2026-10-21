@@ -1,5 +1,7 @@
+# gdlint: disable=max-public-methods
+
 extends GdUnitTestSuite
-## Journal, codec des intentions et replay (ruleset 0.34 ; décisions 0001, 0020 et 0022).
+## Journal, codec des intentions et replay (ruleset 0.37 ; décisions 0001, 0020, 0022 et 0042).
 ##
 ## Non-régression : le journal de tests/fixtures/ est rejoué et son empreinte comparée à celle
 ## enregistrée ; un écart signale un changement de comportement du moteur. S'il est voulu,
@@ -14,6 +16,8 @@ const TICK_MSEC: int = 700
 const LARGE_SEED: int = 4_611_686_018_427_387_903
 const FILLER_INT: int = 1
 const FILLER_CELL := Vector2i(2, 3)
+const WINDOW_MSEC_FIRST: int = 1_500
+const WINDOW_MSEC_SECOND: int = 800
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
 const B: DuelState.PlayerSide = DuelState.PlayerSide.B
@@ -85,6 +89,120 @@ func test_decision_0036_total_elapsed_msec_sums_the_elapsed_times() -> void:
 	assert_int(journal.total_elapsed_msec()).is_equal(350)
 
 
+func test_decision_0042_consecutive_window_times_of_a_player_are_merged() -> void:
+	var journal := DuelJournal.new()
+	journal.record_response_window_elapsed(B, WINDOW_MSEC_FIRST)
+	journal.record_response_window_elapsed(B, WINDOW_MSEC_SECOND)
+	journal.record_response_window_elapsed(B, 0)
+	assert_int(journal.entries.size()).is_equal(1)
+	assert_int(journal.entries[0].elapsed_msec).is_equal(WINDOW_MSEC_FIRST + WINDOW_MSEC_SECOND)
+	journal.record_response_window_elapsed(A, 100)
+	assert_int(journal.entries.size()).is_equal(2)
+	journal.record_elapsed(50)
+	assert_int(journal.entries.size()).is_equal(3)
+	journal.record_response_window_elapsed(A, 70)
+	assert_int(journal.entries.size()).is_equal(4)
+	var kinds: Array[DuelJournal.EntryKind] = []
+	for entry: DuelJournal.Entry in journal.entries:
+		kinds.append(entry.kind)
+	(
+		assert_array(kinds)
+		. contains_exactly(
+			[
+				DuelJournal.EntryKind.RESPONSE_WINDOW_TIME,
+				DuelJournal.EntryKind.RESPONSE_WINDOW_TIME,
+				DuelJournal.EntryKind.ELAPSED_TIME,
+				DuelJournal.EntryKind.RESPONSE_WINDOW_TIME,
+			]
+		)
+	)
+
+
+func test_decision_0042_total_elapsed_adds_ordinary_and_window_times_not_responses() -> void:
+	var journal := DuelJournal.new()
+	journal.record_elapsed(100)
+	journal.record_response_window_elapsed(A, 200)
+	journal.record_response_begun(A)
+	journal.record_response_window_elapsed(B, 400)
+	journal.record_response_begun(B)
+	journal.record_intent(PassPriority.new(B))
+	assert_int(journal.total_elapsed_msec()).is_equal(700)
+
+
+func test_decision_0042_json_round_trip_keeps_window_times_and_responses() -> void:
+	var journal := _journal_with_window_entries()
+	var text := journal.to_json()
+	var read := DuelJournal.from_json(text)
+	assert_object(read).is_not_null()
+	assert_str(read.to_json()).is_equal(text)
+	assert_int(read.entries.size()).is_equal(journal.entries.size())
+	assert_int(read.response_window_elapsed_msec(B)).is_equal(WINDOW_MSEC_FIRST)
+	assert_int(read.response_begun_count(B)).is_equal(1)
+	assert_int(read.response_begun_count(A)).is_equal(0)
+
+
+func test_decision_0042_window_entry_encoding_names_the_player() -> void:
+	var journal := DuelJournal.new()
+	journal.record_response_window_elapsed(B, WINDOW_MSEC_FIRST)
+	journal.record_response_begun(A)
+	var encoded: Array = _journal_entries_of(journal)
+	var window_entry: Dictionary = encoded[0]
+	var begun_entry: Dictionary = encoded[1]
+	assert_int(JsonValues.to_int(window_entry["response_window_elapsed_msec"])).is_equal(
+		WINDOW_MSEC_FIRST
+	)
+	assert_int(JsonValues.to_int(window_entry["player"])).is_equal(B)
+	assert_bool(begun_entry["response_begun"]).is_true()
+	assert_int(JsonValues.to_int(begun_entry["player"])).is_equal(A)
+
+
+func test_decision_0042_malformed_window_entries_are_refused() -> void:
+	var malformed_entries: Array[Dictionary] = [
+		{"response_begun": true},
+		{"response_begun": true, "player": 7},
+		{"response_begun": true, "player": "B"},
+		{"response_window_elapsed_msec": WINDOW_MSEC_FIRST},
+		{"response_window_elapsed_msec": 0, "player": A},
+		{"response_window_elapsed_msec": -WINDOW_MSEC_FIRST, "player": A},
+		{"response_window_elapsed_msec": WINDOW_MSEC_FIRST, "player": 2},
+	]
+	for entry: Dictionary in malformed_entries:
+		var data := _journal_data()
+		data["entries"] = [entry]
+		var errors := DuelJournal.find_errors(JSON.stringify(data))
+		assert_array(Array(errors)).override_failure_message(str(entry)).contains(
+			["entrée 0 mal formée"]
+		)
+		assert_object(DuelJournal.from_json(JSON.stringify(data))).is_null()
+
+
+func test_decision_0042_replay_ignores_responses_and_runs_both_kinds_of_time() -> void:
+	var ordinary_engine := DuelEngine.new(_catalog, _config)
+	_journal_with_time(false).replay_into(ordinary_engine)
+	var window_engine := DuelEngine.new(_catalog, _config)
+	_journal_with_time(true).replay_into(window_engine)
+	var defects := DeepCompare.find_clone_defects(
+		ordinary_engine.get_state(), window_engine.get_state()
+	)
+	assert_array(Array(defects)).is_empty()
+	var clock_msec := window_engine.get_state().get_player(A).clock_remaining_msec
+	assert_int(clock_msec).is_equal(
+		_config.clock_duration_msec - WINDOW_MSEC_FIRST - WINDOW_MSEC_SECOND
+	)
+
+
+func test_decision_0042_counts_are_per_player() -> void:
+	var journal := _journal_with_window_entries()
+	assert_int(journal.response_window_elapsed_msec(A)).is_equal(WINDOW_MSEC_SECOND)
+	assert_int(journal.response_window_elapsed_msec(B)).is_equal(WINDOW_MSEC_FIRST)
+	assert_int(journal.response_begun_count(A)).is_equal(0)
+	assert_int(journal.response_begun_count(B)).is_equal(1)
+	journal.record_response_begun(A)
+	journal.record_response_begun(A)
+	assert_int(journal.response_begun_count(A)).is_equal(2)
+	assert_int(DuelJournal.new().response_window_elapsed_msec(A)).is_equal(0)
+
+
 func test_decision_0022_rejected_intents_are_not_recorded() -> void:
 	var host := DuelHost.new(DuelEngine.new(SetupSamples.catalog()), ManualClock.new())
 	host.start(SetupSamples.setup())
@@ -125,6 +243,14 @@ func test_decision_0022_other_format_version_is_refused() -> void:
 	data["format_version"] = DuelJournal.FORMAT_VERSION + 1
 	var errors := DuelJournal.find_errors(JSON.stringify(data))
 	assert_str(errors[0]).starts_with("version du format")
+	assert_object(DuelJournal.from_json(JSON.stringify(data))).is_null()
+
+
+func test_decision_0042_format_1_journal_is_refused() -> void:
+	var data := _journal_data()
+	data["format_version"] = 1
+	var errors := DuelJournal.find_errors(JSON.stringify(data))
+	assert_str(errors[0]).starts_with("version du format 1")
 	assert_object(DuelJournal.from_json(JSON.stringify(data))).is_null()
 
 
@@ -174,6 +300,42 @@ func _play_agents(engine: DuelEngine, events: Array[DuelEvent]) -> DuelJournal:
 	events.append_array(host.start(TestCatalog.setup(DUEL_SEED)))
 	events.append_array(HostDriver.run(host, clock, TICK_MSEC, HOST_TICKS))
 	return host.get_journal()
+
+
+# A commence : mulligans, du temps (ordinaire, ou de fenêtre de A avec une réponse commencée,
+# pendant que sa pendule tourne), puis la fin de son tour.
+func _journal_with_time(is_window_time: bool) -> DuelJournal:
+	var setup := TestCatalog.setup(DUEL_SEED)
+	setup.impose_first_player(A)
+	var journal := DuelJournal.new(setup)
+	journal.record_intent(ChooseMulligan.new(A))
+	journal.record_intent(ChooseMulligan.new(B))
+	if is_window_time:
+		journal.record_response_window_elapsed(A, WINDOW_MSEC_FIRST)
+		journal.record_response_begun(A)
+		journal.record_response_window_elapsed(A, WINDOW_MSEC_SECOND)
+	else:
+		journal.record_elapsed(WINDOW_MSEC_FIRST + WINDOW_MSEC_SECOND)
+	journal.record_intent(EndTurn.new(A))
+	return journal
+
+
+# Une fenêtre de B puis une réponse commencée de B, une fenêtre de A, du temps ordinaire.
+func _journal_with_window_entries() -> DuelJournal:
+	var journal := DuelJournal.new(TestCatalog.setup(DUEL_SEED))
+	journal.record_intent(ChooseMulligan.new(A))
+	journal.record_response_window_elapsed(B, WINDOW_MSEC_FIRST)
+	journal.record_response_begun(B)
+	journal.record_response_window_elapsed(A, WINDOW_MSEC_SECOND)
+	journal.record_elapsed(WINDOW_MSEC_FIRST)
+	return journal
+
+
+func _journal_entries_of(journal: DuelJournal) -> Array:
+	var parsed: Variant = JSON.parse_string(journal.to_json())
+	var data: Dictionary = parsed
+	var encoded: Array = data["entries"]
+	return encoded
 
 
 func _journal_data() -> Dictionary:

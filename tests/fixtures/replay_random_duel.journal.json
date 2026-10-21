@@ -8573,7 +8573,7 @@
 			"elapsed_msec": 1500
 		}
 	],
-	"format_version": 1,
+	"format_version": 2,
 	"ruleset_edition": "0.37",
 	"setup": {
 		"deck_a": [

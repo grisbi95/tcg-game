@@ -2,7 +2,7 @@
 
 > **Rôle** : plan unique du projet : périmètre, jalons, étapes et état. Les règles font foi dans [ruleset/](ruleset/README.md) ; l'architecture dans [decisions/](decisions/).
 
-**État actuel (21 octobre 2026)** : jalons J0 et J1 terminés ; J2 en cours, étapes 2.1 à 2.4 fusionnées (PR 11 à 16), assainissement terminé le 21 octobre 2026 (PR 17 à 30, décisions 0038 à 0041). Prochaine action : étape 2.5 (`PlaytestRecorder`). Décisions à prendre avec 2.5 : la mesure « réponses commencées » (208.6.2) suppose de compter `DuelHost.begin_response()`, non journalisé (0022). Dettes techniques dans [backlog.md](backlog.md) (0038) ; questions de règles dans [ruleset/02-questions-ouvertes.md](ruleset/02-questions-ouvertes.md).
+**État actuel (21 octobre 2026)** : jalons J0 et J1 terminés ; J2 en cours, étapes 2.1 à 2.4 fusionnées (PR 11 à 16), assainissement terminé le 21 octobre 2026 (PR 17 à 30, décisions 0038 à 0041), étape 2.5 terminée le 21 octobre 2026 (`PlaytestRecorder`, journal au format 2, décision 0042 ; branche `feat/2.5-playtest-recorder`, PR à ouvrir par `/pr`). Prochaine action : étape 2.6 (export Web, CI, GitHub Pages) ; à vérifier à cette étape : le téléchargement de la fiche par le navigateur. Décision à prendre avec 2.6 : dépôt public ou privé pour GitHub Pages (0005, 0039). Dettes techniques dans [backlog.md](backlog.md) (0038) ; questions de règles dans [ruleset/02-questions-ouvertes.md](ruleset/02-questions-ouvertes.md).
 
 ## Périmètre
 
@@ -47,7 +47,7 @@ Chaque étape : règles lues, décision si système nouveau, implémentation par
 - [x] 2.2 Composants de vue et scènes d'essai ; `DuelSelection` testé sans scène. Décisions 0023 à 0026.
 - [x] 2.3 Écran de duel selon les décisions 0027 à 0035 : plateau, mains, Sources, pile (affichée seulement quand elle n'est pas vide), pendules, cases légales ; pas de journal à l'écran (`DuelJournal`, décision 0022, reste pour le replay et les fiches de playtest) ; fenêtre de réponse de 2 s (208.6, décision de design 0198), dans l'hôte (décision 0029).
 - [x] 2.4 Relais entre joueurs locaux, préparation (decks, graine, mulligan), fin de partie ; scène principale. Décisions 0036 et 0037.
-- [ ] 2.5 `PlaytestRecorder` : fiche de relevé du protocole en CSV téléchargeable.
+- [x] 2.5 `PlaytestRecorder` : fiche de relevé du protocole en CSV téléchargeable, lue dans le journal rejoué (format 2 : temps des fenêtres de réponse et réponses commencées) ; bouton « Fiche CSV » du panneau de fin. Décision 0042.
 - [ ] 2.6 Export Web (preset, threads désactivés), job CI, GitHub Pages. **Sortie** : deux joueurs terminent un duel dans le navigateur, fiche produite.
 
 ## J3 — Premier playtest
