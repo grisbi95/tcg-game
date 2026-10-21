@@ -59,7 +59,7 @@ func _ready() -> void:
 	_table.color = DuelPalette.TABLE_COLOR
 	_place_zones()
 	_selection.intent_chosen.connect(_on_intent_chosen)
-	_selection.response_started.connect(func() -> void: _host.begin_response())
+	_selection.response_started.connect(_on_response_started)
 	_event_player.batch_played.connect(_on_batch_played)
 	_connect_gestures()
 	_connect_previews()
@@ -73,7 +73,6 @@ func _process(_delta: float) -> void:
 	_event_player.play(_host.tick())
 	_center.refresh_clocks()
 	_center.refresh_response_countdown()
-	_refresh_concede_button()
 
 
 ## Démarre le duel de `duel_setup`, une seule fois, après l'entrée de l'écran dans l'arbre.
@@ -226,9 +225,15 @@ func _refresh_overlays(host_state: DuelHost.HostState) -> void:
 	_refresh_concede_button()
 
 
+# 208.6.5 : la réponse commencée arrête le décompte ; le bouton Abandonner peut reparaître.
+func _on_response_started() -> void:
+	_host.begin_response()
+	_refresh_concede_button()
+
+
 # Décision 0036 : « Abandonner » est pour le joueur qui a l'appareil, en AWAITING_HUMAN, et reste
 # caché tant que sa fenêtre de réponse décompte (208.6) : la passe automatique fermerait la
-# confirmation sans rien dire.
+# confirmation sans rien dire. La fenêtre s'ouvre juste avant le passage en AWAITING_HUMAN.
 func _refresh_concede_button() -> void:
 	var can_concede := (
 		_host.get_host_state() == DuelHost.HostState.AWAITING_HUMAN
@@ -269,7 +274,7 @@ func _show_end_panel() -> void:
 	_overlays.show_end(
 		state.result,
 		DuelViewModel.result_text(state.result),
-		EndSummary.reason_text(_final_events, state),
+		EndSummary.reason_text(_final_events),
 		EndSummary.details_text(state.turn_number, elapsed_msec)
 	)
 

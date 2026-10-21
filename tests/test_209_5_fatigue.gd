@@ -96,6 +96,23 @@ func test_209_5_4a_hand_limit_rule_needs_a_card_in_deck() -> void:
 	assert_array(labels).contains(["FatigueIncreased:B"])
 
 
+func test_209_5_3_fatigue_to_zero_ends_duel_with_fatigue_reason() -> void:
+	_builder.with_hero_health(B, 1)
+	var events := _end_turn_of_a()
+	var ended := events[events.size() - 1] as DuelEnded
+	assert_int(ended.reason).is_equal(DuelState.EndReason.HERO_HEALTH_ZERO_BY_FATIGUE)
+	assert_int(ended.result).is_equal(DuelState.DuelResult.PLAYER_A_WINS)
+
+
+func test_209_2_2_health_lost_outside_fatigue_keeps_hero_health_zero_reason() -> void:
+	var state := _builder.with_hero_health(B, 1).build()
+	var events: Array[DuelEvent] = []
+	StateCheckRules.lose_health(state, B, 1, events)
+	assert_int((events[events.size() - 1] as DuelEnded).reason).is_equal(
+		DuelState.EndReason.HERO_HEALTH_ZERO
+	)
+
+
 func _end_turn_of_a() -> Array[DuelEvent]:
 	_engine.start_from_state(_builder.build())
 	return _engine.submit(EndTurn.new(A))

@@ -9,7 +9,7 @@
 | [ruleset/](ruleset/README.md) | Ruleset (décision 0014), édition dans son `README.md` : vision, glossaire, questions ouvertes, livret, règles complètes 200 à 210, décisions de design, protocole et decks de test, changelog. **Fait foi sur les règles.** Mode d'édition : `CLAUDE.md` racine et `ruleset/README.md`. | Avant tout travail de gameplay ; pour nommer tests et fonctions. |
 | [roadmap.md](roadmap.md) | Jalons, étapes et **État actuel**. Seul plan. | Au début de chaque session. |
 | [backlog.md](backlog.md) | Dettes techniques (décision 0038) : une ligne par dette, référence, priorité, cible. | À la clôture d'une étape ; avant de choisir un travail de fond. |
-| [decisions/](decisions/) | Décisions d'architecture acceptées (`0001` à `0039`, 0025 remplacée par 0027) et modèle `0000`. | Avant de créer ou modifier un système. |
+| [decisions/](decisions/) | Décisions d'architecture acceptées (`0001` à `0040`, 0025 remplacée par 0027) et modèle `0000`. | Avant de créer ou modifier un système. |
 | [maquettes/](maquettes/) | Maquettes HTML de référence visuelle (1920×1080, à ouvrir dans un navigateur) ; jamais intégrées au jeu, figées : une nouvelle version est un nouveau fichier. Les cotes des décisions priment (0028, 0030). | Pour réaliser ou relire un écran. |
 | [code-guidelines.md](code-guidelines.md) | Pourquoi et comment des consignes de code ; signaux d'alerte en relecture. Synthèse des articles de The Shaggy Dev. | Pour concevoir ou relire du code. |
 | [../CLAUDE.md](../CLAUDE.md) | Consignes impératives de développement, courtes. Compléments : `rules/CLAUDE.md`, `ui/CLAUDE.md`, `tests/CLAUDE.md`, `.claude/README.md` ; descriptions de ce qui existe dans `app/README.md` et `ui/README.md`. | Toujours chargé. |

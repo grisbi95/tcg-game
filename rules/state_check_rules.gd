@@ -15,13 +15,18 @@ static func validate_concede(_state: DuelState, _intent: Concede) -> IntentRejec
 ## 201.1.3a, 209.2.6, 209.2.7 : le joueur qui abandonne perd ; la partie s'arrête aussitôt.
 static func apply_concede(state: DuelState, intent: Concede, events: Array[DuelEvent]) -> void:
 	events.append(PlayerConceded.new(intent.player))
-	_end_duel(state, _win_for(DuelState.opponent_of(intent.player)), events)
+	_end_duel(
+		state, _win_for(DuelState.opponent_of(intent.player)), DuelState.EndReason.CONCEDED, events
+	)
 
 
 ## 201.1.2, 201.1.2a, 209.2.1, 209.2.2, 209.3.1 : arrête la partie si un Hero a 0 PV et
 ## renvoie vrai ; sinon ne change rien et renvoie faux. Une partie déjà arrêtée le reste, sans
-## nouvel événement.
-static func check_victory(state: DuelState, events: Array[DuelEvent]) -> bool:
+## nouvel événement. `reason` est la raison portée par DuelEnded (décision 0040), toujours
+## explicite.
+static func check_victory(
+	state: DuelState, events: Array[DuelEvent], reason: DuelState.EndReason
+) -> bool:
 	if state.is_ended():
 		return true
 	var a_down := state.find_hero(DuelState.PlayerSide.A).health == 0
@@ -29,10 +34,10 @@ static func check_victory(state: DuelState, events: Array[DuelEvent]) -> bool:
 	if not a_down and not b_down:
 		return false
 	if a_down and b_down:
-		_end_duel(state, DuelState.DuelResult.DRAW, events)
+		_end_duel(state, DuelState.DuelResult.DRAW, reason, events)
 	else:
 		var loser := DuelState.PlayerSide.A if a_down else DuelState.PlayerSide.B
-		_end_duel(state, _win_for(DuelState.opponent_of(loser)), events)
+		_end_duel(state, _win_for(DuelState.opponent_of(loser)), reason, events)
 	return true
 
 
@@ -46,19 +51,18 @@ static func apply_fatigue(
 	player.fatigue_counter += state.config.fatigue_increase
 	events.append(FatigueIncreased.new(side, player.fatigue_counter))
 	var health_to_lose := player.fatigue_counter * state.config.fatigue_damage_per_counter_point
-	lose_health(state, side, health_to_lose, events)
+	_take_health(state, side, health_to_lose, events)
+	check_victory(state, events, DuelState.EndReason.HERO_HEALTH_ZERO_BY_FATIGUE)
 
 
-## 209.2.1, 209.2.2, 209.2.4 ; 200.4.2 : seule voie de perte de PV d'un Hero. Il ne perd que les
-## PV qu'il a, l'événement donne la perte réelle, puis la victoire se vérifie.
+## 209.2.1, 209.2.2, 209.2.4 ; 200.4.2 : avec `apply_fatigue`, seule voie de perte de PV d'un
+## Hero, par `_take_health` puis `check_victory`. Il ne perd que les PV qu'il a, l'événement donne
+## la perte réelle, puis la victoire se vérifie.
 static func lose_health(
 	state: DuelState, side: DuelState.PlayerSide, amount: int, events: Array[DuelEvent]
 ) -> void:
-	var hero := state.find_hero(side)
-	var lost_health := mini(amount, hero.health)
-	hero.health -= lost_health
-	events.append(HeroLostHealth.new(side, lost_health))
-	check_victory(state, events)
+	_take_health(state, side, amount, events)
+	check_victory(state, events, DuelState.EndReason.HERO_HEALTH_ZERO)
 
 
 ## 209.4.4, 209.4.4a à 209.4.4d, 204.2.2 : joueurs dont les règles attendent une décision, dans
@@ -118,19 +122,37 @@ static func _end_on_time(
 	for side: DuelState.PlayerSide in expired:
 		events.append(TimeExpired.new(side))
 	if expired.size() == DuelState.PLAYER_COUNT:
-		_end_duel(state, DuelState.DuelResult.DRAW, events)
+		_end_duel(state, DuelState.DuelResult.DRAW, DuelState.EndReason.TIME_EXPIRED, events)
 	else:
-		_end_duel(state, _win_for(DuelState.opponent_of(expired[0])), events)
+		_end_duel(
+			state,
+			_win_for(DuelState.opponent_of(expired[0])),
+			DuelState.EndReason.TIME_EXPIRED,
+			events
+		)
 
 
 # 209.2.2, 209.2.3, 209.2.7 : plus rien n'est attendu ni résolu ; la pile reste en l'état.
 static func _end_duel(
-	state: DuelState, result: DuelState.DuelResult, events: Array[DuelEvent]
+	state: DuelState,
+	result: DuelState.DuelResult,
+	reason: DuelState.EndReason,
+	events: Array[DuelEvent]
 ) -> void:
 	state.phase = DuelState.DuelPhase.ENDED
 	state.result = result
 	state.pending_decision = null
-	events.append(DuelEnded.new(result))
+	events.append(DuelEnded.new(result, reason))
+
+
+# 209.2.4 : le Hero ne perd que les PV qu'il a ; l'événement donne la perte réelle.
+static func _take_health(
+	state: DuelState, side: DuelState.PlayerSide, amount: int, events: Array[DuelEvent]
+) -> void:
+	var hero := state.find_hero(side)
+	var lost_health := mini(amount, hero.health)
+	hero.health -= lost_health
+	events.append(HeroLostHealth.new(side, lost_health))
 
 
 static func _win_for(side: DuelState.PlayerSide) -> DuelState.DuelResult:

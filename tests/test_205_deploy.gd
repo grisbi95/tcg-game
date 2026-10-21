@@ -9,6 +9,7 @@ const STRONG_ENEMY_ID: StringName = &"strong_enemy"
 const WEAK_ENEMY_ID: StringName = &"weak_enemy"
 const BUILDING_ID: StringName = &"deploy_building"
 const SPELL_ID: StringName = &"sample_spell"
+const GEAR_ID: StringName = &"sample_gear"
 const UNIT_COST: int = 2  # CatalogSamples.unit()
 const BUILDING_COST: int = 3  # CatalogSamples.building()
 const UNIT_FORCE: int = 3
@@ -30,6 +31,7 @@ func before_test() -> void:
 	SetupSamples.add_unit(catalog, WEAK_ENEMY_ID, UNIT_FORCE - 2)
 	SetupSamples.add_building(catalog, BUILDING_ID, 4)
 	catalog.add_card(CardDefinition.from_dict(CatalogSamples.spell()))
+	catalog.add_card(CardDefinition.from_dict(CatalogSamples.gear()))
 	_builder = DuelStateBuilder.new(DuelConfig.new(), catalog)
 	_builder.with_sources_in_play(A, BUILDING_COST, 0)
 	_engine = DuelEngine.new(catalog)
@@ -240,6 +242,37 @@ func test_203_3_1_deploy_payment_must_match_cost() -> void:
 	var card_id := _builder.add_to_hand(A, UNIT_ID)
 	_start()
 	_assert_rejected(_deploy(card_id, "B1", UNIT_COST - 1), REASON.PAYMENT_DOES_NOT_MATCH_COST)
+
+
+func test_202_2_22_gear_and_spell_are_announced_with_a_target() -> void:
+	var gear_id := _builder.add_to_hand(A, GEAR_ID)
+	var spell_id := _builder.add_to_hand(A, SPELL_ID)
+	_start()
+	assert_bool(_engine.announces_with_target(gear_id)).is_true()
+	assert_bool(_engine.announces_with_target(spell_id)).is_true()
+
+
+func test_205_1_5_unit_and_building_are_announced_with_a_cell() -> void:
+	var unit_id := _builder.add_to_hand(A, UNIT_ID)
+	var building_id := _builder.add_to_hand(A, BUILDING_ID)
+	_start()
+	assert_bool(_engine.announces_with_target(unit_id)).is_false()
+	assert_bool(_engine.announces_with_target(building_id)).is_false()
+
+
+func test_202_2_22_unknown_card_is_not_announced_with_a_target() -> void:
+	_start()
+	assert_bool(_engine.announces_with_target(DuelState.NO_ID)).is_false()
+	assert_bool(DuelEngine.new(_engine.get_state().catalog).announces_with_target(1)).is_false()
+
+
+func test_202_2_22_card_type_decides_announcement_with_target() -> void:
+	_start()
+	var catalog := _engine.get_state().catalog
+	for id: StringName in [GEAR_ID, SPELL_ID]:
+		assert_bool(CardRules.is_announced_with_target(catalog.get_card(id))).is_true()
+	for id: StringName in [UNIT_ID, BUILDING_ID]:
+		assert_bool(CardRules.is_announced_with_target(catalog.get_card(id))).is_false()
 
 
 func _start() -> void:

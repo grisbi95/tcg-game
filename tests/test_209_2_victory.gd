@@ -7,6 +7,8 @@ const A: DuelState.PlayerSide = DuelState.PlayerSide.A
 const B: DuelState.PlayerSide = DuelState.PlayerSide.B
 const REASON := IntentRejected.RejectReason
 
+const END_REASON := DuelState.EndReason
+
 var _builder: DuelStateBuilder
 var _engine: DuelEngine
 
@@ -49,7 +51,10 @@ func test_209_2_1_check_changes_nothing_while_both_heroes_stand() -> void:
 	var state := _builder.build()
 	var snapshot := state.clone()
 	var events: Array[DuelEvent] = []
-	assert_bool(StateCheckRules.check_victory(state, events)).is_false()
+	(
+		assert_bool(StateCheckRules.check_victory(state, events, END_REASON.HERO_HEALTH_ZERO))
+		. is_false()
+	)
 	assert_array(events).is_empty()
 	assert_array(DeepCompare.find_clone_defects(snapshot, state)).is_empty()
 
@@ -58,7 +63,7 @@ func test_209_3_1_both_heroes_at_zero_is_a_draw() -> void:
 	_builder.with_hero_health(A, 0).with_hero_health(B, 0)
 	var state := _builder.build()
 	var events: Array[DuelEvent] = []
-	assert_bool(StateCheckRules.check_victory(state, events)).is_true()
+	assert_bool(StateCheckRules.check_victory(state, events, END_REASON.HERO_HEALTH_ZERO)).is_true()
 	assert_int(state.result).is_equal(DuelState.DuelResult.DRAW)
 	assert_int((events[0] as DuelEnded).result).is_equal(DuelState.DuelResult.DRAW)
 
@@ -67,7 +72,7 @@ func test_201_1_2a_draw_is_no_win() -> void:
 	_builder.with_hero_health(A, 0).with_hero_health(B, 0)
 	var state := _builder.build()
 	var events: Array[DuelEvent] = []
-	StateCheckRules.check_victory(state, events)
+	StateCheckRules.check_victory(state, events, END_REASON.HERO_HEALTH_ZERO)
 	assert_int(state.result).is_not_equal(DuelState.DuelResult.PLAYER_A_WINS)
 	assert_int(state.result).is_not_equal(DuelState.DuelResult.PLAYER_B_WINS)
 
@@ -127,6 +132,32 @@ func test_concede_before_duel_starts_rejected() -> void:
 	var events := _engine.submit(Concede.new(A))
 	assert_int(EventLog.rejection_reason(events)).is_equal(REASON.DUEL_NOT_STARTED)
 	assert_int(_engine.validate(PassPriority.new(A))).is_equal(REASON.DUEL_NOT_STARTED)
+
+
+func test_209_2_2_end_reason_is_hero_health_zero() -> void:
+	_builder.with_hero_health(B, 0)
+	var state := _builder.build()
+	var events: Array[DuelEvent] = []
+	StateCheckRules.check_victory(state, events, END_REASON.HERO_HEALTH_ZERO)
+	assert_int((events[0] as DuelEnded).reason).is_equal(END_REASON.HERO_HEALTH_ZERO)
+
+
+func test_209_3_1_draw_end_reason_is_hero_health_zero() -> void:
+	_builder.with_hero_health(A, 0).with_hero_health(B, 0)
+	var state := _builder.build()
+	var events: Array[DuelEvent] = []
+	StateCheckRules.check_victory(state, events, END_REASON.HERO_HEALTH_ZERO)
+	assert_int((events[0] as DuelEnded).reason).is_equal(END_REASON.HERO_HEALTH_ZERO)
+
+
+func test_209_2_6_concede_end_reason_is_conceded() -> void:
+	_engine.start_from_state(_builder.build())
+	var events := _engine.submit(Concede.new(A))
+	assert_int((events[events.size() - 1] as DuelEnded).reason).is_equal(END_REASON.CONCEDED)
+
+
+func test_decision_0040_end_reason_is_none_while_duel_lasts() -> void:
+	assert_int(DuelEnded.new().reason).is_equal(END_REASON.NONE)
 
 
 func _end_turn_of_a() -> Array[DuelEvent]:
