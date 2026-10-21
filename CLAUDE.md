@@ -4,7 +4,7 @@
 
 - **Le ruleset fait foi.** Il vit dans `docs/ruleset/` (édition dans son `README.md`, décision 0014) et ne s'édite que par l'agent `ruleset-editor`, selon sa `CHARTE.md`. Un point non tranché par le ruleset ne devient jamais un comportement implicite : arrêter, et le signaler comme question ouverte du ruleset.
 - **Une décision avant un système nouveau** : 2 ou 3 options avec compromis, choix du créateur, consignation dans `docs/decisions/`. Décisions acceptées : `0001` à `0039` ; les respecter.
-- **GDScript typé partout** : paramètres, retours, variables, collections. Les warnings `untyped_declaration` et `unsafe_*` sont des erreurs à corriger ; `tools/check_typing.sh` les contrôle.
+- **GDScript typé partout** : paramètres, retours, variables, collections. Les warnings `untyped_declaration`, `unsafe_*`, `shadowed_*`, `integer_division` et `unused_private_class_variable` sont des erreurs à corriger ; `tools/check_typing.sh` les contrôle.
 - **Un identifiant de règle sur chaque fonction de règle et chaque test de règle** : `# 206.3.6`, `test_206_3_6_tie_destroys_both`.
 
 ## 1. Projet

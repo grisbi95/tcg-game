@@ -331,9 +331,9 @@ func _stack_tint(entry: StackEntry) -> DuelPalette.Tint:
 
 
 func _stack_label(entry: StackEntry) -> String:
-	var owner := EventText.player_label(entry.owner)
+	var owner_label := EventText.player_label(entry.owner)
 	var subject := "" if entry.card == null else " " + _card_name(entry.card)
-	return "%s : %s%s" % [owner, STACK_KIND_NAMES[entry.kind], subject]
+	return "%s : %s%s" % [owner_label, STACK_KIND_NAMES[entry.kind], subject]
 
 
 func _refresh_buttons(shown: SelectionSnapshot) -> void:

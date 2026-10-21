@@ -27,12 +27,12 @@ const BEACON_BONUS: int = 1
 
 
 static func catalog() -> Catalog:
-	var catalog := Catalog.new()
-	SetupSamples.add_unit(catalog, SOLDIER, SOLDIER_FORCE)
-	SetupSamples.add_unit(catalog, GIANT, GIANT_FORCE)
+	var result := Catalog.new()
+	SetupSamples.add_unit(result, SOLDIER, SOLDIER_FORCE)
+	SetupSamples.add_unit(result, GIANT, GIANT_FORCE)
 	for data: Dictionary in card_data():
-		catalog.add_card(CardDefinition.from_dict(data))
-	return catalog
+		result.add_card(CardDefinition.from_dict(data))
+	return result
 
 
 ## Objets JSON des cartes à effet déclenché, pour vérifier qu'elles sont valides.

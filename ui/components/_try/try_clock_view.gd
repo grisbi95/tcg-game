@@ -18,8 +18,8 @@ func _ready() -> void:
 	_add_clock(column, DuelState.PlayerSide.A).show_clock(A_REMAINING_MSEC, true)
 
 
-func _add_clock(column: VBoxContainer, owner: DuelState.PlayerSide) -> ClockView:
+func _add_clock(column: VBoxContainer, side: DuelState.PlayerSide) -> ClockView:
 	var clock: ClockView = CLOCK_SCENE.instantiate()
 	column.add_child(clock)
-	clock.setup(owner, "Joueur %s" % DuelState.PlayerSide.keys()[owner], DURATION_MSEC)
+	clock.setup(side, "Joueur %s" % DuelState.PlayerSide.keys()[side], DURATION_MSEC)
 	return clock

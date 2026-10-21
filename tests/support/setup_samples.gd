@@ -11,13 +11,13 @@ const DEFAULT_SEED: int = 7
 
 ## Dix Units de noms distincts et le Hero d'essai.
 static func catalog() -> Catalog:
-	var catalog := Catalog.new()
+	var result := Catalog.new()
 	for index: int in DISTINCT_CARD_COUNT:
 		var data := CatalogSamples.with_field(CatalogSamples.unit(), "id", String(_card_id(index)))
 		data = CatalogSamples.with_field(data, "name", "Unit d'essai %d" % index)
-		catalog.add_card(CardDefinition.from_dict(data))
-	catalog.add_hero(HeroDefinition.from_dict(CatalogSamples.hero()))
-	return catalog
+		result.add_card(CardDefinition.from_dict(data))
+	result.add_hero(HeroDefinition.from_dict(CatalogSamples.hero()))
+	return result
 
 
 ## Deck valide de 30 cartes, groupées par définition, dans l'ordre des identifiants.
@@ -46,14 +46,16 @@ static func mirror_setup(
 	return duel_setup
 
 
-## Ajoute à `catalog` une Unit de Force `force`, nommée d'après `id`.
-static func add_unit(catalog: Catalog, id: StringName, force: int) -> void:
-	catalog.add_card(CardDefinition.from_dict(_with_identity(CatalogSamples.unit(), id, force)))
+## Ajoute à `target_catalog` une Unit de Force `force`, nommée d'après `id`.
+static func add_unit(target_catalog: Catalog, id: StringName, force: int) -> void:
+	var data := _with_identity(CatalogSamples.unit(), id, force)
+	target_catalog.add_card(CardDefinition.from_dict(data))
 
 
-## Ajoute à `catalog` un Building de Force `force`, nommé d'après `id`.
-static func add_building(catalog: Catalog, id: StringName, force: int) -> void:
-	catalog.add_card(CardDefinition.from_dict(_with_identity(CatalogSamples.building(), id, force)))
+## Ajoute à `target_catalog` un Building de Force `force`, nommé d'après `id`.
+static func add_building(target_catalog: Catalog, id: StringName, force: int) -> void:
+	var data := _with_identity(CatalogSamples.building(), id, force)
+	target_catalog.add_card(CardDefinition.from_dict(data))
 
 
 static func _with_identity(data: Dictionary, id: StringName, force: int) -> Dictionary:

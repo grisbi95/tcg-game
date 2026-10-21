@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Contrôle du typage : analyse Godot --check-only de chaque .gd du projet, les warnings de
-# typage (untyped_declaration, unsafe_*) traités comme des erreurs par un override.cfg
-# temporaire ; project.godot n'est pas modifié. À lancer après un import du projet.
+# typage (untyped_declaration, unsafe_*) et ceux de l'éditeur (shadowed_*, integer_division,
+# unused_private_class_variable) traités comme des erreurs par un override.cfg temporaire ;
+# project.godot n'est pas modifié. À lancer après un import du projet.
 # Usage : tools/check_typing.sh   (GODOT_BIN : binaire Godot, sinon `godot` du PATH, sinon
 # l'application macOS)
 # Code de sortie : 0 aucun problème ; 1 au moins un problème ; 2 contrôle impossible.
@@ -26,6 +27,11 @@ gdscript/warnings/unsafe_property_access=2
 gdscript/warnings/unsafe_method_access=2
 gdscript/warnings/unsafe_cast=2
 gdscript/warnings/unsafe_call_argument=2
+gdscript/warnings/shadowed_variable=2
+gdscript/warnings/shadowed_variable_base_class=2
+gdscript/warnings/shadowed_global_identifier=2
+gdscript/warnings/integer_division=2
+gdscript/warnings/unused_private_class_variable=2
 CFG
 count=0
 problems=""

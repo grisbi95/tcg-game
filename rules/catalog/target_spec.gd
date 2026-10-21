@@ -56,9 +56,15 @@ static func from_dict(data: Dictionary) -> TargetSpec:
 	if row_value != CatalogReader.NOT_SET:
 		spec.row = row_value as CellRow
 	spec._read_piece_kinds(reader)
-	spec.max_force = reader.read_int("max_force", 0, NO_FORCE_LIMIT)
-	spec.count_min = reader.read_int("count_min", 0, MIN_TARGET_COUNT)
-	spec.count_max = reader.read_int("count_max", 0, spec.count_min)
+	spec.max_force = reader.read_int(
+		"max_force", CatalogReader.NON_NEGATIVE_MINIMUM, NO_FORCE_LIMIT
+	)
+	spec.count_min = reader.read_int(
+		"count_min", CatalogReader.NON_NEGATIVE_MINIMUM, MIN_TARGET_COUNT
+	)
+	spec.count_max = reader.read_int(
+		"count_max", CatalogReader.NON_NEGATIVE_MINIMUM, spec.count_min
+	)
 	spec.parse_errors = reader.finish()
 	return spec
 

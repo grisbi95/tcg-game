@@ -31,9 +31,10 @@ static func reason_text(events: Array[DuelEvent], state: DuelState) -> String:
 
 ## « Tour 7 · 12 min 4 s » : tour en cours à la fin et durée du duel.
 static func details_text(turn_number: int, total_elapsed_msec: int) -> String:
-	var seconds := total_elapsed_msec / MSEC_PER_SECOND
+	var seconds := floori(total_elapsed_msec / float(MSEC_PER_SECOND))
 	return (
-		DETAILS_FORMAT % [turn_number, seconds / SECONDS_PER_MINUTE, seconds % SECONDS_PER_MINUTE]
+		DETAILS_FORMAT
+		% [turn_number, floori(seconds / float(SECONDS_PER_MINUTE)), seconds % SECONDS_PER_MINUTE]
 	)
 
 

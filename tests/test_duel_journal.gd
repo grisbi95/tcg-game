@@ -144,13 +144,13 @@ func test_decision_0022_codec_knows_every_intent_class() -> void:
 	for global_class: Dictionary in ProjectSettings.get_global_class_list():
 		if global_class["base"] != &"DuelIntent":
 			continue
-		var name: StringName = global_class["class"]
+		var intent_class: StringName = global_class["class"]
 		(
-			assert_bool(IntentCodec.INTENT_SCRIPTS.has(name))
-			. override_failure_message("%s absente d'IntentCodec.INTENT_SCRIPTS" % name)
+			assert_bool(IntentCodec.INTENT_SCRIPTS.has(intent_class))
+			. override_failure_message("%s absente d'IntentCodec.INTENT_SCRIPTS" % intent_class)
 			. is_true()
 		)
-		var script: GDScript = IntentCodec.INTENT_SCRIPTS.get(name)
+		var script: GDScript = IntentCodec.INTENT_SCRIPTS.get(intent_class)
 		assert_str(script.resource_path if script != null else "").is_equal(global_class["path"])
 
 
