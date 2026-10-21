@@ -11,10 +11,10 @@ extends RefCounted
 static func resolve_attack(
 	state: DuelState, attacker: Piece, defender: Piece, events: Array[DuelEvent]
 ) -> void:
-	var attacker_force := ForceRules.combat_force(state, attacker, ForceRules.CombatRole.ATTACKER)
 	if defender.kind == Piece.PieceKind.HERO:
-		_attack_hero(state, attacker, attacker_force, defender, events)
+		_attack_hero(state, attacker, defender, events)
 		return
+	var attacker_force := _attacker_force(state, attacker)
 	var defender_force := ForceRules.combat_force(state, defender, ForceRules.CombatRole.DEFENDER)
 	events.append(
 		CombatResolved.new(attacker.piece_id, defender.piece_id, attacker_force, defender_force)
@@ -48,10 +48,16 @@ static func destroy_piece(state: DuelState, piece: Piece, events: Array[DuelEven
 
 # 206.2.1a, 206.4.2 à 206.4.5 : aucune Force comparée, rien de détruit, l'attaquant reste.
 static func _attack_hero(
-	state: DuelState, attacker: Piece, attacker_force: int, hero: Piece, events: Array[DuelEvent]
+	state: DuelState, attacker: Piece, hero: Piece, events: Array[DuelEvent]
 ) -> void:
+	var attacker_force := _attacker_force(state, attacker)
 	events.append(HeroAttacked.new(hero.owner, attacker.piece_id, attacker_force))
 	StateCheckRules.lose_health(state, hero.owner, attacker_force, events)
+
+
+# 206.1.1, 206.2.2, 206.5.2 ; 210.4.1b : Force de l'attaquant, lue avant qu'il change de case.
+static func _attacker_force(state: DuelState, attacker: Piece) -> int:
+	return ForceRules.combat_force(state, attacker, ForceRules.CombatRole.ATTACKER)
 
 
 # 206.3.1 ; égalité : 206.3.6 et 206.3.4a (DuelConfig.tie_destroys_both).
