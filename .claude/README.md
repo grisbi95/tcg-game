@@ -10,7 +10,7 @@ Le serveur `godot-ai==4.3.0`, lancé par `uvx`, est inscrit dans Claude Code en 
 
 - **SessionStart** `hooks/session_start.sh` : édition courante du ruleset, « État actuel » de la roadmap, branche et nombre de fichiers modifiés. Trois lignes, rien d'autre.
 - **PostToolUse** sur `Edit`, `Write`, `MultiEdit` : `hooks/post_edit_gdscript.sh` enchaîne `format_gdscript.py` (gdformat, ignoré si `.venv` absent) puis `check_gdscript.py` (`--headless --check-only`). Un diagnostic renvoie le code 2 : l'édition reste appliquée, Claude doit corriger ; un `.gd` hors du projet est ignoré par le hook (code 2 en ligne de commande). `--check-only` ne remonte pas tous les warnings de typage : seul `tools/check_typing.sh` les remonte.
-- Les éditions faites par terminal ou éditeur externe ne déclenchent pas le hook : lancer `bash .claude/hooks/check_changed_gdscript.sh`, `tools/lint.sh` et `tools/check_typing.sh` (`CLAUDE.md` §6).
+- Les éditions faites par terminal ou éditeur externe ne déclenchent pas le hook : contrôles à lancer dans `CLAUDE.md` §6.
 
 ## Agents
 
@@ -22,7 +22,7 @@ Rituels du cycle (décision 0039), une recette par skill dans `skills/<nom>/SKIL
 
 ## Permissions
 
-Autorisés sans demande : `run_tests.sh`, `lint.sh`, `check_typing.sh`, le hook et ses tests, GdUnit4, gdlint et gdformat, Git en lecture plus `fetch` et `branch`, `gh pr` et `gh run` en lecture, le shell en lecture ; `rm -rf` et ses variantes refusés. Refusés aux outils d'édition : `addons/`, `.godot/`, `.venv/`, les `.uid` et `.import`. `docs/ruleset/` s'édite par l'agent `ruleset-editor` seulement (0014). Le chemin du binaire Godot est propre à chaque machine : il va dans `CLAUDE.local.md`.
+Autorisés sans demande : `run_tests.sh`, `lint.sh`, `check_typing.sh`, le hook et ses tests, GdUnit4, gdlint et gdformat, Git en lecture plus `fetch` et `branch`, `gh pr` et `gh run` en lecture, le shell en lecture ; `rm -rf` et ses variantes refusés. Refusés aux outils d'édition : `addons/`, `.godot/`, `.venv/`, les `.uid` et `.import`. Aucune permission ne protège `docs/ruleset/` : son mode d'édition est une règle du `CLAUDE.md` racine. Le chemin du binaire Godot est propre à chaque machine : il va dans `CLAUDE.local.md`.
 
 ## Vérifier les hooks
 

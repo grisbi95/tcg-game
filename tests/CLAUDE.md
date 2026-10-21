@@ -1,11 +1,11 @@
 # Tests — consignes locales
 
-Complète le `CLAUDE.md` racine pour `tests/`. GdUnit4 6.2.1 ; commandes dans `tools/run_tests.sh`.
+Complète le `CLAUDE.md` racine pour `tests/` ; commandes dans `CLAUDE.md` §7.
 
 ## Nommage et portée
 
 - Une suite par chapitre ou par contrat : `test_205_deploy.gd`, `test_208_stack.gd`, `test_duel_state_clone.gd`.
-- Chaque test de règle porte l'identifiant : `test_206_3_6_tie_destroys_both`. Un test sans identifiant vérifie un contrat de décision.
+- Identifiant sur chaque test de règle (racine) ; un test sans identifiant vérifie un contrat de décision, comme `test_duel_state_clone.gd`.
 - Couverture (J1) : `test_rules_coverage.gd` lit `docs/ruleset/20-regles-completes/*.md` et exige, pour chaque règle `[ACTÉ]` ou `[PROVISOIRE]` non supprimée, un test à son nom ou une entrée justifiée de `RULES_WITHOUT_OWN_TEST` (règle de structure, ou vérifiée sous une autre règle, tests nommés). Il exige aussi que chaque `RejectReason` hors `NONE` soit cité par un test.
 - Duels aléatoires (J1) : graine fixe, intentions légales quelconques, oracle qui recalcule les conditions du ruleset sans `validate()`, invariants d'état après chaque entrée ; un écart se rapporte avec graine, pas et entrée.
 - Logique de vue : `DuelSelection` et les fonctions statiques des vues se testent sans scène ; aucune suite n'instancie de scène (`test_event_player.gd` ajoute un `Node` nu à l'arbre, pas une scène), `--ignoreHeadlessMode` reste sûr.
