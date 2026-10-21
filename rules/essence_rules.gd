@@ -68,6 +68,19 @@ static func pay_cost(
 	return events
 
 
+## 203.2.1, 203.2.2 : Sources redressées de `player` une fois `payment` appliqué (incliner en
+## retire une redressée chacune). Pur.
+static func upright_sources_after_payment(player: PlayerState, payment: EssencePayment) -> int:
+	return player.sources_upright - payment.incline_count
+
+
+## 203.2.1, 203.2.2, 203.2.3, 203.2.6 : Sources inclinées de `player` une fois `payment` appliqué
+## (incliner en ajoute une, recycler en retire une, y compris une inclinée par le même paiement).
+## Pur.
+static func tilted_sources_after_payment(player: PlayerState, payment: EssencePayment) -> int:
+	return player.sources_tilted + payment.incline_count - payment.recycle_count
+
+
 ## 204.5.7a, 203.1.3 : l'Essence que la réserve du joueur actif contient encore est perdue.
 static func lose_reserve(state: DuelState, events: Array[DuelEvent]) -> void:
 	var player := state.get_player(state.active_player)

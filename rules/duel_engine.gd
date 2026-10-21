@@ -79,6 +79,33 @@ func current_force(piece_id: int) -> int:
 	return ForceRules.current_force(_state, piece)
 
 
+## 203.2.1, 203.2.2 : Sources redressées de `side` une fois `payment` appliqué, pour la vue ;
+## 0 avant le premier duel. Pur.
+func upright_sources_after_payment(side: DuelState.PlayerSide, payment: EssencePayment) -> int:
+	if _state == null:
+		return 0
+	return EssenceRules.upright_sources_after_payment(_state.get_player(side), payment)
+
+
+## 203.2.1, 203.2.2 : Sources inclinées de `side` une fois `payment` appliqué, pour la vue ;
+## 0 avant le premier duel. Pur.
+func tilted_sources_after_payment(side: DuelState.PlayerSide, payment: EssencePayment) -> int:
+	if _state == null:
+		return 0
+	return EssenceRules.tilted_sources_after_payment(_state.get_player(side), payment)
+
+
+## 202.2.22, 207.5.1a, 205.1.5 : la carte `card_id` s'annonce avec une cible (Spell, Gear)
+## plutôt qu'avec une case ; faux avant le premier duel ou si aucune main ne la contient, seule
+## zone d'où la vue annonce. Pur.
+func announces_with_target(card_id: int) -> bool:
+	var card := _find_card_in_hands(card_id)
+	if card == null:
+		return false
+	var definition := _state.catalog.get_card(card.definition_id)
+	return definition != null and CardRules.is_announced_with_target(definition)
+
+
 ## Raison du refus de `intent`, ou NONE si elle est légale. Pur.
 func validate(intent: DuelIntent) -> IntentRejected.RejectReason:
 	var reason := _validate_duel_running()
@@ -97,6 +124,16 @@ func submit(intent: DuelIntent) -> Array[DuelEvent]:
 	_apply(intent, events)
 	_settle(events)
 	return events
+
+
+func _find_card_in_hands(card_id: int) -> CardInstance:
+	if _state == null:
+		return null
+	for player: PlayerState in _state.players:
+		var card := player.find_card_in_hand(card_id)
+		if card != null:
+			return card
+	return null
 
 
 func _validate_duel_running() -> IntentRejected.RejectReason:

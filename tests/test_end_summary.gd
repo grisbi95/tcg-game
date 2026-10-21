@@ -1,115 +1,91 @@
 extends GdUnitTestSuite
-## Textes du panneau de fin sans scène : `EndSummary` (décision 0036, point 4 ; ruleset 0.36,
-## raisons de fin 209.2.x, 209.3.1, 209.4.5). Le moteur a déjà tranché : on contrôle seulement la
-## phrase déduite des événements du dernier lot et de l'état.
+## Textes du panneau de fin sans scène : `EndSummary` (décisions 0036, point 4, et 0040 ; ruleset
+## 0.37, raisons de fin 209.2.x, 209.3.1, 209.5.3). Le moteur a déjà tranché : on contrôle
+## seulement la phrase traduite du `DuelEnded` du dernier lot.
 
-const A: DuelState.PlayerSide = DuelState.PlayerSide.A
-const B: DuelState.PlayerSide = DuelState.PlayerSide.B
-const FALLEN_HEALTH: int = 0
-const ALIVE_HEALTH: int = 3
+const A_WINS: DuelState.DuelResult = DuelState.DuelResult.PLAYER_A_WINS
+const B_WINS: DuelState.DuelResult = DuelState.DuelResult.PLAYER_B_WINS
+const DRAW: DuelState.DuelResult = DuelState.DuelResult.DRAW
+const REASON := DuelState.EndReason
 const MSEC_PER_SECOND: int = 1000
 const MSEC_PER_MINUTE: int = 60000
 
 
-func _no_events() -> Array[DuelEvent]:
-	return []
+func _ended(result: DuelState.DuelResult, reason: DuelState.EndReason) -> Array[DuelEvent]:
+	return [DuelEnded.new(result, reason)]
 
 
-func _events(list: Array[DuelEvent]) -> Array[DuelEvent]:
-	return list
-
-
-func test_decision_0036_conceded_player_a_is_named() -> void:
-	var state := DuelStateBuilder.new().build()
-	var events := _events([PlayerConceded.new(A)])
-	assert_str(EndSummary.reason_text(events, state)).is_equal("Le joueur A abandonne")
-
-
-func test_decision_0036_conceded_player_b_is_named() -> void:
-	var state := DuelStateBuilder.new().build()
-	var events := _events([PlayerConceded.new(B)])
-	assert_str(EndSummary.reason_text(events, state)).is_equal("Le joueur B abandonne")
-
-
-func test_decision_0036_concession_wins_over_clock_and_hero() -> void:
-	var state := DuelStateBuilder.new().with_hero_health(A, FALLEN_HEALTH).build()
-	var events := _events([TimeExpired.new(A), PlayerConceded.new(B)])
-	assert_str(EndSummary.reason_text(events, state)).is_equal("Le joueur B abandonne")
-
-
-func test_decision_0036_expired_clock_of_player_a_is_named() -> void:
-	var state := DuelStateBuilder.new().build()
-	var events := _events([TimeExpired.new(A)])
-	assert_str(EndSummary.reason_text(events, state)).is_equal("Pendule du joueur A à 0")
-
-
-func test_decision_0036_expired_clock_of_player_b_is_named() -> void:
-	var state := DuelStateBuilder.new().build()
-	var events := _events([TimeExpired.new(B)])
-	assert_str(EndSummary.reason_text(events, state)).is_equal("Pendule du joueur B à 0")
-
-
-func test_decision_0036_both_clocks_expired() -> void:
-	var state := DuelStateBuilder.new().build()
-	var events := _events([TimeExpired.new(A), TimeExpired.new(B)])
-	assert_str(EndSummary.reason_text(events, state)).is_equal("Pendules des deux joueurs à 0")
-
-
-func test_decision_0036_clock_wins_over_fallen_hero() -> void:
-	var state := DuelStateBuilder.new().with_hero_health(B, FALLEN_HEALTH).build()
-	var events := _events([TimeExpired.new(A)])
-	assert_str(EndSummary.reason_text(events, state)).is_equal("Pendule du joueur A à 0")
-
-
-func test_decision_0036_hero_a_at_zero_health() -> void:
-	var state := (
-		DuelStateBuilder
-		. new()
-		. with_hero_health(A, FALLEN_HEALTH)
-		. with_hero_health(B, ALIVE_HEALTH)
-		. build()
+func test_decision_0040_conceded_player_a_is_named() -> void:
+	assert_str(EndSummary.reason_text(_ended(B_WINS, REASON.CONCEDED))).is_equal(
+		"Le joueur A abandonne"
 	)
-	assert_str(EndSummary.reason_text(_no_events(), state)).is_equal("PV du Hero A à 0")
 
 
-func test_decision_0036_hero_b_at_zero_health() -> void:
-	var state := (
-		DuelStateBuilder
-		. new()
-		. with_hero_health(A, ALIVE_HEALTH)
-		. with_hero_health(B, FALLEN_HEALTH)
-		. build()
+func test_decision_0040_conceded_player_b_is_named() -> void:
+	assert_str(EndSummary.reason_text(_ended(A_WINS, REASON.CONCEDED))).is_equal(
+		"Le joueur B abandonne"
 	)
-	assert_str(EndSummary.reason_text(_no_events(), state)).is_equal("PV du Hero B à 0")
 
 
-func test_decision_0036_both_heroes_at_zero_health_is_a_tie() -> void:
-	var state := (
-		DuelStateBuilder
-		. new()
-		. with_hero_health(A, FALLEN_HEALTH)
-		. with_hero_health(B, FALLEN_HEALTH)
-		. build()
+func test_decision_0040_expired_clock_of_player_a_is_named() -> void:
+	assert_str(EndSummary.reason_text(_ended(B_WINS, REASON.TIME_EXPIRED))).is_equal(
+		"Pendule du joueur A à 0"
 	)
-	assert_str(EndSummary.reason_text(_no_events(), state)).is_equal("PV des deux Heroes à 0")
 
 
-func test_decision_0036_unrelated_events_do_not_change_the_hero_reason() -> void:
-	var state := DuelStateBuilder.new().with_hero_health(A, FALLEN_HEALTH).build()
-	var events := _events([TurnEnded.new(A), DuelEnded.new()])
-	assert_str(EndSummary.reason_text(events, state)).is_equal("PV du Hero A à 0")
+func test_decision_0040_expired_clock_of_player_b_is_named() -> void:
+	assert_str(EndSummary.reason_text(_ended(A_WINS, REASON.TIME_EXPIRED))).is_equal(
+		"Pendule du joueur B à 0"
+	)
 
 
-func test_decision_0036_unknown_reason_falls_back() -> void:
-	var state := DuelStateBuilder.new().build()
-	assert_str(EndSummary.reason_text(_no_events(), state)).is_equal("Partie terminée")
+func test_decision_0040_both_clocks_expired() -> void:
+	assert_str(EndSummary.reason_text(_ended(DRAW, REASON.TIME_EXPIRED))).is_equal(
+		"Pendules des deux joueurs à 0"
+	)
 
 
-func test_decision_0036_reason_leaves_the_state_untouched() -> void:
-	var state := DuelStateBuilder.new().with_hero_health(A, FALLEN_HEALTH).build()
-	var snapshot := state.clone()
-	EndSummary.reason_text(_events([TimeExpired.new(B)]), state)
-	assert_array(DeepCompare.find_clone_defects(snapshot, state)).is_empty()
+func test_decision_0040_hero_a_at_zero_health() -> void:
+	assert_str(EndSummary.reason_text(_ended(B_WINS, REASON.HERO_HEALTH_ZERO))).is_equal(
+		"PV du Hero A à 0"
+	)
+
+
+func test_decision_0040_hero_b_at_zero_health() -> void:
+	assert_str(EndSummary.reason_text(_ended(A_WINS, REASON.HERO_HEALTH_ZERO))).is_equal(
+		"PV du Hero B à 0"
+	)
+
+
+func test_decision_0040_both_heroes_at_zero_health_is_a_tie() -> void:
+	assert_str(EndSummary.reason_text(_ended(DRAW, REASON.HERO_HEALTH_ZERO))).is_equal(
+		"PV des deux Heroes à 0"
+	)
+
+
+func test_decision_0040_hero_b_at_zero_health_by_fatigue() -> void:
+	var events := _ended(A_WINS, REASON.HERO_HEALTH_ZERO_BY_FATIGUE)
+	assert_str(EndSummary.reason_text(events)).is_equal("PV du Hero B à 0 par la fatigue")
+
+
+func test_decision_0040_both_heroes_at_zero_health_by_fatigue() -> void:
+	var events := _ended(DRAW, REASON.HERO_HEALTH_ZERO_BY_FATIGUE)
+	assert_str(EndSummary.reason_text(events)).is_equal("PV des deux Heroes à 0 par la fatigue")
+
+
+func test_decision_0040_duel_ended_is_found_among_other_events() -> void:
+	var events: Array[DuelEvent] = [TurnEnded.new(DuelState.PlayerSide.A)]
+	events.append_array(_ended(B_WINS, REASON.CONCEDED))
+	assert_str(EndSummary.reason_text(events)).is_equal("Le joueur A abandonne")
+
+
+func test_decision_0040_missing_duel_ended_falls_back() -> void:
+	var events: Array[DuelEvent] = [TurnEnded.new(DuelState.PlayerSide.A)]
+	assert_str(EndSummary.reason_text(events)).is_equal("Partie terminée")
+
+
+func test_decision_0040_unknown_reason_falls_back() -> void:
+	assert_str(EndSummary.reason_text(_ended(A_WINS, REASON.NONE))).is_equal("Partie terminée")
 
 
 func test_decision_0036_details_at_zero_seconds() -> void:

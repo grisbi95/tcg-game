@@ -98,10 +98,9 @@ func is_card_playable(card_id: int) -> bool:
 	return not deploy_cells(card_id).is_empty()
 
 
-## Spell ou Gear : la carte s'annonce avec une cible plutôt qu'une case.
+## La carte s'annonce avec une cible plutôt qu'une case : le moteur le dit (`CardRules`).
 func is_announced_card(card_id: int) -> bool:
-	var card_type := _card_type(card_id)
-	return card_type == CardDefinition.CardType.SPELL or card_type == CardDefinition.CardType.GEAR
+	return _engine.announces_with_target(card_id)
 
 
 # Cibles de l'état pour lesquelles `intent_for(cible)` est légale.

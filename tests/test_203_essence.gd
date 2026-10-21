@@ -233,6 +233,51 @@ func _start_engine() -> DuelEngine:
 	return engine
 
 
+func test_203_2_1_incline_leaves_fewer_upright_and_more_tilted_sources() -> void:
+	var player := _with_sources(3, 1, 6).get_player(A)
+	var payment := EssencePayment.new(2, 0)
+	assert_int(EssenceRules.upright_sources_after_payment(player, payment)).is_equal(1)
+	assert_int(EssenceRules.tilted_sources_after_payment(player, payment)).is_equal(3)
+
+
+func test_203_2_2_recycle_leaves_fewer_tilted_sources() -> void:
+	var player := _with_sources(2, 3, 5).get_player(A)
+	var payment := EssencePayment.new(0, 2)
+	assert_int(EssenceRules.upright_sources_after_payment(player, payment)).is_equal(2)
+	assert_int(EssenceRules.tilted_sources_after_payment(player, payment)).is_equal(1)
+
+
+func test_203_2_6_recycle_may_use_sources_tilted_by_the_same_payment() -> void:
+	var player := _with_sources(2, 0, 8).get_player(A)
+	var payment := EssencePayment.new(2, 1)
+	assert_int(EssenceRules.upright_sources_after_payment(player, payment)).is_equal(0)
+	assert_int(EssenceRules.tilted_sources_after_payment(player, payment)).is_equal(1)
+
+
+func test_203_2_1_sources_after_payment_match_the_applied_payment() -> void:
+	var state := _with_sources(3, 2, 5)
+	var player := state.get_player(A)
+	var payment := EssencePayment.new(2, 1)
+	var upright := EssenceRules.upright_sources_after_payment(player, payment)
+	var tilted := EssenceRules.tilted_sources_after_payment(player, payment)
+	var snapshot := state.clone()
+	EssenceRules.upright_sources_after_payment(player, payment)
+	EssenceRules.tilted_sources_after_payment(player, payment)
+	assert_array(DeepCompare.find_clone_defects(snapshot, state)).is_empty()
+	EssenceRules.apply_payment(state, A, payment, _events)
+	assert_int(player.sources_upright).is_equal(upright)
+	assert_int(player.sources_tilted).is_equal(tilted)
+
+
+func test_203_2_1_engine_query_reads_sources_after_payment() -> void:
+	var engine := DuelEngine.new(SetupSamples.catalog())
+	assert_int(engine.upright_sources_after_payment(A, EssencePayment.new(1, 0))).is_equal(0)
+	engine.start_from_state(_with_sources(3, 1, 6))
+	var payment := EssencePayment.new(2, 1)
+	assert_int(engine.upright_sources_after_payment(A, payment)).is_equal(1)
+	assert_int(engine.tilted_sources_after_payment(A, payment)).is_equal(2)
+
+
 func _with_sources(upright: int, tilted: int, in_reserve: int) -> DuelState:
 	_builder.with_sources_in_play(A, upright, tilted).with_sources_in_reserve(A, in_reserve)
 	return _builder.build()

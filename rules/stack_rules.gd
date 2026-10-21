@@ -55,7 +55,7 @@ static func _resolve_stack(state: DuelState, events: Array[DuelEvent]) -> void:
 	while not state.stack.is_empty():
 		var entry: StackEntry = state.stack.pop_back()
 		_resolve_entry(state, entry, events)
-		if StateCheckRules.check_victory(state, events):
+		if StateCheckRules.check_victory(state, events, DuelState.EndReason.HERO_HEALTH_ZERO):
 			return
 
 

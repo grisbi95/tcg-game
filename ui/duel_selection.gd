@@ -313,13 +313,13 @@ func _candidates() -> SelectionCandidates:
 	return SelectionCandidates.new(_engine, _side, payment)
 
 
+# 203.2.1, 203.2.2 : le moteur dit ce que le paiement préparé laisse de Sources.
 func _shown_upright_sources() -> int:
-	return _player().sources_upright - _draft_payment.incline_count
+	return _engine.upright_sources_after_payment(_side, _draft_payment)
 
 
 func _shown_tilted_sources() -> int:
-	var player := _player()
-	return player.sources_tilted + _draft_payment.incline_count - _draft_payment.recycle_count
+	return _engine.tilted_sources_after_payment(_side, _draft_payment)
 
 
 func _copy_draft() -> EssencePayment:

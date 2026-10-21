@@ -4,6 +4,15 @@ extends RefCounted
 ## créent par EffectRules (202.4), les effets statiques se lisent dans ForceRules (207.2).
 
 
+## 202.2.22, 202.2.23, 207.5.1a, 205.1.5 : un Gear (son Unit) et un Spell s'annoncent avec une
+## cible choisie à l'annonce ; une Unit et un Building s'annoncent avec une case. Pur.
+static func is_announced_with_target(definition: CardDefinition) -> bool:
+	return (
+		definition.card_type == CardDefinition.CardType.SPELL
+		or definition.card_type == CardDefinition.CardType.GEAR
+	)
+
+
 ## 208.1.5 à 208.1.7, 202.2.8, 202.2.9, 202.2.14, 202.2.22, 202.2.23, 203.3.2 : raison du refus
 ## de `intent`, ou NONE. L'attente est contrôlée par DuelEngine. Pur.
 static func validate_attach_gear(

@@ -24,5 +24,6 @@ Priorité : **haute** = écart au ruleset ou défaut visible en partie ; **moyen
 | --- | --- | --- | --- |
 | Un agent qui ne propose aucune intention légale laisse `DuelHost` en `AWAITING_AI` avec une erreur à chaque image, jusqu'à la fin de sa pendule. | 0020 | moyenne | J4 |
 | `DuelSelection` ne gère qu'une cible par annonce ; les questions Q-098 et Q-099 du ruleset sont à trancher avant. | 207.5, 0024 | moyenne | première carte à plusieurs cibles |
+| `SelectionCandidates` choisit entre `AttachGear` et `CastSpell` d'après le type de carte, et `DuelSelection` décide qu'une Source entre dans le paiement préparé par « compte > 0 » : deux restes de règle dans la vue, à remplacer par des requêtes du moteur. | 202.2, 203.2.1, 203.2.2, 0040 | basse | J3 |
 | `PieceView` n'affiche que les mots-clés imprimés, aucun pour un jeton ; un mot-clé donné par un Gear, un Spell ou une aura demandera une requête de `DuelEngine`, comme pour la Force. | 202.4.13a | basse | J4 |
 | Pendant un relais, le grand bouton du joueur précédent reste visible, inactif, derrière le rideau. | 0036 | basse | J3 |

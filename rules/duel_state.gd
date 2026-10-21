@@ -29,6 +29,16 @@ enum DuelResult {
 	DRAW,
 }
 
+## 209.2.2, 209.5.3, 209.2.6, 209.2.8, 209.3.1, 209.2.8a : pourquoi la partie s'arrête ; NONE
+## tant qu'elle dure. Enum journalisable : ajouter à la fin (décision 0040).
+enum EndReason {
+	NONE,
+	HERO_HEALTH_ZERO,
+	HERO_HEALTH_ZERO_BY_FATIGUE,
+	CONCEDED,
+	TIME_EXPIRED,
+}
+
 const PLAYER_COUNT: int = 2  # 201.1.1
 ## Ordre fixe des joueurs quand les deux agissent tour à tour : il fixe l'ordre des tirages de
 ## `rng` (mélanges de 204.1.6, mulligans de la décision 0015).

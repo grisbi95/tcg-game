@@ -159,6 +159,14 @@ func test_201_1_3c_player_wins_when_only_the_opponent_time_runs_out() -> void:
 	assert_int(_engine.get_state().result).is_equal(RESULT.PLAYER_A_WINS)
 
 
+func test_209_2_8_time_expired_end_reason() -> void:
+	_engine.start_from_state(_builder.with_clock_remaining(A, STEP_MSEC).build())
+	var events := _engine.advance_clock(STEP_MSEC)
+	assert_int((events[events.size() - 1] as DuelEnded).reason).is_equal(
+		DuelState.EndReason.TIME_EXPIRED
+	)
+
+
 func test_209_2_9_the_duel_stops_at_once_when_time_runs_out() -> void:
 	_engine.start_from_state(_builder.with_clock_remaining(A, STEP_MSEC).build())
 	_engine.advance_clock(STEP_MSEC)
