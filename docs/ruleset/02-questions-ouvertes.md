@@ -12,7 +12,52 @@ Manque pour trancher : ce qu'il faut observer ou décider.
 
 ## Ouvertes
 
-Aucune question ouverte.
+**Q-097 · Force du Hero et effets qui le visent** · chapitres 202 et 207 · ouverte le 21 octobre 2026
+Un effet qui modifie ou lit la Force d'une pièce, ou qui détruit une pièce, peut-il viser un Hero, alors que 202.3.9 dit que la carte Hero ne porte pas de Force, que 206.2.1a écarte la comparaison des Forces et 206.4.3 la destruction du Hero pour un combat dont le défenseur est un Hero, et que 207.5.11a fait du Hero une pièce du plateau qu'un effet peut cibler ?
+Premier choix, un effet qui modifie ou lit la Force :
+- Option A : le Hero n'est jamais une cible légale d'un tel effet, règle explicite ; compromis : une exception à 207.5.11a et un Hero hors de portée de ces cartes.
+- Option B : le Hero est ciblable par un tel effet et sa Force vaut 0 pour cet effet ; compromis : une valeur de Force que 202.3.9 n'écrit pas, à ajouter aux règles.
+Second choix, un effet qui détruit la pièce visée :
+- Option C : le Hero n'est jamais une cible légale d'un tel effet, règle explicite ; compromis : une exception à 207.5.11a et un Hero qu'aucune carte de destruction n'atteint.
+- Option D : le Hero est ciblable par un tel effet et la destruction le met à 0 PV ; compromis : une issue que 206.4.3, propre au combat, n'écrit pas, à ajouter aux règles.
+Manque pour trancher : une première carte du catalogue qui viserait le Hero.
+
+**Q-098 · Même cible désignée deux fois** · chapitre 207 · ouverte le 21 octobre 2026
+Un effet à plusieurs cibles peut-il désigner deux fois la même cible, alors que 207.5.10 prévoit des effets qui exigent plusieurs cibles et que 207.5.4 applique l'effet à chaque cible restée valide ?
+- Option A : les cibles sont distinctes, obligatoirement ; compromis : une règle de plus, et 207.5.10 compte alors des cibles légales distinctes.
+- Option B : la désignation est libre et l'effet s'applique autant de fois que la cible est désignée ; compromis : un effet répété sur une même pièce, à borner carte par carte.
+Manque pour trancher : une première carte à plusieurs cibles.
+
+**Q-099 · Pouvoir du Hero à plusieurs cibles** · chapitre 207 · ouverte le 21 octobre 2026
+Un pouvoir du Hero dont l'effet exige plusieurs cibles s'annonce-t-il même s'il n'existe pas le nombre minimal de cibles légales, alors que 207.5.17 permet d'annoncer l'utilisation du pouvoir qui exige une cible même s'il n'existe aucune cible légale, et que 207.5.10 n'ajoute à la pile une entrée dont l'effet exige plusieurs cibles que s'il existe au moins le nombre minimal de cibles légales que la carte exige ?
+- Option A : 207.5.17 prime ; le pouvoir s'annonce sans le minimum de cibles légales et n'a pas lieu à sa résolution (207.5.17a) ; compromis : un coût perdu et une utilisation comptée (207.5.17b et 207.5.17c) sur un pouvoir qui ne pouvait pas avoir lieu.
+- Option B : 207.5.10 prime ; le pouvoir à plusieurs cibles ne s'annonce que s'il existe le minimum de cibles légales ; compromis : deux régimes pour le pouvoir du Hero selon son nombre de cibles.
+- Option C : aucun pouvoir du Hero n'exige plusieurs cibles, règle explicite ; compromis : une limite posée à la conception des Heroes.
+Manque pour trancher : un premier Hero dont le pouvoir vise plusieurs cibles.
+
+**Q-100 · Unit déployée en attaquant** · chapitres 205 et 206 · ouverte le 21 octobre 2026
+Quelle position de l'attaquant 206.5.2 lit-il pour les auras pendant le combat d'une Unit qui entre en jeu en attaquant selon 205.1.6, alors que la case choisie pour son déploiement est celle du défenseur (205.1.5 et 205.1.6, décision 0048), que cette Unit n'a donc aucune case avant ce combat, que ce combat naît à la résolution du déploiement sans annonce, que 206.5.2 calcule les auras selon les positions des pièces avant que l'attaquant entre sur la case du défenseur, que 206.3.3 fait occuper la case du défenseur par l'attaquant qui le détruit et que 206.3.4 laisse le défenseur sur sa case si l'attaquant est détruit ?
+- Option A : aucune ; l'attaquant n'a pas de case pendant ce combat et les auras qui dépendent de sa position ne le touchent pas (206.5.5) ; compromis : une Unit déployée en attaquant ne reçoit aucune aura pendant son combat, et 206.5.2 lit une position qu'elle n'a pas.
+- Option B : la case du défenseur, comme si l'attaquant s'y trouvait déjà ; compromis : l'Unit reçoit pendant le combat les auras de cette case, que 206.3.3 ne lui fait occuper qu'après le combat, et 206.5.2 lit une position que l'attaquant ne prend qu'ensuite.
+Manque pour trancher : les auras qui pourraient toucher une Unit déployée en attaquant pendant son combat.
+
+**Q-101 · « Les joueurs peuvent répondre »** · chapitres 204 et 208 · ouverte le 21 octobre 2026
+Faut-il reformuler 204.5.5 et 208.4.5, qui disent que « les joueurs peuvent répondre » aux effets déclenchés, alors que 208.2.4 donne à l'adversaire du joueur à qui appartient l'entrée du sommet de la pile le droit de répondre le premier et que 208.3.1a considère le joueur à qui appartient cette entrée comme ayant passé ?
+- Option A : reformuler les deux règles en renvoi à 208.2.4 et à 208.3.1a ; compromis : une édition mineure, sans changement de comportement.
+- Option B : garder les deux formulations et préciser « répondre » au glossaire, dont l'entrée actuelle ne mentionne pas 208.3.1a ; compromis : deux règles qui restent plus larges que 208.3.1a, lues avec le glossaire.
+Manque pour trancher : le choix éditorial du créateur.
+
+**Q-102 · Mulligan de la série et rôle connu d'avance** · chapitre 204 et `70-playtest/protocole.md` · ouverte le 21 octobre 2026
+Chaque joueur de la série peut-il connaître son rôle de premier ou de second joueur avant son mulligan, alors que l'alternance du protocole (décision 0158, joueur A en premier à la partie 1 selon la décision 0168) fait connaître d'avance le premier joueur, et que 204.1.16 place 204.1.14 après le mulligan, ordre que la décision 0177 a retenu pour que chaque joueur décide son mulligan sans connaître son rôle ?
+- Option A : le protocole consigne l'exception, l'ordre étant connu avant le mulligan, et 204.1.16 ne change pas ; compromis : la série éprouve le mulligan (204.1.15) dans des conditions que 204.1.16 écarte.
+- Option B : 204.1.16 est révisée pour admettre un premier joueur connu d'avance ; compromis : une règle de jeu modifiée pour les besoins du playtest, par une nouvelle décision qui remplace la décision 0177.
+Manque pour trancher : ce que la première série (jalon J3) veut mesurer : la fréquence des mulligans dans les conditions de 204.1.16 (ligne « Mains de départ remplacées par un mulligan » du protocole, 204.1.15), ou seulement l'avantage du premier joueur (ligne « Victoires du premier joueur », 204.3.4). Réviser la décision 0158 passe par une nouvelle décision.
+
+**Q-103 · Mulligan à deux humains sur un même écran** · chapitre 204 · ouverte le 21 octobre 2026
+Le mulligan se fait-il en même temps pour deux humains sur un même appareil, alors que 204.2.2 dit que les deux joueurs décident de leur mulligan en même temps, que 204.2.3 dit qu'aucun joueur ne voit le choix de l'autre avant d'avoir décidé, et que, sur un même écran, les deux joueurs décident l'un après l'autre (joueur A puis joueur B) ?
+- Option A : reformuler 204.2.2 : chaque joueur décide sans connaître le choix de l'autre, l'ordre dans lequel les choix se prennent et s'exécutent est libre ; compromis : une édition qui change le texte de 204.2.2, sans changer 204.2.3.
+- Option B : 204.2.2 reste inchangée, l'écran partagé est une exception assumée de la version du jeu sur écran ; compromis : une règle que cette version ne suit pas à la lettre.
+Manque pour trancher : le choix du créateur.
 
 ## Tranchées
 

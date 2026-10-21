@@ -347,3 +347,12 @@
 - Règles non modifiées dans leur sens : 208.2.4, 208.2.4a, 208.3.2, 208.3.2a, 208.3.3, 208.5.1 et 209.4.4b. Le livret [10-regles-de-base.md](10-regles-de-base.md) n'est pas modifié : il n'a pas encore de texte.
 - Aucune question ouverte ne reste.
 - [README.md](README.md) : édition courante passée à 0.36.
+
+## 0.37 · 21 octobre 2026 · mineure · questions ouvertes de l'audit
+
+- Questions ouvertes créées dans [02-questions-ouvertes.md](02-questions-ouvertes.md), relevées par l'audit du 20 octobre 2026 : Q-097 (Force du Hero et effets qui le visent), Q-098 (même cible désignée deux fois), Q-099 (pouvoir du Hero à plusieurs cibles), Q-100 (position de l'attaquant d'une Unit déployée en attaquant), Q-101 (« les joueurs peuvent répondre »), Q-102 (mulligan de la série et rôle connu d'avance, sur le seul point signalé par la décision 0177), Q-103 (mulligan à deux humains sur un même écran). Aucune n'est tranchée. Seconde passe du 21 octobre 2026 après relecture : Q-097 sépare le choix de la Force et celui de la destruction, Q-100 et Q-102 sont réécrites sur leur seule question réelle.
+- Mesure ajoutée au protocole, dans [protocole.md](70-playtest/protocole.md) : lisibilité du texte des cartes de main avec un affichage en 1280×720, l'aperçu au survol servant à lire le texte ; relevée en note libre dans le relevé de fin de partie et le modèle de fiche, sans cible ni seuil, hors du tableau des cibles et seuils, dont le bilan de la série décide si elle doit rejoindre le tableau. Définition « Aperçu au survol » ajoutée aux définitions propres au protocole. Points à trancher avant la première série : Q-102 et Q-103 listées. Choix du créateur du 20 octobre 2026 (décision 0035 du projet, hors ruleset).
+- Phrase périmée retirée de [CLAUDE.md](CLAUDE.md) (emplacement de l'agent `ruleset-editor`).
+- Aucun identifiant ajouté, modifié ou supprimé. Aucun terme ajouté ni modifié au glossaire.
+- Aucune décision du ruleset associée.
+- [README.md](README.md) : édition courante passée à 0.37.
