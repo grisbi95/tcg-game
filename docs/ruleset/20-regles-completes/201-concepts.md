@@ -20,7 +20,7 @@
 
 **201.1.2a** [ACTÉ] Si les deux Heroes atteignent 0 PV en même temps, la partie est nulle (décision 0057 ; voir 209.3.1).
 
-**201.1.2b** [ACTÉ] Si le temps des deux joueurs est écoulé en même temps, la partie est nulle (décision 0133 ; voir 209.2.8a et 209.4.5).
+**201.1.2b** Supprimée en édition 0.40, voir décision 0205.
 
 **201.1.3** [ACTÉ] Aucune autre condition ne fait gagner la partie (décision 0007).
 
@@ -28,7 +28,9 @@
 
 **201.1.3b** Supprimée en édition 0.18, voir décision 0140.
 
-**201.1.3c** [ACTÉ] Un joueur gagne la partie quand seul le temps de son adversaire est écoulé (décision 0140 ; voir 209.2.8 et 209.4.5).
+**201.1.3c** Supprimée en édition 0.40, voir décision 0205.
+
+**201.1.3d** [PROVISOIRE] Le joueur dont l'adversaire perd la partie par inactivité gagne la partie (décision 0205 ; valeur : 3 tours d'inactivité de l'adversaire ; à mesurer en playtest : défaites par inactivité ; voir 209.2.10).
 
 ## 201.2 Plateau
 

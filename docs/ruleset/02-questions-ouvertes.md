@@ -70,6 +70,26 @@ Dans 54 à 76 % des parties simulées, quelle que soit la règle d'action, le va
 - Aucune option formulée à ce jour : à examiner après la première série humaine, sans option tranchée.
 Manque pour trancher : la première série humaine (jalon J3), pour savoir si le constat de la simulation (agent sans anticipation) se retrouve en partie réelle.
 
+**Q-110 · Effet déclenché abandonné à l'expiration du temps** · chapitres 207, 208 et 209 · ouverte le 22 octobre 2026
+Que deviennent les autres effets déclenchés du même lot, et le décompte de « une fois par tour » de l'effet abandonné, quand 209.4.11a empêche un effet déclenché de s'ajouter à la pile, alors que 208.4.6 et 208.4.7 les ajoutent ensemble et que 207.3.7 compte une fois par tour à l'ajout à la pile ?
+- Option A : les autres effets du lot s'ajoutent normalement, et l'effet abandonné ne compte pas pour « une fois par tour » ; compromis : un effet abandonné peut se redéclencher plus tard dans le tour.
+- Option B : les autres effets du lot s'ajoutent normalement, et l'effet abandonné compte pour « une fois par tour » ; compromis : un joueur perd cet effet pour le tour sans qu'il ait eu lieu.
+- Option C : aucun effet du lot ne s'ajoute à la pile ; compromis : l'expiration sur une seule cible fait perdre tout le lot, y compris les effets sans cible.
+Manque pour trancher : le choix du créateur.
+
+**Q-108 · Mulligan sans limite de temps** · chapitres 204 et 209 · ouverte le 22 octobre 2026
+Que se passe-t-il quand un joueur ne fait pas son mulligan, alors que 209.4.2d ne fait s'écouler ni le temps de tour ni le temps de réponse tant que les mulligans ne sont pas exécutés et que 204.2.2 attend la décision des deux joueurs ?
+- Option A : aucune limite, seul l'abandon (209.2.5) débloque la partie ; compromis : un joueur absent bloque l'autre sans fin, notamment en duel à distance.
+- Option B : le mulligan reçoit un temps de réponse (209.4.6) dont l'expiration vaut garder sa main (204.2.12) ; compromis : une exception à 209.4.2d et une règle d'expiration de plus, que Q-103 touche aussi pour deux humains sur un même écran.
+- Option C : l'expiration du mulligan compte pour l'inactivité (209.2.10) ; compromis : une règle d'inactivité qui vise une période où aucun tour n'existe.
+Manque pour trancher : le choix du créateur, après Q-103.
+
+**Q-109 · Réponses annoncées hors de son tour et inactivité** · chapitre 209 · ouverte le 22 octobre 2026
+Une annonce faite en réponse pendant le tour de l'adversaire (208.2.3) empêche-t-elle l'inactivité de 209.2.10, alors que 209.2.10 se lit sur les annonces faites pendant les trois tours consécutifs du joueur concerné ?
+- Option A : seules comptent les annonces faites pendant ses propres tours ; compromis : une règle simple à vérifier, qui laisse inactif un joueur qui ne fait que répondre pendant le tour adverse.
+- Option B : une annonce faite en réponse depuis la fin de son tour précédent compte pour le tour qui suit ; compromis : une règle de rattachement à écrire, plus complexe à vérifier.
+Manque pour trancher : le choix du créateur.
+
 ## Tranchées
 
 | Question | Décision |
@@ -170,3 +190,5 @@ Manque pour trancher : la première série humaine (jalon J3), pour savoir si le
 | Q-094 · Mesure de l'Essence produite et perdue en playtest · chapitre 203, protocole de playtest · ouverte le 18 octobre 2026 · Faut-il mesurer en playtest l'Essence perdue à la fin du tour (204.5.7a), alors que la mesure « Essence inutilisée » ne compte que les Sources redressées au début du tour (204.3.2) ? Tranchée le 18 octobre 2026 : oui, une mesure est ajoutée au protocole, sans cible ni seuil chiffrés. | [0195](40-decisions/0195-mesure-de-l-essence-perdue-en-playtest.md) |
 | Q-095 · Production d'Essence et pile · chapitre 203 · ouverte le 18 octobre 2026 · Produire de l'Essence pour sa réserve d'Essence passe-t-il par la pile, alors que 208.1 ne la liste pas parmi les annonces ? Tranchée le 18 octobre 2026 : non, la production est immédiate, sans passer par la pile, et ne change pas qui peut agir (203.6.11, 203.6.12 et 203.6.13). | [0196](40-decisions/0196-production-d-essence-hors-de-la-pile.md) |
 | Q-096 · Lenteur du déroulé d'une action · chapitre 208 · ouverte le 18 octobre 2026 · Comment réduire le nombre de validations d'une action (annonce, passe de l'adversaire selon 208.2.4, passe du joueur qui a annoncé selon 208.2.2 et 208.3.1), que le créateur juge trop lent en playtest ? Tranchée le 18 octobre 2026 : une seule passe suffit à résoudre la pile, le joueur à qui appartient l'entrée du sommet étant considéré comme ayant passé (208.3.1 et 208.3.1a, 208.2.2 supprimée), et, dans une version du jeu sur écran, une fenêtre de réponse de 2 secondes fait passer automatiquement le joueur qui ne fait rien (208.6.1 à 208.6.7, 209.4.4g). | [0197](40-decisions/0197-resolution-a-la-premiere-passe.md), [0198](40-decisions/0198-fenetre-de-reponse-a-l-ecran.md), fenêtre de réponse remplacée ensuite par [0199](40-decisions/0199-fenetre-de-reponse-sans-echeance.md) |
+| Q-106 · Expiration du temps pendant un choix de cibles · chapitres 207 et 209 · ouverte le 22 octobre 2026 · Que devient l'annonce en cours quand le temps de tour ou le temps de réponse d'un joueur atteint 0 seconde pendant qu'il choisit les cibles d'une entrée de la pile qui lui appartient ? Tranchée le 22 octobre 2026 : l'annonce est abandonnée, rien n'est payé, rien ne s'ajoute à la pile et la carte reste où elle était (209.4.11) ; un effet déclenché ne s'ajoute pas à la pile (209.4.11a). | [0206](40-decisions/0206-expiration-du-temps-pendant-un-choix-et-sens-d-annonce-pour-l-inactivite.md) |
+| Q-107 · Expiration du temps pendant l'ordre des effets déclenchés · chapitres 208 et 209 · ouverte le 22 octobre 2026 · Dans quel ordre s'ajoutent à la pile les effets déclenchés d'un joueur quand son temps de tour ou son temps de réponse atteint 0 seconde pendant qu'il en choisit l'ordre ? Tranchée le 22 octobre 2026 : dans l'ordre où ils se sont déclenchés (209.4.12). | [0206](40-decisions/0206-expiration-du-temps-pendant-un-choix-et-sens-d-annonce-pour-l-inactivite.md) |

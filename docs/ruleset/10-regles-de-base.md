@@ -16,7 +16,7 @@ Le livret suit l'ordre d'une première partie. Le tableau donne, pour chaque par
 | 6 | Bouger et combattre | 205, 206 | 2 |
 | 7 | Répondre : la pile et la priorité | 208 | 2 |
 | 8 | Effets et mots-clés | 207, 210 | 1 |
-| 9 | Finir la partie : victoire, nul, abandon, pendule, fatigue | 209 | 1 |
+| 9 | Finir la partie : victoire, nul, abandon, inactivité, fatigue | 209 | 1 |
 | Annexe | Règles d'or et lexique court | 200, [glossaire](01-glossaire.md) | — |
 
 ## Forme des exemples

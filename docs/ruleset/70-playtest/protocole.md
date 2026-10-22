@@ -1,10 +1,10 @@
 # Protocole du premier playtest
 
-> Rôle : fixer avant la première partie les decks, la taille de la série, la fiche de relevé et les seuils de jugement du premier playtest du ruleset. Statut : rédigé, decks composés dans [decks-de-test.md](decks-de-test.md) ; aucune partie jouée. Créé le 16 octobre 2026, complété le 16 octobre 2026 (édition 0.28) et le 18 octobre 2026 (édition 0.35, mesure de l'Essence perdue, décision 0195 ; édition 0.36, mesures de la fenêtre de réponse, décision 0198 ; édition 0.37, mesure de lisibilité du texte des cartes de main) et le 21 octobre 2026 (édition 0.38, fenêtre de réponse sans échéance, décision 0199) et le 22 octobre 2026 (édition 0.39, hypothèse des 15 PV réécrite et mesure des PV perdus par un Hero en un tour, décision 0202 ; hypothèse des 15 PV sans chiffre de fin de partie, décision 0204). Ce document ne contient aucune règle de jeu : il renvoie aux identifiants de [20-regles-completes/](../20-regles-completes/).
+> Rôle : fixer avant la première partie les decks, la taille de la série, la fiche de relevé et les seuils de jugement du premier playtest du ruleset. Statut : rédigé, decks composés dans [decks-de-test.md](decks-de-test.md) ; aucune partie jouée. Créé le 16 octobre 2026, complété le 16 octobre 2026 (édition 0.28) et le 18 octobre 2026 (édition 0.35, mesure de l'Essence perdue, décision 0195 ; édition 0.36, mesures de la fenêtre de réponse, décision 0198 ; édition 0.37, mesure de lisibilité du texte des cartes de main) et le 21 octobre 2026 (édition 0.38, fenêtre de réponse sans échéance, décision 0199) et le 22 octobre 2026 (édition 0.39, hypothèse des 15 PV réécrite et mesure des PV perdus par un Hero en un tour, décision 0202 ; hypothèse des 15 PV sans chiffre de fin de partie, décision 0204 ; édition 0.40, temps de tour et temps de réponse, décision 0205). Ce document ne contient aucune règle de jeu : il renvoie aux identifiants de [20-regles-completes/](../20-regles-completes/).
 
 ## Objet
 
-Le premier playtest éprouve les règles de base. Il mesure les 21 règles PROVISOIRE des règles complètes, listées dans la section Couverture des règles PROVISOIRE. Il repose sur vingt-trois décisions du 16 octobre 2026, sur deux décisions du 18 octobre 2026 et sur les décisions 0202 et 0204 du 22 octobre 2026.
+Le premier playtest éprouve les règles de base. Il mesure les 23 règles PROVISOIRE des règles complètes, listées dans la section Couverture des règles PROVISOIRE. Il repose sur vingt-trois décisions du 16 octobre 2026, sur deux décisions du 18 octobre 2026 et sur les décisions 0202, 0204 et 0205 du 22 octobre 2026.
 
 | Sujet | Décision | Section |
 | --- | --- | --- |
@@ -32,7 +32,8 @@ Le premier playtest éprouve les règles de base. Il mesure les 21 règles PROVI
 | Texte de Martyr | [0174](../40-decisions/0174-texte-de-martyr.md) | Decks de test |
 | Dernier souffle observé en playtest | [0175](../40-decisions/0175-dernier-souffle-observe-en-playtest.md) | Fiche de relevé, Cibles et seuils |
 | Mesure de l'Essence perdue en playtest | [0195](../40-decisions/0195-mesure-de-l-essence-perdue-en-playtest.md) | Fiche de relevé, Cibles et seuils |
-| Fenêtre de réponse à l'écran | [0198](../40-decisions/0198-fenetre-de-reponse-a-l-ecran.md), remplacée par [0199](../40-decisions/0199-fenetre-de-reponse-sans-echeance.md) | Fiche de relevé, Cibles et seuils |
+| Fenêtre de réponse à l'écran | [0198](../40-decisions/0198-fenetre-de-reponse-a-l-ecran.md), remplacée par [0199](../40-decisions/0199-fenetre-de-reponse-sans-echeance.md), modifiée par [0205](../40-decisions/0205-temps-de-tour-et-temps-de-reponse.md) | Fiche de relevé, Cibles et seuils |
+| Temps de tour et temps de réponse | [0205](../40-decisions/0205-temps-de-tour-et-temps-de-reponse.md) | Fiche de relevé, Cibles et seuils |
 | Hypothèse des 15 PV et mesure des PV perdus en un tour | [0202](../40-decisions/0202-hypothese-des-pv-et-mesure-des-pv-perdus-en-un-tour.md), complétée par [0204](../40-decisions/0204-hypothese-des-15-pv-sans-chiffre-de-fin-de-partie.md) | Decks de test, Fiche de relevé, Cibles et seuils |
 
 ## Decks de test
@@ -127,14 +128,13 @@ Les PV perdus se relèvent sur la ligne du tour qui se termine, pour les deux He
 | --- | --- |
 | Vainqueur | A, B, ou aucun si la partie est nulle |
 | Premier joueur | A ou B |
-| Cause de fin | 0 PV par la fatigue (209.5.3), 0 PV par une autre cause (209.2.2), temps écoulé (209.2.8), abandon (209.2.6) ou partie nulle (209.3.1, 209.2.8a) ; « 0 PV par la fatigue » est distinct de « 0 PV par une autre cause » (décision 0161) |
+| Cause de fin | 0 PV par la fatigue (209.5.3), 0 PV par une autre cause (209.2.2), inactivité (209.2.10), abandon (209.2.6) ou partie nulle (209.3.1) ; « 0 PV par la fatigue » est distinct de « 0 PV par une autre cause » (décision 0161) |
 | Durée | minutes de la partie, mulligan compris (204.1.9) |
-| Temps restant | minutes restantes à la pendule de A et à celle de B (209.4.1) |
+| Tours terminés par l'expiration du temps de tour | nombre de tours de A et de B terminés selon 209.4.9 (décision 0205) |
+| Réponses passées par l'expiration du temps de réponse | nombre de fois où A et B ont passé selon 209.4.10 (décision 0205) |
 | Nombre de mulligans | 0, 1 ou 2 (204.2.1) |
 | Tour de la première augmentation d'un compteur de fatigue | numéro du tour, ou aucun (209.5.2) |
-| Temps de pendule consommé par les fenêtres de réponse | secondes de pendule consommées pendant la partie par les fenêtres de réponse (208.6.2) de A et de B, relevées dans une version du jeu sur écran (208.6.1) seulement, vide sinon (décisions 0198 et 0199) |
-| Réponses commencées | nombre de fois où A et B ont commencé une réponse pendant une fenêtre de réponse (208.6.2), relevé dans une version du jeu sur écran seulement, vide sinon (décisions 0198 et 0199) |
-| Ressenti du rythme | note libre sur le rythme du déroulé pendant la partie, dans une version du jeu sur écran seulement (décisions 0198 et 0199) |
+| Ressenti du rythme | note libre sur le rythme du déroulé pendant la partie, temps de tour et temps de réponse compris (décisions 0198, 0199 et 0205) |
 | Lisibilité du texte des cartes de main | note libre, relevée dans une version du jeu sur écran avec un affichage en 1280×720, l'aperçu au survol servant à lire le texte : le joueur ouvre-t-il l'aperçu pour lire, le texte se lit-il sans (décision 0035 du projet, hors ruleset, 20 octobre 2026) |
 | Champ libre | situations bloquées ou surprenantes |
 
@@ -158,21 +158,19 @@ Note sur Dernier souffle : une ligne par déclenchement, vide si Dernier souffle
 | --- | --- |
 | Vainqueur | |
 | Premier joueur | |
-| Cause de fin (0 PV par la fatigue, 0 PV par une autre cause, temps écoulé, abandon ou partie nulle) | |
+| Cause de fin (0 PV par la fatigue, 0 PV par une autre cause, inactivité, abandon ou partie nulle) | |
 | Durée | |
-| Temps restant, pendule de A | |
-| Temps restant, pendule de B | |
+| Tours terminés par l'expiration du temps de tour, A et B | |
+| Réponses passées par l'expiration du temps de réponse, A et B | |
 | Nombre de mulligans | |
 | Tour de la première augmentation d'un compteur de fatigue | |
-| Temps de pendule consommé par les fenêtres de réponse, A et B (version sur écran) | |
-| Réponses commencées, A et B (version sur écran) | |
-| Ressenti du rythme (version sur écran) | |
+| Ressenti du rythme | |
 | Lisibilité du texte des cartes de main (version sur écran, affichage en 1280×720) | |
 | Champ libre | |
 
 ## Cibles et seuils
 
-Chaque mesure reçoit, avant le playtest, une cible et un seuil d'alerte (décision 0156). Après la série, une valeur qui tient sa cible peut passer en ACTÉ par une décision. Une valeur qui franchit son seuil d'alerte ouvre une question dans [02-questions-ouvertes.md](../02-questions-ouvertes.md). Une valeur comprise entre sa cible et son seuil d'alerte reste PROVISOIRE et est mesurée à nouveau à la série suivante ; elle n'ouvre pas de question et ne passe pas en ACTÉ (décision 0162). La note sur Dernier souffle de la fiche n'est pas une mesure du tableau : elle n'a ni cible ni seuil d'alerte (décision 0175). La mesure de l'Essence perdue vise des règles ACTÉ et n'a ni cible ni seuil chiffrés avant les premiers playtests : elle ne passe pas en ACTÉ et n'ouvre pas de question avant que la décision qui fixe sa cible et son seuil d'alerte soit prise (décision 0195). La mesure des PV perdus par un Hero en un tour vise des règles ACTÉ (204.4.5, 205.4.7, 205.5.3, 202.3.7 et 204.1.8) et n'a ni cible ni seuil chiffrés avant les premiers playtests : elle ne passe pas en ACTÉ et n'ouvre pas de question avant que la décision qui fixe sa cible et son seuil d'alerte soit prise (décision 0202). Les mesures de la fenêtre de réponse visent 208.6.2 et ne se relèvent que dans une version du jeu sur écran (décisions 0198 et 0199) : celles qui portent le temps de pendule consommé et les réponses commencées n'ont ni cible ni seuil chiffrés avant les premiers playtests, 208.6.2 reste PROVISOIRE et aucune question ne s'ouvre avant que la décision qui fixe leur cible et leur seuil d'alerte soit prise ; le ressenti du rythme se juge en notes qualitatives. La mesure de la lisibilité du texte des cartes de main n'est pas une mesure du tableau : elle n'a ni cible ni seuil d'alerte, elle ne vise aucune règle des règles complètes, et le bilan de la série dit s'il faut l'ajouter au tableau (décision 0035 du projet, hors ruleset).
+Chaque mesure reçoit, avant le playtest, une cible et un seuil d'alerte (décision 0156). Après la série, une valeur qui tient sa cible peut passer en ACTÉ par une décision. Une valeur qui franchit son seuil d'alerte ouvre une question dans [02-questions-ouvertes.md](../02-questions-ouvertes.md). Une valeur comprise entre sa cible et son seuil d'alerte reste PROVISOIRE et est mesurée à nouveau à la série suivante ; elle n'ouvre pas de question et ne passe pas en ACTÉ (décision 0162). La note sur Dernier souffle de la fiche n'est pas une mesure du tableau : elle n'a ni cible ni seuil d'alerte (décision 0175). La mesure de l'Essence perdue vise des règles ACTÉ et n'a ni cible ni seuil chiffrés avant les premiers playtests : elle ne passe pas en ACTÉ et n'ouvre pas de question avant que la décision qui fixe sa cible et son seuil d'alerte soit prise (décision 0195). La mesure des PV perdus par un Hero en un tour vise des règles ACTÉ (204.4.5, 205.4.7, 205.5.3, 202.3.7 et 204.1.8) et n'a ni cible ni seuil chiffrés avant les premiers playtests : elle ne passe pas en ACTÉ et n'ouvre pas de question avant que la décision qui fixe sa cible et son seuil d'alerte soit prise (décision 0202). Les mesures du temps de tour, du temps de réponse et de l'inactivité (durée moyenne d'un tour, tours terminés par l'expiration du temps de tour, réponses passées par l'expiration du temps de réponse, défaites par inactivité) visent 209.2.10, 209.4.3 et 209.4.6 (décision 0205) : elles n'ont ni cible ni seuil chiffrés avant les premiers playtests, ces règles restent PROVISOIRE et aucune question ne s'ouvre avant que la décision qui fixe leur cible et leur seuil d'alerte soit prise ; le ressenti du rythme se juge en notes qualitatives, sans cible ni seuil chiffrés en première série (décision 0205). La mesure de la lisibilité du texte des cartes de main n'est pas une mesure du tableau : elle n'a ni cible ni seuil d'alerte, elle ne vise aucune règle des règles complètes, et le bilan de la série dit s'il faut l'ajouter au tableau (décision 0035 du projet, hors ruleset).
 
 ### Lecture de « tour »
 
@@ -187,13 +185,15 @@ Dans le protocole, « tour N » veut dire le N-ième tour de chaque joueur, soit
 
 ### Tableau
 
-Tableau validé tel quel le 16 octobre 2026 (décision 0157), complété le même jour sur ses règles visées par les règles 204.1.12 et 204.1.13 (décision 0163) et sur l'intitulé de la mesure de l'Essence inutilisée (décision 0168), complété le 18 octobre 2026 par la mesure de l'Essence perdue, sans cible ni seuil chiffrés (décision 0195), puis par les mesures de la fenêtre de réponse (décision 0198), dont les définitions sont réécrites le 21 octobre 2026 sans passe automatique ni arrêt du décompte (décision 0199), puis complété le 22 octobre 2026 par la mesure des PV perdus par un Hero en un tour, sans cible ni seuil chiffrés (décision 0202), révisable après la première série par une décision.
+Tableau validé tel quel le 16 octobre 2026 (décision 0157), complété le même jour sur ses règles visées par les règles 204.1.12 et 204.1.13 (décision 0163) et sur l'intitulé de la mesure de l'Essence inutilisée (décision 0168), complété le 18 octobre 2026 par la mesure de l'Essence perdue, sans cible ni seuil chiffrés (décision 0195), puis par les mesures de la fenêtre de réponse (décision 0198), dont les définitions sont réécrites le 21 octobre 2026 sans passe automatique ni arrêt du décompte (décision 0199), puis complété le 22 octobre 2026 par la mesure des PV perdus par un Hero en un tour, sans cible ni seuil chiffrés (décision 0202), puis remplacées le 22 octobre 2026 par les mesures du temps de tour, du temps de réponse et de l'inactivité, sans cible ni seuil chiffrés (décision 0205), révisable après la première série par une décision.
 
 | Mesure | Règles visées | Cible | Seuil d'alerte |
 | --- | --- | --- | --- |
-| Durée moyenne d'une partie | 209.4.3, 204.1.2, 204.1.12, 204.1.13 | 15 min | au-delà de 25 min ou en deçà de 8 min |
-| Parties perdues au temps | 209.4.3, 209.4.3a | 0 ou 1 sur 20 | 3 ou plus |
-| Temps restant en fin de partie (médiane) | 209.4.3 | 2 min ou plus | moins de 1 min |
+| Durée moyenne d'une partie | 209.4.3, 209.4.6, 204.1.2, 204.1.12, 204.1.13 | 15 min | au-delà de 25 min ou en deçà de 8 min |
+| Durée moyenne d'un tour (moyenne) | 209.4.3, 209.4.6 | à fixer après les premiers playtests | à fixer après les premiers playtests |
+| Tours terminés par l'expiration du temps de tour (moyenne par partie) | 209.4.3, 209.4.9 | à fixer après les premiers playtests | à fixer après les premiers playtests |
+| Réponses passées par l'expiration du temps de réponse (moyenne par partie) | 209.4.6, 209.4.10 | à fixer après les premiers playtests | à fixer après les premiers playtests |
+| Défaites par inactivité | 209.2.10 | à fixer après les premiers playtests | à fixer après les premiers playtests |
 | Essence inutilisée, à partir du tour 3 (moyenne) | 203.5.7, 204.1.12, 204.1.13, 204.3.1 | 1 ou moins | 3 ou plus |
 | Essence perdue en fin de tour (moyenne) | 203.6.1, 204.5.7a | à fixer après les premiers playtests | à fixer après les premiers playtests |
 | PV perdus par un Hero en un tour (maximum par partie) | 204.4.5, 205.4.7, 205.5.3, 202.3.7, 204.1.8 | à fixer après les premiers playtests | à fixer après les premiers playtests |
@@ -207,9 +207,7 @@ Tableau validé tel quel le 16 octobre 2026 (décision 0157), complété le mêm
 | Parties décidées le tour d'un recyclage de 3 Sources ou plus | 203.4.2 | moins de 25 % | 25 % ou plus |
 | Parties où un joueur passe 2 tours sans rien jouer | 201.6.1, 201.6.2 | moins de 20 % | 20 % ou plus |
 | Ressemblance entre les parties | 201.6.1, 201.6.2 | notes qualitatives | sans seuil chiffré en première série |
-| Temps de pendule consommé par les fenêtres de réponse (moyenne par partie, version sur écran) | 208.6.2, 209.4.4g | à fixer après les premiers playtests | à fixer après les premiers playtests |
-| Réponses commencées (moyenne par partie, version sur écran) | 208.6.2 | à fixer après les premiers playtests | à fixer après les premiers playtests |
-| Ressenti du rythme (version sur écran) | 208.6.2 | notes qualitatives | sans seuil chiffré en première série |
+| Ressenti du rythme | 209.4.3, 209.4.6 | notes qualitatives | sans seuil chiffré en première série |
 
 ### Définitions propres au protocole
 
@@ -226,11 +224,11 @@ Ces termes ne figurent pas au glossaire. Ils ne valent que pour ce protocole.
 | Moyenne de l'Essence perdue | Moyenne des relevés d'Essence perdue des deux joueurs, sur tous leurs tours (décision 0195). |
 | PV perdus par un Hero en un tour | Total des PV que le Hero d'un joueur perd entre le début du tour du joueur actif (204.3) et la fin de ce tour (après 204.5.7), ou jusqu'à l'arrêt de la partie (209.2.2) si elle s'arrête avant, toutes causes confondues (décision 0202). |
 | Maximum des PV perdus par un Hero en un tour | Plus grande valeur relevée de PV perdus par un Hero en un tour dans une partie, sur les deux Heroes et sur tous les tours (décision 0202). |
-| Temps de pendule consommé par les fenêtres de réponse | Total, pour un joueur et pour une partie, des secondes de pendule qui s'écoulent pendant les fenêtres de réponse qu'on lui montre (208.6.2, 209.4.4g ; décisions 0198 et 0199). |
-| Moyenne du temps de pendule consommé par les fenêtres de réponse | Moyenne, sur les parties de la série jouées dans une version du jeu sur écran, du total des deux joueurs (décision 0198). |
+| Durée moyenne d'un tour | Moyenne, sur les parties de la série, de la durée de la partie divisée par le nombre de tours joués (Durée et Rang du tour de la dernière ligne du relevé ; décision 0205). |
+| Tour terminé par l'expiration du temps de tour | Tour du joueur actif qui se termine selon 209.4.9 (décision 0205). |
+| Réponse passée par l'expiration du temps de réponse | Passe d'un joueur selon 209.4.10 (décision 0205). |
+| Défaite par inactivité | Partie dont la cause de fin est « inactivité » (209.2.10 ; décision 0205). |
 | Aperçu au survol | Carte survolée par le pointeur, affichée en grand dans la colonne de gauche de l'écran, où son texte se lit (décision 0035 du projet, hors ruleset). |
-| Réponse commencée | Réponse que le joueur commence pendant une fenêtre de réponse (208.6.2 ; décisions 0198 et 0199). |
-| Moyenne des réponses commencées | Moyenne, sur les parties de la série jouées dans une version du jeu sur écran, du total des deux joueurs (décision 0198). |
 | Carte jouée | Valeur de la fiche : oui si le joueur a joué au moins une carte de sa main depuis son tour précédent, pendant son tour ou en réponse pendant le tour adverse ; le pouvoir du Hero ne compte pas, la mesure portant sur les cartes du deck (201.6.1 et 201.6.2 ; décision 0168) ; relevée seulement sur la ligne du propre tour du joueur (décision 0173). |
 | Deux tours sans rien jouer | Deux tours consécutifs du même joueur, pendant lesquels la valeur « Carte jouée » de ce joueur est non (décision 0168). |
 | Tour passé à main pleine | Tour d'un joueur à la fin duquel il a 7 cartes en main (201.3.4) ; définition validée par la décision 0161. |
@@ -241,6 +239,7 @@ Ces termes ne figurent pas au glossaire. Ils ne valent que pour ce protocole.
 
 | Règle | Lignes du tableau qui la visent |
 | --- | --- |
+| 201.1.3d | Défaites par inactivité (décision 0205) |
 | 201.3.4 | Tours passés à main pleine |
 | 201.6.1 | Parties où une fatigue apparaît ; Parties où un joueur passe 2 tours sans rien jouer ; Ressemblance entre les parties |
 | 201.6.2 | Parties où un joueur passe 2 tours sans rien jouer ; Ressemblance entre les parties |
@@ -254,11 +253,12 @@ Ces termes ne figurent pas au glossaire. Ils ne valent que pour ce protocole.
 | 204.3.4 | Victoires du premier joueur |
 | 204.3.6 | Tours passés à main pleine |
 | 206.3.3a | Parties bloquées |
-| 208.6.2 | Temps de pendule consommé par les fenêtres de réponse ; Réponses commencées ; Ressenti du rythme (décisions 0198 et 0199) |
 | 206.3.4a | Parties bloquées |
 | 206.3.6 | Parties bloquées |
-| 209.4.3 | Durée moyenne d'une partie ; Parties perdues au temps ; Temps restant en fin de partie |
-| 209.4.3a | Durée moyenne d'une partie ; Parties perdues au temps |
+| 206.4.6c | Défaites par inactivité (décision 0205) |
+| 209.2.10 | Défaites par inactivité (décision 0205) |
+| 209.4.3 | Durée moyenne d'une partie ; Durée moyenne d'un tour ; Tours terminés par l'expiration du temps de tour ; Ressenti du rythme (décision 0205) |
+| 209.4.6 | Durée moyenne d'une partie ; Durée moyenne d'un tour ; Réponses passées par l'expiration du temps de réponse ; Ressenti du rythme (décision 0205) |
 | 209.5.1 | Parties où une fatigue apparaît |
 | 209.5.2 | Parties où une fatigue apparaît |
 | 209.5.3 | Parties où une fatigue apparaît ; Parties finies par la fatigue |
@@ -268,8 +268,10 @@ Ces termes ne figurent pas au glossaire. Ils ne valent que pour ce protocole.
 | Mesure | Champs de la fiche |
 | --- | --- |
 | Durée moyenne d'une partie | Durée |
-| Parties perdues au temps | Cause de fin |
-| Temps restant en fin de partie (médiane) | Temps restant |
+| Durée moyenne d'un tour | Durée, Rang du tour (dernière ligne du relevé) |
+| Tours terminés par l'expiration du temps de tour | Tours terminés par l'expiration du temps de tour |
+| Réponses passées par l'expiration du temps de réponse | Réponses passées par l'expiration du temps de réponse |
+| Défaites par inactivité | Cause de fin |
 | Essence inutilisée | Essence inutilisée (relevée au début du tour), Rang du tour |
 | Essence perdue en fin de tour | Essence perdue (relevée à la fin du tour), Rang du tour |
 | PV perdus par un Hero en un tour (maximum par partie) | PV perdus par chaque Hero pendant le tour (relevés à la fin du tour), Rang du tour |
@@ -283,8 +285,6 @@ Ces termes ne figurent pas au glossaire. Ils ne valent que pour ce protocole.
 | Parties décidées le tour d'un recyclage de 3 Sources ou plus | Sources recyclées, Cause de fin |
 | Parties où un joueur passe 2 tours sans rien jouer | Carte jouée, Rang du tour |
 | Ressemblance entre les parties | Champ libre |
-| Temps de pendule consommé par les fenêtres de réponse | Temps de pendule consommé par les fenêtres de réponse |
-| Réponses commencées | Réponses commencées |
 | Ressenti du rythme | Ressenti du rythme |
 
 ## Points à trancher avant la première série

@@ -90,7 +90,7 @@ Aucun Invariant.
 
 **208.6.1** [ACTÉ] Dans une version du jeu sur écran, le jeu montre une fenêtre de réponse à un joueur chaque fois qu'il peut répondre ou passer (décision 0199 ; voir 208.2.4).
 
-**208.6.2** [PROVISOIRE] La fenêtre de réponse reste ouverte jusqu'à ce que le joueur réponde ou passe (décision 0199 ; valeur : aucune échéance ; à mesurer en playtest : temps de pendule consommé par les fenêtres de réponse, nombre de réponses commencées, ressenti du rythme ; voir 208.6.4 et 209.4.4g).
+**208.6.2** [ACTÉ] La fenêtre de réponse reste ouverte jusqu'à ce que le joueur réponde ou passe (décisions 0199 et 0205 ; voir 208.6.4 et 209.4.10).
 
 **208.6.3** Supprimée en édition 0.38, voir décision 0199.
 

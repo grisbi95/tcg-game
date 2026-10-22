@@ -62,7 +62,9 @@
 
 **206.4.6a** [ACTÉ] Un joueur peut aussi perdre la partie en abandonnant (décision 0058 ; voir 209.2.6).
 
-**206.4.6b** [ACTÉ] Un joueur peut aussi perdre la partie quand son temps est écoulé (décision 0113 ; voir 209.2.8 et 209.4.5).
+**206.4.6b** Supprimée en édition 0.40, voir décision 0205.
+
+**206.4.6c** [PROVISOIRE] Un joueur peut aussi perdre la partie par inactivité (décision 0205 ; valeur : 3 tours d'inactivité ; à mesurer en playtest : défaites par inactivité ; voir 209.2.10).
 
 ## 206.5 Modificateurs et auras
 
