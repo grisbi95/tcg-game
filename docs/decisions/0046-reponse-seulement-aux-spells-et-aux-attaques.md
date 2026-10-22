@@ -38,4 +38,4 @@ Précisions du 23 octobre 2026, décidées par le créateur (ruleset 0.41, déci
 
 ## Références
 
-Ruleset 0.41 (décision de design 0207), 208.2.4, 208.6, 208.6.6 ; décisions 0017 (effets déclenchés en attente, non modifiée), 0029 (modifiée), 0042, 0045 ; roadmap étape 2.7.
+Ruleset 0.41 (décision de design 0207), 208.2.4, 208.6, 208.6.6 ; décisions 0017 (effets déclenchés en attente, non modifiée), 0029 (modifiée), 0042, 0045 ; roadmap étape 2.7b.
