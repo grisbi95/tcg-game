@@ -18,7 +18,7 @@ const FORMAT_VERSION: int = 2
 
 
 ## Une intention acceptée, du temps écoulé, du temps écoulé pendant la fenêtre de réponse de
-## `player`, ou une réponse commencée par `player` (208.6.5).
+## `player`, ou une réponse commencée par `player` (208.6.2).
 class Entry:
 	extends RefCounted
 	var kind: EntryKind = EntryKind.INTENT
@@ -64,7 +64,7 @@ func record_response_window_elapsed(player: DuelState.PlayerSide, elapsed_msec: 
 	_record_time(EntryKind.RESPONSE_WINDOW_TIME, player, elapsed_msec)
 
 
-## 208.6.5, décision 0042 : `player` a commencé une réponse pendant sa fenêtre de réponse.
+## 208.6.2, décision 0042 : `player` a commencé une réponse pendant sa fenêtre de réponse.
 func record_response_begun(player: DuelState.PlayerSide) -> void:
 	var entry := Entry.new()
 	entry.kind = EntryKind.RESPONSE_BEGUN
@@ -90,7 +90,7 @@ func response_window_elapsed_msec(player: DuelState.PlayerSide) -> int:
 	return total_msec
 
 
-## Nombre de réponses que `player` a commencées pendant une fenêtre de réponse (208.6.5).
+## Nombre de réponses que `player` a commencées pendant une fenêtre de réponse (208.6.2).
 func response_begun_count(player: DuelState.PlayerSide) -> int:
 	var count := 0
 	for entry: Entry in entries:

@@ -1,6 +1,6 @@
 # 0036 — Duel local à deux humains : relais, préparation, fin de partie et scène racine
 
-- Statut : acceptée
+- Statut : acceptée ; point 1 modifié par 0043
 - Date : 2026-10-20
 - Décideur : créateur du projet
 - Périmètre : relais, préparation, fin de partie, abandon et scène principale (`ui/`, `app/`, étape 2.4)

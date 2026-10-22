@@ -13,9 +13,8 @@ const AGENT_STEP_MSEC: int = 1_000
 ## Les deux pendules s'épuisent bien avant : l'hôte qui avance sans bloquer atteint ENDED.
 const MAX_HOST_STEPS: int = 5_000
 const UNKNOWN_HERO: StringName = &"unknown_hero"
-const RESPONSE_WINDOW_MSEC: int = 2_000  # 208.6.2
-const SHORT_CLOCK_MSEC: int = 3_000  # 209.4.3 réduite : plus que la fenêtre
-const OVERRUN_MSEC: int = 5_000  # temps écoulé au-delà de l'échéance, plus que la pendule de A
+const SHORT_CLOCK_MSEC: int = 3_000  # 209.4.3 réduite
+const OVERRUN_MSEC: int = 5_000  # temps écoulé fenêtre ouverte, plus que la pendule de B
 const UNIT_COST: int = 2  # CatalogSamples.unit()
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
@@ -137,13 +136,11 @@ func test_decision_0020_each_event_batch_needs_its_confirmation() -> void:
 	assert_int(_host.get_host_state()).is_equal(HOST.ENDED)
 
 
-func test_decision_0020_one_confirmation_per_call_after_pass_and_clock_end() -> void:
+func test_decision_0020_one_confirmation_per_call_after_clock_end_during_the_window() -> void:
 	_reach_window_of_b_with_short_clock()
-	_clock.advance(RESPONSE_WINDOW_MSEC + OVERRUN_MSEC)
-	var labels := EventLog.describe(_host.tick())  # 208.6.3 puis 209.4.5 dans un même appel
-	assert_str(labels[0]).is_equal("PriorityPassed:B")
-	assert_array(labels).contains(["TimeExpired:A", "DuelEnded"])
-	assert_int(labels.find("TimeExpired:A")).is_greater(0)
+	_clock.advance(OVERRUN_MSEC)
+	var labels := EventLog.describe(_host.tick())  # 209.4.4g puis 209.4.5 : aucune passe (208.6.2)
+	assert_array(labels).contains_exactly(["TimeExpired:B", "DuelEnded"])
 	assert_int(_host.get_host_state()).is_equal(HOST.PLAYING_EVENTS)
 	_host.confirm_events_played()
 	assert_int(_host.get_host_state()).is_equal(HOST.ENDED)
@@ -265,9 +262,8 @@ func _reach_first_turn_of_a() -> void:
 	_host.confirm_relay()
 
 
-# 209.4.3 : pendule réduite, assez longue pour que B passe à l'échéance de sa fenêtre (208.6.3) et
-# trop courte pour que A, attendu ensuite, survive au reste du temps écoulé. A a déployé une Unit,
-# B a pris l'appareil et reçoit sa fenêtre de réponse.
+# 209.4.3 : pendule réduite, qui tombe pendant la fenêtre de réponse de B (209.4.4g). A a déployé
+# une Unit, B a pris l'appareil et reçoit sa fenêtre de réponse.
 func _reach_window_of_b_with_short_clock() -> void:
 	var config := DuelConfig.new()
 	config.clock_duration_msec = SHORT_CLOCK_MSEC
@@ -285,7 +281,7 @@ func _reach_window_of_b_with_short_clock() -> void:
 	assert_bool(is_deployed).is_true()
 	_host.confirm_events_played()
 	_host.confirm_relay()
-	assert_bool(_host.is_response_window_running()).is_true()
+	assert_bool(_host.is_response_window_open()).is_true()
 	assert_int(_host.get_awaited_player()).is_equal(B)
 
 

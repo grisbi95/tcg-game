@@ -29,7 +29,6 @@ const DEV_DECK_SIZE: int = 12
 ## puis la fatigue commence (209.5).
 const FATIGUE_DECK_SIZE: int = 6
 const FATIGUE_OPENING_HAND_SIZE: int = 2
-const DEV_RESPONSE_WINDOW_MSEC: int = 120_000
 const SEED_LIMIT: int = 60
 const MAX_TURNS_TO_FATIGUE: int = 8
 ## CARTE D'ESSAI, pour l'outil de développement seulement : un Building dont la fin du tour
@@ -38,7 +37,7 @@ const MAX_TURNS_TO_FATIGUE: int = 8
 ## `data/cards/` et des decks de test du ruleset, elle ne doit jamais y entrer.
 const BEACON_ID: StringName = &"essai_balise"
 const BEACON_JSON: String = """{
-	"edition": "0.37",
+	"edition": "0.38",
 	"cards": [{
 		"id": "essai_balise", "name": "Balise (essai)", "cost": 1, "type": "building", "force": 4,
 		"text": "Fin du tour : une pièce alliée ciblée a +1 Force jusqu'à la fin du tour.",
@@ -130,7 +129,6 @@ static func _make_config(spec: ScenarioSpec) -> DuelConfig:
 	config.deck_size = spec.deck_size
 	config.max_copies_per_card = spec.deck_size
 	config.opening_hand_size = spec.opening_hand_size
-	config.response_window_msec = DEV_RESPONSE_WINDOW_MSEC
 	return config
 
 

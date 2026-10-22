@@ -10,8 +10,8 @@ extends RefCounted
 
 signal intent_chosen(intent: DuelIntent)
 signal selection_changed
-## 208.6.5, décision 0029 : le joueur qui peut répondre ou passer a choisi une carte ou pressé
-## une Source ; l'écran le transmet à DuelHost, qui arrête le décompte de sa fenêtre de réponse.
+## 208.6.2, décision 0042 : le joueur qui peut répondre ou passer a choisi une carte ou pressé
+## une Source ; l'écran le transmet à DuelHost, qui le note au journal pour le relevé.
 signal response_started
 
 ## Enum journalisable : ajouter à la fin, sans réordonner.

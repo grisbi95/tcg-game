@@ -88,18 +88,18 @@ Aucun Invariant.
 
 ## 208.6 Fenêtre de réponse
 
-**208.6.1** [ACTÉ] Dans une version du jeu sur écran, le jeu montre une fenêtre de réponse à un joueur chaque fois qu'il peut répondre ou passer (décision 0198 ; voir 208.2.4).
+**208.6.1** [ACTÉ] Dans une version du jeu sur écran, le jeu montre une fenêtre de réponse à un joueur chaque fois qu'il peut répondre ou passer (décision 0199 ; voir 208.2.4).
 
-**208.6.2** [PROVISOIRE] La fenêtre de réponse dure 2 secondes (décision 0198 ; à mesurer en playtest : temps de pendule consommé par les fenêtres de réponse, nombre de réponses commencées, ressenti du rythme ; voir 208.6.1).
+**208.6.2** [PROVISOIRE] La fenêtre de réponse reste ouverte jusqu'à ce que le joueur réponde ou passe (décision 0199 ; valeur : aucune échéance ; à mesurer en playtest : temps de pendule consommé par les fenêtres de réponse, nombre de réponses commencées, ressenti du rythme ; voir 208.6.4 et 209.4.4g).
 
-**208.6.3** [ACTÉ] Un joueur qui ne fait rien pendant la durée de la fenêtre de réponse passe automatiquement (décision 0198 ; voir 208.3.1 et 208.6.2).
+**208.6.3** Supprimée en édition 0.38, voir décision 0199.
 
-**208.6.4** [ACTÉ] Un joueur peut passer avant la fin de la fenêtre de réponse (décision 0198 ; voir 208.6.1).
+**208.6.4** [ACTÉ] Un joueur peut passer à tout moment pendant la fenêtre de réponse (décision 0199 ; voir 208.6.1).
 
-**208.6.5** [ACTÉ] Le décompte de la fenêtre de réponse s'arrête quand le joueur commence une réponse (décision 0198 ; voir 208.2.3 et 208.6.2).
+**208.6.5** Supprimée en édition 0.38, voir décision 0199.
 
-**208.6.5a** [ACTÉ] Un joueur dont le décompte s'est arrêté selon 208.6.5 doit répondre ou passer lui-même (décision 0198 ; voir 208.6.5).
+**208.6.5a** Supprimée en édition 0.38, voir décision 0199.
 
-**208.6.6** [ACTÉ] La fenêtre de réponse est la même pour tout joueur, qu'il ait ou non une Réaction jouable (décision 0198 ; voir 207.1.6).
+**208.6.6** [ACTÉ] La fenêtre de réponse est la même pour tout joueur, qu'il ait ou non une Réaction jouable (décision 0199 ; voir 207.1.6).
 
-**208.6.7** [ACTÉ] La fenêtre de réponse ne s'applique qu'au moment où un joueur peut répondre ou passer (décision 0198 ; voir 208.6.1).
+**208.6.7** [ACTÉ] La fenêtre de réponse ne s'applique qu'au moment où un joueur peut répondre ou passer (décision 0199 ; voir 208.6.1).

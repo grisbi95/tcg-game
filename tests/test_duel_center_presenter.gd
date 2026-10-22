@@ -1,16 +1,15 @@
 # gdlint: disable=max-public-methods
 
 extends GdUnitTestSuite
-## DuelCenterPresenter sans scène : centre de la colonne, pendules et décompte de la fenêtre de
-## réponse (décisions 0021, 0029 et 0032). `ColumnSpy` tient lieu de `DuelColumnView`.
+## DuelCenterPresenter sans scène : centre de la colonne, pendules et mention de la fenêtre de
+## réponse (ruleset 0.38 ; décisions 0021, 0029 et 0032). `ColumnSpy` tient lieu de
+## `DuelColumnView`.
 ##
 ## Deux montages : un état construit à la main pour le centre et les pendules ; un duel mené par
-## `DuelHost` et `ManualClock` pour le décompte, qui lit l'hôte. Dans le second, A déploie une
+## `DuelHost` et `ManualClock` pour la fenêtre, qui lit l'hôte. Dans le second, A déploie une
 ## Unit à son premier tour ; B, qui peut alors répondre ou passer, reçoit sa fenêtre (208.6.1).
 
-const RESPONSE_WINDOW_MSEC: int = 2_000  # 208.6.2, décision 0029 : PROVISOIRE
-const LONG_WINDOW_MSEC: int = 3_500  # fenêtre d'une configuration autre que celle par défaut
-const ELAPSED_MSEC: int = 500  # temps écoulé dans la fenêtre avant une relecture
+const LONG_WAIT_MSEC: int = 60_000  # fenêtre laissée ouverte longtemps (208.6.2)
 const HANDOVER_MSEC: int = 5_000  # temps passé à se passer l'appareil
 const CLOCK_A_MSEC: int = 300_000
 const CLOCK_B_MSEC: int = 450_000
@@ -188,57 +187,34 @@ func test_decision_0021_clocks_are_read_again_at_each_frame() -> void:
 	assert_int(_spy.clock_a_msec).is_equal(CLOCK_A_MSEC - CLOCK_STEP_MSEC)
 
 
-# --- Décompte de la fenêtre de réponse (décision 0029) ---
+# --- Fenêtre de réponse (208.6, décision 0029) ---
 
 
-func test_decision_0029_countdown_is_shown_under_pass_as_soon_as_the_stack_is_shown() -> void:
+func test_208_6_1_open_window_is_shown_under_pass_as_soon_as_the_stack_is_shown() -> void:
 	_reach_answer_of_b(DuelConfig.new())
 	_show_center_of_duel(B)
-	assert_array(_spy.calls).contains_exactly(["show_stack", "show_response_time"])
-	assert_int(_spy.response_time_left_msec).is_equal(RESPONSE_WINDOW_MSEC)
-	assert_int(_spy.response_window_msec).is_equal(RESPONSE_WINDOW_MSEC)
+	assert_array(_spy.calls).contains_exactly(["show_stack", "show_response_open"])
 
 
-func test_decision_0029_countdown_is_read_from_the_host_at_each_frame() -> void:
-	_reach_answer_of_b(DuelConfig.new())
-	_show_center_of_duel(B)
-	_clock.advance(ELAPSED_MSEC)
-	_presenter.refresh_response_countdown()
-	assert_int(_spy.count_calls("show_response_time")).is_equal(2)
-	assert_int(_spy.response_time_left_msec).is_equal(RESPONSE_WINDOW_MSEC - ELAPSED_MSEC)
-	assert_int(_spy.response_window_msec).is_equal(RESPONSE_WINDOW_MSEC)
-
-
-func test_decision_0029_window_length_comes_from_the_configuration() -> void:
-	var config := DuelConfig.new()
-	config.response_window_msec = LONG_WINDOW_MSEC
-	_reach_answer_of_b(config)
-	_show_center_of_duel(B)
-	assert_int(_spy.response_time_left_msec).is_equal(LONG_WINDOW_MSEC)
-	assert_int(_spy.response_window_msec).is_equal(LONG_WINDOW_MSEC)
-
-
-func test_decision_0029_started_response_stops_the_countdown_display() -> void:
+func test_208_6_2_window_stays_the_same_after_a_response_begins() -> void:
 	_reach_answer_of_b(DuelConfig.new())
 	_show_center_of_duel(B)
 	_host.begin_response()
-	_presenter.refresh_response_countdown()
-	assert_array(_spy.calls).contains_exactly(
-		["show_stack", "show_response_time", "show_response_stopped"]
-	)
+	_presenter.refresh_response_window()
+	assert_int(_spy.count_calls("hide_response")).is_equal(0)
+	assert_str(_spy.calls[-1]).is_equal("show_response_open")
 
 
-func test_decision_0029_stopped_countdown_stays_stopped_while_time_passes() -> void:
+func test_208_6_2_window_stays_the_same_after_a_long_wait() -> void:
 	_reach_answer_of_b(DuelConfig.new())
 	_show_center_of_duel(B)
-	_host.begin_response()
-	_clock.advance(RESPONSE_WINDOW_MSEC)
-	_presenter.refresh_response_countdown()
-	assert_int(_spy.count_calls("show_response_time")).is_equal(1)
-	assert_int(_spy.count_calls("show_response_stopped")).is_equal(1)
+	_clock.advance(LONG_WAIT_MSEC)
+	_presenter.refresh_response_window()
+	assert_int(_spy.count_calls("hide_response")).is_equal(0)
+	assert_str(_spy.calls[-1]).is_equal("show_response_open")
 
 
-func test_decision_0029_no_countdown_while_events_are_played() -> void:
+func test_208_6_1_no_window_while_events_are_played() -> void:
 	_reach_first_turn_of_a()
 	_deploy_from_a()
 	assert_int(_host.get_host_state()).is_equal(HOST.PLAYING_EVENTS)
@@ -246,27 +222,27 @@ func test_decision_0029_no_countdown_while_events_are_played() -> void:
 	assert_array(_spy.calls).contains_exactly(["show_stack", "hide_response"])
 
 
-func test_decision_0029_no_countdown_during_the_handover() -> void:
+func test_208_6_1_no_window_during_the_handover() -> void:
 	_reach_first_turn_of_a()
 	_deploy_from_a()
 	_host.confirm_events_played()
 	assert_int(_host.get_host_state()).is_equal(HOST.RELAY)
 	_show_center_of_duel(A)
 	_clock.advance(HANDOVER_MSEC)
-	_presenter.refresh_response_countdown()
+	_presenter.refresh_response_window()
 	assert_array(_spy.calls).contains_exactly(["show_stack", "hide_response", "hide_response"])
 
 
-func test_decision_0029_countdown_is_left_alone_when_the_stack_is_not_shown() -> void:
+func test_208_6_1_window_is_left_alone_when_the_stack_is_not_shown() -> void:
 	_use_built_state()
 	_presenter.show_center(DuelViewModel.new(_engine.get_state(), _catalog, A), _shown())
-	_presenter.refresh_response_countdown()
+	_presenter.refresh_response_window()
 	assert_array(_spy.calls).contains_exactly(["show_turn"])
 
 
-func test_decision_0029_countdown_is_left_alone_before_any_center_is_shown() -> void:
+func test_208_6_1_window_is_left_alone_before_any_center_is_shown() -> void:
 	_use_built_state()
-	_presenter.refresh_response_countdown()
+	_presenter.refresh_response_window()
 	assert_array(_spy.calls).is_empty()
 
 

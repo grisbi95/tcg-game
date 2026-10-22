@@ -1,8 +1,8 @@
 class_name DuelCenterPresenter
 extends RefCounted
 ## Centre et pendules de la colonne de duel (décisions 0021, 0029 et 0032) : choisit ce que la
-## colonne montre d'après l'état du moteur, et relit à chaque image la pendule et le décompte de la
-## fenêtre de réponse, qui avancent au temps réel sans événement. Aucune règle ici.
+## colonne montre d'après l'état du moteur, et relit à chaque image la pendule, qui avance au
+## temps réel sans événement. Aucune règle ici.
 
 var _column: DuelColumnView
 var _engine: DuelEngine
@@ -29,7 +29,7 @@ func show_center(model: DuelViewModel, shown: SelectionSnapshot) -> void:
 			_column.show_stack(
 				lines, shown.legal_stack_entry_ids, state.priority_player, shown.can_pass
 			)
-			refresh_response_countdown()
+			refresh_response_window()
 		DuelColumnView.CenterState.MULLIGAN:
 			_column.show_mulligan(model.get_viewer(), shown.can_confirm)
 		DuelColumnView.CenterState.CHOICE:
@@ -49,19 +49,16 @@ func refresh_clocks() -> void:
 	)
 
 
-## Décision 0029 : le décompte de la fenêtre de réponse se lit auprès de l'hôte à chaque image,
-## tant que le joueur peut répondre ; la colonne ne se redessine que si l'affichage change.
-func refresh_response_countdown() -> void:
+## Décision 0029 : la mention de la fenêtre de réponse (208.6.1) se montre sous la pile tant que
+## l'hôte attend un humain qui peut répondre ou passer ; elle n'a pas d'échéance (208.6.2).
+func refresh_response_window() -> void:
 	if _center_state != DuelColumnView.CenterState.STACK:
 		return
-	if _host.get_host_state() != DuelHost.HostState.AWAITING_HUMAN:
-		_column.hide_response()
-		return
-	if _host.is_response_window_running():
-		var window_msec := _engine.get_state().config.response_window_msec
-		_column.show_response_time(_host.get_response_time_left_msec(), window_msec)
+	var is_awaiting_human := _host.get_host_state() == DuelHost.HostState.AWAITING_HUMAN
+	if is_awaiting_human and _host.is_response_window_open():
+		_column.show_response_open()
 	else:
-		_column.show_response_stopped()
+		_column.hide_response()
 
 
 # Décision 0032, point 6 : l'ordre des effets déclenchés se choisit dans la pile, leurs rangs

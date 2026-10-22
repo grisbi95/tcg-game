@@ -67,13 +67,12 @@ func _ready() -> void:
 	_connect_overlays()
 
 
-# Décisions 0021 et 0029 : le temps réel avance sans événement ; pendule et décompte se relisent.
+# Décision 0021 : le temps réel avance sans événement ; la pendule se relit.
 func _process(_delta: float) -> void:
 	if _host == null or _engine.get_state() == null:
 		return
 	_event_player.play(_host.tick())
 	_center.refresh_clocks()
-	_center.refresh_response_countdown()
 
 
 ## Démarre le duel de `duel_setup`, une seule fois, après l'entrée de l'écran dans l'arbre.
@@ -204,6 +203,7 @@ func _on_intent_chosen(intent: DuelIntent) -> void:
 func _on_host_state_changed(host_state: DuelHost.HostState) -> void:
 	_input_shield.visible = host_state != DuelHost.HostState.AWAITING_HUMAN
 	_refresh_overlays(host_state)
+	_center.refresh_response_window()
 	match host_state:
 		DuelHost.HostState.RELAY:
 			_start_relay()
@@ -225,21 +225,16 @@ func _refresh_overlays(host_state: DuelHost.HostState) -> void:
 	_refresh_concede_button()
 
 
-# 208.6.5 : la réponse commencée arrête le décompte ; le bouton Abandonner peut reparaître.
+# Décision 0042 : la réponse commencée est notée au journal pour le relevé ; la fenêtre reste
+# ouverte (208.6.2).
 func _on_response_started() -> void:
 	_host.begin_response()
-	_refresh_concede_button()
 
 
-# Décision 0036 : « Abandonner » est pour le joueur qui a l'appareil, en AWAITING_HUMAN, et reste
-# caché tant que sa fenêtre de réponse décompte (208.6) : la passe automatique fermerait la
-# confirmation sans rien dire. La fenêtre s'ouvre juste avant le passage en AWAITING_HUMAN.
+# Décision 0036 : « Abandonner » est pour le joueur qui a l'appareil, en AWAITING_HUMAN, fenêtre
+# de réponse ouverte ou non (208.6.2) : aucune passe automatique ne ferme la confirmation.
 func _refresh_concede_button() -> void:
-	var can_concede := (
-		_host.get_host_state() == DuelHost.HostState.AWAITING_HUMAN
-		and not _host.is_response_window_running()
-	)
-	if can_concede:
+	if _host.get_host_state() == DuelHost.HostState.AWAITING_HUMAN:
 		_column.show_concede(_host.get_screen_player())
 	else:
 		_column.hide_concede()

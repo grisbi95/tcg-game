@@ -21,8 +21,6 @@ var ended_text: String = ""
 var clock_a_msec: int = 0
 var clock_b_msec: int = 0
 var clock_owners: Array[DuelState.PlayerSide] = []
-var response_time_left_msec: int = 0
-var response_window_msec: int = 0
 
 
 func count_calls(call_name: String) -> int:
@@ -78,14 +76,8 @@ func show_ended(result_text: String) -> void:
 	ended_text = result_text
 
 
-func show_response_time(time_left_msec: int, window_msec: int) -> void:
-	calls.append("show_response_time")
-	response_time_left_msec = time_left_msec
-	response_window_msec = window_msec
-
-
-func show_response_stopped() -> void:
-	calls.append("show_response_stopped")
+func show_response_open() -> void:
+	calls.append("show_response_open")
 
 
 func hide_response() -> void:

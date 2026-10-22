@@ -253,7 +253,7 @@ func test_decision_0024_gestures_never_change_the_engine_state() -> void:
 		assert_int(_engine.validate(intent)).is_equal(IntentRejected.RejectReason.NONE)
 
 
-func test_208_6_5_reaction_card_chosen_starts_the_response() -> void:
+func test_208_6_2_reaction_card_chosen_starts_the_response() -> void:
 	var card_id := _builder.add_to_hand(B, FREE_SPELL)
 	_answer_spell_of_a()
 	_selection.press_card(card_id)
@@ -261,14 +261,14 @@ func test_208_6_5_reaction_card_chosen_starts_the_response() -> void:
 	assert_int(_response_start_count).is_equal(1)
 
 
-func test_208_6_5_response_signal_comes_before_the_answer() -> void:
+func test_208_6_2_response_signal_comes_before_the_answer() -> void:
 	var card_id := _builder.add_to_hand(B, FREE_SPELL)
 	_answer_spell_of_a()
 	_selection.press_card(card_id)
 	assert_array(_signal_order).contains_exactly(["response_started", "intent_chosen"])
 
 
-func test_208_6_5_targeted_reaction_starts_the_response() -> void:
+func test_208_6_2_targeted_reaction_starts_the_response() -> void:
 	var unit_id := _builder.place_piece(B, Piece.PieceKind.UNIT, _cell(UNIT_CELL), UNIT)
 	var card_id := _builder.add_to_hand(B, FREE_TARGETED_SPELL)
 	_answer_spell_of_a()
@@ -279,7 +279,7 @@ func test_208_6_5_targeted_reaction_starts_the_response() -> void:
 	assert_array(_emitted).is_empty()
 
 
-func test_208_6_5_unplayable_card_starts_nothing() -> void:
+func test_208_6_2_unplayable_card_starts_nothing() -> void:
 	var unit_id := _builder.add_to_hand(B, UNIT)  # un déploiement n'est pas une Réaction
 	var dear_id := _builder.add_to_hand(B, PLAIN_SPELL)  # coût 1, aucune Source payée
 	_answer_spell_of_a()
@@ -290,13 +290,13 @@ func test_208_6_5_unplayable_card_starts_nothing() -> void:
 	assert_int(_selection.snapshot().selection_state).is_equal(SELECTION.IDLE)
 
 
-func test_208_6_5_source_pressed_starts_the_response() -> void:
+func test_208_6_2_source_pressed_starts_the_response() -> void:
 	_answer_spell_of_a()
 	_selection.press_source(false)
 	assert_int(_response_start_count).is_equal(1)
 
 
-func test_208_6_5a_cancel_does_not_restart_anything() -> void:
+func test_208_6_2_cancel_does_not_restart_anything() -> void:
 	_answer_spell_of_a()
 	_selection.press_source(false)
 	_selection.press_cancel()

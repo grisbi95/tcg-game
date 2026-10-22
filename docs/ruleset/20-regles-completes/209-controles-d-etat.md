@@ -74,7 +74,7 @@ Aucun Invariant.
 
 **209.4.4f** [ACTÉ] La pendule d'un joueur dont les règles attendent une décision tourne aussi pendant le passage de l'appareil d'un joueur à l'autre et pendant l'affichage des effets, dans une version du jeu sur écran (décision 0187 ; voir 209.4.2 et 209.4.4).
 
-**209.4.4g** [ACTÉ] La pendule d'un joueur tourne pendant la fenêtre de réponse qu'on lui montre (décision 0198 ; voir 208.6.1 et 209.4.4b).
+**209.4.4g** [ACTÉ] La pendule d'un joueur tourne pendant la fenêtre de réponse qu'on lui montre (décision 0199 ; voir 208.6.1 et 209.4.4b).
 
 **209.4.5** [ACTÉ] Le temps d'un joueur est écoulé quand sa pendule atteint 0 minute (décision 0113 ; voir 209.4.3 et 209.2.8).
 

@@ -54,7 +54,7 @@
 | Entrée de la pile | Annonce ou effet déclenché qui se trouve sur la pile, et qui appartient au joueur qui a fait l'annonce ou, pour un effet déclenché, au joueur de 207.3.4 ou de 207.3.4a ; voir 201.3.7, 201.5.4, 202.4.6, 208.1.1 et 208.2.4. | |
 | Essence | Ressource du jeu ; voir 203.1.1, 203.3.1 et 203.3.3. | |
 | Exemplaire | Chacune des cartes qui portent le même nom ; voir 201.6.2. | |
-| Fenêtre de réponse | Dans une version du jeu sur écran, affichage montré à un joueur chaque fois qu'il peut répondre ou passer, qui le fait passer automatiquement s'il ne fait rien pendant sa durée ; voir 208.6.1, 208.6.2, 208.6.3, 208.6.4, 208.6.5, 208.6.5a, 208.6.6 et 208.6.7. | |
+| Fenêtre de réponse | Dans une version du jeu sur écran, affichage montré à un joueur chaque fois qu'il peut répondre ou passer, qui reste ouvert jusqu'à ce qu'il réponde ou passe ; voir 208.6.1, 208.6.2, 208.6.4, 208.6.6, 208.6.7 et 209.4.4g. | |
 | Fin du tour | Dernière partie du tour, qui commence quand le joueur actif termine son tour et précède le début du tour de son adversaire ; voir 204.4.7 et 204.5.3. | |
 | Fonte | Emplacement propre à chaque joueur, qui accueille ses Sources recyclées ; voir 203.5.2, 203.5.3, 203.5.4 et 203.5.6. | |
 | Force | Statistique de combat des Units et des Buildings ; voir 202.1.5, 202.1.6, 202.4.9, 206.2.2, 206.2.3 et 209.1.1. | |
@@ -78,7 +78,7 @@
 | Mulligan | Remplacement, une seule fois, de cartes de sa main par des cartes de son deck ; voir 204.2.1, 204.2.4, 204.2.5 et 204.2.13. | |
 | Partie | Affrontement qui oppose deux joueurs. | |
 | Partie nulle | Issue d'une partie qui s'arrête sans vainqueur ; voir 201.1.2a, 201.1.2b, 209.2.8a et 209.3.1. | |
-| Passer | Renoncer à répondre ; voir 208.2.4, 208.3.1, 208.3.1a et 208.6.3. | |
+| Passer | Renoncer à répondre ; voir 208.2.4, 208.3.1, 208.3.1a et 208.6.4. | |
 | Passif | Effet statique d'un Hero ; voir Effet statique, 202.3.11 et 202.3.18. | |
 | Payer | Fournir l'Essence qu'exige un coût ; voir 203.2.4, 203.3.1, 203.3.2, 203.3.2a, 203.3.2b et 203.3.3. | |
 | Pendule | Temps dont dispose chaque joueur pour toute la partie, qui ne tourne que quand les règles attendent une décision de lui ; voir 209.4.1, 209.4.2, 209.4.2d, 209.4.3, 209.4.4, 209.4.4f et 209.4.4g. | |

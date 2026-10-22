@@ -2,16 +2,16 @@
 
 > **Rôle** : plan unique du projet : périmètre, jalons, étapes et état. Les règles font foi dans [ruleset/](ruleset/README.md) ; l'architecture dans [decisions/](decisions/).
 
-**État actuel (21 octobre 2026)** : jalons J0 et J1 terminés ; J2 en cours, étapes 2.1 à 2.4 fusionnées (PR 11 à 16), assainissement terminé le 21 octobre 2026 (PR 17 à 30, décisions 0038 à 0041), étape 2.5 terminée le 21 octobre 2026 (`PlaytestRecorder`, journal au format 2, décision 0042 ; branche `feat/2.5-playtest-recorder`, PR à ouvrir par `/pr`). Prochaine action : étape 2.6 (export Web, CI, GitHub Pages) ; à vérifier à cette étape : le téléchargement de la fiche par le navigateur. Décision à prendre avec 2.6 : dépôt public ou privé pour GitHub Pages (0005, 0039). Dettes techniques dans [backlog.md](backlog.md) (0038) ; questions de règles dans [ruleset/02-questions-ouvertes.md](ruleset/02-questions-ouvertes.md).
+**État actuel (21 octobre 2026)** : jalons J0 et J1 terminés ; J2 en cours, étapes 2.1 à 2.5 fusionnées (PR 11 à 16 et 32, assainissement PR 17 à 30, décisions 0038 à 0042). Correction de cap du 21 octobre 2026 : le premier playtest se joue à distance entre deux navigateurs (décision 0043) ; la fenêtre de réponse n'a plus d'échéance (ruleset 0.38, décision de design 0199), propagée à l'hôte, à l'écran et aux tests. Étape 2.6 terminée le 21 octobre 2026 sur la branche `feat/2.6-export-web` (PR à ouvrir par `/pr`) : export Web vérifié dans le navigateur, fiche CSV téléchargée, dépôt public, GitHub Pages activé (source GitHub Actions, <https://grisbi95.github.io/tcg-game/>) ; à vérifier à la fusion : le déploiement par la CI et la page en ligne. Prochaine action : étape 2.7 (duel à distance) ; décision à prendre avec 2.7 : forme du relais WebSocket et son hébergement (0043). Dettes techniques dans [backlog.md](backlog.md) (0038) ; questions de règles dans [ruleset/02-questions-ouvertes.md](ruleset/02-questions-ouvertes.md).
 
 ## Périmètre
 
 | Sujet | Décision |
 | --- | --- |
 | Plateformes | Web d'abord (playtests), desktop pour développer. |
-| Mode de jeu V1 | Duel local à deux joueurs sur un écran avec relais ; IA simple au J4. |
+| Mode de jeu V1 | Duel à deux joueurs humains : sur un même écran avec relais (0036), ou à distance entre deux navigateurs par un relais WebSocket, l'hôte dans le navigateur du créateur de la partie (0043) ; IA simple au J4. |
 | Catalogue | Les decks de test du ruleset (`ruleset/70-playtest/decks-de-test.md`), puis `50-cartes/` quand il existera. |
-| Hors périmètre | Réseau, comptes, matchmaking, classement, collection, boutique, IA avancée, mobile. Décision après J3. |
+| Hors périmètre | Serveur de jeu autoritaire et mains cachées par l'architecture (0043), comptes, matchmaking, classement, collection, boutique, IA avancée, mobile. Décision après J3. |
 
 ## J0 — Amorçage
 
@@ -45,10 +45,11 @@ Chaque étape : règles lues, décision si système nouveau, implémentation par
 
 - [x] 2.1 `AppEvents`, `DuelHost`, horloge réelle, machine à états de l'hôte ; journal et replay (test de non-régression). Décisions 0020 à 0022.
 - [x] 2.2 Composants de vue et scènes d'essai ; `DuelSelection` testé sans scène. Décisions 0023 à 0026.
-- [x] 2.3 Écran de duel selon les décisions 0027 à 0035 : plateau, mains, Sources, pile (affichée seulement quand elle n'est pas vide), pendules, cases légales ; pas de journal à l'écran (`DuelJournal`, décision 0022, reste pour le replay et les fiches de playtest) ; fenêtre de réponse de 2 s (208.6, décision de design 0198), dans l'hôte (décision 0029).
+- [x] 2.3 Écran de duel selon les décisions 0027 à 0035 : plateau, mains, Sources, pile (affichée seulement quand elle n'est pas vide), pendules, cases légales ; pas de journal à l'écran (`DuelJournal`, décision 0022, reste pour le replay et les fiches de playtest) ; fenêtre de réponse de 2 s (208.6, décision de design 0198 ; sans échéance depuis le ruleset 0.38, décision de design 0199), dans l'hôte (décision 0029).
 - [x] 2.4 Relais entre joueurs locaux, préparation (decks, graine, mulligan), fin de partie ; scène principale. Décisions 0036 et 0037.
 - [x] 2.5 `PlaytestRecorder` : fiche de relevé du protocole en CSV téléchargeable, lue dans le journal rejoué (format 2 : temps des fenêtres de réponse et réponses commencées) ; bouton « Fiche CSV » du panneau de fin. Décision 0042.
-- [ ] 2.6 Export Web (preset, threads désactivés), job CI, GitHub Pages. **Sortie** : deux joueurs terminent un duel dans le navigateur, fiche produite.
+- [x] 2.6 Export Web (preset, threads désactivés, filtres d'export), job CI, GitHub Pages sur dépôt public (0005, 0043). **Sortie** : deux joueurs terminent un duel sur un même appareil dans le navigateur, fiche CSV téléchargée.
+- [ ] 2.7 Duel à distance (0043) : relais WebSocket sans règle, code de partie, écran « Créer / Rejoindre », second écran qui affiche les événements reçus ; le mode même appareil reste. **Sortie** : deux joueurs sur deux ordinateurs terminent un duel dans leur navigateur, fiche produite chez le créateur de la partie.
 
 ## J3 — Premier playtest
 

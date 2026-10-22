@@ -3,7 +3,8 @@ extends RefCounted
 ## Valeurs des règles PROVISOIRE, une par règle (décisions 0001 et 0007).
 ##
 ## Les valeurs par défaut sont celles de l'édition 0.28 du ruleset. Lecture seule pendant un
-## duel : `DuelState.clone()` partage cette instance.
+## duel : `DuelState.clone()` partage cette instance. Exception : 208.6.2 (fenêtre de réponse
+## sans échéance depuis l'édition 0.38) n'a pas de valeur chiffrée, donc aucun champ ici.
 
 ## 203.4.2 : valeur de `max_recycles_per_turn` quand le nombre de recyclages n'est pas borné.
 const UNLIMITED_RECYCLES: int = -1
@@ -23,7 +24,6 @@ var cards_drawn_per_turn: int = 2  # 204.3.6
 ## 206.3.6, dont 206.3.3a et 206.3.4a portent le statut : option A de la décision 0053 du
 ## ruleset, seule définie par les règles ; `find_errors()` refuse toute autre valeur.
 var tie_destroys_both: bool = true
-var response_window_msec: int = 2_000  # 208.6.2 : 2 secondes, décomptées par DuelHost (0029)
 var clock_duration_msec: int = 600_000  # 209.4.3 : 10 minutes
 var clock_bonus_msec: int = 0  # 209.4.3a
 var starting_fatigue: int = 0  # 209.5.1
