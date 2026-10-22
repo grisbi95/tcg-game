@@ -1,7 +1,7 @@
 class_name DuelCenterPresenter
 extends RefCounted
-## Centre et pendules de la colonne de duel (décisions 0021, 0029 et 0032) : choisit ce que la
-## colonne montre d'après l'état du moteur, et relit à chaque image la pendule, qui avance au
+## Centre et temps de la colonne de duel (décisions 0021, 0029, 0032 et 0045) : choisit ce que la
+## colonne montre d'après l'état du moteur, et relit à chaque image les temps, qui avancent au
 ## temps réel sans événement. Aucune règle ici.
 
 var _column: DuelColumnView
@@ -38,15 +38,22 @@ func show_center(model: DuelViewModel, shown: SelectionSnapshot) -> void:
 			_column.show_ended(DuelViewModel.result_text(state.result))
 
 
-## Décision 0021 : la pendule est relue à chaque image sans événement ; la colonne ne redessine
-## une pendule que si ses secondes changent.
+## Décision 0021 : les temps sont relus à chaque image sans événement ; la colonne ne redessine un
+## temps que si son affichage change. Chaque joueur voit le temps qui compte pour lui
+## (`clock_kind`), et le joueur actif garde son temps de tour en pause tant que la pile n'est pas
+## vide (209.4.8a).
 func refresh_clocks() -> void:
 	var state := _engine.get_state()
-	_column.show_clocks(
-		state.get_player(DuelState.PlayerSide.A).clock_remaining_msec,
-		state.get_player(DuelState.PlayerSide.B).clock_remaining_msec,
-		_engine.clock_owners()
-	)
+	var running_owners := _engine.clock_owners()
+	for side: DuelState.PlayerSide in DuelState.SIDES:
+		var kind := _engine.clock_kind(side)
+		var remaining_msec := _engine.running_time_remaining_msec(side)
+		var paused_msec := ClockReading.NO_PAUSED_TURN
+		if _engine.is_turn_time_paused(side):
+			paused_msec = state.get_player(side).turn_time_remaining_msec
+		_column.show_clock(
+			side, ClockReading.new(kind, remaining_msec, running_owners.has(side), paused_msec)
+		)
 
 
 ## Décision 0029 : la mention de la fenêtre de réponse (208.6.1) se montre sous la pile tant que

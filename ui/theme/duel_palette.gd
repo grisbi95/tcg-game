@@ -24,7 +24,7 @@ enum ButtonState {
 const PLAYER_A_COLOR := Color("2f7fd8")
 ## Décision 0027 : le rouge ne sert qu'au joueur B.
 const PLAYER_B_COLOR := Color("d23a3a")
-## Fond et texte aux couleurs du joueur : pendules, Sources.
+## Fond et texte aux couleurs du joueur : temps des joueurs, Sources.
 const PLAYER_A_SOFT := Color("2a3a52")
 const PLAYER_B_SOFT := Color("4a2a2e")
 const PLAYER_A_INK := Color("9cc6f2")
@@ -55,7 +55,7 @@ const SCRIM_COLOR := Color(0.06, 0.07, 0.09, 0.72)
 ## Écart de luminosité du grand bouton survolé (plus clair) et pressé (plus sombre).
 const BUTTON_HOVER_LIGHTEN: float = 0.12
 const BUTTON_PRESSED_DARKEN: float = 0.12
-## Décision 0028 : Source inclinée et pendule arrêtée estompées.
+## Décision 0028 : Source inclinée et temps qui ne s'écoule pas estompés.
 const DIMMED_ALPHA: float = 0.55
 
 const TINT_BACKGROUNDS: Dictionary[Tint, Color] = {

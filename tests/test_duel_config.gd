@@ -15,8 +15,9 @@ const SETUP_SOURCES_IN_RESERVE: int = 8  # 204.1.13
 const OPENING_HAND_SIZE: int = 4  # 204.1.15
 const SOURCES_PER_TURN: int = 1  # 204.3.1
 const CARDS_PER_TURN: int = 2  # 204.3.6
-const CLOCK_MSEC: int = 600_000  # 209.4.3 : 10 minutes
-const CLOCK_BONUS_MSEC: int = 0  # 209.4.3a
+const TURN_TIME_MSEC: int = 90_000  # 209.4.3 : 90 secondes
+const RESPONSE_TIME_MSEC: int = 30_000  # 209.4.6 : 30 secondes
+const IDLE_TURNS_LIMIT: int = 3  # 209.2.10
 const STARTING_FATIGUE: int = 0  # 209.5.1
 const FATIGUE_INCREASE: int = 1  # 209.5.2
 const FATIGUE_DAMAGE_PER_POINT: int = 1  # 209.5.3
@@ -85,17 +86,21 @@ func test_206_3_6_tie_without_destruction_is_undefined() -> void:
 	assert_bool(CatalogSamples.mentions(_config.find_errors(), "206.3.6")).is_true()
 
 
-func test_209_4_3_clock_duration() -> void:
-	assert_int(_config.clock_duration_msec).is_equal(CLOCK_MSEC)
+func test_209_4_3_turn_time() -> void:
+	assert_int(_config.turn_time_msec).is_equal(TURN_TIME_MSEC)
 
 
-func test_209_4_3a_clock_gains_no_time() -> void:
-	assert_int(_config.clock_bonus_msec).is_equal(CLOCK_BONUS_MSEC)
+func test_209_4_6_response_time() -> void:
+	assert_int(_config.response_time_msec).is_equal(RESPONSE_TIME_MSEC)
 
 
-func test_209_4_3a_clock_bonus_is_undefined() -> void:
-	_config.clock_bonus_msec = 1
-	assert_bool(CatalogSamples.mentions(_config.find_errors(), "209.4.3a")).is_true()
+func test_209_2_10_idle_turns_limit() -> void:
+	assert_int(_config.idle_turns_limit).is_equal(IDLE_TURNS_LIMIT)
+
+
+func test_209_4_3_time_must_be_positive() -> void:
+	_config.turn_time_msec = 0
+	assert_bool(CatalogSamples.mentions(_config.find_errors(), "209.4.3")).is_true()
 
 
 func test_209_5_1_fatigue_starts_at_zero() -> void:

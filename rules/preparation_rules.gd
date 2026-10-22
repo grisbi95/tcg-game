@@ -71,10 +71,11 @@ static func _finish_preparation(
 	TurnRules.start_turn(state, state.first_player, events)
 
 
-# 209.4.3, 209.5.1
+# 209.4.3, 209.4.6, 209.5.1
 static func _set_starting_values(state: DuelState, side: DuelState.PlayerSide) -> void:
 	var player := state.get_player(side)
-	player.clock_remaining_msec = state.config.clock_duration_msec
+	player.turn_time_remaining_msec = state.config.turn_time_msec
+	player.response_time_remaining_msec = state.config.response_time_msec
 	player.fatigue_counter = state.config.starting_fatigue
 
 

@@ -33,17 +33,17 @@ static func _check_zones(state: DuelState, violations: PackedStringArray) -> voi
 		violations.append("201.3 : %d cartes au lieu de %d" % [seen.size(), expected])
 
 
-# 201.3.4, 203.5.7, 209.2.2, 209.2.4, 209.2.9, 209.4.5
+# 201.3.4, 203.5.7, 209.2.2, 209.2.4, 209.2.10, 209.4.3, 209.4.6
 static func _check_players(state: DuelState, violations: PackedStringArray) -> void:
 	for player: PlayerState in state.players:
 		var side := str(DuelState.PlayerSide.find_key(player.side))
 		if player.hand.size() > HAND_LIMIT:
 			violations.append("201.3.4 : main de %s à %d cartes" % [side, player.hand.size()])
 		_check_sources(player, side, violations)
-		if player.clock_remaining_msec < 0:
-			violations.append("209.4.5 : pendule de %s sous 0" % side)
-		if player.clock_remaining_msec == 0 and not state.is_ended():
-			violations.append("209.2.9 : temps de %s écoulé, partie non arrêtée" % side)
+		if player.turn_time_remaining_msec < 0 or player.response_time_remaining_msec < 0:
+			violations.append("209.4 : temps de %s sous 0" % side)
+		if player.idle_turns >= state.config.idle_turns_limit and not state.is_ended():
+			violations.append("209.2.10 : %s inactif trop longtemps, partie non arrêtée" % side)
 		var health := state.find_hero(player.side).health
 		if health < 0:
 			violations.append("209.2.4 : Hero de %s à %d PV" % [side, health])

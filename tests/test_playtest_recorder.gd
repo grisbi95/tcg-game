@@ -19,14 +19,10 @@ const OPENING_HAND_SIZE: int = 4  # 204.1.15
 const CARDS_DRAWN_PER_TURN: int = 2  # 204.3.6
 const STARTING_SOURCES: int = 2  # 204.1.2
 const SOURCES_RECEIVED_PER_TURN: int = 1  # 204.3.1
-const CLOCK_MSEC: int = 600_000  # 209.4.3 : 10 minutes
 const IDLE_ROUNDS: int = 3
 const WAIT_MSEC: int = 75_000
 const SECOND_WAIT_MSEC: int = 3_000
 const SMALL_DECK_SIZE: int = 7  # 201.6.1 réduite : la fatigue arrive au deuxième tour de A
-const FIRST_WINDOW_MSEC: int = 1_500
-const SECOND_WINDOW_MSEC: int = 800
-const THIRD_WINDOW_MSEC: int = 700
 const MARTYR_COUNT_AT_TIE: int = 2  # les deux Units de la rencontre portent Dernier souffle
 const ATTACK_TURN_RANK: int = 5  # PlaytestScenarios.walk_to_attack : l'Unit de A attaque au tour 5
 const OWN_END_ROW: int = 2  # tour 2 de A, dans PlaytestScenarios.answering_at_own_end_of_turn
@@ -189,9 +185,9 @@ func test_209_2_6_end_cause_is_conceded() -> void:
 	assert_int(fields.first_player).is_equal(A)
 
 
-func test_209_2_8_end_cause_is_time_expired() -> void:
+func test_209_2_2_end_cause_is_hero_health_zero() -> void:
 	var fields := _fixture_sheet.end_fields
-	assert_int(fields.reason).is_equal(DuelState.EndReason.TIME_EXPIRED)
+	assert_int(fields.reason).is_equal(DuelState.EndReason.HERO_HEALTH_ZERO)
 	assert_int(fields.result).is_equal(DuelState.DuelResult.PLAYER_B_WINS)
 	assert_int(fields.first_player).is_equal(A)
 
@@ -206,18 +202,20 @@ func test_204_1_9_duration_is_the_journal_total() -> void:
 	assert_int(_fixture_sheet.end_fields.duration_msec).is_equal(fixture_total_msec)
 
 
-func test_209_4_1_time_left_per_player() -> void:
-	var driver := PlaytestScenarios.fresh()
-	driver.wait(WAIT_MSEC)
-	var sheet := _sheet_of(driver)
-	# La pendule de A tourne pendant son tour, celle de B pas encore (209.4.4).
-	assert_int(sheet.end_fields.time_left_msec[A]).is_equal(CLOCK_MSEC - WAIT_MSEC)
-	assert_int(sheet.end_fields.time_left_msec[B]).is_equal(CLOCK_MSEC)
-	var engine := DuelEngine.new(_fixture_catalog)
-	_fixture_journal.replay_into(engine)
-	for side: DuelState.PlayerSide in DuelState.SIDES:
-		var expected_msec := engine.get_state().get_player(side).clock_remaining_msec
-		assert_int(_fixture_sheet.end_fields.time_left_msec[side]).is_equal(expected_msec)
+func test_209_4_9_turn_expiries_per_player() -> void:
+	var sheet := _sheet_of(PlaytestScenarios.expiring())
+	assert_int(sheet.end_fields.turn_expiry_count[A]).is_equal(1)
+	assert_int(sheet.end_fields.turn_expiry_count[B]).is_equal(0)
+	var without := _sheet_of(PlaytestScenarios.idle_rounds(IDLE_ROUNDS)).end_fields
+	assert_int(without.turn_expiry_count[A] + without.turn_expiry_count[B]).is_equal(0)
+
+
+func test_209_4_10_response_expiries_per_player() -> void:
+	var fields := _sheet_of(PlaytestScenarios.expiring()).end_fields
+	assert_int(fields.response_expiry_count[A]).is_equal(1)
+	assert_int(fields.response_expiry_count[B]).is_equal(0)
+	var without := _sheet_of(PlaytestScenarios.deploying()).end_fields
+	assert_int(without.response_expiry_count[A] + without.response_expiry_count[B]).is_equal(0)
 
 
 func test_204_2_1_mulligan_count_counts_players_who_set_cards_aside() -> void:
@@ -255,32 +253,6 @@ func test_210_3_2_last_breath_note_per_trigger() -> void:
 		assert_int(note.active_player).is_equal(A)
 	var without := _sheet_of(PlaytestScenarios.walk_to_attack(PlaytestScenarios.fresh()))
 	assert_array(without.last_breath_notes).is_empty()
-
-
-func test_208_6_2_response_window_time_per_player_from_the_journal() -> void:
-	var journal := PlaytestScenarios.journal_after_mulligans()
-	journal.record_response_window_elapsed(B, FIRST_WINDOW_MSEC)
-	journal.record_response_window_elapsed(A, SECOND_WINDOW_MSEC)
-	journal.record_response_window_elapsed(B, THIRD_WINDOW_MSEC)
-	var fields := _record(journal).end_fields
-	assert_int(fields.response_window_msec[A]).is_equal(SECOND_WINDOW_MSEC)
-	assert_int(fields.response_window_msec[B]).is_equal(FIRST_WINDOW_MSEC + THIRD_WINDOW_MSEC)
-	var total_msec := FIRST_WINDOW_MSEC + SECOND_WINDOW_MSEC + THIRD_WINDOW_MSEC
-	assert_int(fields.duration_msec).is_equal(total_msec)
-
-
-func test_208_6_5_response_begun_count_per_player() -> void:
-	var journal := PlaytestScenarios.journal_after_mulligans()
-	journal.record_response_begun(B)
-	journal.record_response_window_elapsed(B, FIRST_WINDOW_MSEC)
-	journal.record_response_begun(A)
-	journal.record_response_begun(B)
-	var fields := _record(journal).end_fields
-	assert_int(fields.response_begun_count[A]).is_equal(1)
-	assert_int(fields.response_begun_count[B]).is_equal(2)
-	var without := _fixture_sheet.end_fields
-	assert_int(without.response_begun_count[A] + without.response_begun_count[B]).is_equal(0)
-	assert_int(without.response_window_msec[A] + without.response_window_msec[B]).is_equal(0)
 
 
 func test_decision_0160_last_row_of_a_game_ended_during_a_turn_comes_from_the_final_state() -> void:

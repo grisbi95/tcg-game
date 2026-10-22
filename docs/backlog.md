@@ -24,6 +24,7 @@ Priorité : **haute** = écart au ruleset ou défaut visible en partie ; **moyen
 | Dette | Référence | Priorité | Cible |
 | --- | --- | --- | --- |
 | Un agent qui ne propose aucune intention légale laisse `DuelHost` en `AWAITING_AI` avec une erreur à chaque image ; depuis 0045 seule la défaite par inactivité (209.2.10) y met fin. | 0020, 0045 | moyenne | J4 |
+| `DuelJournal` garde le temps des fenêtres de réponse et les réponses commencées (décision 0042), que la fiche ne relève plus depuis le ruleset 0.40 (le protocole les a retirées) : à retirer du journal et de l'hôte avec leurs tests, ou à rendre au protocole. | 0042, 0045, 0205 | basse | J3 |
 | `EventText.describe` et sa table `SENTENCES` n'ont plus d'appelant dans le jeu depuis le retrait de `LogView` (décision 0041) : seuls `test_view_texts` et `test_event_player` les lisent. Le relevé de playtest (2.5) ne les lit pas : à retirer avec leurs tests. | 0041, 0027 | basse | J3 |
 | `DuelSelection` ne gère qu'une cible par annonce ; les questions Q-098 et Q-099 du ruleset sont à trancher avant. | 207.5, 0024 | moyenne | première carte à plusieurs cibles |
 | `SelectionCandidates` choisit entre `AttachGear` et `CastSpell` d'après le type de carte, et `DuelSelection` décide qu'une Source entre dans le paiement préparé par « compte > 0 » : deux restes de règle dans la vue, à remplacer par des requêtes du moteur. | 202.2, 203.2.1, 203.2.2, 0040 | basse | J3 |

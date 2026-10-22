@@ -156,6 +156,8 @@ func _build_full_state() -> DuelState:
 	builder.with_pending_decision(_make_decision(spell_entry_id, unit_id))
 	var state := builder.build()
 	state.first_player_imposed = true
+	for player: PlayerState in state.players:
+		player.announced_this_turn = true
 	state.waiting_triggers.append(_make_trigger(builder, token_id, spell_entry_id))
 	state.triggers_to_add.append(_make_trigger(builder, unit_id, spell_entry_id))
 	state.once_per_turn_card_ids.append(spell_card.card_instance_id)
@@ -165,7 +167,9 @@ func _build_full_state() -> DuelState:
 
 func _fill_player(builder: DuelStateBuilder, side: DuelState.PlayerSide) -> void:
 	builder.with_hero_health(side, 12)
-	builder.with_clock_remaining(side, 90_000)
+	builder.with_turn_time_remaining(side, 61_000)
+	builder.with_response_time_remaining(side, 17_000)
+	builder.with_idle_turns(side, 2)
 	builder.with_fatigue(side, 2)
 	builder.with_sources_in_reserve(side, 5)
 	builder.with_sources_in_play(side, 2, 1)

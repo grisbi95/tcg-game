@@ -60,6 +60,7 @@ static func start_turn(
 	state.active_player = side
 	state.priority_player = side
 	_reset_turn_counters(state)
+	state.get_player(side).turn_time_remaining_msec = state.config.turn_time_msec  # 209.4.3
 	events.append(TurnStarted.new(side, state.turn_number))
 	_awaken_pieces(state, side, events)
 	_untap_sources(state, side, events)
@@ -88,6 +89,7 @@ static func _reset_turn_counters(state: DuelState) -> void:
 	for player: PlayerState in state.players:
 		player.sources_recycled_this_turn = 0
 		player.hero_power_used_this_turn = false
+		player.announced_this_turn = false  # 209.2.10
 
 
 # 204.3.10, 204.3.11, 205.5.1, 205.5.2, 205.5.5, 205.5.6 : les Units et le Hero endormis de

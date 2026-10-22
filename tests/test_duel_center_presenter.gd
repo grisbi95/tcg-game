@@ -1,11 +1,11 @@
 # gdlint: disable=max-public-methods
 
 extends GdUnitTestSuite
-## DuelCenterPresenter sans scène : centre de la colonne, pendules et mention de la fenêtre de
-## réponse (ruleset 0.38 ; décisions 0021, 0029 et 0032). `ColumnSpy` tient lieu de
+## DuelCenterPresenter sans scène : centre de la colonne, temps des joueurs et mention de la
+## fenêtre de réponse (ruleset 0.40 ; décisions 0021, 0029, 0032 et 0045). `ColumnSpy` tient lieu de
 ## `DuelColumnView`.
 ##
-## Deux montages : un état construit à la main pour le centre et les pendules ; un duel mené par
+## Deux montages : un état construit à la main pour le centre et les temps ; un duel mené par
 ## `DuelHost` et `ManualClock` pour la fenêtre, qui lit l'hôte. Dans le second, A déploie une
 ## Unit à son premier tour ; B, qui peut alors répondre ou passer, reçoit sa fenêtre (208.6.1).
 
@@ -13,6 +13,7 @@ const LONG_WAIT_MSEC: int = 60_000  # fenêtre laissée ouverte longtemps (208.6
 const HANDOVER_MSEC: int = 5_000  # temps passé à se passer l'appareil
 const CLOCK_A_MSEC: int = 300_000
 const CLOCK_B_MSEC: int = 450_000
+const RESPONSE_B_MSEC: int = 20_000
 const CLOCK_STEP_MSEC: int = 1_000
 const TURN_NUMBER: int = 3
 const UNIT_COST: int = 2  # CatalogSamples.unit()
@@ -148,43 +149,70 @@ func test_decision_0032_drawn_duel_is_announced_as_a_draw() -> void:
 	assert_str(_spy.ended_text).is_equal(DRAW_TEXT)
 
 
-# --- Pendules (décision 0021) ---
+# --- Temps des joueurs (décisions 0021 et 0045) ---
 
 
-func test_decision_0021_clocks_show_remaining_time_and_engine_clock_owners() -> void:
-	_builder.with_clock_remaining(A, CLOCK_A_MSEC).with_clock_remaining(B, CLOCK_B_MSEC)
+func test_209_4_7_active_player_sees_turn_time_and_the_other_one_response_time() -> void:
+	_builder.with_turn_time_remaining(A, CLOCK_A_MSEC).with_response_time_remaining(
+		B, RESPONSE_B_MSEC
+	)
 	_builder.with_active_player(A)
 	_use_built_state()
 	_presenter.refresh_clocks()
-	assert_array(_spy.calls).contains_exactly(["show_clocks"])
-	assert_int(_spy.clock_a_msec).is_equal(CLOCK_A_MSEC)
-	assert_int(_spy.clock_b_msec).is_equal(CLOCK_B_MSEC)
-	assert_array(_spy.clock_owners).contains_exactly([A])
+	assert_array(_spy.calls).contains_exactly(["show_clock", "show_clock"])
+	assert_int(_spy.clocks[A].kind).is_equal(DuelState.ClockKind.TURN)
+	assert_int(_spy.clocks[A].remaining_msec).is_equal(CLOCK_A_MSEC)
+	assert_bool(_spy.clocks[A].is_running).is_true()
+	assert_int(_spy.clocks[B].kind).is_equal(DuelState.ClockKind.RESPONSE)
+	assert_int(_spy.clocks[B].remaining_msec).is_equal(RESPONSE_B_MSEC)
+	assert_bool(_spy.clocks[B].is_running).is_false()
 
 
-func test_decision_0021_clock_runs_for_the_player_who_may_answer() -> void:
+func test_209_4_4_response_time_runs_for_the_player_who_may_answer() -> void:
 	_builder.push_spell(_builder.make_card_instance(A, SPELL))
+	_builder.with_active_player(A).with_priority_player(B)
+	_builder.with_response_time_remaining(B, RESPONSE_B_MSEC)
+	_use_built_state()
+	_presenter.refresh_clocks()
+	assert_bool(_spy.clocks[B].is_running).is_true()
+	assert_int(_spy.clocks[B].remaining_msec).is_equal(RESPONSE_B_MSEC)
+	assert_bool(_spy.clocks[A].is_running).is_false()
+
+
+func test_209_4_8a_active_player_keeps_the_paused_turn_time_while_the_stack_is_not_empty() -> void:
+	_builder.push_spell(_builder.make_card_instance(A, SPELL))
+	_builder.with_turn_time_remaining(A, CLOCK_A_MSEC)
 	_builder.with_active_player(A).with_priority_player(B)
 	_use_built_state()
 	_presenter.refresh_clocks()
-	assert_array(_spy.clock_owners).contains_exactly([B])
+	assert_bool(_spy.clocks[A].has_paused_turn()).is_true()
+	assert_int(_spy.clocks[A].paused_turn_msec).is_equal(CLOCK_A_MSEC)
+	assert_bool(_spy.clocks[B].has_paused_turn()).is_false()
 
 
-func test_decision_0021_no_clock_runs_during_the_mulligan() -> void:
+func test_209_4_8a_no_turn_time_is_paused_with_an_empty_stack() -> void:
+	_builder.with_active_player(A)
+	_use_built_state()
+	_presenter.refresh_clocks()
+	assert_bool(_spy.clocks[A].has_paused_turn()).is_false()
+
+
+func test_209_4_2d_no_time_runs_during_the_mulligan() -> void:
 	_builder.with_pending_decision(_decision(PendingDecision.DecisionKind.MULLIGAN))
 	_use_built_state()
 	_presenter.refresh_clocks()
-	assert_array(_spy.clock_owners).is_empty()
+	assert_bool(_spy.clocks[A].is_running).is_false()
+	assert_bool(_spy.clocks[B].is_running).is_false()
 
 
 func test_decision_0021_clocks_are_read_again_at_each_frame() -> void:
-	_builder.with_clock_remaining(A, CLOCK_A_MSEC).with_active_player(A)
+	_builder.with_turn_time_remaining(A, CLOCK_A_MSEC).with_active_player(A)
 	_use_built_state()
 	_presenter.refresh_clocks()
 	_engine.advance_clock(CLOCK_STEP_MSEC)
 	_presenter.refresh_clocks()
-	assert_array(_spy.calls).contains_exactly(["show_clocks", "show_clocks"])
-	assert_int(_spy.clock_a_msec).is_equal(CLOCK_A_MSEC - CLOCK_STEP_MSEC)
+	assert_int(_spy.count_calls("show_clock")).is_equal(4)
+	assert_int(_spy.clocks[A].remaining_msec).is_equal(CLOCK_A_MSEC - CLOCK_STEP_MSEC)
 
 
 # --- Fenêtre de réponse (208.6, décision 0029) ---

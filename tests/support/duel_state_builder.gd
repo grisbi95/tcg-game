@@ -35,7 +35,8 @@ func _init(config: DuelConfig = DuelConfig.new(), catalog: Catalog = null) -> vo
 		player.sources_upright = config.starting_sources
 		player.sources_in_reserve = config.setup_sources_in_reserve
 		player.fatigue_counter = config.starting_fatigue
-		player.clock_remaining_msec = config.clock_duration_msec
+		player.turn_time_remaining_msec = config.turn_time_msec
+		player.response_time_remaining_msec = config.response_time_msec
 		_place_hero(player.side)
 
 
@@ -97,8 +98,20 @@ func with_hero_health(side: DuelState.PlayerSide, health: int) -> DuelStateBuild
 	return self
 
 
-func with_clock_remaining(side: DuelState.PlayerSide, remaining_msec: int) -> DuelStateBuilder:
-	_state.get_player(side).clock_remaining_msec = remaining_msec
+func with_turn_time_remaining(side: DuelState.PlayerSide, remaining_msec: int) -> DuelStateBuilder:
+	_state.get_player(side).turn_time_remaining_msec = remaining_msec
+	return self
+
+
+func with_response_time_remaining(
+	side: DuelState.PlayerSide, remaining_msec: int
+) -> DuelStateBuilder:
+	_state.get_player(side).response_time_remaining_msec = remaining_msec
+	return self
+
+
+func with_idle_turns(side: DuelState.PlayerSide, idle_turns: int) -> DuelStateBuilder:
+	_state.get_player(side).idle_turns = idle_turns
 	return self
 
 

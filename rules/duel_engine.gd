@@ -42,13 +42,21 @@ func get_state() -> DuelState:
 	return _state
 
 
-## Décision 0018 ; 209.4 : l'hôte signale `elapsed_msec` de temps réel écoulé, hors de tout
-## `submit()`. Renvoie les événements (temps écoulé, fin de la partie) ; vide si aucune pendule
-## ne tourne ou avant le démarrage.
+## Décisions 0018 et 0045 ; 209.4 : l'hôte signale `elapsed_msec` de temps réel écoulé, hors de
+## tout `submit()`. Renvoie les événements de l'expiration d'un temps (fin du tour, passe, choix
+## abandonné, défaite par inactivité) ; vide si aucun temps ne s'écoule ou avant le démarrage. Le
+## temps qui reste après une expiration s'écoule dans l'état qui la suit.
 func advance_clock(elapsed_msec: int) -> Array[DuelEvent]:
 	var events: Array[DuelEvent] = []
-	if _state != null:
-		StateCheckRules.advance_clock(_state, elapsed_msec, events)
+	if _state == null:
+		return events
+	var remaining_msec := elapsed_msec
+	while remaining_msec > 0 and not _state.is_ended():
+		remaining_msec -= StateCheckRules.spend_time(_state, remaining_msec)
+		var expired := StateCheckRules.expired_owners(_state)
+		if expired.is_empty() or not _expire(expired[0], events):
+			break
+		_settle(events)
 	return events
 
 
@@ -62,13 +70,32 @@ func awaited_players() -> Array[DuelState.PlayerSide]:
 	return awaited
 
 
-## 209.4.2, 209.4.2d, 209.4.4 : joueurs dont la pendule tourne, aucun pendant le mulligan ; vide
+## 209.4.2, 209.4.2d, 209.4.4 : joueurs dont un temps s'écoule, aucun pendant le mulligan ; vide
 ## avant le démarrage, après la fin de la partie ou quand aucune décision n'est attendue. Pur.
 func clock_owners() -> Array[DuelState.PlayerSide]:
 	var owners: Array[DuelState.PlayerSide] = []
 	if _state != null:
 		owners = StateCheckRules.clock_owners(_state)
 	return owners
+
+
+## 209.4.4, 209.4.7 : temps de tour ou temps de réponse qui s'écoule pour `side`. Pur.
+func clock_kind(side: DuelState.PlayerSide) -> DuelState.ClockKind:
+	if _state == null:
+		return DuelState.ClockKind.TURN
+	return StateCheckRules.clock_kind(_state, side)
+
+
+## 209.4.3, 209.4.6 : temps restant du compteur qui s'écoule (ou s'écoulerait) pour `side`. Pur.
+func running_time_remaining_msec(side: DuelState.PlayerSide) -> int:
+	if _state == null:
+		return 0
+	return StateCheckRules.running_time_remaining_msec(_state, side)
+
+
+## 209.4.8, 209.4.8a : vrai si le temps de tour de `side` attend que la pile se vide. Pur.
+func is_turn_time_paused(side: DuelState.PlayerSide) -> bool:
+	return _state != null and StateCheckRules.is_turn_time_paused(_state, side)
 
 
 ## 209.1 : Force actuelle de la pièce `piece_id`, auras et effets compris, pour la vue ;
@@ -226,6 +253,40 @@ func _resolve_entry(entry: StackEntry, events: Array[DuelEvent]) -> void:
 			TriggerRules.resolve_triggered(_state, entry, events)
 
 
+# 209.4.9, 209.4.10, 209.4.11a, 209.4.12 : le temps de `side` est écoulé. Le tour se termine, le
+# joueur passe, les effets déclenchés s'ordonnent comme ils se sont déclenchés ou l'effet dont il
+# choisissait les cibles est abandonné. Renvoie faux, sans rien changer, quand le ruleset ne
+# tranche pas (Q-110).
+func _expire(side: DuelState.PlayerSide, events: Array[DuelEvent]) -> bool:
+	var decision := _state.pending_decision
+	var is_targets_choice := (
+		decision != null and decision.kind == PendingDecision.DecisionKind.CHOOSE_TARGETS
+	)
+	if is_targets_choice and not TriggerRules.can_abandon_targets_choice(_state):
+		return false
+	events.append(TimeExpired.new(side, StateCheckRules.clock_kind(_state, side)))
+	if decision == null:
+		_expire_without_decision(side, events)
+	elif is_targets_choice:
+		TriggerRules.abandon_targets_choice(_state, events)
+	else:
+		TriggerRules.order_as_triggered(_state, events)
+	return true
+
+
+func _expire_without_decision(side: DuelState.PlayerSide, events: Array[DuelEvent]) -> void:
+	if _state.stack.is_empty():
+		_end_turn(side, true, events)
+	else:
+		_apply(PassPriority.new(side), events)
+
+
+# 204.4.7, 209.4.9, 209.2.10 : fin du tour demandée par le joueur ou provoquée par l'expiration.
+func _end_turn(side: DuelState.PlayerSide, by_expiry: bool, events: Array[DuelEvent]) -> void:
+	TurnRules.apply_end_turn(_state, EndTurn.new(side), events)
+	StateCheckRules.record_turn_end(_state, side, by_expiry, events)
+
+
 func _apply(intent: DuelIntent, events: Array[DuelEvent]) -> void:
 	if intent is Concede:
 		StateCheckRules.apply_concede(_state, intent as Concede, events)
@@ -236,7 +297,7 @@ func _apply(intent: DuelIntent, events: Array[DuelEvent]) -> void:
 	elif intent is ChooseTargets:
 		TriggerRules.apply_targets_choice(_state, intent as ChooseTargets, events)
 	elif intent is EndTurn:
-		TurnRules.apply_end_turn(_state, intent as EndTurn, events)
+		_end_turn((intent as EndTurn).player, false, events)
 	elif intent is PassPriority:
 		StackRules.apply_pass(_state, intent as PassPriority, events)
 		_resolve_stack(events)

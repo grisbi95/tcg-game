@@ -107,6 +107,36 @@ static func apply_targets_choice(
 	events.append(TargetsChosen.new(intent.player, entry.stack_entry_id))
 
 
+## 209.4.11a, Q-110 : vrai si l'expiration du temps pendant le choix des cibles de l'effet
+## attendu peut l'abandonner : aucun autre effet n'attend et il n'est pas « une fois par tour »,
+## cas que le ruleset ne tranche pas. Pur.
+static func can_abandon_targets_choice(state: DuelState) -> bool:
+	var entry := _targeted_entry(state)
+	if entry == null:
+		return false
+	var only_one_waiting := state.triggers_to_add.size() == 1 and state.waiting_triggers.is_empty()
+	return only_one_waiting and not effect_of(state, entry).once_per_turn
+
+
+## 209.4.11a : l'effet dont le joueur choisissait les cibles ne s'ajoute pas à la pile.
+## Suppose `can_abandon_targets_choice`.
+static func abandon_targets_choice(state: DuelState, events: Array[DuelEvent]) -> void:
+	var entry := _targeted_entry(state)
+	state.pending_decision = null
+	_skip(state.triggers_to_add, entry, events)
+
+
+## 208.4.6, 208.4.7, 209.4.12 : ordre des effets déclenchés à l'expiration du temps, celui où ils
+## se sont déclenchés. Suppose l'attente ORDER_TRIGGERS.
+static func order_as_triggered(state: DuelState, events: Array[DuelEvent]) -> void:
+	var decision := state.pending_decision
+	var ordered_ids: Array[int] = []
+	for entry: StackEntry in state.waiting_triggers:
+		if decision.candidate_ids.has(entry.stack_entry_id):
+			ordered_ids.append(entry.stack_entry_id)
+	apply_order(state, OrderTriggers.new(decision.awaited_players[0], ordered_ids), events)
+
+
 ## 208.3.2a, 207.3.3, 207.5.3 à 207.5.5 : l'effet a lieu même si sa pièce a quitté le plateau.
 static func resolve_triggered(
 	state: DuelState, entry: StackEntry, events: Array[DuelEvent]
@@ -227,6 +257,8 @@ static func _skip(list: Array[StackEntry], entry: StackEntry, events: Array[Duel
 # 207.5.2, 208.4.6, 208.4.7 : le moteur attend le choix du joueur (décisions 0009 et 0017).
 static func _request(state: DuelState, decision: PendingDecision, events: Array[DuelEvent]) -> void:
 	state.pending_decision = decision
+	for side: DuelState.PlayerSide in decision.awaited_players:
+		state.get_player(side).response_time_remaining_msec = state.config.response_time_msec
 	events.append(DecisionRequested.new(decision.awaited_players[0], decision.kind))
 
 

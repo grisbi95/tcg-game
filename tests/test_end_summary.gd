@@ -27,24 +27,6 @@ func test_decision_0040_conceded_player_b_is_named() -> void:
 	)
 
 
-func test_decision_0040_expired_clock_of_player_a_is_named() -> void:
-	assert_str(EndSummary.reason_text(_ended(B_WINS, REASON.TIME_EXPIRED))).is_equal(
-		"Pendule du joueur A à 0"
-	)
-
-
-func test_decision_0040_expired_clock_of_player_b_is_named() -> void:
-	assert_str(EndSummary.reason_text(_ended(A_WINS, REASON.TIME_EXPIRED))).is_equal(
-		"Pendule du joueur B à 0"
-	)
-
-
-func test_decision_0040_both_clocks_expired() -> void:
-	assert_str(EndSummary.reason_text(_ended(DRAW, REASON.TIME_EXPIRED))).is_equal(
-		"Pendules des deux joueurs à 0"
-	)
-
-
 func test_decision_0040_hero_a_at_zero_health() -> void:
 	assert_str(EndSummary.reason_text(_ended(B_WINS, REASON.HERO_HEALTH_ZERO))).is_equal(
 		"PV du Hero A à 0"
