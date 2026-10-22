@@ -49,8 +49,9 @@ static func finish_end_of_turn(state: DuelState, events: Array[DuelEvent]) -> vo
 	start_turn(state, DuelState.opponent_of(state.active_player), events)
 
 
-## 204.3.8 puis 204.4.1 ; 208.4.11 : commence le tour de `side`. Les effets qui attendaient la
-## fin du début du tour s'ajoutent à la pile dès le début de la phase principale, par DuelEngine.
+## 204.3.8 (réveil, redressement, Source, pioche) puis 204.4.1 ; 208.4.11 : commence le tour de
+## `side`. Les effets qui attendaient la fin du début du tour s'ajoutent à la pile dès le début de
+## la phase principale, par DuelEngine.
 static func start_turn(
 	state: DuelState, side: DuelState.PlayerSide, events: Array[DuelEvent]
 ) -> void:
@@ -60,6 +61,7 @@ static func start_turn(
 	state.priority_player = side
 	_reset_turn_counters(state)
 	events.append(TurnStarted.new(side, state.turn_number))
+	_awaken_pieces(state, side, events)
 	_untap_sources(state, side, events)
 	_receive_sources(state, side, events)
 	draw_cards(state, side, state.config.cards_drawn_per_turn, events)
@@ -79,14 +81,29 @@ static func draw_cards(
 			return
 
 
-# 202.3.14, 203.4.2, 204.4.6 : décomptes « par tour » des deux joueurs, remis à zéro au début
+# 202.3.14, 203.4.2 : décomptes « par tour » des deux joueurs, remis à zéro au début
 # de chaque tour (convention de l'étape 1.3) ; 207.3.9 : « une fois par tour » aussi.
 static func _reset_turn_counters(state: DuelState) -> void:
 	state.once_per_turn_card_ids.clear()
 	for player: PlayerState in state.players:
 		player.sources_recycled_this_turn = 0
 		player.hero_power_used_this_turn = false
-		player.normal_action_used_this_turn = false
+
+
+# 204.3.10, 204.3.11, 205.5.1, 205.5.2, 205.5.5, 205.5.6 : les Units et le Hero endormis de
+# `side` s'éveillent, une pièce déjà éveillée le reste sans être rapportée ; un Building n'a
+# aucun état de sommeil. Aucun événement si rien ne dormait.
+static func _awaken_pieces(
+	state: DuelState, side: DuelState.PlayerSide, events: Array[DuelEvent]
+) -> void:
+	var awakened_ids: Array[int] = []
+	for piece: Piece in state.pieces:
+		if piece.owner == side and piece.kind != Piece.PieceKind.BUILDING and not piece.is_awake:
+			piece.is_awake = true
+			awakened_ids.append(piece.piece_id)
+	if awakened_ids.is_empty():
+		return
+	events.append(PiecesAwakened.new(side, awakened_ids))
 
 
 # 204.3.2

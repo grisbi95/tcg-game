@@ -68,4 +68,22 @@ Aucun Invariant.
 
 **205.4.6** [ACTÉ] Une action normale qui échoue n'a pas lieu (décision 0047).
 
-**205.4.7** [ACTÉ] Une action normale compte pour la limite de 204.4.6 dès son annonce, même si elle échoue (décision 0047 ; voir 204.4.6).
+**205.4.7** [ACTÉ] Une pièce s'endort dès l'annonce de son action normale, même si cette action échoue (décisions 0047 et 0200 ; voir 205.5.5).
+
+## 205.5 Sommeil et réveil
+
+**205.5.1** [ACTÉ] Une Unit est, à tout moment, endormie ou éveillée (décision 0200).
+
+**205.5.2** [ACTÉ] Un Hero est, à tout moment, endormi ou éveillé (décision 0200).
+
+**205.5.3** [ACTÉ] Une pièce endormie ne peut pas faire d'action normale (décision 0200 ; voir 204.4.5).
+
+**205.5.4** [ACTÉ] Une Unit qui arrive sur le plateau est endormie (décision 0200 ; voir 210.3.1a).
+
+**205.5.4a** [ACTÉ] Un jeton qui est une Unit est endormi quand il arrive sur le plateau (décision 0200 ; voir 202.4.10 et 205.5.4).
+
+**205.5.4b** [ACTÉ] Une Unit qui entre en jeu en attaquant selon 205.1.6 est endormie (décision 0200 ; voir 205.5.4).
+
+**205.5.5** [ACTÉ] Une pièce endormie le reste jusqu'à son prochain réveil (décision 0200 ; voir 204.3.10 et 204.3.11).
+
+**205.5.6** [ACTÉ] Un Building n'est ni endormi ni éveillé (décision 0200 ; voir 202.2.17).

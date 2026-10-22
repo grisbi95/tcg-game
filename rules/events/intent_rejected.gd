@@ -28,7 +28,7 @@ enum RejectReason {
 	NOT_DEPLOYABLE,  # 202.2.5, 202.2.7 : ni Unit ni Building
 	CELL_NOT_IN_DEPLOY_ZONE,  # 205.1.2, 205.1.3, 205.1.4
 	CELL_NOT_FREE,  # 205.1.2, 205.1.3, 205.3.3 : case visée occupée à l'annonce
-	NORMAL_ACTION_ALREADY_USED,  # 204.4.6, 205.4.7
+	NORMAL_ACTION_ALREADY_USED,  # plus produite depuis l'édition 0.39 (204.4.6 supprimée, 205.5.3)
 	PIECE_NOT_YOURS,  # 204.4.5 : pièce absente du plateau ou d'un autre joueur
 	NO_NORMAL_ACTION,  # 202.2.17 : un Building ne fait jamais d'action normale
 	CELL_NOT_ADJACENT,  # 205.2.5, 205.3.1
@@ -41,6 +41,7 @@ enum RejectReason {
 	HERO_POWER_ALREADY_USED,  # 202.3.14, 202.3.17
 	WRONG_TRIGGER_ORDER,  # 208.4.6, 208.4.7 : l'ordre cite chaque effet attendu une fois, seul
 	NO_ESSENCE_PRODUCED,  # 203.6.3, 203.6.4 : produire de l'Essence incline ou recycle une Source
+	PIECE_ASLEEP,  # 205.5.3 : une pièce endormie ne fait pas d'action normale
 }
 
 ## Intention refusée, telle que soumise ; null si le refus ne vient pas d'une intention.

@@ -1,10 +1,10 @@
 # Protocole du premier playtest
 
-> Rôle : fixer avant la première partie les decks, la taille de la série, la fiche de relevé et les seuils de jugement du premier playtest du ruleset. Statut : rédigé, decks composés dans [decks-de-test.md](decks-de-test.md) ; aucune partie jouée. Créé le 16 octobre 2026, complété le 16 octobre 2026 (édition 0.28) et le 18 octobre 2026 (édition 0.35, mesure de l'Essence perdue, décision 0195 ; édition 0.36, mesures de la fenêtre de réponse, décision 0198 ; édition 0.37, mesure de lisibilité du texte des cartes de main) et le 21 octobre 2026 (édition 0.38, fenêtre de réponse sans échéance, décision 0199). Ce document ne contient aucune règle de jeu : il renvoie aux identifiants de [20-regles-completes/](../20-regles-completes/).
+> Rôle : fixer avant la première partie les decks, la taille de la série, la fiche de relevé et les seuils de jugement du premier playtest du ruleset. Statut : rédigé, decks composés dans [decks-de-test.md](decks-de-test.md) ; aucune partie jouée. Créé le 16 octobre 2026, complété le 16 octobre 2026 (édition 0.28) et le 18 octobre 2026 (édition 0.35, mesure de l'Essence perdue, décision 0195 ; édition 0.36, mesures de la fenêtre de réponse, décision 0198 ; édition 0.37, mesure de lisibilité du texte des cartes de main) et le 21 octobre 2026 (édition 0.38, fenêtre de réponse sans échéance, décision 0199) et le 22 octobre 2026 (édition 0.39, hypothèse des 15 PV réécrite et mesure des PV perdus par un Hero en un tour, décision 0202 ; hypothèse des 15 PV sans chiffre de fin de partie, décision 0204). Ce document ne contient aucune règle de jeu : il renvoie aux identifiants de [20-regles-completes/](../20-regles-completes/).
 
 ## Objet
 
-Le premier playtest éprouve les règles de base. Il mesure les 21 règles PROVISOIRE des règles complètes, listées dans la section Couverture des règles PROVISOIRE. Il repose sur vingt-trois décisions du 16 octobre 2026 et sur deux décisions du 18 octobre 2026.
+Le premier playtest éprouve les règles de base. Il mesure les 21 règles PROVISOIRE des règles complètes, listées dans la section Couverture des règles PROVISOIRE. Il repose sur vingt-trois décisions du 16 octobre 2026, sur deux décisions du 18 octobre 2026 et sur les décisions 0202 et 0204 du 22 octobre 2026.
 
 | Sujet | Décision | Section |
 | --- | --- | --- |
@@ -33,6 +33,7 @@ Le premier playtest éprouve les règles de base. Il mesure les 21 règles PROVI
 | Dernier souffle observé en playtest | [0175](../40-decisions/0175-dernier-souffle-observe-en-playtest.md) | Fiche de relevé, Cibles et seuils |
 | Mesure de l'Essence perdue en playtest | [0195](../40-decisions/0195-mesure-de-l-essence-perdue-en-playtest.md) | Fiche de relevé, Cibles et seuils |
 | Fenêtre de réponse à l'écran | [0198](../40-decisions/0198-fenetre-de-reponse-a-l-ecran.md), remplacée par [0199](../40-decisions/0199-fenetre-de-reponse-sans-echeance.md) | Fiche de relevé, Cibles et seuils |
+| Hypothèse des 15 PV et mesure des PV perdus en un tour | [0202](../40-decisions/0202-hypothese-des-pv-et-mesure-des-pv-perdus-en-un-tour.md), complétée par [0204](../40-decisions/0204-hypothese-des-15-pv-sans-chiffre-de-fin-de-partie.md) | Decks de test, Fiche de relevé, Cibles et seuils |
 
 ## Decks de test
 
@@ -69,7 +70,7 @@ Le premier playtest se joue avec deux decks de test simples et presque identique
 
 | Valeur | Hypothèse ou effet voulu | Mesure du tableau des cibles et seuils |
 | --- | --- | --- |
-| 15 PV | Force moyenne d'attaquant d'environ 3, au plus une attaque par tour et par joueur (204.4.6), attaques sur le Hero à partir du tour 4 environ, donc fin de partie vers les tours 9 à 11 | Durée moyenne d'une partie ; Tour de fin de partie |
+| 15 PV | Force moyenne d'attaquant d'environ 3, une attaque par Unit éveillée et par tour (205.5.3 et 205.4.7) (décisions 0202 et 0204) | Durée moyenne d'une partie ; Tour de fin de partie ; PV perdus par un Hero en un tour (maximum par partie) |
 | Force des Units sans texte : coût plus 1 | Dans des decks miroirs, deux Units de même coût tombent souvent à égalité (206.3.6) | Parties bloquées, ligne qui vise 206.3.6 |
 | Force des Buildings sans texte : coût plus 2 | Compenser l'immobilité des Buildings (décision 0044, 202.2.16) | Parties bloquées |
 
@@ -101,6 +102,7 @@ Une fiche par partie, avec un relevé léger à chaque tour (décisions 0155, 01
 | Joueur actif | début du tour | A ou B |
 | Essence inutilisée du joueur actif | début du tour, juste avant qu'il redresse ses Sources (204.3.2) | nombre de Sources redressées en jeu à cet instant, soit celles restées redressées pendant son tour précédent et pendant le tour adverse ; une Source gardée pour répondre (207.1.6) et utilisée n'est pas comptée (décision 0160) |
 | Essence perdue du joueur actif | fin du tour, juste avant que l'Essence de sa réserve d'Essence soit perdue (204.5.7a) | montant de sa réserve d'Essence à cet instant (203.6.1), 0 s'il n'a produit aucune Essence ou l'a toute dépensée (décision 0195) |
+| PV perdus par chaque Hero pendant le tour, pour chaque joueur | fin du tour, après 204.5.7 | total des PV que le Hero de ce joueur a perdus entre le début du tour du joueur actif (204.3) et cet instant, ou jusqu'à l'arrêt de la partie (209.2.2) si elle s'arrête avant, toutes causes confondues, 0 s'il n'en a perdu aucun (décision 0202) |
 | Cartes en main, pour chaque joueur | fin du tour | nombre de cartes dans sa main (201.3.2) |
 | Sources en jeu, pour chaque joueur | fin du tour | nombre de Sources en jeu (203.5.4) |
 | Sources recyclées, pour chaque joueur | fin du tour | nombre de Sources qu'il a recyclées pendant le tour (203.2.2) |
@@ -110,6 +112,8 @@ Une fiche par partie, avec un relevé léger à chaque tour (décisions 0155, 01
 L'Essence inutilisée se relève sur la ligne du tour qui commence, pour le seul joueur actif ; la cellule de l'autre joueur reste vide.
 
 L'Essence perdue se relève sur la ligne du tour qui se termine, pour le seul joueur actif ; la cellule de l'autre joueur reste vide (décision 0195).
+
+Les PV perdus se relèvent sur la ligne du tour qui se termine, pour les deux Heroes : chaque Hero peut perdre des PV pendant le tour de l'un comme de l'autre joueur, et aucune cellule ne reste vide (décision 0202).
 
 « Carte jouée » se relève seulement sur la ligne du propre tour du joueur, puisqu'elle couvre tout ce qu'il a joué depuis son tour précédent ; la cellule du joueur non actif reste vide (décision 0173).
 
@@ -138,11 +142,11 @@ L'Essence perdue se relève sur la ligne du tour qui se termine, pour le seul jo
 
 Partie n° : ______ · Date : ______ · A : ______ · B : ______
 
-| Rang du tour | Joueur actif | A : Essence inutilisée | A : Essence perdue | A : Cartes en main | A : Sources en jeu | A : Sources recyclées | A : Combat | A : Carte jouée | B : Essence inutilisée | B : Essence perdue | B : Cartes en main | B : Sources en jeu | B : Sources recyclées | B : Combat | B : Carte jouée |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| | | | | | | | | | | | | | | | |
+| Rang du tour | Joueur actif | A : Essence inutilisée | A : Essence perdue | A : PV perdus | A : Cartes en main | A : Sources en jeu | A : Sources recyclées | A : Combat | A : Carte jouée | B : Essence inutilisée | B : Essence perdue | B : PV perdus | B : Cartes en main | B : Sources en jeu | B : Sources recyclées | B : Combat | B : Carte jouée |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| | | | | | | | | | | | | | | | | | |
 
-Sur chaque ligne, les cellules « Essence inutilisée », « Essence perdue » et « Carte jouée » du joueur non actif restent vides (décisions 0160, 0173 et 0195).
+Sur chaque ligne, les cellules « Essence inutilisée », « Essence perdue » et « Carte jouée » du joueur non actif restent vides (décisions 0160, 0173 et 0195) ; les deux cellules « PV perdus » se remplissent (décision 0202).
 
 Note sur Dernier souffle : une ligne par déclenchement, vide si Dernier souffle ne se déclenche pas pendant la partie (décision 0175).
 
@@ -168,7 +172,7 @@ Note sur Dernier souffle : une ligne par déclenchement, vide si Dernier souffle
 
 ## Cibles et seuils
 
-Chaque mesure reçoit, avant le playtest, une cible et un seuil d'alerte (décision 0156). Après la série, une valeur qui tient sa cible peut passer en ACTÉ par une décision. Une valeur qui franchit son seuil d'alerte ouvre une question dans [02-questions-ouvertes.md](../02-questions-ouvertes.md). Une valeur comprise entre sa cible et son seuil d'alerte reste PROVISOIRE et est mesurée à nouveau à la série suivante ; elle n'ouvre pas de question et ne passe pas en ACTÉ (décision 0162). La note sur Dernier souffle de la fiche n'est pas une mesure du tableau : elle n'a ni cible ni seuil d'alerte (décision 0175). La mesure de l'Essence perdue vise des règles ACTÉ et n'a ni cible ni seuil chiffrés avant les premiers playtests : elle ne passe pas en ACTÉ et n'ouvre pas de question avant que la décision qui fixe sa cible et son seuil d'alerte soit prise (décision 0195). Les mesures de la fenêtre de réponse visent 208.6.2 et ne se relèvent que dans une version du jeu sur écran (décisions 0198 et 0199) : celles qui portent le temps de pendule consommé et les réponses commencées n'ont ni cible ni seuil chiffrés avant les premiers playtests, 208.6.2 reste PROVISOIRE et aucune question ne s'ouvre avant que la décision qui fixe leur cible et leur seuil d'alerte soit prise ; le ressenti du rythme se juge en notes qualitatives. La mesure de la lisibilité du texte des cartes de main n'est pas une mesure du tableau : elle n'a ni cible ni seuil d'alerte, elle ne vise aucune règle des règles complètes, et le bilan de la série dit s'il faut l'ajouter au tableau (décision 0035 du projet, hors ruleset).
+Chaque mesure reçoit, avant le playtest, une cible et un seuil d'alerte (décision 0156). Après la série, une valeur qui tient sa cible peut passer en ACTÉ par une décision. Une valeur qui franchit son seuil d'alerte ouvre une question dans [02-questions-ouvertes.md](../02-questions-ouvertes.md). Une valeur comprise entre sa cible et son seuil d'alerte reste PROVISOIRE et est mesurée à nouveau à la série suivante ; elle n'ouvre pas de question et ne passe pas en ACTÉ (décision 0162). La note sur Dernier souffle de la fiche n'est pas une mesure du tableau : elle n'a ni cible ni seuil d'alerte (décision 0175). La mesure de l'Essence perdue vise des règles ACTÉ et n'a ni cible ni seuil chiffrés avant les premiers playtests : elle ne passe pas en ACTÉ et n'ouvre pas de question avant que la décision qui fixe sa cible et son seuil d'alerte soit prise (décision 0195). La mesure des PV perdus par un Hero en un tour vise des règles ACTÉ (204.4.5, 205.4.7, 205.5.3, 202.3.7 et 204.1.8) et n'a ni cible ni seuil chiffrés avant les premiers playtests : elle ne passe pas en ACTÉ et n'ouvre pas de question avant que la décision qui fixe sa cible et son seuil d'alerte soit prise (décision 0202). Les mesures de la fenêtre de réponse visent 208.6.2 et ne se relèvent que dans une version du jeu sur écran (décisions 0198 et 0199) : celles qui portent le temps de pendule consommé et les réponses commencées n'ont ni cible ni seuil chiffrés avant les premiers playtests, 208.6.2 reste PROVISOIRE et aucune question ne s'ouvre avant que la décision qui fixe leur cible et leur seuil d'alerte soit prise ; le ressenti du rythme se juge en notes qualitatives. La mesure de la lisibilité du texte des cartes de main n'est pas une mesure du tableau : elle n'a ni cible ni seuil d'alerte, elle ne vise aucune règle des règles complètes, et le bilan de la série dit s'il faut l'ajouter au tableau (décision 0035 du projet, hors ruleset).
 
 ### Lecture de « tour »
 
@@ -183,7 +187,7 @@ Dans le protocole, « tour N » veut dire le N-ième tour de chaque joueur, soit
 
 ### Tableau
 
-Tableau validé tel quel le 16 octobre 2026 (décision 0157), complété le même jour sur ses règles visées par les règles 204.1.12 et 204.1.13 (décision 0163) et sur l'intitulé de la mesure de l'Essence inutilisée (décision 0168), complété le 18 octobre 2026 par la mesure de l'Essence perdue, sans cible ni seuil chiffrés (décision 0195), puis par les mesures de la fenêtre de réponse (décision 0198), dont les définitions sont réécrites le 21 octobre 2026 sans passe automatique ni arrêt du décompte (décision 0199), révisable après la première série par une décision.
+Tableau validé tel quel le 16 octobre 2026 (décision 0157), complété le même jour sur ses règles visées par les règles 204.1.12 et 204.1.13 (décision 0163) et sur l'intitulé de la mesure de l'Essence inutilisée (décision 0168), complété le 18 octobre 2026 par la mesure de l'Essence perdue, sans cible ni seuil chiffrés (décision 0195), puis par les mesures de la fenêtre de réponse (décision 0198), dont les définitions sont réécrites le 21 octobre 2026 sans passe automatique ni arrêt du décompte (décision 0199), puis complété le 22 octobre 2026 par la mesure des PV perdus par un Hero en un tour, sans cible ni seuil chiffrés (décision 0202), révisable après la première série par une décision.
 
 | Mesure | Règles visées | Cible | Seuil d'alerte |
 | --- | --- | --- | --- |
@@ -192,6 +196,7 @@ Tableau validé tel quel le 16 octobre 2026 (décision 0157), complété le mêm
 | Temps restant en fin de partie (médiane) | 209.4.3 | 2 min ou plus | moins de 1 min |
 | Essence inutilisée, à partir du tour 3 (moyenne) | 203.5.7, 204.1.12, 204.1.13, 204.3.1 | 1 ou moins | 3 ou plus |
 | Essence perdue en fin de tour (moyenne) | 203.6.1, 204.5.7a | à fixer après les premiers playtests | à fixer après les premiers playtests |
+| PV perdus par un Hero en un tour (maximum par partie) | 204.4.5, 205.4.7, 205.5.3, 202.3.7, 204.1.8 | à fixer après les premiers playtests | à fixer après les premiers playtests |
 | Tour de fin de partie (moyenne) | 204.1.2, 204.1.12, 204.1.13, 204.3.1 | tours 8 à 12 | avant le tour 6 ou après le tour 15 |
 | Victoires du premier joueur | 204.3.4 | 10 sur 20 (indicatif) | 13 ou plus, ou 7 ou moins |
 | Mains de départ remplacées par un mulligan | 204.1.15 | 1 sur 3 ou moins | plus de la moitié |
@@ -219,6 +224,8 @@ Ces termes ne figurent pas au glossaire. Ils ne valent que pour ce protocole.
 | Moyenne de l'Essence inutilisée | Moyenne des relevés d'Essence inutilisée des deux joueurs, à partir du tour 3 de chaque joueur ; on note aussi, dans le bilan de la série, si un seul des deux joueurs dépasse le seuil d'alerte, sans champ de fiche, ce fait se calculant à partir des relevés par joueur (décisions 0168 et 0173). |
 | Essence perdue | Montant de la réserve d'Essence du joueur actif à la fin de son tour, juste avant que cette Essence soit perdue selon 204.5.7a (décision 0195). |
 | Moyenne de l'Essence perdue | Moyenne des relevés d'Essence perdue des deux joueurs, sur tous leurs tours (décision 0195). |
+| PV perdus par un Hero en un tour | Total des PV que le Hero d'un joueur perd entre le début du tour du joueur actif (204.3) et la fin de ce tour (après 204.5.7), ou jusqu'à l'arrêt de la partie (209.2.2) si elle s'arrête avant, toutes causes confondues (décision 0202). |
+| Maximum des PV perdus par un Hero en un tour | Plus grande valeur relevée de PV perdus par un Hero en un tour dans une partie, sur les deux Heroes et sur tous les tours (décision 0202). |
 | Temps de pendule consommé par les fenêtres de réponse | Total, pour un joueur et pour une partie, des secondes de pendule qui s'écoulent pendant les fenêtres de réponse qu'on lui montre (208.6.2, 209.4.4g ; décisions 0198 et 0199). |
 | Moyenne du temps de pendule consommé par les fenêtres de réponse | Moyenne, sur les parties de la série jouées dans une version du jeu sur écran, du total des deux joueurs (décision 0198). |
 | Aperçu au survol | Carte survolée par le pointeur, affichée en grand dans la colonne de gauche de l'écran, où son texte se lit (décision 0035 du projet, hors ruleset). |
@@ -265,6 +272,7 @@ Ces termes ne figurent pas au glossaire. Ils ne valent que pour ce protocole.
 | Temps restant en fin de partie (médiane) | Temps restant |
 | Essence inutilisée | Essence inutilisée (relevée au début du tour), Rang du tour |
 | Essence perdue en fin de tour | Essence perdue (relevée à la fin du tour), Rang du tour |
+| PV perdus par un Hero en un tour (maximum par partie) | PV perdus par chaque Hero pendant le tour (relevés à la fin du tour), Rang du tour |
 | Tour de fin de partie | Rang du tour, dernière ligne du relevé |
 | Victoires du premier joueur | Vainqueur, Premier joueur |
 | Mains de départ remplacées par un mulligan | Nombre de mulligans |

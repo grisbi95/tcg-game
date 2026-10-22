@@ -18,6 +18,11 @@ const TOKEN_HAS_NO_TRIGGERED_EFFECT: String = (
 	+ "déclenché."
 )
 
+## Raison de refus que le moteur ne produit plus, et pourquoi ; gardée dans l'enum, journalisable.
+const RETIRED_REJECT_REASONS: Dictionary[String, String] = {
+	"NORMAL_ACTION_ALREADY_USED": "204.4.6 supprimée en édition 0.39 (décision 0044).",
+}
+
 ## Règle sans test à son nom, et pourquoi : règle de structure, ou vérifiée sous d'autres
 ## règles, tests nommés.
 const RULES_WITHOUT_OWN_TEST: Dictionary[String, String] = {
@@ -229,7 +234,7 @@ func test_decision_0007_tests_cited_by_justifications_exist() -> void:
 func test_decision_0007_every_reject_reason_is_cited_by_a_test() -> void:
 	var uncited := PackedStringArray()
 	for reason_name: String in IntentRejected.RejectReason.keys():
-		if reason_name == "NONE":
+		if reason_name == "NONE" or RETIRED_REJECT_REASONS.has(reason_name):
 			continue
 		var cited := RegEx.create_from_string("\\b%s\\b" % reason_name).search(_tests_text)
 		if cited == null:

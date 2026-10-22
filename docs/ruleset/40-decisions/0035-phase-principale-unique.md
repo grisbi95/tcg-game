@@ -1,5 +1,7 @@
 # 0035 · Phase principale unique
 
+Remplacée en partie par 0200 (limite d'une action normale par tour).
+
 > Décision consignée le 15 octobre 2026. Statut : ACTÉ. Une décision ne se modifie jamais ; pour revenir dessus, une nouvelle décision la remplace et cette ligne reçoit « Remplacée par NNNN ».
 
 ## Contexte

@@ -26,8 +26,6 @@ var essence_reserve: int = 0
 var sources_recycled_this_turn: int = 0
 ## 202.3.14, 202.3.17 : le pouvoir du Hero compte dès son annonce.
 var hero_power_used_this_turn: bool = false
-## 204.4.6, 205.4.7 : l'action normale compte dès son annonce.
-var normal_action_used_this_turn: bool = false
 ## 209.5.1
 var fatigue_counter: int = 0
 ## 209.4.1 : temps restant à la pendule du joueur pour toute la partie.
@@ -61,7 +59,6 @@ func clone() -> PlayerState:
 	copy.essence_reserve = essence_reserve
 	copy.sources_recycled_this_turn = sources_recycled_this_turn
 	copy.hero_power_used_this_turn = hero_power_used_this_turn
-	copy.normal_action_used_this_turn = normal_action_used_this_turn
 	copy.fatigue_counter = fatigue_counter
 	copy.clock_remaining_msec = clock_remaining_msec
 	return copy

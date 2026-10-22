@@ -2,7 +2,7 @@ class_name DuelConfig
 extends RefCounted
 ## Valeurs des règles PROVISOIRE, une par règle (décisions 0001 et 0007).
 ##
-## Les valeurs par défaut sont celles de l'édition 0.28 du ruleset. Lecture seule pendant un
+## Les valeurs par défaut sont celles de l'édition 0.39 du ruleset. Lecture seule pendant un
 ## duel : `DuelState.clone()` partage cette instance. Exception : 208.6.2 (fenêtre de réponse
 ## sans échéance depuis l'édition 0.38) n'a pas de valeur chiffrée, donc aucun champ ici.
 
@@ -17,7 +17,7 @@ var total_sources_per_player: int = 10  # 203.5.7
 var starting_sources: int = 2  # 204.1.2
 var setup_sources_in_play: int = 2  # 204.1.12
 var setup_sources_in_reserve: int = 8  # 204.1.13
-var opening_hand_size: int = 5  # 204.1.15
+var opening_hand_size: int = 4  # 204.1.15
 var sources_received_per_turn: int = 1  # 204.3.1
 var first_player_receives_source_on_first_turn: bool = false  # 204.3.4
 var cards_drawn_per_turn: int = 2  # 204.3.6

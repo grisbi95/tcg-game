@@ -8,6 +8,10 @@ extends RefCounted
 ## joueur A premier joueur, actif et avec la priorité, graine DEFAULT_SEED, Heroes sur leur
 ## case de départ avec DEFAULT_HERO_HEALTH PV, Sources et pendule de départ de la
 ## configuration, aucune carte en zone.
+## Les Units, jetons et Heroes placés (`place_piece`, `place_token`, `place_unit_in`) sont
+## éveillés par défaut, jamais un Building (205.5.6), car un état construit représente un
+## moment de partie où ils ont déjà pu agir (205.5.3) ; `with_piece_awake` les endort. Les
+## pièces créées par le moteur naissent endormies (205.5.4).
 ## Un builder ne sert qu'une fois : `build()` rend l'état qu'il a construit.
 
 const DEFAULT_SEED: int = 1
@@ -139,8 +143,9 @@ func with_hero_power_used(side: DuelState.PlayerSide, used: bool = true) -> Duel
 	return self
 
 
-func with_normal_action_used(side: DuelState.PlayerSide, used: bool = true) -> DuelStateBuilder:
-	_state.get_player(side).normal_action_used_this_turn = used
+## 205.5.1, 205.5.2 : règle l'état endormi ou éveillé d'une pièce déjà placée.
+func with_piece_awake(piece_id: int, awake: bool = true) -> DuelStateBuilder:
+	_state.find_piece(piece_id).is_awake = awake
 	return self
 
 
@@ -180,6 +185,7 @@ static func place_unit_in(
 	piece.owner = side
 	piece.cell = cell(cell_name)
 	piece.card = card
+	piece.is_awake = true
 	state.pieces.append(piece)
 	return piece.piece_id
 
@@ -292,6 +298,7 @@ func _make_piece(side: DuelState.PlayerSide, kind: Piece.PieceKind, at_cell: Vec
 	piece.kind = kind
 	piece.owner = side
 	piece.cell = at_cell
+	piece.is_awake = kind != Piece.PieceKind.BUILDING  # 205.5.6
 	_state.pieces.append(piece)
 	return piece
 

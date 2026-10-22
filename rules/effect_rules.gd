@@ -255,7 +255,7 @@ static func _add_force_modifier(context: EffectContext, piece: Piece) -> void:
 
 
 # 202.4.1, 202.4.8, 202.4.9, 202.4.12 ; 201.5.4, 201.5.4a : le jeton appartient au joueur de
-# l'entrée qui le crée.
+# l'entrée qui le crée ; 205.5.4a : il naît endormi (`is_awake` reste faux).
 static func _create_token(context: EffectContext, cell: Vector2i) -> void:
 	var token := Piece.new()
 	token.piece_id = context.state.allocate_piece_id()

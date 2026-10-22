@@ -11,8 +11,8 @@ Complète le `CLAUDE.md` racine pour `rules/` ; décisions 0001, 0003, 0004, 000
 | `card_rules.gd` | 202 | Gear (annonce, attachement, remplacement, retour en main), pouvoir du Hero |
 | `essence_rules.gd` | 203 | paiement à l'annonce, incliner, recycler, Fonte, réserve d'Essence (203.6, 0026) |
 | `preparation_rules.gd` | 204.1, 204.2 | préparation par `DuelSetup` (0012), mulligan simultané exécuté à la dernière réponse, joueur A puis B (0013, 0015) et Écart ; appelle `TurnRules` (premier tour, pioche), jamais l'inverse |
-| `turn_rules.gd` | 204.3 à 204.5 | début de tour (204.3.8, redressement compris), pioche, fin de tour (204.5) |
-| `action_rules.gd` | 205 | déploiement (annonce, résolution), action normale, déplacement du Hero, échecs |
+| `turn_rules.gd` | 204.3 à 204.5 | début de tour (204.3.8, réveil et redressement compris), pioche, fin de tour (204.5) |
+| `action_rules.gd` | 205 | déploiement (annonce, résolution), action normale d'une pièce éveillée (205.5), déplacement du Hero, échecs |
 | `combat_rules.gd` | 206 | comparaison, égalité, Hero défenseur, avance, auras lues avant l'avance |
 | `spell_rules.gd` | 207.1 | Spells : vitesses, annonce, résolution ; appelle `EffectRules`, jamais l'inverse |
 | `effect_rules.gd` | 207.4 à 207.6 | cibles et validité, effets à la résolution (Force à durée, destruction, jetons), Contrecarrer (207.6, avec l'effet COUNTER) |

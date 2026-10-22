@@ -1,7 +1,7 @@
 # gdlint: disable=max-public-methods
 
 extends GdUnitTestSuite
-## DuelConfig : une valeur par règle PROVISOIRE (ruleset 0.28, décisions 0001 et 0007).
+## DuelConfig : une valeur par règle PROVISOIRE (ruleset 0.39, décisions 0001 et 0007).
 ## Les valeurs du ruleset sont recopiées en constantes pour que le test contrôle la
 ## configuration.
 
@@ -12,7 +12,7 @@ const TOTAL_SOURCES: int = 10  # 203.5.7
 const STARTING_SOURCES: int = 2  # 204.1.2
 const SETUP_SOURCES_IN_PLAY: int = 2  # 204.1.12
 const SETUP_SOURCES_IN_RESERVE: int = 8  # 204.1.13
-const OPENING_HAND_SIZE: int = 5  # 204.1.15
+const OPENING_HAND_SIZE: int = 4  # 204.1.15
 const SOURCES_PER_TURN: int = 1  # 204.3.1
 const CARDS_PER_TURN: int = 2  # 204.3.6
 const CLOCK_MSEC: int = 600_000  # 209.4.3 : 10 minutes

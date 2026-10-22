@@ -10,7 +10,8 @@ extends GdUnitTestSuite
 
 const SHORT_SEEDS: Array[int] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 const SHORT_STEPS: int = 300
-## Graines dont le duel finit avant LONG_STEPS (relevé du 18 octobre 2026, ruleset 0.36).
+## Graines dont le duel finit avant LONG_STEPS (relevé du 18 octobre 2026, ruleset 0.36 ;
+## revérifié le 22 octobre 2026 au ruleset 0.39, mêmes graines).
 const LONG_SEEDS: Array[int] = [4, 6]
 const LONG_STEPS: int = 2_000
 const CLOCK_STEP_MSEC: int = 50

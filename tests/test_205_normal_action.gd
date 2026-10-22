@@ -1,8 +1,10 @@
 # gdlint: disable=max-public-methods
 
 extends GdUnitTestSuite
-## Action normale d'une Unit, déplacement du Hero et échecs (ruleset 0.31, sections 205.2 à
-## 205.4 ; 204.4.5, 204.4.6, 208.1.2, 208.1.10, 208.1.11).
+## Action normale d'une Unit, déplacement du Hero et échecs (ruleset 0.39, sections 205.2 à
+## 205.4 ; 204.4.5, 208.1.2, 208.1.10, 208.1.11 ; décision de design 0200 du ruleset : une
+## action normale par pièce éveillée, la pièce s'endort dès l'annonce). Sommeil et réveil :
+## test_205_5_sleep.gd.
 
 const UNIT_ID: StringName = &"acting_unit"
 const WEAK_ID: StringName = &"weak_unit"
@@ -105,24 +107,44 @@ func test_205_2_6_ally_cell_rejected_at_announcement() -> void:
 	_assert_rejected(_act(unit_id, "B3"), REASON.CELL_OCCUPIED_BY_ALLY)
 
 
-func test_205_4_7_action_counts_from_announcement() -> void:
+func test_205_4_7_piece_falls_asleep_from_announcement() -> void:
 	var unit_id := _place(A, UNIT_ID, "B2")
 	var other_id := _place(A, WEAK_ID, "D2")
 	_start()
 	_engine.submit(_act(unit_id, "B3"))
-	assert_bool(_engine.get_state().get_player(A).normal_action_used_this_turn).is_true()
+	assert_bool(_engine.get_state().find_piece(unit_id).is_awake).is_false()
+	assert_bool(_engine.get_state().find_piece(other_id).is_awake).is_true()
 	_resolve_stack()
-	_assert_rejected(_act(other_id, "D3"), REASON.NORMAL_ACTION_ALREADY_USED)
+	_assert_rejected(_act(unit_id, "B4"), REASON.PIECE_ASLEEP)
+	assert_int(_engine.validate(_act(other_id, "D3"))).is_equal(REASON.NONE)
 
 
-func test_204_4_6_one_normal_action_per_turn_even_after_failure() -> void:
+func test_205_4_7_piece_falls_asleep_even_when_action_fails() -> void:
 	var unit_id := _place(A, UNIT_ID, "B2")
 	var other_id := _place(A, WEAK_ID, "D2")
 	_start()
 	_engine.submit(_act(unit_id, "B3"))
 	DuelStateBuilder.place_unit_in(_engine.get_state(), A, WEAK_ID, "B3")
 	assert_array(_resolve_stack()).contains(["NormalActionFailed:A"])
-	_assert_rejected(_act(other_id, "D3"), REASON.NORMAL_ACTION_ALREADY_USED)
+	assert_bool(_engine.get_state().find_piece(unit_id).is_awake).is_false()
+	_assert_rejected(_act(unit_id, "B1"), REASON.PIECE_ASLEEP)
+	assert_int(_engine.validate(_act(other_id, "D3"))).is_equal(REASON.NONE)
+
+
+func test_204_4_5_two_awake_pieces_act_in_the_same_turn() -> void:
+	var unit_id := _place(A, UNIT_ID, "B2")
+	var other_id := _place(A, WEAK_ID, "D2")
+	_start()
+	var hero_id := _engine.get_state().find_hero(A).piece_id
+	var targets: Dictionary[int, String] = {unit_id: "B3", other_id: "D3", hero_id: "C2"}
+	for piece_id: int in targets:
+		assert_array(EventLog.describe(_engine.submit(_act(piece_id, targets[piece_id])))).contains(
+			["NormalActionAnnounced:A"]
+		)
+		_resolve_stack()
+	assert_str(_cell_of(unit_id)).is_equal("B3")
+	assert_str(_cell_of(other_id)).is_equal("D3")
+	assert_str(_cell_of(hero_id)).is_equal("C2")
 
 
 func test_205_4_5_ally_on_target_at_resolution_makes_action_fail() -> void:

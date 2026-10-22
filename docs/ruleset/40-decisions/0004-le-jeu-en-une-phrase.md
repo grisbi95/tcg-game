@@ -1,5 +1,7 @@
 # 0004 · Le jeu en une phrase
 
+Remplacée en partie par 0203 (formulation de la phrase du jeu : chaque pièce agit une fois par tour).
+
 > Décision consignée le 15 octobre 2026. Statut : ACTÉ. Une décision ne se modifie jamais ; pour revenir dessus, une nouvelle décision la remplace et cette ligne reçoit « Remplacée par NNNN ».
 
 ## Contexte

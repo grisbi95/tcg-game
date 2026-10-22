@@ -1,12 +1,12 @@
 # gdlint: disable=max-public-methods
 
 extends GdUnitTestSuite
-## Préparation et mulligan par DuelEngine (ruleset 0.33, sections 204.1 et 204.2 ; décisions
-## 0012, 0013 et 0015).
+## Préparation et mulligan par DuelEngine (ruleset 0.39, sections 204.1 et 204.2 ; décisions
+## 0012, 0013 et 0015 ; décision de design 0201 du ruleset, main de départ de 4 cartes).
 
 const SOURCES_IN_PLAY: int = 2  # 204.1.2, 204.1.12
 const SOURCES_IN_RESERVE: int = 8  # 204.1.13
-const OPENING_HAND_SIZE: int = 5  # 204.1.15
+const OPENING_HAND_SIZE: int = 4  # 204.1.15
 const CARDS_PER_TURN: int = 2  # 204.3.6
 const SEEDS_TRIED: int = 20
 
@@ -94,7 +94,7 @@ func test_204_1_6_decks_are_shuffled_before_first_draw() -> void:
 	assert_array(dealt).contains_exactly_in_any_order(unshuffled)
 
 
-func test_204_1_15_each_player_draws_five_cards() -> void:
+func test_204_1_15_each_player_draws_four_cards() -> void:
 	_start()
 	for side: DuelState.PlayerSide in [A, B]:
 		assert_int(_engine.get_state().get_player(side).hand.size()).is_equal(OPENING_HAND_SIZE)
@@ -123,6 +123,7 @@ func test_204_1_16_first_player_designated_after_mulligan() -> void:
 	_engine.submit(ChooseMulligan.new(A))
 	var events := _engine.submit(ChooseMulligan.new(B))
 	var expected: Array[String] = ["MulliganDecided:B", "FirstPlayerChosen:A", "TurnStarted:A"]
+	expected.append("PiecesAwakened:A")
 	expected.append_array(EventLog.repeat("CardDrawn:A", CARDS_PER_TURN))
 	assert_array(EventLog.describe(events)).contains_exactly(expected)
 
