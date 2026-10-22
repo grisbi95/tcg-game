@@ -120,13 +120,13 @@ Aucun Invariant.
 
 **204.5.2** [ACTÉ] L'adversaire du joueur actif commence ensuite son tour (décision 0036 ; voir 204.5.7).
 
-**204.5.3** [ACTÉ] Quand le joueur actif termine son tour, les effets déclenchés par la fin du tour s'ajoutent à la pile (décision 0071 ; voir 204.4.7 et 207.3.2).
+**204.5.3** [ACTÉ] Quand le joueur actif termine son tour, les effets déclenchés par la fin du tour s'ajoutent à la pile (décision 0071 ; voir 204.4.7, 207.3.2 et 208.7.16).
 
 **204.5.4** [ACTÉ] L'ordre dans lequel plusieurs effets déclenchés par la fin du tour s'ajoutent à la pile suit 208.4.6, 208.4.7 et 208.4.8 (décision 0071 ; voir 204.5.3).
 
-**204.5.5** [ACTÉ] Les joueurs peuvent répondre aux effets déclenchés ajoutés selon 204.5.3 (décision 0071 ; voir 208.2.4).
+**204.5.5** Supprimée en édition 0.41, voir décision 0207.
 
-**204.5.6** [ACTÉ] La pile formée selon 204.5.3 se résout selon 208.3.1 (décision 0071 ; voir 208.3.2).
+**204.5.6** [ACTÉ] La pile formée selon 204.5.3 se résout aussitôt selon 208.7.13 (décisions 0071 et 0207 ; voir 208.3.2).
 
 **204.5.7** [ACTÉ] Une fois la pile vide, les effets qui durent jusqu'à la fin du tour prennent fin (décision 0071 ; voir 204.5.6).
 

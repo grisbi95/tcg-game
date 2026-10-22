@@ -52,6 +52,8 @@ Aucun Invariant.
 
 **208.3.2a** [ACTÉ] Les effets déclenchés de la pile se résolvent avec les annonces, dans l'ordre de 208.3.2 (décision 0064 ; voir 207.3.2).
 
+**208.3.2b** [ACTÉ] Les combats en attente de la pile se résolvent avec les annonces, dans l'ordre de 208.3.2 (décision 0207 ; voir 205.6.4).
+
 **208.3.3** [ACTÉ] Aucun joueur ne peut répondre entre deux résolutions (décision 0046).
 
 ## 208.4 Chaînes
@@ -76,7 +78,7 @@ Aucun Invariant.
 
 **208.4.10** [ACTÉ] Un effet déclenché pendant le début du tour attend la fin du début du tour (décision 0068 ; voir 204.3.8 et 204.3.9).
 
-**208.4.11** [ACTÉ] Un effet déclenché qui attendait la fin du début du tour s'ajoute au sommet de la pile dès le début de la phase principale, avant toute annonce (décision 0068 ; voir 204.4.1, 208.4.6 et 208.4.10).
+**208.4.11** [ACTÉ] Un effet déclenché qui attendait la fin du début du tour s'ajoute au sommet de la pile dès le début de la phase principale, avant toute annonce (décisions 0068 et 0207 ; voir 204.4.1, 208.4.6, 208.4.10 et 208.7.15).
 
 **208.4.12** Supprimée en édition 0.3, voir décision 0070.
 
@@ -122,9 +124,9 @@ Aucun Invariant.
 
 **208.7.7** [ACTÉ] L'annonce de l'utilisation du pouvoir d'un Hero est sans réponse (décision 0207 ; voir 208.1.4).
 
-**208.7.8** [ACTÉ] Un effet déclenché par une annonce sans réponse est sans réponse (décision 0207 ; voir 208.4.4).
+**208.7.8** [ACTÉ] Un effet déclenché par une annonce sans réponse ou par un effet déclenché sans réponse est sans réponse (décision 0207 ; voir 208.4.4).
 
-**208.7.9** [ACTÉ] Un effet déclenché pendant la résolution d'une annonce sans réponse est sans réponse (décision 0207 ; voir 208.4.2 et 208.4.3).
+**208.7.9** [ACTÉ] Un effet déclenché pendant la résolution d'une annonce sans réponse ou d'un effet déclenché sans réponse est sans réponse (décision 0207 ; voir 208.4.2 et 208.4.3).
 
 **208.7.10** [ACTÉ] Un joueur peut répondre à un effet déclenché par l'annonce d'un Spell ou d'une attaque (décision 0207 ; voir 208.2.4a et 208.4.4).
 
@@ -134,4 +136,8 @@ Aucun Invariant.
 
 **208.7.13** [ACTÉ] Une pile qui contient une entrée sans réponse se résout aussitôt, de la dernière entrée ajoutée à la première (décision 0207 ; voir 208.3.1 et 208.3.2).
 
-**208.7.14** [ACTÉ] Une annonce est sans réponse ou non selon l'état du plateau au moment de son annonce, jamais au moment de sa résolution (décision 0207 ; voir 205.4.1, 208.7.2 et 208.7.4).
+**208.7.14** [ACTÉ] Un joueur peut répondre à un combat en attente ajouté à la pile (décision 0207 ; voir 205.6.4, 208.2.4 et 208.4.5).
+
+**208.7.15** [ACTÉ] Un effet déclenché pendant le début du tour est sans réponse (décision 0207 ; voir 208.4.10 et 208.4.11).
+
+**208.7.16** [ACTÉ] Un effet déclenché par la fin du tour est sans réponse (décision 0207 ; voir 204.5.3).

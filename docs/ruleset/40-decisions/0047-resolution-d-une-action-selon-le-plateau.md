@@ -2,6 +2,8 @@
 
 Remplacée en partie par 0200 (action normale comptée dès son annonce, remplacée par le sommeil de la pièce).
 
+Remplacée en partie par 0207 (l'attaque d'une action normale annoncée vers une case libre est un combat en attente, résolu selon le plateau à sa propre résolution, 205.6.9).
+
 > Décision consignée le 15 octobre 2026. Statut : ACTÉ. Une décision ne se modifie jamais ; pour revenir dessus, une nouvelle décision la remplace et cette ligne reçoit « Remplacée par NNNN ».
 
 ## Contexte

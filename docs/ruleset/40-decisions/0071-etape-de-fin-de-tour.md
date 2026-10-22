@@ -1,5 +1,7 @@
 # 0071 · Étape de fin de tour
 
+Remplacée en partie par 0207 (un effet déclenché par la fin du tour est sans réponse ; 204.5.5 supprimée).
+
 > Décision consignée le 15 octobre 2026. Statut : ACTÉ. Une décision ne se modifie jamais ; pour revenir dessus, une nouvelle décision la remplace et cette ligne reçoit « Remplacée par NNNN ».
 
 ## Contexte

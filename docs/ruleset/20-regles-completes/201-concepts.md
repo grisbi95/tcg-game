@@ -64,7 +64,7 @@
 
 **201.3.7** [ACTÉ] La pile est une zone commune aux deux joueurs (décision 0051).
 
-**201.3.8** [ACTÉ] Une carte annoncée se trouve sur la pile jusqu'à sa résolution (décision 0051 ; voir 201.3.7).
+**201.3.8** [ACTÉ] Une carte annoncée se trouve sur la pile jusqu'à sa résolution (décision 0051 ; voir 201.3.7 et 205.6.8).
 
 **201.3.9** [ACTÉ] Pendant le mulligan, chaque joueur a un Écart, zone hors du plateau propre à ce joueur (décision 0097 ; voir 204.2.10).
 

@@ -43,3 +43,24 @@ Points que la décision ne tranche pas : les effets déclenchés au début du to
 
 - Q-111 · Réponse aux effets déclenchés du début du tour et de la fin du tour.
 - Q-112 · Effet déclenché par un effet déclenché sans réponse.
+
+## Précisions du 23 octobre 2026
+
+Édition 0.41 non publiée dans le code à cette date : les précisions complètent la présente décision, sans nouvelle décision ni nouvelle édition. Elles tranchent les deux questions ci-dessus ; le paragraphe « Points que la décision ne tranche pas » et la réserve qui l'accompagne sur 208.2.4 sont donc caducs.
+
+- Q-111, option B retenue par le créateur : les effets déclenchés au début du tour (208.4.10, 208.4.11) et à la fin du tour (204.5.3) sont sans réponse. 208.7.15 et 208.7.16 créées, au statut ACTÉ. 204.5.5 et 203.6.10 supprimées, identifiants conservés ; 204.5.6 réécrite (la pile se résout aussitôt selon 208.7.13) ; renvois ajoutés à 204.5.3 et 208.4.11, qui cite aussi la décision 0207. Option A écartée : une pile possible à chaque début et à chaque fin de tour, hors des deux cas de réponse de la présente décision.
+- Q-112, option A retenue par le créateur : la cascade suit l'annonce. Tout effet déclenché qui découle, à n'importe quel niveau, d'une annonce sans réponse ou d'un effet déclenché sans réponse est sans réponse ; 208.7.8 et 208.7.9 généralisées en conséquence. Option B écartée : le sort d'un effet dépendrait de sa profondeur dans la chaîne. 208.7.10 et 208.7.11 inchangées : ce qui découle d'un Spell ou d'une attaque garde la possibilité de réponse.
+- Attaque née à la résolution, tranchée par le créateur le 23 octobre 2026 : une attaque qui naît à la résolution d'un déploiement sur une case occupée par une pièce ennemie (205.1.6) ou d'une action normale annoncée vers une case libre occupée par une pièce ennemie à la résolution (205.2.3) peut recevoir une réponse avant son combat. Ce combat ne se joue pas pendant la résolution : c'est un combat en attente, qui attend la fin de la résolution (208.4.2), s'ajoute à la pile (208.4.3), peut recevoir une réponse (208.7.14), puis a lieu à sa résolution. 208.3.1 et 208.3.3 restent vraies. Remplace le contenu de 208.7.14 et la phrase de la section « Conséquences sur les règles » qui dit qu'un combat né à la résolution n'ouvre aucune réponse.
+  - Pendant l'attente, l'Unit qui fait son action normale reste sur sa case de départ ; l'Unit qui se déployait attend hors du plateau, ni dans la main ni en jeu (205.6.7 et 205.6.8).
+  - À la résolution du combat en attente, le plateau est relu dans l'esprit de 205.4 : case libre, l'Unit se déplace ou entre en jeu ; pièce alliée, l'action échoue ou la carte revient dans la main ; pièce ennemie, le combat a lieu ; Unit partie du plateau, le combat n'a pas lieu (205.6.9 à 205.6.15).
+  - Un combat en attente appartient au joueur de l'attaquant et compte comme un effet déclenché de ce joueur pour l'ordre d'ajout, sans règle nouvelle d'ordre (205.6.5, 205.6.6, 208.4.6 à 208.4.8). Ordre de résolution : 208.3.2b.
+  - Identifiants : section 205.6 créée (205.6.1 à 205.6.15), 205.2.3a et 208.3.2b ajoutées ; 205.1.6 réécrite ; renvois ajoutés à 205.2.3 et 205.4.1. L'ancien contenu de 208.7.14 (le plateau à l'annonce décide si une annonce permet de répondre) n'est pas repris : 208.7.2 et 208.7.4, lues avec 205.2.6, le disent.
+  - Glossaire : Combat en attente ajouté ; Appartenir, Entrée de la pile, Pile, Sans réponse mis à jour.
+  - Décisions remplacées en partie : 0047 et 0048.
+  - Questions ouvertes créées : Q-113 (zone de la carte d'un déploiement pendant l'attente, carte plus disponible), Q-114 (case visée plus adjacente pendant l'attente), Q-115 (scission du chapitre 208, qui compte 61 identifiants).
+- Q-113, Q-114 et Q-115 tranchées par le créateur le 23 octobre 2026, même édition 0.41 :
+  - Q-113 : la carte d'une Unit dont le déploiement crée un combat en attente reste sur la pile avec ce combat, selon 201.3.8, jusqu'à la résolution de ce combat ; si elle quitte la pile avant, le combat n'a pas lieu. 205.6.8 réécrite en conséquence (elle ne dit plus « hors du plateau, ni en main ni en jeu », formule de la ligne « Pendant l'attente » plus haut) ; 205.6.16 créée ; renvoi ajouté à 201.3.8. Option écartée : une zone propre au combat en attente, une zone de plus à définir.
+  - Q-114 : si la case visée n'est plus adjacente à l'Unit à la résolution du combat en attente d'une action normale, l'action échoue et l'Unit reste où elle est, comme 205.4.4. 205.6.17 créée.
+  - Q-115 : option B, le chapitre 208 (61 identifiants, suppressions comprises) n'est pas scindé, comme le chapitre 207 (décision 0116). Option écartée : scinder pour les futures familles de règles, la pile et ses réponses réparties sur deux chapitres.
+- Décisions remplacées en partie, en plus de celles listées plus haut : 0068, 0071 et 0193.
+- Glossaire : Réserve d'Essence, renvoi à 203.6.10 retiré ; Sans réponse et Effet déclenché, renvois ajoutés.
