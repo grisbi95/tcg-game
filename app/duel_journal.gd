@@ -30,7 +30,7 @@ class Entry:
 	func is_intent() -> bool:
 		return kind == EntryKind.INTENT
 
-	## Temps qui fait avancer la pendule, hors ou pendant une fenêtre de réponse.
+	## Temps qui fait avancer le temps de tour ou de réponse, hors ou pendant une fenêtre de réponse.
 	func counts_time() -> bool:
 		return kind == EntryKind.ELAPSED_TIME or kind == EntryKind.RESPONSE_WINDOW_TIME
 
@@ -53,7 +53,7 @@ func record_intent(intent: DuelIntent) -> void:
 	entries.append(entry)
 
 
-## Les temps consécutifs se cumulent : les pendules qui tournent ne changent qu'à une soumission.
+## Les temps consécutifs se cumulent : les temps qui s'écoulent ne changent qu'à une soumission.
 func record_elapsed(elapsed_msec: int) -> void:
 	_record_time(EntryKind.ELAPSED_TIME, DuelState.PlayerSide.A, elapsed_msec)
 
@@ -81,7 +81,7 @@ func total_elapsed_msec() -> int:
 	return total_msec
 
 
-## Temps de pendule écoulé pendant les fenêtres de réponse montrées à `player` (208.6.2).
+## Temps écoulé pendant les fenêtres de réponse montrées à `player` (208.6.2).
 func response_window_elapsed_msec(player: DuelState.PlayerSide) -> int:
 	var total_msec := 0
 	for entry: Entry in entries:
@@ -107,8 +107,8 @@ func replay_into(engine: DuelEngine) -> Array[DuelEvent]:
 	return events
 
 
-## Rejoue une entrée dans `engine` : une intention est soumise, un temps avance la pendule, une
-## réponse commencée ne change rien au moteur.
+## Rejoue une entrée dans `engine` : une intention est soumise, un temps avance le temps de tour
+## ou de réponse, une réponse commencée ne change rien au moteur.
 static func replay_entry(engine: DuelEngine, entry: Entry) -> Array[DuelEvent]:
 	if entry.counts_time():
 		return engine.advance_clock(entry.elapsed_msec)

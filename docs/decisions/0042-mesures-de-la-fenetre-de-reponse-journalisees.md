@@ -1,6 +1,6 @@
 # 0042 — Mesures de la fenêtre de réponse journalisées
 
-- Statut : acceptée ; modifiée par le ruleset 0.38 (décision de design 0199) le 2026-10-21 : le temps de fenêtre se compte de l'ouverture au geste du joueur, sans échéance ni passe automatique ; une réponse commencée se compte une fois par occasion de répondre (entrée au sommet de la pile), même si la fenêtre se ferme et se rouvre après une production d'Essence (203.6, décision 0026).
+- Statut : acceptée ; modifiée par le ruleset 0.38 (décision de design 0199) le 2026-10-21 : le temps de fenêtre se compte de l'ouverture au geste du joueur, sans échéance ni passe automatique ; une réponse commencée se compte une fois par occasion de répondre (entrée au sommet de la pile), même si la fenêtre se ferme et se rouvre après une production d'Essence (203.6, décision 0026) ; modifiée par 0045 : la fenêtre a de nouveau une échéance, et la fiche ajoute les tours et réponses expirés et les défaites par inactivité.
 - Date : 2026-10-21
 - Décideur : créateur du projet
 - Périmètre : journal du duel (`DuelJournal`, `app/`), hôte (`DuelHost`), relevé de playtest (`PlaytestRecorder`, étape 2.5)

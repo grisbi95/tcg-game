@@ -1,20 +1,20 @@
 # gdlint: disable=max-public-methods
 
 extends GdUnitTestSuite
-## DuelHost : machine à états, relais, agents et pendule au temps réel (ruleset 0.34, 209.4.4f,
-## 209.4.5 ; décisions 0020 et 0021).
+## DuelHost : machine à états, relais, agents et temps réel (ruleset 0.40, 209.4.4f, 209.4.9,
+## 209.4.10 ; décisions 0020, 0021 et 0045).
 ##
 ## Sans scène : `ManualClock` tient lieu de temps réel, et chaque lot d'événements est confirmé
 ## comme affiché par l'appel que ferait la scène.
 
-const CLOCK_MSEC: int = 600_000  # 209.4.3 : 10 minutes
+const CLOCK_MSEC: int = 90_000  # 209.4.3 : temps de tour de 90 secondes
 const AGENT_SEED: int = 3
 const AGENT_STEP_MSEC: int = 1_000
-## Les deux pendules s'épuisent bien avant : l'hôte qui avance sans bloquer atteint ENDED.
+## Un duel d'agents finit bien avant : l'hôte qui avance sans bloquer atteint ENDED.
 const MAX_HOST_STEPS: int = 5_000
 const UNKNOWN_HERO: StringName = &"unknown_hero"
-const SHORT_CLOCK_MSEC: int = 3_000  # 209.4.3 réduite
-const OVERRUN_MSEC: int = 5_000  # temps écoulé fenêtre ouverte, plus que la pendule de B
+const SHORT_RESPONSE_MSEC: int = 3_000  # 209.4.6 réduit
+const OVERRUN_MSEC: int = 5_000  # temps écoulé fenêtre ouverte, plus que le temps de réponse de B
 const UNIT_COST: int = 2  # CatalogSamples.unit()
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
@@ -133,17 +133,17 @@ func test_decision_0020_each_event_batch_needs_its_confirmation() -> void:
 	_host.confirm_events_played()
 	assert_int(_host.get_host_state()).is_equal(HOST.PLAYING_EVENTS)
 	_host.confirm_events_played()
-	assert_int(_host.get_host_state()).is_equal(HOST.ENDED)
+	assert_int(_host.get_host_state()).is_not_equal(HOST.PLAYING_EVENTS)
 
 
-func test_decision_0020_one_confirmation_per_call_after_clock_end_during_the_window() -> void:
-	_reach_window_of_b_with_short_clock()
+func test_decision_0020_one_confirmation_per_call_after_response_expiry_during_the_window() -> void:
+	_reach_window_of_b_with_short_response_time()
 	_clock.advance(OVERRUN_MSEC)
-	var labels := EventLog.describe(_host.tick())  # 209.4.4g puis 209.4.5 : aucune passe (208.6.2)
-	assert_array(labels).contains_exactly(["TimeExpired:B", "DuelEnded"])
+	var labels := EventLog.describe(_host.tick())  # 209.4.4g puis 209.4.10 : B passe
+	assert_array(labels.slice(0, 2)).contains_exactly(["TimeExpired:B", "PriorityPassed:B"])
 	assert_int(_host.get_host_state()).is_equal(HOST.PLAYING_EVENTS)
 	_host.confirm_events_played()
-	assert_int(_host.get_host_state()).is_equal(HOST.ENDED)
+	assert_int(_host.get_host_state()).is_not_equal(HOST.PLAYING_EVENTS)
 
 
 func test_decision_0020_state_changes_are_signaled() -> void:
@@ -195,13 +195,15 @@ func test_209_4_2d_host_counts_no_time_during_the_mulligan() -> void:
 	_assert_clocks(CLOCK_MSEC, CLOCK_MSEC)
 
 
-func test_209_4_5_expired_clock_ends_the_duel_through_the_host() -> void:
+func test_209_4_9_turn_time_expiry_ends_the_turn_through_the_host() -> void:
 	_reach_first_turn_of_a()
 	_clock.advance(CLOCK_MSEC)
 	var labels := EventLog.describe(_host.tick())
-	assert_array(labels).contains(["TimeExpired:A", "DuelEnded"])
-	_host.confirm_events_played()
-	assert_int(_host.get_host_state()).is_equal(HOST.ENDED)
+	assert_array(labels.slice(0, 3)).contains_exactly(
+		["TimeExpired:A", "TurnEnded:A", "TurnStarted:B"]
+	)
+	assert_int(_engine.get_state().active_player).is_equal(B)
+	assert_bool(_engine.get_state().is_ended()).is_false()
 
 
 func test_decision_0021_clock_counts_only_real_elapsed_time() -> void:
@@ -262,11 +264,11 @@ func _reach_first_turn_of_a() -> void:
 	_host.confirm_relay()
 
 
-# 209.4.3 : pendule réduite, qui tombe pendant la fenêtre de réponse de B (209.4.4g). A a déployé
-# une Unit, B a pris l'appareil et reçoit sa fenêtre de réponse.
-func _reach_window_of_b_with_short_clock() -> void:
+# 209.4.6 : temps de réponse réduit, qui tombe pendant la fenêtre de réponse de B (209.4.4g). A a
+# déployé une Unit, B a pris l'appareil et reçoit sa fenêtre de réponse.
+func _reach_window_of_b_with_short_response_time() -> void:
 	var config := DuelConfig.new()
-	config.clock_duration_msec = SHORT_CLOCK_MSEC
+	config.response_time_msec = SHORT_RESPONSE_MSEC
 	_engine = DuelEngine.new(SetupSamples.catalog(), config)
 	_host = DuelHost.new(_engine, _clock)
 	_reach_human_a()
@@ -294,5 +296,5 @@ func _setup() -> DuelSetup:
 
 func _assert_clocks(expected_a_msec: int, expected_b_msec: int) -> void:
 	var state := _engine.get_state()
-	assert_int(state.get_player(A).clock_remaining_msec).is_equal(expected_a_msec)
-	assert_int(state.get_player(B).clock_remaining_msec).is_equal(expected_b_msec)
+	assert_int(state.get_player(A).turn_time_remaining_msec).is_equal(expected_a_msec)
+	assert_int(state.get_player(B).turn_time_remaining_msec).is_equal(expected_b_msec)

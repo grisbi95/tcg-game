@@ -1,5 +1,7 @@
 # 0187 · Pendule pendant le relais et l'affichage des effets
 
+Modifiée par 0205 (vocabulaire : la pendule devient le temps de tour et le temps de réponse ; le choix de l'option B est conservé).
+
 > Décision consignée le 17 octobre 2026. Statut : ACTÉ. Une décision ne se modifie jamais ; pour revenir dessus, une nouvelle décision la remplace et cette ligne reçoit « Remplacée par NNNN ».
 
 ## Contexte

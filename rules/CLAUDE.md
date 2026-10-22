@@ -1,6 +1,6 @@
 # Moteur de duel — consignes locales
 
-Complète le `CLAUDE.md` racine pour `rules/` ; décisions 0001, 0003, 0004, 0007, 0008, 0009, 0010, 0012, 0013, 0015, 0016, 0017, 0018, 0026 et 0037.
+Complète le `CLAUDE.md` racine pour `rules/` ; décisions 0001, 0003, 0004, 0007, 0008, 0009, 0010, 0012, 0013, 0015, 0016, 0017, 0018, 0026, 0037 et 0045.
 
 ## Carte des modules (cible du jalon J1)
 
@@ -19,7 +19,7 @@ Complète le `CLAUDE.md` racine pour `rules/` ; décisions 0001, 0003, 0004, 000
 | `effect_context.gd` | 207.4, 207.5 | état, entrée de pile, effet et événements de l'effet en cours d'application, passés aux fonctions d'`EffectRules` ; jamais dans l'état |
 | `trigger_rules.gd` | 207.3, 208.4 | effets déclenchés (0017) : attente, ordre d'ajout (`ORDER_TRIGGERS`), cibles (`CHOOSE_TARGETS`), choix unique automatique (0004), « une fois par tour », résolution |
 | `stack_rules.gd` | 208 | annonce, priorité (208.2.4), passe (208.3.1), entrée du sommet et fin de sa résolution (208.3.2), retour au joueur actif (208.5.1) ; n'appelle aucun autre module, la boucle de résolution est dans `DuelEngine` |
-| `state_check_rules.gd` | 209 | Force plancher 0, victoire après chaque effet, abandon, pendule, fatigue |
+| `state_check_rules.gd` | 209 | Force plancher 0, victoire après chaque effet, abandon, inactivité (209.2.10), temps de tour et de réponse (209.4), fatigue |
 | `keyword_rules.gd` | 210 | texte de règle de chaque mot-clé |
 | `force_rules.gd` | 206.5, 209.1 | Force actuelle calculée à la demande, jamais stockée |
 | `board_geometry.gd` | 201.2, 205 | adjacence, rangées, zones de déploiement, notation A1 à E5 |
@@ -54,5 +54,5 @@ Le champ **et** sa copie dans `clone()` de la même classe, puis une valeur non 
 - La Force actuelle se calcule par `ForceRules`, jamais ne se stocke.
 - Phase `ENDED` ⇒ toute intention refusée ; `state.pending_decision` non null ⇒ seule l'intention qui y répond est acceptée, et `Concede` (209.2.5 : à tout moment).
 - Un Hero ne perd de PV que par `StateCheckRules.lose_health()` ou `apply_fatigue()`, qui vérifient la victoire avec la raison de fin (209.2.1, décision 0040).
-- Les pendules ne bougent que par `advance_clock()`, jamais pendant un `submit()`.
+- Le temps de tour et le temps de réponse ne s'écoulent que par `advance_clock()`, jamais pendant un `submit()` ; ils ne se remettent à neuf que par `TurnRules.start_turn`, `StackRules.add_to_stack` et `TriggerRules` (nouvelle attente).
 - Les modules ne lisent que `state`, le catalogue compris par `state.catalog`, en lecture seule (0016) ; aucune injection, aucun accès à la vue.

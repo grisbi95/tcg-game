@@ -32,6 +32,7 @@ const SENTENCES: Dictionary[StringName, String] = {
 	&"HeroLostHealth": "Le Hero du joueur %s perd des PV.",
 	&"HeroPlaced": "Le Hero du joueur %s est placé.",
 	&"HeroPowerAnnounced": "Le joueur %s utilise le pouvoir de son Hero.",
+	&"IdleDefeat": "Le joueur %s perd la partie par inactivité.",
 	&"IntentRejected": "Action refusée.",
 	&"MulliganDecided": "Le joueur %s a décidé de son mulligan.",
 	&"NormalActionAnnounced": "Le joueur %s annonce une action normale.",

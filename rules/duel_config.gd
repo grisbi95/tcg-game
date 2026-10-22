@@ -2,9 +2,8 @@ class_name DuelConfig
 extends RefCounted
 ## Valeurs des règles PROVISOIRE, une par règle (décisions 0001 et 0007).
 ##
-## Les valeurs par défaut sont celles de l'édition 0.39 du ruleset. Lecture seule pendant un
-## duel : `DuelState.clone()` partage cette instance. Exception : 208.6.2 (fenêtre de réponse
-## sans échéance depuis l'édition 0.38) n'a pas de valeur chiffrée, donc aucun champ ici.
+## Les valeurs par défaut sont celles de l'édition 0.40 du ruleset. Lecture seule pendant un
+## duel : `DuelState.clone()` partage cette instance.
 
 ## 203.4.2 : valeur de `max_recycles_per_turn` quand le nombre de recyclages n'est pas borné.
 const UNLIMITED_RECYCLES: int = -1
@@ -24,15 +23,16 @@ var cards_drawn_per_turn: int = 2  # 204.3.6
 ## 206.3.6, dont 206.3.3a et 206.3.4a portent le statut : option A de la décision 0053 du
 ## ruleset, seule définie par les règles ; `find_errors()` refuse toute autre valeur.
 var tie_destroys_both: bool = true
-var clock_duration_msec: int = 600_000  # 209.4.3 : 10 minutes
-var clock_bonus_msec: int = 0  # 209.4.3a
+var turn_time_msec: int = 90_000  # 209.4.3 : 90 secondes
+var response_time_msec: int = 30_000  # 209.4.6 : 30 secondes
+var idle_turns_limit: int = 3  # 209.2.10
 var starting_fatigue: int = 0  # 209.5.1
 var fatigue_increase: int = 1  # 209.5.2
 var fatigue_damage_per_counter_point: int = 1  # 209.5.3
 
 
 ## Renvoie les incohérences entre valeurs qui se recoupent (203.5.7, 204.1.2, 204.1.12,
-## 204.1.13) et les valeurs que les règles ne définissent pas (206.3.6, 209.4.3a) ; vide si la
+## 204.1.13) et les valeurs que les règles ne définissent pas (206.3.6) ; vide si la
 ## configuration est cohérente.
 func find_errors() -> PackedStringArray:
 	var errors := PackedStringArray()
@@ -45,6 +45,8 @@ func find_errors() -> PackedStringArray:
 		)
 	if not tie_destroys_both:
 		errors.append("206.3.6 : seule l'option A de la décision 0053 est définie par les règles")
-	if clock_bonus_msec != 0:
-		errors.append("209.4.3a : aucune règle ne dit quand du temps s'ajouterait à une pendule")
+	if turn_time_msec <= 0 or response_time_msec <= 0:
+		errors.append("209.4.3 et 209.4.6 : un temps de tour ou de réponse doit être positif")
+	if idle_turns_limit <= 0:
+		errors.append("209.2.10 : le nombre de tours inactifs doit être positif")
 	return errors

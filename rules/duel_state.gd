@@ -29,14 +29,23 @@ enum DuelResult {
 	DRAW,
 }
 
-## 209.2.2, 209.5.3, 209.2.6, 209.2.8, 209.3.1, 209.2.8a : pourquoi la partie s'arrête ; NONE
-## tant qu'elle dure. Enum journalisable : ajouter à la fin (décision 0040).
+## 209.2.2, 209.5.3, 209.2.6, 209.2.10, 209.3.1 : pourquoi la partie s'arrête ; NONE tant
+## qu'elle dure. Enum journalisable : ajouter à la fin (décision 0040). TIME_EXPIRED n'est plus
+## produite depuis l'édition 0.40 (décision de design 0205) ; sa valeur reste pour les journaux.
 enum EndReason {
 	NONE,
 	HERO_HEALTH_ZERO,
 	HERO_HEALTH_ZERO_BY_FATIGUE,
 	CONCEDED,
 	TIME_EXPIRED,
+	IDLE_TURNS,
+}
+
+## 209.4.3, 209.4.6 : le temps qui s'écoule pour un joueur attendu. Enum journalisable : ajouter
+## à la fin.
+enum ClockKind {
+	TURN,
+	RESPONSE,
 }
 
 const PLAYER_COUNT: int = 2  # 201.1.1

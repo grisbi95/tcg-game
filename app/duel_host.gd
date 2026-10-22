@@ -1,15 +1,15 @@
 class_name DuelHost
 extends RefCounted
 ## Hôte du duel (décisions 0020 et 0021) : machine à états qui fait jouer humains et agents,
-## attend l'affichage des événements et le relais entre deux joueurs humains, et avance la
-## pendule du temps réel écoulé ; tient le journal du duel (décision 0022).
+## attend l'affichage des événements et le relais entre deux joueurs humains, et avance le
+## temps de tour et de réponse du temps réel écoulé ; tient le journal du duel (décision 0022).
 ##
 ## Aucune règle ici : chaque intention passe par `DuelEngine.submit()`. La scène qui l'anime
 ## appelle `tick()` à chaque image et lui transmet les gestes ; les événements renvoyés sont les
-## seuls faits de jeu (décision 0006). 209.4.4f : la pendule tourne aussi pendant le relais et
+## seuls faits de jeu (décision 0006). 209.4.4f : le temps tourne aussi pendant le relais et
 ## l'affichage des événements. Décision 0029 : l'hôte ouvre et ferme la fenêtre de réponse
-## (208.6), sans échéance (208.6.2, décision de design 0199) ; décision 0042 : il en journalise le
-## temps et les réponses commencées, pour le relevé.
+## (208.6), que l'expiration du temps de réponse ferme aussi (209.4.10, décision 0045) ;
+## décision 0042 : il en journalise le temps et les réponses commencées, pour le relevé.
 
 signal host_state_changed(host_state: HostState)
 
@@ -32,7 +32,7 @@ var _host_state: HostState = HostState.NOT_STARTED
 var _last_clock_msec: int = 0
 ## Lots d'événements renvoyés dont la scène n'a pas encore confirmé l'affichage. Un lot est ce
 ## que renvoie un appel public (`start`, `tick`, `submit_human`, `concede`), même s'il réunit
-## plusieurs étapes (coup d'un agent puis fin de la pendule, par exemple) ; il est compté à un
+## plusieurs étapes (coup d'un agent puis expiration d'un temps, par exemple) ; il est compté à un
 ## seul endroit, `_close_batch()`, par lequel sort chacun de ces appels.
 var _unplayed_batch_count: int = 0
 ## Vrai quand l'appel public en cours a des événements à afficher, pas encore comptés.
@@ -153,8 +153,8 @@ func _start_steps(setup: DuelSetup) -> Array[DuelEvent]:
 	return events
 
 
-# Décision 0021 : le temps réel écoulé compte avant tout geste ; 208.6.2 : il ne fait passer
-# personne, seule la pendule court (209.4.4g).
+# Décision 0021 : le temps réel écoulé compte avant tout geste ; décision 0045 : le moteur
+# applique lui-même l'expiration (209.4.9, 209.4.10) et l'hôte en affiche les événements.
 func _tick_steps() -> Array[DuelEvent]:
 	var events := _advance_clock_until(_clock.now_msec())
 	if _host_state == HostState.AWAITING_AI:
@@ -182,7 +182,7 @@ func _concede_steps(side: DuelState.PlayerSide) -> Array[DuelEvent]:
 	return events
 
 
-# 209.4.4f, décision 0021 : la pendule tourne dans tout état du duel en cours.
+# 209.4.4f, décision 0021 : le temps tourne dans tout état du duel en cours.
 func _advance_clock_until(until_msec: int) -> Array[DuelEvent]:
 	var events: Array[DuelEvent] = []
 	if not _is_duel_running() or _engine.get_state().is_ended():
@@ -228,7 +228,7 @@ func _submit(intent: DuelIntent) -> Array[DuelEvent]:
 
 
 # Des événements à afficher closent la fenêtre de réponse : passe (208.6.4), réponse (208.6.2) ou
-# fin du duel par la pendule (209.4.5).
+# expiration du temps de réponse (209.4.10).
 func _await_display() -> void:
 	_is_response_window_open = false
 	_is_display_pending = true

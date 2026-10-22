@@ -1,6 +1,6 @@
 # 0018 — Pendule avancée par l'hôte, lue par le moteur
 
-- Statut : acceptée
+- Statut : acceptée ; modifiée par 0045
 - Date : 2026-10-17
 - Décideur : créateur du projet
 - Périmètre : pendule (ruleset 209.4, 209.2.8, 209.2.8a, 209.2.9)

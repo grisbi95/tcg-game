@@ -7,8 +7,7 @@ extends RefCounted
 const MSEC_PER_SECOND: int = 1000
 const SECONDS_PER_MINUTE: int = 60
 const CONCEDED_FORMAT: String = "Le joueur %s abandonne"
-const CLOCK_FORMAT: String = "Pendule du joueur %s à 0"
-const BOTH_CLOCKS_TEXT: String = "Pendules des deux joueurs à 0"
+const IDLE_FORMAT: String = "Joueur %s inactif pendant ses derniers tours"
 const HERO_FORMAT: String = "PV du Hero %s à 0"
 const BOTH_HEROES_TEXT: String = "PV des deux Heroes à 0"
 const FATIGUE_FORMAT: String = "PV du Hero %s à 0 par la fatigue"
@@ -40,8 +39,8 @@ static func _reason_text_of(ended: DuelEnded) -> String:
 	match ended.reason:
 		DuelState.EndReason.CONCEDED:
 			return CONCEDED_FORMAT % loser_letter
-		DuelState.EndReason.TIME_EXPIRED:
-			return BOTH_CLOCKS_TEXT if is_draw else CLOCK_FORMAT % loser_letter
+		DuelState.EndReason.IDLE_TURNS:
+			return IDLE_FORMAT % loser_letter
 		DuelState.EndReason.HERO_HEALTH_ZERO:
 			return BOTH_HEROES_TEXT if is_draw else HERO_FORMAT % loser_letter
 		DuelState.EndReason.HERO_HEALTH_ZERO_BY_FATIGUE:

@@ -1,5 +1,7 @@
 # 0199 · Fenêtre de réponse sans échéance
 
+Modifiée par 0205 (la fenêtre de réponse a désormais l'échéance du temps de réponse).
+
 > Décision consignée le 21 octobre 2026. Statut : ACTÉ. Une décision ne se modifie jamais ; pour revenir dessus, une nouvelle décision la remplace et cette ligne reçoit « Remplacée par NNNN ».
 
 ## Contexte

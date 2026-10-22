@@ -25,7 +25,6 @@ const NO_TEXT: String = "non"
 const NO_WINNER_TEXT: String = "aucun"
 const NO_FATIGUE_TEXT: String = "aucun"
 const MSEC_PER_MINUTE: float = 60_000.0
-const MSEC_PER_SECOND: float = 1_000.0
 
 ## « Graine » s'ajoute à l'en-tête du modèle du protocole : elle permet de rejouer la partie.
 const HEADER_LABELS: Array[String] = ["Partie n°", "Date", "Joueur A", "Joueur B", "Graine"]
@@ -49,18 +48,15 @@ const END_COLUMNS: Array[String] = ["Champ de fin de partie", "Valeur"]
 const WINNER_LABEL: String = "Vainqueur"
 const FIRST_PLAYER_LABEL: String = "Premier joueur"
 const END_CAUSE_LABEL: String = (
-	"Cause de fin (0 PV par la fatigue, 0 PV par une autre cause, temps écoulé, abandon ou"
+	"Cause de fin (0 PV par la fatigue, 0 PV par une autre cause, inactivité, abandon ou"
 	+ " partie nulle)"
 )
 const DURATION_LABEL: String = "Durée (min)"
-const TIME_LEFT_FORMAT: String = "Temps restant, pendule de %s (min)"
+const TURN_EXPIRY_FORMAT: String = "Tours terminés par l'expiration du temps de tour, %s"
+const RESPONSE_EXPIRY_FORMAT: String = "Réponses passées par l'expiration du temps de réponse, %s"
 const MULLIGAN_LABEL: String = "Nombre de mulligans"
 const FATIGUE_LABEL: String = "Tour de la première augmentation d'un compteur de fatigue"
 const SCREEN_SUFFIX: String = " (version sur écran)"
-const WINDOW_TIME_FORMAT: String = (
-	"Temps de pendule consommé par les fenêtres de réponse, %s (s)" + SCREEN_SUFFIX
-)
-const RESPONSES_FORMAT: String = "Réponses commencées, %s" + SCREEN_SUFFIX
 const FREE_LABELS: Array[String] = [
 	"Ressenti du rythme" + SCREEN_SUFFIX,
 	"Lisibilité du texte des cartes de main (version sur écran, affichage en 1280×720)",
@@ -69,8 +65,8 @@ const FREE_LABELS: Array[String] = [
 const END_CAUSE_TEXTS: Dictionary[DuelState.EndReason, String] = {
 	DuelState.EndReason.HERO_HEALTH_ZERO_BY_FATIGUE: "0 PV par la fatigue",
 	DuelState.EndReason.HERO_HEALTH_ZERO: "0 PV par une autre cause",
-	DuelState.EndReason.TIME_EXPIRED: "temps écoulé",
 	DuelState.EndReason.CONCEDED: "abandon",
+	DuelState.EndReason.IDLE_TURNS: "inactivité",
 }
 const DRAW_CAUSE_TEXT: String = "partie nulle"
 
@@ -112,11 +108,10 @@ class EndFields:
 	var reason: DuelState.EndReason = DuelState.EndReason.NONE
 	var first_player: DuelState.PlayerSide = DuelState.PlayerSide.A
 	var duration_msec: int = 0
-	var time_left_msec: Array[int] = [0, 0]
+	var turn_expiry_count: Array[int] = [0, 0]
+	var response_expiry_count: Array[int] = [0, 0]
 	var mulligan_count: int = 0
 	var first_fatigue_turn_rank: int = NO_VALUE
-	var response_window_msec: Array[int] = [0, 0]
-	var response_begun_count: Array[int] = [0, 0]
 
 
 var game_number: int = 0
@@ -190,16 +185,13 @@ func _end_table() -> String:
 	lines.append(_line([END_CAUSE_LABEL, _end_cause_text()]))
 	lines.append(_line([DURATION_LABEL, _minutes_text(end_fields.duration_msec)]))
 	for side: DuelState.PlayerSide in DuelState.SIDES:
-		var label := TIME_LEFT_FORMAT % letter(side)
-		lines.append(_line([label, _minutes_text(end_fields.time_left_msec[side])]))
+		var label := TURN_EXPIRY_FORMAT % letter(side)
+		lines.append(_line([label, str(end_fields.turn_expiry_count[side])]))
+	for side: DuelState.PlayerSide in DuelState.SIDES:
+		var label := RESPONSE_EXPIRY_FORMAT % letter(side)
+		lines.append(_line([label, str(end_fields.response_expiry_count[side])]))
 	lines.append(_line([MULLIGAN_LABEL, str(end_fields.mulligan_count)]))
 	lines.append(_line([FATIGUE_LABEL, _fatigue_text()]))
-	for side: DuelState.PlayerSide in DuelState.SIDES:
-		var label := WINDOW_TIME_FORMAT % letter(side)
-		lines.append(_line([label, _seconds_text(end_fields.response_window_msec[side])]))
-	for side: DuelState.PlayerSide in DuelState.SIDES:
-		var label := RESPONSES_FORMAT % letter(side)
-		lines.append(_line([label, str(end_fields.response_begun_count[side])]))
 	for label: String in FREE_LABELS:
 		lines.append(_line([label, ""]))
 	return LINE_BREAK.join(lines) + LINE_BREAK
@@ -242,10 +234,6 @@ static func _mark_text(mark: Mark) -> String:
 
 static func _minutes_text(msec: int) -> String:
 	return "%.1f" % (msec / MSEC_PER_MINUTE)
-
-
-static func _seconds_text(msec: int) -> String:
-	return "%.1f" % (msec / MSEC_PER_SECOND)
 
 
 static func _line(cells: Array[String]) -> String:

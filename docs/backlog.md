@@ -14,7 +14,7 @@ Priorité : **haute** = écart au ruleset ou défaut visible en partie ; **moyen
 | `ActiveEffect.effect_kind` est une `StringName` alors que l'enum `EffectKind` existe. | 0010 | basse | J2 |
 | Le test de 209.2.3 part d'un Hero déjà à 0 PV au lieu de l'y amener. | 209.2.3 | basse | J2 |
 | Rien ne garantit que la suite tire la décision `OrderTriggers` (ordre des déclencheurs). | 0017 | basse | J2 |
-| `RandomLegalAgent` épuise ses Sources en quelques centaines de pas ; sans pendule, des duels aléatoires ne finissent jamais. | 0019 | moyenne | J4 |
+| `RandomLegalAgent` épuise ses Sources en quelques centaines de pas ; depuis la fin de la défaite au temps (0045), rien ne borne plus un duel aléatoire où les deux agents agissent : `test_random_duels.gd` à revoir à l'étape 2.7. | 0019, 0045 | moyenne | J4 |
 | `RandomLegalAgent` ne remplit jamais sa réserve d'Essence (il paie à l'annonce) : la réserve n'est couverte que par ses tests dédiés. | 203.6.5, 0026 | moyenne | J4 |
 | Les conventions de l'étape 1.3 (zones, Essence, tour) ne sont écrites que dans le code. | `rules/CLAUDE.md` | basse | J2 |
 | `DuelConfig.tie_destroys_both` ne connaît que l'option A de la décision de design 0053 ; `find_errors()` refuse l'option B, premier correctif nommé par 0053. | 206.3.6, 0053 | moyenne | avant J3 |
@@ -23,7 +23,9 @@ Priorité : **haute** = écart au ruleset ou défaut visible en partie ; **moyen
 
 | Dette | Référence | Priorité | Cible |
 | --- | --- | --- | --- |
-| Un agent qui ne propose aucune intention légale laisse `DuelHost` en `AWAITING_AI` avec une erreur à chaque image, jusqu'à la fin de sa pendule. | 0020 | moyenne | J4 |
+| Un agent qui ne propose aucune intention légale laisse `DuelHost` en `AWAITING_AI` avec une erreur à chaque image ; depuis 0045 seule la défaite par inactivité (209.2.10) y met fin. | 0020, 0045 | moyenne | J4 |
+| `DuelJournal` garde le temps des fenêtres de réponse et les réponses commencées (décision 0042), que la fiche ne relève plus depuis le ruleset 0.40 (le protocole les a retirées) : à retirer du journal et de l'hôte avec leurs tests, ou à rendre au protocole. | 0042, 0045, 0205 | basse | J3 |
+| Pendant un choix de cibles d'un effet déclenché qui ne peut être abandonné (autres effets du lot, « une fois par tour »), l'expiration ne fait rien : le temps reste à 00:00 et rien ne le signale au joueur, jusqu'à ce que Q-110 du ruleset soit tranchée. | 209.4.11a, 0045, Q-110 | moyenne | avant J3 |
 | `EventText.describe` et sa table `SENTENCES` n'ont plus d'appelant dans le jeu depuis le retrait de `LogView` (décision 0041) : seuls `test_view_texts` et `test_event_player` les lisent. Le relevé de playtest (2.5) ne les lit pas : à retirer avec leurs tests. | 0041, 0027 | basse | J3 |
 | `DuelSelection` ne gère qu'une cible par annonce ; les questions Q-098 et Q-099 du ruleset sont à trancher avant. | 207.5, 0024 | moyenne | première carte à plusieurs cibles |
 | `SelectionCandidates` choisit entre `AttachGear` et `CastSpell` d'après le type de carte, et `DuelSelection` décide qu'une Source entre dans le paiement préparé par « compte > 0 » : deux restes de règle dans la vue, à remplacer par des requêtes du moteur. | 202.2, 203.2.1, 203.2.2, 0040 | basse | J3 |

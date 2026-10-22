@@ -1,9 +1,11 @@
 class_name StateCheckRules
 extends RefCounted
-## Contrôles d'état (209) : victoire et partie nulle (209.2, 209.3), abandon, pendule (209.4),
-## fatigue (209.5).
+## Contrôles d'état (209) : victoire et partie nulle (209.2, 209.3), abandon, inactivité
+## (209.2.10), temps de tour et de réponse (209.4), fatigue (209.5).
 ##
-## Décision 0018 : le moteur ne lit jamais l'heure ; l'hôte lui signale le temps écoulé.
+## Décisions 0018 et 0045 : le moteur ne lit jamais l'heure ; l'hôte lui signale le temps écoulé.
+## Les conséquences d'une expiration (fin du tour, passe, choix abandonné) sont aiguillées par
+## DuelEngine vers le module de leur chapitre.
 
 
 ## 209.2.5 : un joueur peut abandonner à tout moment ; seule une partie non commencée ou
@@ -83,7 +85,7 @@ static func awaited_players(state: DuelState) -> Array[DuelState.PlayerSide]:
 	return awaited
 
 
-## 209.4.2, 209.4.2a à 209.4.2d, 209.4.4, décision 0018 : joueurs dont la pendule tourne, ceux
+## 209.4.2, 209.4.2a à 209.4.2d, 209.4.4, décision 0018 : joueurs dont un temps s'écoule, ceux
 ## dont une décision est attendue, sauf pendant le mulligan. Pur.
 static func clock_owners(state: DuelState) -> Array[DuelState.PlayerSide]:
 	var owners: Array[DuelState.PlayerSide] = []
@@ -93,43 +95,79 @@ static func clock_owners(state: DuelState) -> Array[DuelState.PlayerSide]:
 	return awaited_players(state)
 
 
-## 209.4.2, 209.4.5, 209.2.9, décision 0018 : retire `elapsed_msec` aux pendules qui tournent,
-## sans descendre sous 0. Une pendule qui atteint 0 arrête la partie à cet instant : les autres
-## ne perdent que le temps écoulé jusque-là. Un temps nul ou négatif ne change rien.
-static func advance_clock(state: DuelState, elapsed_msec: int, events: Array[DuelEvent]) -> void:
+## 209.4.4, 209.4.7, 209.4.7b, 209.4.8 : le temps de `side` qui s'écoule quand une décision est
+## attendue de lui : son temps de tour si c'est le joueur actif et que la pile est vide, sinon son
+## temps de réponse. Pur.
+static func clock_kind(state: DuelState, side: DuelState.PlayerSide) -> DuelState.ClockKind:
+	if side == state.active_player and state.stack.is_empty():
+		return DuelState.ClockKind.TURN
+	return DuelState.ClockKind.RESPONSE
+
+
+## 209.4.8 : le temps de tour du joueur actif est en pause tant que la pile n'est pas vide. Pur.
+static func is_turn_time_paused(state: DuelState, side: DuelState.PlayerSide) -> bool:
+	return side == state.active_player and not state.stack.is_empty()
+
+
+## 209.4.3, 209.4.6 : temps restant du compteur de `side` qui s'écoule (ou s'écoulerait) ; un
+## joueur dont aucune décision n'est attendue recevra un temps de réponse complet. Pur.
+static func running_time_remaining_msec(state: DuelState, side: DuelState.PlayerSide) -> int:
+	var player := state.get_player(side)
+	if clock_kind(state, side) == DuelState.ClockKind.TURN:
+		return player.turn_time_remaining_msec
+	if not awaited_players(state).has(side):
+		return state.config.response_time_msec
+	return player.response_time_remaining_msec
+
+
+## 209.4.2, 209.4.8, 209.4.8a, décision 0018 : retire jusqu'à `elapsed_msec` aux compteurs qui
+## s'écoulent, sans descendre sous 0, et renvoie le temps retiré. Le temps de tour d'un joueur
+## dont la pile n'est pas vide ne bouge pas. Un temps nul ou négatif ne change rien.
+static func spend_time(state: DuelState, elapsed_msec: int) -> int:
 	var owners := clock_owners(state)
 	if elapsed_msec <= 0 or owners.is_empty():
-		return
+		return 0
 	var consumed_msec := elapsed_msec
 	for side: DuelState.PlayerSide in owners:
-		consumed_msec = mini(consumed_msec, state.get_player(side).clock_remaining_msec)
-	var expired: Array[DuelState.PlayerSide] = []
+		consumed_msec = mini(consumed_msec, running_time_remaining_msec(state, side))
 	for side: DuelState.PlayerSide in owners:
 		var player := state.get_player(side)
-		player.clock_remaining_msec -= consumed_msec
-		if player.clock_remaining_msec == 0:
+		if clock_kind(state, side) == DuelState.ClockKind.TURN:
+			player.turn_time_remaining_msec -= consumed_msec
+		else:
+			player.response_time_remaining_msec -= consumed_msec
+	return consumed_msec
+
+
+## 209.4.9, 209.4.10 : joueurs dont le compteur qui s'écoule est à 0. Pur.
+static func expired_owners(state: DuelState) -> Array[DuelState.PlayerSide]:
+	var expired: Array[DuelState.PlayerSide] = []
+	for side: DuelState.PlayerSide in clock_owners(state):
+		if running_time_remaining_msec(state, side) == 0:
 			expired.append(side)
-	_end_on_time(state, expired, events)
+	return expired
 
 
-# 209.2.8 : le joueur dont le temps est écoulé perd ; 209.2.8a : les deux en même temps, nulle ;
-# 209.2.9 : la partie s'arrête aussitôt.
-static func _end_on_time(
-	state: DuelState, expired: Array[DuelState.PlayerSide], events: Array[DuelEvent]
+## 209.2.10 : un tour que son joueur termine lui-même interrompt la suite de tours inactifs.
+static func record_turn_ended_by_player(state: DuelState, side: DuelState.PlayerSide) -> void:
+	state.get_player(side).idle_turns = 0
+
+
+## 209.2.10, 201.1.3d : un tour terminé par l'expiration du temps de tour (209.4.9) sans annonce
+## compte comme tour inactif ; après une annonce, la suite repart de 0. Au nombre de tours
+## inactifs de `DuelConfig.idle_turns_limit`, `side` perd la partie.
+static func record_turn_expired(
+	state: DuelState, side: DuelState.PlayerSide, events: Array[DuelEvent]
 ) -> void:
-	if expired.is_empty():
+	var player := state.get_player(side)
+	if player.announced_this_turn:
+		player.idle_turns = 0
 		return
-	for side: DuelState.PlayerSide in expired:
-		events.append(TimeExpired.new(side))
-	if expired.size() == DuelState.PLAYER_COUNT:
-		_end_duel(state, DuelState.DuelResult.DRAW, DuelState.EndReason.TIME_EXPIRED, events)
-	else:
-		_end_duel(
-			state,
-			_win_for(DuelState.opponent_of(expired[0])),
-			DuelState.EndReason.TIME_EXPIRED,
-			events
-		)
+	player.idle_turns += 1
+	if player.idle_turns < state.config.idle_turns_limit:
+		return
+	events.append(IdleDefeat.new(side))
+	_end_duel(state, _win_for(DuelState.opponent_of(side)), DuelState.EndReason.IDLE_TURNS, events)
 
 
 # 209.2.2, 209.2.3, 209.2.7 : plus rien n'est attendu ni résolu ; la pile reste en l'état.

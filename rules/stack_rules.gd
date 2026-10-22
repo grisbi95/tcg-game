@@ -15,6 +15,10 @@ static func add_to_stack(state: DuelState, entry: StackEntry, events: Array[Duel
 		entry.stack_entry_id = state.allocate_stack_entry_id()
 	state.stack.append(entry)
 	state.priority_player = DuelState.opponent_of(entry.owner)
+	state.get_player(state.priority_player).response_time_remaining_msec = (
+		state.config.response_time_msec
+	)
+	_record_announcement(state, entry)
 	events.append(StackEntryAdded.new(entry.owner, entry.stack_entry_id))
 	return entry.stack_entry_id
 
@@ -68,3 +72,13 @@ static func return_priority_to_active_player(state: DuelState) -> void:
 	if state.pending_decision != null or not state.stack.is_empty():
 		return
 	state.priority_player = state.active_player
+
+
+# 208.1.1 à 208.1.5, 209.2.10, Q-109 : une annonce faite pendant son propre tour interrompt
+# l'inactivité, décidée à la fin du tour. Un effet déclenché n'est pas une annonce (207.3.2).
+static func _record_announcement(state: DuelState, entry: StackEntry) -> void:
+	if entry.kind == StackEntry.StackEntryKind.TRIGGERED_EFFECT:
+		return
+	if entry.owner != state.active_player:
+		return
+	state.get_player(entry.owner).announced_this_turn = true

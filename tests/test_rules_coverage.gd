@@ -50,12 +50,6 @@ const RULES_WITHOUT_OWN_TEST: Dictionary[String, String] = {
 		"Invariant garanti par le vocabulaire fermé d'EffectKind (décision 0002) : aucun kind "
 		+ "ne touche à la fin de partie, que seul StateCheckRules décide (chapitre 209)."
 	),
-	"201.1.2b":
-	(
-		"Inaccessible depuis 209.4.2d : hors du mulligan, une seule pendule tourne à la fois "
-		+ "(décision de design 0189 du ruleset, Q-088) ; StateCheckRules.advance_clock reste "
-		+ "général (test_209_4_5_time_runs_out_exactly_at_zero)."
-	),
 	"201.3.3":
 	(
 		"Vérifiée sous 201.3.6a, 201.5.3 et 202.2.12 (tests : "
@@ -123,12 +117,6 @@ const RULES_WITHOUT_OWN_TEST: Dictionary[String, String] = {
 		"Vérifiée sous 209.2.6 et 201.1.3a (tests : test_209_2_6_conceding_player_loses, "
 		+ "test_201_1_3a_opponent_of_conceding_player_wins)."
 	),
-	"206.4.6b":
-	(
-		"Vérifiée sous 209.2.8 et 201.1.3c (tests : "
-		+ "test_209_2_8_player_whose_time_runs_out_loses, "
-		+ "test_201_1_3c_player_wins_when_only_the_opponent_time_runs_out)."
-	),
 	"207.3.4a": TOKEN_HAS_NO_TRIGGERED_EFFECT,
 	"207.3.7a": TOKEN_HAS_NO_TRIGGERED_EFFECT,
 	"207.3.11": TOKEN_HAS_NO_TRIGGERED_EFFECT,
@@ -160,14 +148,6 @@ const RULES_WITHOUT_OWN_TEST: Dictionary[String, String] = {
 	(
 		"Sans test possible : aucun déclencheur ne réagit au début du tour (décision 0017) ; "
 		+ "DuelEngine ajoute les effets en attente après chaque intention, sans rien à ajouter."
-	),
-	"209.2.8a": "Inaccessible depuis 209.4.2d, comme 201.1.2b (décision de design 0189).",
-	"209.4.2a":
-	(
-		"Structure : la pile se résout dans un seul submit() "
-		+ "(test_208_3_3_whole_stack_resolves_within_one_submission), advance_clock n'est "
-		+ "jamais appelé pendant un submit() (décision 0018) ; un choix demandé fait tourner la "
-		+ "pendule (test_209_4_4d_clock_runs_for_choosing_targets_of_own_entry)."
 	),
 	"210.1.2":
 	(

@@ -1,19 +1,20 @@
 # gdlint: disable=max-public-methods,max-file-lines
 
 extends GdUnitTestSuite
-## Fenêtre de réponse à l'écran, ouverte et fermée par DuelHost, sans échéance (ruleset 0.38,
-## 208.6 et 209.4.4g, décision de design 0199 ; décisions 0029 et 0042).
+## Fenêtre de réponse à l'écran, ouverte et fermée par DuelHost (ruleset 0.40, 208.6, 209.4.4g
+## et 209.4.10, décisions de design 0199 et 0205 ; décisions 0029, 0042 et 0045).
 ##
 ## Sans scène : `ManualClock` tient lieu de temps réel. A déploie une Unit à son premier tour ;
 ## B, qui peut alors répondre ou passer, n'a aucune Réaction dans le deck d'essai (208.6.6).
 
-const CLOCK_MSEC: int = 600_000  # 209.4.3 : 10 minutes
+const TURN_MSEC: int = 90_000  # 209.4.3
+const RESPONSE_MSEC: int = 30_000  # 209.4.6
 const UNIT_COST: int = 2  # CatalogSamples.unit()
 const AGENT_SEED: int = 3
-const SHORT_CLOCK_MSEC: int = 1_500  # pendule qui tombe pendant la fenêtre
+const SHORT_RESPONSE_MSEC: int = 1_500  # temps de réponse qui tombe pendant la fenêtre
 const HANDOVER_MSEC: int = 5_000  # temps passé à se passer l'appareil
 const PARTIAL_WAIT_MSEC: int = 500  # temps passé fenêtre ouverte avant un geste
-const LONG_WAIT_MSEC: int = 60_000  # une minute sans geste, bien moins que la pendule
+const LONG_WAIT_MSEC: int = 20_000  # sans geste, moins que le temps de réponse (30 s)
 const REACTION_ID: StringName = &"window_reaction"
 const REACTION_COST: int = 1  # CatalogSamples.spell()
 const HERALD_COST: int = 2  # CatalogSamples.unit()
@@ -64,7 +65,7 @@ func test_208_6_1_answer_opens_a_window_for_the_other_player() -> void:
 	assert_array(_engine.get_state().stack).is_empty()  # 208.3.1a : toute la pile se résout
 
 
-func test_208_6_2_window_stays_open_without_deadline() -> void:
+func test_208_6_2_window_stays_open_within_the_response_time() -> void:
 	_reach_answer_of_b()
 	_clock.advance(LONG_WAIT_MSEC)
 	assert_array(_host.tick()).is_empty()
@@ -73,7 +74,7 @@ func test_208_6_2_window_stays_open_without_deadline() -> void:
 	assert_array(_engine.get_state().stack).is_not_empty()
 
 
-func test_208_6_2_no_automatic_pass_is_journaled() -> void:
+func test_208_6_2_no_pass_is_journaled_within_the_response_time() -> void:
 	_reach_answer_of_b()
 	var intent_count := ResponseWindowSamples.journaled_intent_count(_host)
 	_clock.advance(LONG_WAIT_MSEC)
@@ -266,14 +267,16 @@ func test_209_2_5_concede_during_the_window() -> void:
 	assert_object(last_entry.intent).is_instanceof(Concede)
 
 
-func test_209_4_4g_clock_runs_during_the_window() -> void:
+func test_209_4_4g_response_time_runs_during_the_window() -> void:
 	_reach_answer_of_b()
 	_clock.advance(LONG_WAIT_MSEC)
 	_host.tick()
-	assert_int(_engine.get_state().get_player(B).clock_remaining_msec).is_equal(
-		CLOCK_MSEC - LONG_WAIT_MSEC
+	var state := _engine.get_state()
+	assert_int(state.get_player(B).response_time_remaining_msec).is_equal(
+		RESPONSE_MSEC - LONG_WAIT_MSEC
 	)
-	assert_int(_engine.get_state().get_player(A).clock_remaining_msec).is_equal(CLOCK_MSEC)
+	assert_int(state.get_player(A).response_time_remaining_msec).is_equal(RESPONSE_MSEC)
+	assert_int(state.get_player(A).turn_time_remaining_msec).is_equal(TURN_MSEC)
 
 
 func test_209_4_4g_time_before_the_window_opened_is_ordinary_time() -> void:
@@ -295,21 +298,20 @@ func test_209_4_4g_time_before_the_window_opened_is_ordinary_time() -> void:
 	assert_int(_host.get_journal().response_window_elapsed_msec(B)).is_equal(PARTIAL_WAIT_MSEC)
 
 
-func test_209_4_5_clock_end_during_the_window_closes_it() -> void:
-	_use_short_clock(SHORT_CLOCK_MSEC)
+func test_209_4_10_response_expiry_during_the_window_closes_it() -> void:
+	_use_short_response_time(SHORT_RESPONSE_MSEC)
 	_reach_answer_of_b()
 	assert_bool(_host.is_response_window_open()).is_true()
 	var entry_count: int = _host.get_journal().entries.size()
-	_clock.advance(SHORT_CLOCK_MSEC)
+	_clock.advance(SHORT_RESPONSE_MSEC)
 	var labels := EventLog.describe(_host.tick())
-	assert_array(labels).contains_exactly(["TimeExpired:B", "DuelEnded"])
+	assert_array(labels.slice(0, 2)).contains_exactly(["TimeExpired:B", "PriorityPassed:B"])
 	assert_bool(_host.is_response_window_open()).is_false()
 	var last_entry: DuelJournal.Entry = _host.get_journal().entries.back()
 	assert_bool(last_entry.intent is PassPriority).is_false()
 	assert_int(_host.get_journal().entries.size()).is_equal(entry_count + 1)
-	_host.confirm_events_played()
-	assert_int(_host.get_host_state()).is_equal(HOST.ENDED)
-	assert_int(_engine.get_state().result).is_equal(DuelState.DuelResult.PLAYER_A_WINS)
+	assert_bool(_engine.get_state().stack.is_empty()).is_true()
+	assert_bool(_engine.get_state().is_ended()).is_false()
 
 
 func test_decision_0029_no_window_for_an_agent() -> void:
@@ -330,10 +332,10 @@ func _last_journal_entry() -> DuelJournal.Entry:
 	return _host.get_journal().entries.back()
 
 
-# 209.4.3 : pendule de départ réduite, la pendule de B ne tournant que lorsqu'il est attendu.
-func _use_short_clock(clock_duration_msec: int) -> void:
+# 209.4.6 : temps de réponse réduit, celui de B ne s'écoulant que lorsqu'il est attendu.
+func _use_short_response_time(response_time_msec: int) -> void:
 	var config := DuelConfig.new()
-	config.clock_duration_msec = clock_duration_msec
+	config.response_time_msec = response_time_msec
 	_engine = DuelEngine.new(SetupSamples.catalog(), config)
 	_host = DuelHost.new(_engine, _clock)
 

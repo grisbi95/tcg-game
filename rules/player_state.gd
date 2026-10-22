@@ -1,6 +1,6 @@
 class_name PlayerState
 extends RefCounted
-## État d'un joueur : zones, Sources, pendule, fatigue et limites du tour (201, 203, 204, 209).
+## État d'un joueur : zones, Sources, temps, fatigue et limites du tour (201, 203, 204, 209).
 ##
 ## Les Sources sont fongibles (décision 0003) : elles se comptent par emplacement.
 
@@ -28,8 +28,14 @@ var sources_recycled_this_turn: int = 0
 var hero_power_used_this_turn: bool = false
 ## 209.5.1
 var fatigue_counter: int = 0
-## 209.4.1 : temps restant à la pendule du joueur pour toute la partie.
-var clock_remaining_msec: int = 0
+## 209.4.3, 209.4.8a : temps de tour restant ; remis à la valeur de départ au début de son tour.
+var turn_time_remaining_msec: int = 0
+## 209.4.6, 209.4.7a : temps de réponse restant de la décision en cours.
+var response_time_remaining_msec: int = 0
+## 209.2.10 : tours consécutifs terminés par l'expiration du temps de tour sans annonce.
+var idle_turns: int = 0
+## 209.2.10 : le joueur a fait une annonce pendant son tour en cours.
+var announced_this_turn: bool = false
 
 
 ## Renvoie la carte `card_instance_id` de la main, ou null si elle n'y est pas.
@@ -60,7 +66,10 @@ func clone() -> PlayerState:
 	copy.sources_recycled_this_turn = sources_recycled_this_turn
 	copy.hero_power_used_this_turn = hero_power_used_this_turn
 	copy.fatigue_counter = fatigue_counter
-	copy.clock_remaining_msec = clock_remaining_msec
+	copy.turn_time_remaining_msec = turn_time_remaining_msec
+	copy.response_time_remaining_msec = response_time_remaining_msec
+	copy.idle_turns = idle_turns
+	copy.announced_this_turn = announced_this_turn
 	return copy
 
 

@@ -1,10 +1,10 @@
 class_name DuelColumnView
 extends PanelContainer
-## Colonne de duel (décisions 0028, 0030 et 0032) : pendule de B en haut, de A en bas, et au
-## centre un seul grand bouton qui change selon le moment. Le parent choisit l'état du centre
-## (`show_turn`, `show_stack`, `show_mulligan`, `show_choice`, `show_ended`) et dit quelles
-## pendules tournent ; la colonne ne calcule rien et n'a aucune règle. Un petit bouton
-## « Abandonner » (décision 0036) se pose près de la pendule du joueur qui a l'appareil.
+## Colonne de duel (décisions 0028, 0030 et 0032) : temps de B en haut, de A en bas, et au centre
+## un seul grand bouton qui change selon le moment. Le parent choisit l'état du centre
+## (`show_turn`, `show_stack`, `show_mulligan`, `show_choice`, `show_ended`) et ce que montre le
+## temps de chaque joueur ; la colonne ne calcule rien et n'a aucune règle. Un petit bouton
+## « Abandonner » (décision 0036) se pose près du temps du joueur qui a l'appareil.
 
 signal end_turn_pressed
 signal pass_pressed
@@ -27,8 +27,6 @@ enum CenterState {
 ## 0036), ou la mention de sa fenêtre de réponse ouverte (208.6.1).
 enum ResponseDisplay { NONE, OPEN }
 
-const MSEC_PER_SECOND: int = 1000
-const NO_SECONDS_SHOWN: int = -1
 const END_TURN_TEXT: String = "Terminer le tour"
 const PASS_TEXT: String = "Passer"
 const CONFIRM_TEXT: String = "Confirmer"
@@ -37,8 +35,7 @@ const MULLIGAN_HINT: String = "Mulligan : choisis les cartes à écarter"
 var _center_state: CenterState = CenterState.TURN
 var _has_stack: bool = false
 var _response_display: ResponseDisplay = ResponseDisplay.NONE
-var _clock_seconds: Dictionary[DuelState.PlayerSide, int] = {}
-var _clock_running: Dictionary[DuelState.PlayerSide, bool] = {}
+var _clock_keys: Dictionary[DuelState.PlayerSide, String] = {}
 
 @onready var _clocks: Dictionary[DuelState.PlayerSide, ClockView] = {
 	DuelState.PlayerSide.A: %BottomClock,
@@ -69,21 +66,24 @@ func _ready() -> void:
 	_refresh_center()
 
 
-## Pendules de A et de B, qui partent de `clock_duration_msec` (209.4.3).
-func setup(clock_duration_msec: int) -> void:
+## Temps des joueurs : un temps de tour part de `turn_duration_msec`, un temps de réponse de
+## `response_duration_msec` (209.4.3).
+func setup(turn_duration_msec: int, response_duration_msec: int) -> void:
 	for side: DuelState.PlayerSide in _clocks:
-		_clocks[side].setup(side, PlayerNames.display_name(side), clock_duration_msec)
-	_clock_seconds.clear()
-	_clock_running.clear()
+		_clocks[side].setup(
+			side, PlayerNames.display_name(side), turn_duration_msec, response_duration_msec
+		)
+	_clock_keys.clear()
 
 
-## Temps restant de chaque joueur ; `running_owners` sont ceux dont la pendule tourne (209.4.4).
-## Peut être appelée à chaque image : une pendule ne se redessine que si ses secondes changent.
-func show_clocks(
-	remaining_a_msec: int, remaining_b_msec: int, running_owners: Array[DuelState.PlayerSide]
-) -> void:
-	_show_clock(DuelState.PlayerSide.A, remaining_a_msec, running_owners)
-	_show_clock(DuelState.PlayerSide.B, remaining_b_msec, running_owners)
+## Temps de `side` tel que `reading` le décrit (209.4.4). Peut être appelée à chaque image : le
+## temps ne se redessine que si son affichage change.
+func show_clock(side: DuelState.PlayerSide, reading: ClockReading) -> void:
+	var key := reading.display_key()
+	if _clock_keys.get(side, "") == key:
+		return
+	_clock_keys[side] = key
+	_clocks[side].show_clock(reading)
 
 
 ## Pile vide : « Tour N », qui joue, et « Terminer le tour » si `can_end_turn`.
@@ -147,7 +147,7 @@ func hide_response() -> void:
 	_set_response_display(ResponseDisplay.NONE)
 
 
-## Montre « Abandonner » près de la pendule de `side` seulement ; l'autre est caché.
+## Montre « Abandonner » près du temps de `side` seulement ; l'autre est caché.
 func show_concede(side: DuelState.PlayerSide) -> void:
 	for button_side: DuelState.PlayerSide in _concede_buttons:
 		_concede_buttons[button_side].visible = button_side == side
@@ -173,19 +173,6 @@ func _show_stack_lines(lines: Array[StackView.StackLine], highlighted_ids: Array
 	_has_stack = not lines.is_empty()
 	_stack_title_label.text = "Pile · %d" % lines.size()
 	_stack_view.show_entries(lines, highlighted_ids)
-
-
-func _show_clock(
-	side: DuelState.PlayerSide, remaining_msec: int, running_owners: Array[DuelState.PlayerSide]
-) -> void:
-	var is_running := running_owners.has(side)
-	var seconds := ceili(maxi(remaining_msec, 0) / float(MSEC_PER_SECOND))
-	var shown_seconds: int = _clock_seconds.get(side, NO_SECONDS_SHOWN)
-	if shown_seconds == seconds and _clock_running.get(side, null) == is_running:
-		return
-	_clock_seconds[side] = seconds
-	_clock_running[side] = is_running
-	_clocks[side].show_clock(remaining_msec, is_running)
 
 
 func _set_response_display(response_display: ResponseDisplay) -> void:

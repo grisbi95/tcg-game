@@ -30,14 +30,9 @@ const SIXTEEN_CELLS_OF_THE_FIRST_ROW: String = "1,A,2,1,5,1,1,non,oui,,,4,2,0,no
 const COLUMN_COUNT: int = 16
 const SMALL_DECK_SIZE: int = 7  # 201.6.1 réduite : la fatigue arrive au deuxième tour de A
 const FIRST_FATIGUE_RANK: int = 2
-const B_RESPONSE_COUNT: int = 2
 const LAST_BREATH_LINE: String = "5,A,,"
 const WAIT_MSEC: int = 75_000  # 1,25 min
 const SECOND_WAIT_MSEC: int = 3_000
-const CLOCK_MSEC: int = 600_000  # 209.4.3 : 10 minutes
-const FIRST_WINDOW_MSEC: int = 1_500
-const SECOND_WINDOW_MSEC: int = 800
-const THIRD_WINDOW_MSEC: int = 700
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
 const B: DuelState.PlayerSide = DuelState.PlayerSide.B
@@ -117,11 +112,11 @@ func test_209_2_6_end_cause_is_conceded_in_the_csv() -> void:
 	assert_str(_line_containing(csv, "Cause de fin")).ends_with(",abandon")
 
 
-func test_209_2_8_end_cause_is_time_expired_in_the_csv() -> void:
+func test_209_2_2_end_cause_is_hero_health_zero_in_the_csv() -> void:
 	var csv := _fixture_sheet.to_csv()
 	assert_str(_line_containing(csv, "Vainqueur")).is_equal("Vainqueur,B")
 	assert_str(_line_containing(csv, "Premier joueur")).is_equal("Premier joueur,A")
-	assert_str(_line_containing(csv, "Cause de fin")).ends_with(",temps écoulé")
+	assert_str(_line_containing(csv, "Cause de fin")).ends_with(",0 PV par une autre cause")
 
 
 func test_209_5_3_end_cause_fatigue_text() -> void:
@@ -158,15 +153,20 @@ func test_204_1_9_duration_is_written_in_minutes_with_a_decimal_point() -> void:
 	assert_str(_line_containing(csv, "Durée")).is_equal("Durée (min),1.3")
 
 
-func test_209_4_1_time_left_is_written_in_minutes_per_player() -> void:
-	var driver := PlaytestScenarios.fresh()
-	driver.wait(WAIT_MSEC)
-	var csv := driver.record_sheet(GAME_NUMBER, DATE_TEXT).to_csv()
-	var minutes_a := "%.1f" % ((CLOCK_MSEC - WAIT_MSEC) / PlaytestSheet.MSEC_PER_MINUTE)
-	assert_str(_line_containing(csv, "pendule de A")).is_equal(
-		'"Temps restant, pendule de A (min)",' + minutes_a
+func test_209_4_9_turn_expiries_are_written_per_player() -> void:
+	var csv := PlaytestScenarios.expiring().record_sheet(GAME_NUMBER, DATE_TEXT).to_csv()
+	assert_str(_line_containing(csv, "temps de tour, A")).is_equal(
+		'"Tours terminés par l\'expiration du temps de tour, A",1'
 	)
-	assert_str(_line_containing(csv, "pendule de B")).ends_with(",10.0")
+	assert_str(_line_containing(csv, "temps de tour, B")).ends_with(",0")
+
+
+func test_209_4_10_response_expiries_are_written_per_player() -> void:
+	var csv := PlaytestScenarios.expiring().record_sheet(GAME_NUMBER, DATE_TEXT).to_csv()
+	assert_str(_line_containing(csv, "temps de réponse, A")).is_equal(
+		'"Réponses passées par l\'expiration du temps de réponse, A",1'
+	)
+	assert_str(_line_containing(csv, "temps de réponse, B")).ends_with(",0")
 
 
 func test_204_2_1_mulligan_count_is_written() -> void:
@@ -185,26 +185,6 @@ func test_209_5_2_first_fatigue_turn_is_written_or_none() -> void:
 		driver.end_turn(B)
 	var csv := driver.record_sheet(GAME_NUMBER, DATE_TEXT).to_csv()
 	assert_str(_line_containing(csv, "compteur de fatigue")).ends_with(",%d" % FIRST_FATIGUE_RANK)
-
-
-func test_208_6_2_response_window_seconds_are_written_per_player() -> void:
-	var journal := PlaytestScenarios.journal_after_mulligans()
-	journal.record_response_window_elapsed(B, FIRST_WINDOW_MSEC)
-	journal.record_response_window_elapsed(A, SECOND_WINDOW_MSEC)
-	journal.record_response_window_elapsed(B, THIRD_WINDOW_MSEC)
-	var csv := _record(journal).to_csv()
-	assert_str(_line_containing(csv, "fenêtres de réponse, A")).ends_with(",0.8")
-	assert_str(_line_containing(csv, "fenêtres de réponse, B")).ends_with(",2.2")
-
-
-func test_208_6_5_response_begun_counts_are_written_per_player() -> void:
-	var journal := PlaytestScenarios.journal_after_mulligans()
-	journal.record_response_begun(A)
-	journal.record_response_begun(B)
-	journal.record_response_begun(B)
-	var csv := _record(journal).to_csv()
-	assert_str(_line_containing(csv, "Réponses commencées, A")).ends_with(",1")
-	assert_str(_line_containing(csv, "Réponses commencées, B")).ends_with(",%d" % B_RESPONSE_COUNT)
 
 
 func test_decision_0198_free_notes_are_left_empty() -> void:

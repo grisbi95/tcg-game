@@ -27,7 +27,7 @@
 | Colonne | Alignement de cases du plateau qui s'étend d'un joueur à l'autre. | |
 | Combat | Affrontement d'un attaquant et d'un défenseur, réglé au chapitre 206 ; voir 206.1.1, 206.1.2, 206.2.1 et 206.4.2. | |
 | Compteur de fatigue | Valeur propre à chaque joueur, qui augmente chaque fois qu'il doit piocher alors que son deck est vide et fixe les PV que perd alors son Hero ; voir 209.5.1, 209.5.2, 209.5.2a, 209.5.3, 209.5.4 et 209.5.4a. | |
-| Condition de fin de partie | Condition, fixée par les règles du jeu, qui fait gagner, perdre ou finir la partie sur un nul ; voir 201.0.4, 201.1.2, 201.1.2a, 201.1.2b, 201.1.3a, 201.1.3c, 209.2.8a et 209.3.1. | |
+| Condition de fin de partie | Condition, fixée par les règles du jeu, qui fait gagner, perdre ou finir la partie sur un nul ; voir 201.0.4, 201.1.2, 201.1.2a, 201.1.3a, 201.1.3d, 209.2.10 et 209.3.1. | |
 | Contrecarrer | Effet qui fait qu'un Spell qui se trouve sur la pile n'a pas lieu ; voir 207.6.1, 207.6.2, 207.6.4 et 207.6.5. | |
 | Contrôler | Relation d'un joueur avec chaque carte et chaque jeton qui lui appartiennent ; voir 201.5.2 et 201.5.2a. | |
 | Coût | Valeur que porte toute carte de deck, et que porte aussi la carte Hero pour son pouvoir ; voir 202.1.2, 202.3.13 et 203.3.2. | |
@@ -64,6 +64,7 @@
 | Garder sa main | Pour un joueur, n'écarter aucune carte de sa main pendant le mulligan, ce qui n'est pas un mulligan ; voir 204.2.12, 204.2.13 et 204.2.14. | |
 | Gear | Type de carte de deck ; voir 202.2.6 et 202.2.7. | |
 | Hero | Pièce du plateau qui représente un joueur et porte ses PV, et qui est aussi une carte hors du deck ; voir 202.3.2, 202.3.4 et 202.3.5. | |
+| Inactivité | Défaite d'un joueur dont trois tours consécutifs se terminent par l'expiration de son temps de tour sans qu'il ait fait d'annonce ; voir 209.2.10, 201.1.3d et 206.4.6c. | PROVISOIRE |
 | Incliner | Faire passer une Source de l'état redressé à l'état incliné ; voir 203.2.1. | |
 | Invariant | Règle de la section Invariants d'un chapitre des règles complètes, dont l'identifiant a la forme 201.0.1, qu'aucune carte ne contredit ; voir 200.2.1a, 201.0.1, 201.0.2, 201.0.4, 203.0.1, 206.0.1 et 206.0.2. | |
 | Jeton | Pièce du plateau qui ne provient d'aucune carte, est une Unit ou un Building avec une Force que désigne l'effet qui le crée, ne reçoit de cet effet ni effet ni mot-clé, peut en recevoir ensuite d'une autre source et ne se crée que par l'effet d'une entrée de la pile ; voir 201.5.2a, 201.5.4, 202.4.1, 202.4.2, 202.4.3, 202.4.4, 202.4.5, 202.4.5a, 202.4.6, 202.4.7, 202.4.8, 202.4.9, 202.4.10, 202.4.11, 202.4.12, 202.4.12a, 202.4.12b, 202.4.12c, 202.4.13, 202.4.13a, 207.3.4a, 207.3.7a, 207.3.11, 207.3.11a et 209.1.1a. | |
@@ -79,11 +80,11 @@
 | Mot-clé | Terme du texte d'une carte dont la règle est au chapitre 210, et qui peut porter une valeur numérique que la carte précise ; voir 202.4.13, 202.4.13a, 210.1.1, 210.1.2 et 210.1.3. | |
 | Mulligan | Remplacement, une seule fois, de cartes de sa main par des cartes de son deck ; voir 204.2.1, 204.2.4, 204.2.5 et 204.2.13. | |
 | Partie | Affrontement qui oppose deux joueurs. | |
-| Partie nulle | Issue d'une partie qui s'arrête sans vainqueur ; voir 201.1.2a, 201.1.2b, 209.2.8a et 209.3.1. | |
-| Passer | Renoncer à répondre ; voir 208.2.4, 208.3.1, 208.3.1a et 208.6.4. | |
+| Partie nulle | Issue d'une partie qui s'arrête sans vainqueur ; voir 201.1.2a et 209.3.1. | |
+| Passer | Renoncer à répondre ; voir 208.2.4, 208.3.1, 208.3.1a, 208.6.4 et 209.4.10. | |
 | Passif | Effet statique d'un Hero ; voir Effet statique, 202.3.11 et 202.3.18. | |
 | Payer | Fournir l'Essence qu'exige un coût ; voir 203.2.4, 203.3.1, 203.3.2, 203.3.2a, 203.3.2b et 203.3.3. | |
-| Pendule | Temps dont dispose chaque joueur pour toute la partie, qui ne tourne que quand les règles attendent une décision de lui ; voir 209.4.1, 209.4.2, 209.4.2d, 209.4.3, 209.4.4, 209.4.4f et 209.4.4g. | |
+| Pendule | Retiré en édition 0.40 : remplacé par le temps de tour et le temps de réponse ; voir décision 0205. | |
 | Phase principale | Phase du tour qui suit le début du tour, pendant laquelle le joueur actif agit ; voir 204.4.1, 204.4.2 et 208.4.11. | |
 | Pièce | Élément qui occupe une case du plateau. | |
 | Pile | Zone commune aux deux joueurs qui forme l'ensemble ordonné des annonces et des effets déclenchés en attente de résolution ; voir 201.3.7, 201.3.8, 201.4.7, 207.3.2 et le chapitre 208. | |
@@ -110,7 +111,9 @@
 | Source | Élément d'un joueur qui produit l'Essence ; voir 203.1.2. | |
 | Sous-règle | Règle dont l'identifiant ajoute une lettre à celui de la règle qu'elle précise ; voir 200.1.1. | |
 | Spell | Type de carte de deck ; voir 202.2.5, 202.2.20, 202.2.21, 207.1.1, 207.1.7 et 207.1.7a. | |
-| Temps écoulé | État d'un joueur dont la pendule atteint 0 minute, qui perd alors la partie, sauf si le temps de son adversaire est écoulé en même temps, la partie étant alors nulle ; voir 201.1.2b, 201.1.3c, 206.4.6b, 209.2.8, 209.2.8a, 209.2.9 et 209.4.5. | |
+| Temps de réponse | Temps dont dispose un joueur pour chaque décision que les règles attendent de lui quand la pile n'est pas vide, ou quand il n'est pas le joueur actif ; voir 209.4.6, 209.4.7, 209.4.7a, 209.4.7b et 209.4.10. | |
+| Temps de tour | Temps dont dispose le joueur actif pour ses décisions pendant son tour quand la pile est vide, en pause tant que la pile n'est pas vide ; voir 209.4.3, 209.4.4, 209.4.4a, 209.4.4c, 209.4.4d, 209.4.8, 209.4.8a et 209.4.9. | |
+| Temps écoulé | Retiré en édition 0.40 : le temps ne fait plus perdre la partie ; voir décision 0205. | |
 | Texte | Énoncé que porte une carte, qui peut être vide ; voir 202.1.4 et 202.3.8. | |
 | Tour | Période de la partie attribuée à un joueur ; voir le chapitre 204. | |
 | Type | Catégorie d'une carte de deck, parmi celles de 202.2.1 ; voir 202.1.3. | |

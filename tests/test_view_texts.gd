@@ -71,3 +71,24 @@ func test_decision_0025_clock_shows_minutes_and_started_seconds() -> void:
 	assert_str(ClockView.format_time(600_000)).is_equal("10:00")
 	assert_str(ClockView.format_time(1)).is_equal("00:01")
 	assert_str(ClockView.format_time(-5)).is_equal("00:00")
+
+
+func test_decision_0045_clock_alerts_under_ten_seconds() -> void:
+	assert_bool(ClockView.is_alert(9_000)).is_true()
+	assert_bool(ClockView.is_alert(9_001)).is_false()
+	assert_bool(ClockView.is_alert(0)).is_true()
+	assert_bool(ClockView.is_alert(30_000)).is_false()
+
+
+func test_decision_0045_clock_reading_key_changes_with_the_displayed_seconds() -> void:
+	var turn := DuelState.ClockKind.TURN
+	var first := ClockReading.new(turn, 12_300, true)
+	assert_str(ClockReading.new(turn, 12_900, true).display_key()).is_equal(first.display_key())
+	assert_str(ClockReading.new(turn, 11_900, true).display_key()).is_not_equal(first.display_key())
+	assert_str(ClockReading.new(turn, 12_300, false).display_key()).is_not_equal(
+		first.display_key()
+	)
+	var response := DuelState.ClockKind.RESPONSE
+	assert_str(ClockReading.new(response, 12_300, true).display_key()).is_not_equal(
+		first.display_key()
+	)

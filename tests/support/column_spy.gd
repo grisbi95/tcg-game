@@ -3,7 +3,7 @@ extends DuelColumnView
 ## Colonne d'essai : enregistre ce qu'on lui demande de montrer, sans scène ni arbre (le script
 ## n'est jamais prêt, ses `@onready` restent vides). Sert aux suites de `DuelCenterPresenter`.
 
-## Noms des appels reçus, dans l'ordre (`show_turn`, `show_stack`, `show_clocks`…).
+## Noms des appels reçus, dans l'ordre (`show_turn`, `show_stack`, `show_clock`…).
 var calls: Array[String] = []
 var turn_number: int = 0
 var turn_actor: DuelState.PlayerSide = DuelState.PlayerSide.A
@@ -18,22 +18,16 @@ var choice_instruction: String = ""
 var choice_lines: Array[StackView.StackLine] = []
 var choice_highlighted_ids: Array[int] = []
 var ended_text: String = ""
-var clock_a_msec: int = 0
-var clock_b_msec: int = 0
-var clock_owners: Array[DuelState.PlayerSide] = []
+var clocks: Dictionary[DuelState.PlayerSide, ClockReading] = {}
 
 
 func count_calls(call_name: String) -> int:
 	return calls.count(call_name)
 
 
-func show_clocks(
-	remaining_a_msec: int, remaining_b_msec: int, running_owners: Array[DuelState.PlayerSide]
-) -> void:
-	calls.append("show_clocks")
-	clock_a_msec = remaining_a_msec
-	clock_b_msec = remaining_b_msec
-	clock_owners = running_owners
+func show_clock(side: DuelState.PlayerSide, reading: ClockReading) -> void:
+	calls.append("show_clock")
+	clocks[side] = reading
 
 
 func show_turn(turn: int, actor: DuelState.PlayerSide, can_end_turn: bool) -> void:

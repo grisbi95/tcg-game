@@ -1,13 +1,14 @@
 extends Control
 ## Essai de DuelColumnView (décisions 0029, 0030 et 0032) : cinq colonnes côte à côte, une par état
-## du centre (Tour, Pile, Mulligan, Choix, Fin), pendule de B estompée et pendule de A vive,
-## « Abandonner » près de la pendule de A (Tour) puis de B (Pile). Les
+## du centre (Tour, Pile, Mulligan, Choix, Fin), temps de B estompé et temps de A vif,
+## « Abandonner » près du temps de A (Tour) puis de B (Pile). Les
 ## nombres sont factices : un clic ne fait qu'écrire dans la sortie.
 
 const COLUMN_SCENE: PackedScene = preload("res://ui/components/duel_column_view.tscn")
-const CLOCK_DURATION_MSEC: int = 600_000  # 209.4.3
-const B_REMAINING_MSEC: int = 252_000
-const A_REMAINING_MSEC: int = 303_000
+const TURN_DURATION_MSEC: int = 90_000  # 209.4.3
+const RESPONSE_DURATION_MSEC: int = 30_000
+const B_REMAINING_MSEC: int = 24_000
+const A_REMAINING_MSEC: int = 72_000
 const TURN_NUMBER: int = 7
 const SPACING: int = 16
 const STACK_ENTRY_IDS: Array[int] = [11, 12, 13]
@@ -33,8 +34,12 @@ func _ready() -> void:
 func _add_column(row: HBoxContainer) -> DuelColumnView:
 	var column: DuelColumnView = COLUMN_SCENE.instantiate()
 	row.add_child(column)
-	column.setup(CLOCK_DURATION_MSEC)
-	column.show_clocks(A_REMAINING_MSEC, B_REMAINING_MSEC, [DuelState.PlayerSide.A])
+	column.setup(TURN_DURATION_MSEC, RESPONSE_DURATION_MSEC)
+	var kind := DuelState.ClockKind
+	column.show_clock(DuelState.PlayerSide.A, ClockReading.new(kind.TURN, A_REMAINING_MSEC, true))
+	column.show_clock(
+		DuelState.PlayerSide.B, ClockReading.new(kind.RESPONSE, B_REMAINING_MSEC, false)
+	)
 	column.end_turn_pressed.connect(func() -> void: print("Terminer le tour pressé"))
 	column.pass_pressed.connect(func() -> void: print("Passer pressé"))
 	column.confirm_pressed.connect(func() -> void: print("Confirmer pressé"))

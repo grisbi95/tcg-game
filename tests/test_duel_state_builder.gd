@@ -13,13 +13,14 @@ func test_204_1_1_default_state_has_both_heroes_on_their_start_cells() -> void:
 	assert_bool(state.find_hero(A).is_token()).is_false()
 
 
-func test_204_1_2_default_state_takes_sources_and_clock_from_config() -> void:
+func test_204_1_2_default_state_takes_sources_and_times_from_config() -> void:
 	var config := DuelConfig.new()
 	var player := DuelStateBuilder.new(config).build().get_player(B)
 	assert_int(player.sources_upright).is_equal(config.starting_sources)
 	assert_int(player.sources_in_reserve).is_equal(config.setup_sources_in_reserve)
 	assert_int(player.total_sources()).is_equal(config.total_sources_per_player)
-	assert_int(player.clock_remaining_msec).is_equal(config.clock_duration_msec)
+	assert_int(player.turn_time_remaining_msec).is_equal(config.turn_time_msec)
+	assert_int(player.response_time_remaining_msec).is_equal(config.response_time_msec)
 
 
 func test_201_0_1_place_piece_refuses_an_occupied_cell() -> void:

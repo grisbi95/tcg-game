@@ -80,11 +80,11 @@
 
 **203.6.6** [ACTÉ] Un joueur peut agir quand la pile est vide pendant sa phase principale (décision 0192 ; voir 209.4.4a et 208.5.1).
 
-**203.6.7** [ACTÉ] Un joueur peut agir chaque fois qu'il peut répondre ou passer (décision 0192 ; voir 209.4.4b, 208.2.4 et 208.3.1).
+**203.6.7** [ACTÉ] Un joueur peut agir chaque fois qu'il peut répondre ou passer (décision 0192 ; voir 209.4.7, 208.2.4 et 208.3.1).
 
 **203.6.8** [ACTÉ] Un joueur ne peut pas agir pendant que les règles attendent une décision de son adversaire (décision 0192 ; voir 209.4.2 et 209.4.4).
 
-**203.6.9** [ACTÉ] Un joueur ne peut pas agir pendant que les règles attendent de lui un mulligan, l'ordre de ses effets déclenchés ou le choix des cibles d'une entrée de la pile qui lui appartient (décision 0192 ; voir 204.2.2, 209.4.4c et 209.4.4d).
+**203.6.9** [ACTÉ] Un joueur ne peut pas agir pendant que les règles attendent de lui un mulligan, l'ordre de ses effets déclenchés ou le choix des cibles d'une entrée de la pile qui lui appartient (décision 0192 ; voir 204.2.2, 209.4.4c, 209.4.4d et 209.4.7).
 
 **203.6.10** [ACTÉ] Pendant la fin du tour, le joueur actif peut dépenser sa réserve d'Essence pour répondre (décision 0193 ; voir 204.5.5 et 204.5.7a).
 

@@ -12,6 +12,8 @@ const LARGE_COPIES: int = 30  # 201.6.2 levée : un deck d'un seul exemplaire r�
 const REACTION_ID: StringName = &"scenario_reaction"
 const MARTYR_SEED: int = 1
 const LARGE_HAND_SIZE: int = 20  # 201.3.4 levée : les pioches ne sont plus bloquées
+const TURN_TIME_MSEC: int = 90_000  # 209.4.3
+const RESPONSE_TIME_MSEC: int = 30_000  # 209.4.6
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
 const B: DuelState.PlayerSide = DuelState.PlayerSide.B
@@ -36,6 +38,18 @@ static func idle_rounds(round_count: int) -> HumanDuelDriver:
 	for round_index: int in round_count:
 		driver.end_turn(A)
 		driver.end_turn(B)
+	return driver
+
+
+## A laisse expirer son premier tour (209.4.9) ; B déploie et A, qui peut répondre, laisse
+## expirer son temps de réponse (209.4.10) : il passe et le déploiement se résout.
+static func expiring() -> HumanDuelDriver:
+	var driver := fresh()
+	driver.wait(TURN_TIME_MSEC)
+	driver.host.confirm_relay()
+	var card: CardInstance = driver.engine.get_state().get_player(B).hand[0]
+	driver.play(DeployCard.new(B, card.card_instance_id, A5, EssencePayment.new(UNIT_COST, 0)))
+	driver.wait(RESPONSE_TIME_MSEC)
 	return driver
 
 

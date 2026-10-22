@@ -67,7 +67,7 @@ func _ready() -> void:
 	_connect_overlays()
 
 
-# Décision 0021 : le temps réel avance sans événement ; la pendule se relit.
+# Décision 0021 : le temps réel avance sans événement ; les temps se relisent.
 func _process(_delta: float) -> void:
 	if _host == null or _engine.get_state() == null:
 		return
@@ -140,7 +140,8 @@ func _place_zones() -> void:
 
 
 func _setup_views(duel_setup: DuelSetup) -> void:
-	_column.setup(_engine.get_state().config.clock_duration_msec)
+	var config := _engine.get_state().config
+	_column.setup(config.turn_time_msec, config.response_time_msec)
 	for side: DuelState.PlayerSide in DuelState.SIDES:
 		_setup_player_zones(side, duel_setup)
 

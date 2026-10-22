@@ -85,6 +85,8 @@ func _observe(events: Array[DuelEvent]) -> void:
 			_start_row(event as TurnStarted)
 		elif event is EssenceLost:
 			_note_essence_lost(event as EssenceLost)
+		elif event is TimeExpired:
+			_note_expiry(event as TimeExpired)
 		_observe_play(event)
 		_observe_end(event)
 
@@ -228,6 +230,16 @@ static func _is_destroyed_trigger(definition: CardDefinition, effect_index: int)
 	return definition.effects[effect_index].trigger == EffectDefinition.TriggerEvent.DESTROYED
 
 
+# 209.4.9, 209.4.10, décision 0205 du ruleset : un tour terminé ou une passe par l'expiration ;
+# un choix abandonné ou ordonné ne compte pas.
+func _note_expiry(expired: TimeExpired) -> void:
+	match expired.consequence:
+		TimeExpired.Consequence.TURN_ENDED:
+			_sheet.end_fields.turn_expiry_count[expired.player] += 1
+		TimeExpired.Consequence.PRIORITY_PASSED:
+			_sheet.end_fields.response_expiry_count[expired.player] += 1
+
+
 # 209.5.2 : rang du tour en cours au premier compteur de fatigue qui augmente.
 func _note_fatigue() -> void:
 	var row := _current_row()
@@ -238,12 +250,8 @@ func _note_fatigue() -> void:
 
 func _record_end(journal: DuelJournal) -> void:
 	var fields := _sheet.end_fields
-	var state := _engine.get_state()
 	fields.duration_msec = journal.total_elapsed_msec()
 	for side: DuelState.PlayerSide in DuelState.SIDES:
-		fields.time_left_msec[side] = state.get_player(side).clock_remaining_msec
-		fields.response_window_msec[side] = journal.response_window_elapsed_msec(side)
-		fields.response_begun_count[side] = journal.response_begun_count(side)
 		if _mulligan_taken[side]:
 			fields.mulligan_count += 1
 

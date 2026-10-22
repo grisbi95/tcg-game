@@ -8,10 +8,12 @@ extends RefCounted
 const JOURNAL_PATH: String = "res://tests/fixtures/replay_random_duel.journal.json"
 const FINGERPRINT_PATH: String = "res://tests/fixtures/replay_random_duel.fingerprint.json"
 const DUEL_SEED: int = 11
-const AGENT_SEED_A: int = 21
-const AGENT_SEED_B: int = 22
+## Graines choisies le 22 octobre 2026 (ruleset 0.40) : le duel finit par la perte de PV d'un Hero,
+## car le temps ne fait plus perdre (décision de design 0205).
+const AGENT_SEED_A: int = 36
+const AGENT_SEED_B: int = 37
 const TICK_MSEC: int = 1_500
-## Les deux pendules s'épuisent bien avant : le duel finit toujours.
+## Borne de pas : le duel des graines ci-dessus finit bien avant.
 const MAX_TICKS: int = 20_000
 
 

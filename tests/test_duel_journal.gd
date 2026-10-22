@@ -185,10 +185,8 @@ func test_decision_0042_replay_ignores_responses_and_runs_both_kinds_of_time() -
 		ordinary_engine.get_state(), window_engine.get_state()
 	)
 	assert_array(Array(defects)).is_empty()
-	var clock_msec := window_engine.get_state().get_player(A).clock_remaining_msec
-	assert_int(clock_msec).is_equal(
-		_config.clock_duration_msec - WINDOW_MSEC_FIRST - WINDOW_MSEC_SECOND
-	)
+	var clock_msec := window_engine.get_state().get_player(A).turn_time_remaining_msec
+	assert_int(clock_msec).is_equal(_config.turn_time_msec - WINDOW_MSEC_FIRST - WINDOW_MSEC_SECOND)
 
 
 func test_decision_0042_counts_are_per_player() -> void:
