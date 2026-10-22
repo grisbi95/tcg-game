@@ -264,27 +264,29 @@ func _expire(side: DuelState.PlayerSide, events: Array[DuelEvent]) -> bool:
 	)
 	if is_targets_choice and not TriggerRules.can_abandon_targets_choice(_state):
 		return false
-	events.append(TimeExpired.new(side, StateCheckRules.clock_kind(_state, side)))
-	if decision == null:
-		_expire_without_decision(side, events)
-	elif is_targets_choice:
-		TriggerRules.abandon_targets_choice(_state, events)
-	else:
-		TriggerRules.order_as_triggered(_state, events)
+	var consequence := _expiry_consequence(decision)
+	events.append(TimeExpired.new(side, StateCheckRules.clock_kind(_state, side), consequence))
+	match consequence:
+		TimeExpired.Consequence.TURN_ENDED:
+			TurnRules.apply_end_turn(_state, EndTurn.new(side), events)
+			StateCheckRules.record_turn_expired(_state, side, events)
+		TimeExpired.Consequence.PRIORITY_PASSED:
+			_apply(PassPriority.new(side), events)
+		TimeExpired.Consequence.TARGETS_ABANDONED:
+			TriggerRules.abandon_targets_choice(_state, events)
+		TimeExpired.Consequence.TRIGGERS_ORDERED:
+			TriggerRules.order_as_triggered(_state, events)
 	return true
 
 
-func _expire_without_decision(side: DuelState.PlayerSide, events: Array[DuelEvent]) -> void:
+func _expiry_consequence(decision: PendingDecision) -> TimeExpired.Consequence:
+	if decision != null:
+		if decision.kind == PendingDecision.DecisionKind.CHOOSE_TARGETS:
+			return TimeExpired.Consequence.TARGETS_ABANDONED
+		return TimeExpired.Consequence.TRIGGERS_ORDERED
 	if _state.stack.is_empty():
-		_end_turn(side, true, events)
-	else:
-		_apply(PassPriority.new(side), events)
-
-
-# 204.4.7, 209.4.9, 209.2.10 : fin du tour demandée par le joueur ou provoquée par l'expiration.
-func _end_turn(side: DuelState.PlayerSide, by_expiry: bool, events: Array[DuelEvent]) -> void:
-	TurnRules.apply_end_turn(_state, EndTurn.new(side), events)
-	StateCheckRules.record_turn_end(_state, side, by_expiry, events)
+		return TimeExpired.Consequence.TURN_ENDED
+	return TimeExpired.Consequence.PRIORITY_PASSED
 
 
 func _apply(intent: DuelIntent, events: Array[DuelEvent]) -> void:
@@ -297,7 +299,8 @@ func _apply(intent: DuelIntent, events: Array[DuelEvent]) -> void:
 	elif intent is ChooseTargets:
 		TriggerRules.apply_targets_choice(_state, intent as ChooseTargets, events)
 	elif intent is EndTurn:
-		_end_turn((intent as EndTurn).player, false, events)
+		TurnRules.apply_end_turn(_state, intent as EndTurn, events)
+		StateCheckRules.record_turn_ended_by_player(_state, (intent as EndTurn).player)
 	elif intent is PassPriority:
 		StackRules.apply_pass(_state, intent as PassPriority, events)
 		_resolve_stack(events)

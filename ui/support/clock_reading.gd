@@ -31,10 +31,12 @@ func has_paused_turn() -> bool:
 
 ## Change quand l'affichage change : le type, les secondes entamées, l'écoulement et la pause.
 func display_key() -> String:
-	return "%d|%d|%s|%d" % [kind, _seconds(remaining_msec), is_running, _seconds(paused_turn_msec)]
+	var paused_seconds := NO_PAUSED_TURN
+	if has_paused_turn():
+		paused_seconds = started_seconds(paused_turn_msec)
+	return "%d|%d|%s|%d" % [kind, started_seconds(remaining_msec), is_running, paused_seconds]
 
 
-func _seconds(time_msec: int) -> int:
-	if time_msec == NO_PAUSED_TURN:
-		return NO_PAUSED_TURN
+## Secondes entamées : une seconde commencée compte pour une seconde pleine.
+static func started_seconds(time_msec: int) -> int:
 	return ceili(maxi(time_msec, 0) / float(MSEC_PER_SECOND))

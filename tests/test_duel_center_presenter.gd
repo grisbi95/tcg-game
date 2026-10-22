@@ -14,6 +14,7 @@ const HANDOVER_MSEC: int = 5_000  # temps passé à se passer l'appareil
 const CLOCK_A_MSEC: int = 300_000
 const CLOCK_B_MSEC: int = 450_000
 const RESPONSE_B_MSEC: int = 20_000
+const RESPONSE_MSEC: int = 30_000  # 209.4.6 : temps de réponse complet
 const CLOCK_STEP_MSEC: int = 1_000
 const TURN_NUMBER: int = 3
 const UNIT_COST: int = 2  # CatalogSamples.unit()
@@ -164,7 +165,8 @@ func test_209_4_7_active_player_sees_turn_time_and_the_other_one_response_time()
 	assert_int(_spy.clocks[A].remaining_msec).is_equal(CLOCK_A_MSEC)
 	assert_bool(_spy.clocks[A].is_running).is_true()
 	assert_int(_spy.clocks[B].kind).is_equal(DuelState.ClockKind.RESPONSE)
-	assert_int(_spy.clocks[B].remaining_msec).is_equal(RESPONSE_B_MSEC)
+	# 209.4.6 : B, qui n'est pas attendu, recevra un temps de réponse complet.
+	assert_int(_spy.clocks[B].remaining_msec).is_equal(RESPONSE_MSEC)
 	assert_bool(_spy.clocks[B].is_running).is_false()
 
 

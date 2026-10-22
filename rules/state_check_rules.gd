@@ -109,11 +109,14 @@ static func is_turn_time_paused(state: DuelState, side: DuelState.PlayerSide) ->
 	return side == state.active_player and not state.stack.is_empty()
 
 
-## 209.4.3, 209.4.6 : temps restant du compteur de `side` qui s'écoule (ou s'écoulerait). Pur.
+## 209.4.3, 209.4.6 : temps restant du compteur de `side` qui s'écoule (ou s'écoulerait) ; un
+## joueur dont aucune décision n'est attendue recevra un temps de réponse complet. Pur.
 static func running_time_remaining_msec(state: DuelState, side: DuelState.PlayerSide) -> int:
 	var player := state.get_player(side)
 	if clock_kind(state, side) == DuelState.ClockKind.TURN:
 		return player.turn_time_remaining_msec
+	if not awaited_players(state).has(side):
+		return state.config.response_time_msec
 	return player.response_time_remaining_msec
 
 
@@ -145,15 +148,19 @@ static func expired_owners(state: DuelState) -> Array[DuelState.PlayerSide]:
 	return expired
 
 
-## 209.2.10, 201.1.3d : enregistre la fin du tour de `side`. Terminé par l'expiration du temps
-## de tour (209.4.9) sans annonce, il compte comme tour inactif ; terminé autrement ou après une
-## annonce, la suite de tours inactifs repart de 0. Au nombre de tours inactifs de
-## `DuelConfig.idle_turns_limit`, `side` perd la partie.
-static func record_turn_end(
-	state: DuelState, side: DuelState.PlayerSide, by_expiry: bool, events: Array[DuelEvent]
+## 209.2.10 : un tour que son joueur termine lui-même interrompt la suite de tours inactifs.
+static func record_turn_ended_by_player(state: DuelState, side: DuelState.PlayerSide) -> void:
+	state.get_player(side).idle_turns = 0
+
+
+## 209.2.10, 201.1.3d : un tour terminé par l'expiration du temps de tour (209.4.9) sans annonce
+## compte comme tour inactif ; après une annonce, la suite repart de 0. Au nombre de tours
+## inactifs de `DuelConfig.idle_turns_limit`, `side` perd la partie.
+static func record_turn_expired(
+	state: DuelState, side: DuelState.PlayerSide, events: Array[DuelEvent]
 ) -> void:
 	var player := state.get_player(side)
-	if not by_expiry or player.announced_this_turn:
+	if player.announced_this_turn:
 		player.idle_turns = 0
 		return
 	player.idle_turns += 1

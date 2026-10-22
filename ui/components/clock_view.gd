@@ -4,12 +4,15 @@ extends PanelContainer
 ## et barre, aux couleurs du joueur ; vif quand il s'écoule, estompé sinon. Le temps de tour en
 ## pause (209.4.8a) reste lisible sous la barre. Le temps vient du moteur ; rien n'est décompté ici.
 
-const MSEC_PER_SECOND: int = 1000
 const SECONDS_PER_MINUTE: int = 60
 const ALERT_SECONDS: int = 10
 const BORDER_WIDTH: int = 3
 const PADDING: float = 12.0
 const BAR_RADIUS: int = 3
+const NAME_FORMAT: String = "%s · %s"
+const PAUSED_FORMAT: String = "Tour %s · en pause"
+const TIME_FORMAT: String = "%02d:%02d"
+const MIN_DURATION_MSEC: int = 1  # évite une division par zéro dans la barre
 const KIND_LABELS: Dictionary[DuelState.ClockKind, String] = {
 	DuelState.ClockKind.TURN: "Tour",
 	DuelState.ClockKind.RESPONSE: "Réponse",
@@ -35,8 +38,8 @@ func setup(
 ) -> void:
 	_side = side
 	_player_name = player_name
-	_durations_msec[DuelState.ClockKind.TURN] = maxi(turn_duration_msec, 1)
-	_durations_msec[DuelState.ClockKind.RESPONSE] = maxi(response_duration_msec, 1)
+	_durations_msec[DuelState.ClockKind.TURN] = maxi(turn_duration_msec, MIN_DURATION_MSEC)
+	_durations_msec[DuelState.ClockKind.RESPONSE] = maxi(response_duration_msec, MIN_DURATION_MSEC)
 	_name_label.add_theme_color_override("font_color", DuelPalette.player_ink(side))
 	var color := DuelPalette.player_color(side)
 	add_theme_stylebox_override(
@@ -52,27 +55,27 @@ func setup(
 
 ## Montre le temps de `reading` (209.4.4, 209.4.8a).
 func show_clock(reading: ClockReading) -> void:
-	var duration_msec: int = _durations_msec.get(reading.kind, 1)
-	_name_label.text = "%s · %s" % [_player_name, KIND_LABELS[reading.kind]]
+	var duration_msec: int = _durations_msec.get(reading.kind, MIN_DURATION_MSEC)
+	_name_label.text = NAME_FORMAT % [_player_name, KIND_LABELS[reading.kind]]
 	_time_label.text = format_time(reading.remaining_msec)
 	_time_bar.value = clampf(float(reading.remaining_msec) / duration_msec, 0.0, 1.0)
 	_show_alert(reading.is_running and is_alert(reading.remaining_msec))
 	_paused_label.visible = reading.has_paused_turn()
 	if reading.has_paused_turn():
-		_paused_label.text = "Tour %s · en pause" % format_time(reading.paused_turn_msec)
+		_paused_label.text = PAUSED_FORMAT % format_time(reading.paused_turn_msec)
 	modulate.a = 1.0 if reading.is_running else DuelPalette.DIMMED_ALPHA
 
 
 ## « 09:05 » ; les secondes entamées comptent pour une seconde pleine.
 static func format_time(remaining_msec: int) -> String:
-	var seconds := ceili(maxi(remaining_msec, 0) / float(MSEC_PER_SECOND))
+	var seconds := ClockReading.started_seconds(remaining_msec)
 	var minutes := floori(seconds / float(SECONDS_PER_MINUTE))
-	return "%02d:%02d" % [minutes, seconds % SECONDS_PER_MINUTE]
+	return TIME_FORMAT % [minutes, seconds % SECONDS_PER_MINUTE]
 
 
 ## Vrai sous ALERT_SECONDS secondes entamées.
 static func is_alert(remaining_msec: int) -> bool:
-	return ceili(maxi(remaining_msec, 0) / float(MSEC_PER_SECOND)) < ALERT_SECONDS
+	return ClockReading.started_seconds(remaining_msec) < ALERT_SECONDS
 
 
 func _show_alert(is_alert_shown: bool) -> void:

@@ -213,6 +213,11 @@ func test_209_4_8_engine_says_when_the_turn_time_is_paused() -> void:
 	assert_int(_engine.running_time_remaining_msec(B)).is_equal(RESPONSE_MSEC)
 
 
+func test_209_4_6_a_player_not_awaited_will_get_a_full_response_time() -> void:
+	_engine.start_from_state(_builder.with_response_time_remaining(B, STEP_MSEC).build())
+	assert_int(_engine.running_time_remaining_msec(B)).is_equal(RESPONSE_MSEC)
+
+
 func test_209_4_8a_turn_time_is_not_paused_on_an_empty_stack() -> void:
 	_engine.start_from_state(_builder.build())
 	assert_bool(_engine.is_turn_time_paused(A)).is_false()

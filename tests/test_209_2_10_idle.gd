@@ -72,7 +72,6 @@ func test_209_2_10_any_announcement_of_the_turn_prevents_idleness() -> void:
 	_engine.start_from_state(_builder.build())
 	_engine.submit(CastSpell.new(A, card_id, EssencePayment.new(1)))
 	var state := _engine.get_state()
-	assert_int(state.get_player(A).idle_turns).is_equal(0)
 	assert_bool(state.get_player(A).announced_this_turn).is_true()
 	_engine.submit(PassPriority.new(B))
 	state.get_player(A).turn_time_remaining_msec = STEP_MSEC

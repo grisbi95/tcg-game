@@ -103,6 +103,16 @@ func test_209_4_3_time_must_be_positive() -> void:
 	assert_bool(CatalogSamples.mentions(_config.find_errors(), "209.4.3")).is_true()
 
 
+func test_209_4_6_response_time_must_be_positive() -> void:
+	_config.response_time_msec = 0
+	assert_bool(CatalogSamples.mentions(_config.find_errors(), "209.4.6")).is_true()
+
+
+func test_209_2_10_idle_turns_limit_must_be_positive() -> void:
+	_config.idle_turns_limit = 0
+	assert_bool(CatalogSamples.mentions(_config.find_errors(), "209.2.10")).is_true()
+
+
 func test_209_5_1_fatigue_starts_at_zero() -> void:
 	assert_int(_config.starting_fatigue).is_equal(STARTING_FATIGUE)
 

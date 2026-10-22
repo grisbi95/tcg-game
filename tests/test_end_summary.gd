@@ -27,6 +27,12 @@ func test_decision_0040_conceded_player_b_is_named() -> void:
 	)
 
 
+func test_209_2_10_idle_player_is_named() -> void:
+	assert_str(EndSummary.reason_text(_ended(A_WINS, REASON.IDLE_TURNS))).is_equal(
+		"Joueur B inactif pendant ses derniers tours"
+	)
+
+
 func test_decision_0040_hero_a_at_zero_health() -> void:
 	assert_str(EndSummary.reason_text(_ended(B_WINS, REASON.HERO_HEALTH_ZERO))).is_equal(
 		"PV du Hero A à 0"

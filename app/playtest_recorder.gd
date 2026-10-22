@@ -86,7 +86,7 @@ func _observe(events: Array[DuelEvent]) -> void:
 		elif event is EssenceLost:
 			_note_essence_lost(event as EssenceLost)
 		elif event is TimeExpired:
-			_note_expiry(events, index)
+			_note_expiry(event as TimeExpired)
 		_observe_play(event)
 		_observe_end(event)
 
@@ -230,17 +230,14 @@ static func _is_destroyed_trigger(definition: CardDefinition, effect_index: int)
 	return definition.effects[effect_index].trigger == EffectDefinition.TriggerEvent.DESTROYED
 
 
-# 209.4.9, 209.4.10, décision 0205 du ruleset : l'événement qui suit l'expiration dit si elle a
-# terminé le tour ou fait passer le joueur ; un choix abandonné ou ordonné ne compte pas.
-func _note_expiry(events: Array[DuelEvent], expiry_index: int) -> void:
-	if expiry_index + 1 >= events.size():
-		return
-	var side := (events[expiry_index] as TimeExpired).player
-	var consequence := events[expiry_index + 1]
-	if consequence is TurnEnded:
-		_sheet.end_fields.turn_expiry_count[side] += 1
-	elif consequence is PriorityPassed:
-		_sheet.end_fields.response_expiry_count[side] += 1
+# 209.4.9, 209.4.10, décision 0205 du ruleset : un tour terminé ou une passe par l'expiration ;
+# un choix abandonné ou ordonné ne compte pas.
+func _note_expiry(expired: TimeExpired) -> void:
+	match expired.consequence:
+		TimeExpired.Consequence.TURN_ENDED:
+			_sheet.end_fields.turn_expiry_count[expired.player] += 1
+		TimeExpired.Consequence.PRIORITY_PASSED:
+			_sheet.end_fields.response_expiry_count[expired.player] += 1
 
 
 # 209.5.2 : rang du tour en cours au premier compteur de fatigue qui augmente.
