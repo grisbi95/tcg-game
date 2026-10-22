@@ -8,8 +8,6 @@ const COLUMN_SCENE: PackedScene = preload("res://ui/components/duel_column_view.
 const CLOCK_DURATION_MSEC: int = 600_000  # 209.4.3
 const B_REMAINING_MSEC: int = 252_000
 const A_REMAINING_MSEC: int = 303_000
-const RESPONSE_WINDOW_MSEC: int = 2000  # 208.6.2
-const RESPONSE_LEFT_MSEC: int = 1400
 const TURN_NUMBER: int = 7
 const SPACING: int = 16
 const STACK_ENTRY_IDS: Array[int] = [11, 12, 13]
@@ -24,7 +22,7 @@ func _ready() -> void:
 	turn_column.show_concede(DuelState.PlayerSide.A)
 	var stack_column := _add_column(row)
 	stack_column.show_stack(_stack_lines(), [], DuelState.PlayerSide.B, true)
-	stack_column.show_response_time(RESPONSE_LEFT_MSEC, RESPONSE_WINDOW_MSEC)
+	stack_column.show_response_open()
 	stack_column.show_concede(DuelState.PlayerSide.B)
 	_add_column(row).show_mulligan(DuelState.PlayerSide.A, false)
 	var choice_column := _add_column(row)

@@ -20,6 +20,10 @@ Un rôle par agent : `ui-builder` seul construit dans `ui/`, la conception d'éc
 
 Rituels du cycle (décision 0039), une recette par skill dans `skills/<nom>/SKILL.md`, dans l'ordre d'une étape : `open-step`, `decision`, `implement`, `cards`, `check`, `tests`, `close-step`, `pr` ; hors cycle, `sync-rule` (règle changée) et `retro` (jalon clos). `pr` ne se lance que par le créateur.
 
+## Prévisualisation de l'export Web
+
+`launch.json` : configuration `web-export`, un serveur HTTP Python sur `build/web` (port 8080) pour ouvrir l'export Web dans le navigateur intégré de Claude Code, après `--export-release Web` (commande dans le `CLAUDE.md` racine §7).
+
 ## Permissions
 
 Autorisés sans demande : `run_tests.sh`, `lint.sh`, `check_typing.sh`, le hook et ses tests, GdUnit4, gdlint et gdformat, Git en lecture plus `fetch` et `branch`, `gh pr` et `gh run` en lecture, le shell en lecture ; `rm -rf` et ses variantes refusés. Refusés aux outils d'édition : `addons/`, `.godot/`, `.venv/`, les `.uid` et `.import`. Aucune permission ne protège `docs/ruleset/` : son mode d'édition est une règle du `CLAUDE.md` racine. Le chemin du binaire Godot est propre à chaque machine : il va dans `CLAUDE.local.md`.

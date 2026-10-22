@@ -26,7 +26,7 @@ Complète le `CLAUDE.md` racine pour `tests/` ; commandes dans `CLAUDE.md` §7.
 | `ManualClock` | horloge de `DuelHost` dont le temps n'avance que par `advance(msec)` (décision 0021) |
 | `ReplayFingerprint` | empreinte d'un duel rejoué : événements et état final par réflexion, SHA-256, `find_differences` |
 | `ReplayFixture` | duel de non-régression (décision 0022) : `play()`, `fingerprint_of(journal)`, fichiers de `tests/fixtures/` |
-| `ResponseWindowProbe` | fenêtre de réponse de `DuelHost` menée jusqu'à son échéance (décision 0029) : temps restant à l'ouverture et juste avant l'échéance, événements ; `count_castable` pour les Réactions jouables |
+| `ResponseWindowProbe` | fenêtre de réponse de `DuelHost` laissée ouverte longtemps sans geste (208.6.2, décision 0029) : ouverte à l'ouverture et après l'attente, événements ; `count_castable` pour les Réactions jouables |
 | `ResponseWindowSamples` | catalogues d'essai (Réaction sans effet, Héraut), carte ajoutée à la main d'un duel démarré, déploiement de A et mulligans passés par l'hôte, nombre d'intentions journalisées d'un hôte |
 | `CatalogSamples` | dictionnaires JSON minimaux et valides pour les tests du catalogue (0002, 0010) |
 | `DuelChecks` | contrôles partagés des suites qui passent par `DuelEngine` : écarts d'une soumission refusée (raison, état modifié), `pass_once`, `is_hero_placed`, `card_ids` |

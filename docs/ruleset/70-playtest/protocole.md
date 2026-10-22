@@ -1,6 +1,6 @@
 # Protocole du premier playtest
 
-> Rôle : fixer avant la première partie les decks, la taille de la série, la fiche de relevé et les seuils de jugement du premier playtest du ruleset. Statut : rédigé, decks composés dans [decks-de-test.md](decks-de-test.md) ; aucune partie jouée. Créé le 16 octobre 2026, complété le 16 octobre 2026 (édition 0.28) et le 18 octobre 2026 (édition 0.35, mesure de l'Essence perdue, décision 0195 ; édition 0.36, mesures de la fenêtre de réponse, décision 0198 ; édition 0.37, mesure de lisibilité du texte des cartes de main). Ce document ne contient aucune règle de jeu : il renvoie aux identifiants de [20-regles-completes/](../20-regles-completes/).
+> Rôle : fixer avant la première partie les decks, la taille de la série, la fiche de relevé et les seuils de jugement du premier playtest du ruleset. Statut : rédigé, decks composés dans [decks-de-test.md](decks-de-test.md) ; aucune partie jouée. Créé le 16 octobre 2026, complété le 16 octobre 2026 (édition 0.28) et le 18 octobre 2026 (édition 0.35, mesure de l'Essence perdue, décision 0195 ; édition 0.36, mesures de la fenêtre de réponse, décision 0198 ; édition 0.37, mesure de lisibilité du texte des cartes de main) et le 21 octobre 2026 (édition 0.38, fenêtre de réponse sans échéance, décision 0199). Ce document ne contient aucune règle de jeu : il renvoie aux identifiants de [20-regles-completes/](../20-regles-completes/).
 
 ## Objet
 
@@ -32,7 +32,7 @@ Le premier playtest éprouve les règles de base. Il mesure les 21 règles PROVI
 | Texte de Martyr | [0174](../40-decisions/0174-texte-de-martyr.md) | Decks de test |
 | Dernier souffle observé en playtest | [0175](../40-decisions/0175-dernier-souffle-observe-en-playtest.md) | Fiche de relevé, Cibles et seuils |
 | Mesure de l'Essence perdue en playtest | [0195](../40-decisions/0195-mesure-de-l-essence-perdue-en-playtest.md) | Fiche de relevé, Cibles et seuils |
-| Fenêtre de réponse à l'écran | [0198](../40-decisions/0198-fenetre-de-reponse-a-l-ecran.md) | Fiche de relevé, Cibles et seuils |
+| Fenêtre de réponse à l'écran | [0198](../40-decisions/0198-fenetre-de-reponse-a-l-ecran.md), remplacée par [0199](../40-decisions/0199-fenetre-de-reponse-sans-echeance.md) | Fiche de relevé, Cibles et seuils |
 
 ## Decks de test
 
@@ -128,9 +128,9 @@ L'Essence perdue se relève sur la ligne du tour qui se termine, pour le seul jo
 | Temps restant | minutes restantes à la pendule de A et à celle de B (209.4.1) |
 | Nombre de mulligans | 0, 1 ou 2 (204.2.1) |
 | Tour de la première augmentation d'un compteur de fatigue | numéro du tour, ou aucun (209.5.2) |
-| Temps de pendule consommé par les fenêtres de réponse | secondes de pendule consommées pendant la partie par les fenêtres de réponse (208.6.2) de A et de B, relevées dans une version du jeu sur écran (208.6.1) seulement, vide sinon (décision 0198) |
-| Réponses commencées | nombre de fois où A et B ont commencé une réponse pendant une fenêtre de réponse (208.6.5), relevé dans une version du jeu sur écran seulement, vide sinon (décision 0198) |
-| Ressenti du rythme | note libre sur le rythme du déroulé pendant la partie, dans une version du jeu sur écran seulement (décision 0198) |
+| Temps de pendule consommé par les fenêtres de réponse | secondes de pendule consommées pendant la partie par les fenêtres de réponse (208.6.2) de A et de B, relevées dans une version du jeu sur écran (208.6.1) seulement, vide sinon (décisions 0198 et 0199) |
+| Réponses commencées | nombre de fois où A et B ont commencé une réponse pendant une fenêtre de réponse (208.6.2), relevé dans une version du jeu sur écran seulement, vide sinon (décisions 0198 et 0199) |
+| Ressenti du rythme | note libre sur le rythme du déroulé pendant la partie, dans une version du jeu sur écran seulement (décisions 0198 et 0199) |
 | Lisibilité du texte des cartes de main | note libre, relevée dans une version du jeu sur écran avec un affichage en 1280×720, l'aperçu au survol servant à lire le texte : le joueur ouvre-t-il l'aperçu pour lire, le texte se lit-il sans (décision 0035 du projet, hors ruleset, 20 octobre 2026) |
 | Champ libre | situations bloquées ou surprenantes |
 
@@ -168,7 +168,7 @@ Note sur Dernier souffle : une ligne par déclenchement, vide si Dernier souffle
 
 ## Cibles et seuils
 
-Chaque mesure reçoit, avant le playtest, une cible et un seuil d'alerte (décision 0156). Après la série, une valeur qui tient sa cible peut passer en ACTÉ par une décision. Une valeur qui franchit son seuil d'alerte ouvre une question dans [02-questions-ouvertes.md](../02-questions-ouvertes.md). Une valeur comprise entre sa cible et son seuil d'alerte reste PROVISOIRE et est mesurée à nouveau à la série suivante ; elle n'ouvre pas de question et ne passe pas en ACTÉ (décision 0162). La note sur Dernier souffle de la fiche n'est pas une mesure du tableau : elle n'a ni cible ni seuil d'alerte (décision 0175). La mesure de l'Essence perdue vise des règles ACTÉ et n'a ni cible ni seuil chiffrés avant les premiers playtests : elle ne passe pas en ACTÉ et n'ouvre pas de question avant que la décision qui fixe sa cible et son seuil d'alerte soit prise (décision 0195). Les mesures de la fenêtre de réponse visent 208.6.2 et ne se relèvent que dans une version du jeu sur écran (décision 0198) : celles qui portent le temps de pendule consommé et les réponses commencées n'ont ni cible ni seuil chiffrés avant les premiers playtests, 208.6.2 reste PROVISOIRE et aucune question ne s'ouvre avant que la décision qui fixe leur cible et leur seuil d'alerte soit prise ; le ressenti du rythme se juge en notes qualitatives. La mesure de la lisibilité du texte des cartes de main n'est pas une mesure du tableau : elle n'a ni cible ni seuil d'alerte, elle ne vise aucune règle des règles complètes, et le bilan de la série dit s'il faut l'ajouter au tableau (décision 0035 du projet, hors ruleset).
+Chaque mesure reçoit, avant le playtest, une cible et un seuil d'alerte (décision 0156). Après la série, une valeur qui tient sa cible peut passer en ACTÉ par une décision. Une valeur qui franchit son seuil d'alerte ouvre une question dans [02-questions-ouvertes.md](../02-questions-ouvertes.md). Une valeur comprise entre sa cible et son seuil d'alerte reste PROVISOIRE et est mesurée à nouveau à la série suivante ; elle n'ouvre pas de question et ne passe pas en ACTÉ (décision 0162). La note sur Dernier souffle de la fiche n'est pas une mesure du tableau : elle n'a ni cible ni seuil d'alerte (décision 0175). La mesure de l'Essence perdue vise des règles ACTÉ et n'a ni cible ni seuil chiffrés avant les premiers playtests : elle ne passe pas en ACTÉ et n'ouvre pas de question avant que la décision qui fixe sa cible et son seuil d'alerte soit prise (décision 0195). Les mesures de la fenêtre de réponse visent 208.6.2 et ne se relèvent que dans une version du jeu sur écran (décisions 0198 et 0199) : celles qui portent le temps de pendule consommé et les réponses commencées n'ont ni cible ni seuil chiffrés avant les premiers playtests, 208.6.2 reste PROVISOIRE et aucune question ne s'ouvre avant que la décision qui fixe leur cible et leur seuil d'alerte soit prise ; le ressenti du rythme se juge en notes qualitatives. La mesure de la lisibilité du texte des cartes de main n'est pas une mesure du tableau : elle n'a ni cible ni seuil d'alerte, elle ne vise aucune règle des règles complètes, et le bilan de la série dit s'il faut l'ajouter au tableau (décision 0035 du projet, hors ruleset).
 
 ### Lecture de « tour »
 
@@ -183,7 +183,7 @@ Dans le protocole, « tour N » veut dire le N-ième tour de chaque joueur, soit
 
 ### Tableau
 
-Tableau validé tel quel le 16 octobre 2026 (décision 0157), complété le même jour sur ses règles visées par les règles 204.1.12 et 204.1.13 (décision 0163) et sur l'intitulé de la mesure de l'Essence inutilisée (décision 0168), complété le 18 octobre 2026 par la mesure de l'Essence perdue, sans cible ni seuil chiffrés (décision 0195), puis par les mesures de la fenêtre de réponse (décision 0198), révisable après la première série par une décision.
+Tableau validé tel quel le 16 octobre 2026 (décision 0157), complété le même jour sur ses règles visées par les règles 204.1.12 et 204.1.13 (décision 0163) et sur l'intitulé de la mesure de l'Essence inutilisée (décision 0168), complété le 18 octobre 2026 par la mesure de l'Essence perdue, sans cible ni seuil chiffrés (décision 0195), puis par les mesures de la fenêtre de réponse (décision 0198), dont les définitions sont réécrites le 21 octobre 2026 sans passe automatique ni arrêt du décompte (décision 0199), révisable après la première série par une décision.
 
 | Mesure | Règles visées | Cible | Seuil d'alerte |
 | --- | --- | --- | --- |
@@ -203,7 +203,7 @@ Tableau validé tel quel le 16 octobre 2026 (décision 0157), complété le mêm
 | Parties où un joueur passe 2 tours sans rien jouer | 201.6.1, 201.6.2 | moins de 20 % | 20 % ou plus |
 | Ressemblance entre les parties | 201.6.1, 201.6.2 | notes qualitatives | sans seuil chiffré en première série |
 | Temps de pendule consommé par les fenêtres de réponse (moyenne par partie, version sur écran) | 208.6.2, 209.4.4g | à fixer après les premiers playtests | à fixer après les premiers playtests |
-| Réponses commencées (moyenne par partie, version sur écran) | 208.6.2, 208.6.5 | à fixer après les premiers playtests | à fixer après les premiers playtests |
+| Réponses commencées (moyenne par partie, version sur écran) | 208.6.2 | à fixer après les premiers playtests | à fixer après les premiers playtests |
 | Ressenti du rythme (version sur écran) | 208.6.2 | notes qualitatives | sans seuil chiffré en première série |
 
 ### Définitions propres au protocole
@@ -219,10 +219,10 @@ Ces termes ne figurent pas au glossaire. Ils ne valent que pour ce protocole.
 | Moyenne de l'Essence inutilisée | Moyenne des relevés d'Essence inutilisée des deux joueurs, à partir du tour 3 de chaque joueur ; on note aussi, dans le bilan de la série, si un seul des deux joueurs dépasse le seuil d'alerte, sans champ de fiche, ce fait se calculant à partir des relevés par joueur (décisions 0168 et 0173). |
 | Essence perdue | Montant de la réserve d'Essence du joueur actif à la fin de son tour, juste avant que cette Essence soit perdue selon 204.5.7a (décision 0195). |
 | Moyenne de l'Essence perdue | Moyenne des relevés d'Essence perdue des deux joueurs, sur tous leurs tours (décision 0195). |
-| Temps de pendule consommé par les fenêtres de réponse | Total, pour un joueur et pour une partie, des secondes de pendule qui s'écoulent pendant les fenêtres de réponse qu'on lui montre, y compris quand il passe automatiquement (208.6.3, 209.4.4g ; décision 0198). |
+| Temps de pendule consommé par les fenêtres de réponse | Total, pour un joueur et pour une partie, des secondes de pendule qui s'écoulent pendant les fenêtres de réponse qu'on lui montre (208.6.2, 209.4.4g ; décisions 0198 et 0199). |
 | Moyenne du temps de pendule consommé par les fenêtres de réponse | Moyenne, sur les parties de la série jouées dans une version du jeu sur écran, du total des deux joueurs (décision 0198). |
 | Aperçu au survol | Carte survolée par le pointeur, affichée en grand dans la colonne de gauche de l'écran, où son texte se lit (décision 0035 du projet, hors ruleset). |
-| Réponse commencée | Réponse que le joueur commence pendant une fenêtre de réponse, ce qui arrête le décompte (208.6.5 ; décision 0198). |
+| Réponse commencée | Réponse que le joueur commence pendant une fenêtre de réponse (208.6.2 ; décisions 0198 et 0199). |
 | Moyenne des réponses commencées | Moyenne, sur les parties de la série jouées dans une version du jeu sur écran, du total des deux joueurs (décision 0198). |
 | Carte jouée | Valeur de la fiche : oui si le joueur a joué au moins une carte de sa main depuis son tour précédent, pendant son tour ou en réponse pendant le tour adverse ; le pouvoir du Hero ne compte pas, la mesure portant sur les cartes du deck (201.6.1 et 201.6.2 ; décision 0168) ; relevée seulement sur la ligne du propre tour du joueur (décision 0173). |
 | Deux tours sans rien jouer | Deux tours consécutifs du même joueur, pendant lesquels la valeur « Carte jouée » de ce joueur est non (décision 0168). |
@@ -247,7 +247,7 @@ Ces termes ne figurent pas au glossaire. Ils ne valent que pour ce protocole.
 | 204.3.4 | Victoires du premier joueur |
 | 204.3.6 | Tours passés à main pleine |
 | 206.3.3a | Parties bloquées |
-| 208.6.2 | Temps de pendule consommé par les fenêtres de réponse ; Réponses commencées ; Ressenti du rythme (décision 0198) |
+| 208.6.2 | Temps de pendule consommé par les fenêtres de réponse ; Réponses commencées ; Ressenti du rythme (décisions 0198 et 0199) |
 | 206.3.4a | Parties bloquées |
 | 206.3.6 | Parties bloquées |
 | 209.4.3 | Durée moyenne d'une partie ; Parties perdues au temps ; Temps restant en fin de partie |

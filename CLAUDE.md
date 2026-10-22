@@ -3,7 +3,7 @@
 ## IMPORTANT
 
 - **Le ruleset fait foi.** Il vit dans `docs/ruleset/` (édition dans son `README.md`, décision 0014) et ne s'édite que par l'agent `ruleset-editor`, selon sa `CHARTE.md`. Un point non tranché par le ruleset ne devient jamais un comportement implicite : arrêter, et le signaler comme question ouverte du ruleset.
-- **Une décision avant un système nouveau** : 2 ou 3 options avec compromis, choix du créateur, consignation dans `docs/decisions/`. Décisions acceptées : `0001` à `0042` ; les respecter.
+- **Une décision avant un système nouveau** : 2 ou 3 options avec compromis, choix du créateur, consignation dans `docs/decisions/`. Décisions acceptées : `0001` à `0043` ; les respecter.
 - **GDScript typé partout** : paramètres, retours, variables, collections. Les warnings `untyped_declaration`, `unsafe_*`, `shadowed_*`, `integer_division` et `unused_private_class_variable` sont des erreurs à corriger ; `tools/check_typing.sh` les contrôle.
 - **Un identifiant de règle sur chaque fonction de règle et chaque test de règle** : `# 206.3.6`, `test_206_3_6_tie_destroys_both`.
 
@@ -20,9 +20,9 @@
 - Tests : GdUnit4 6.2.1 dans `addons/gdUnit4/`, headless ; plugin éditeur non activé.
 - MCP `godot-ai` (scope local, inscrit par le plugin) : plugin Godot AI 4.3.0 dans `addons/godot_ai/`, activé ; n'agit que si l'éditeur est ouvert sur le projet. Sert aux vues : lancer, capturer, lire les logs (0011, `ui/CLAUDE.md`). Plugin et serveur changent de version ensemble.
 - Lint et format : gdtoolkit 4 dans `.venv/` (`tools/setup_gdtoolkit.sh`), configuration `.gdlintrc`.
-- Scène principale `ui/main.tscn` (0036), aucun preset d'export pour l'instant ; `project.godot` ne se modifie que sur demande explicite.
+- Scène principale `ui/main.tscn` (0036) ; preset « Web » dans `export_presets.cfg` (sans threads, filtres d'export, 0005), déployé sur GitHub Pages par la CI depuis `main` ; `project.godot` ne se modifie que sur demande explicite.
 
-## 3. Architecture (décisions 0001 à 0042)
+## 3. Architecture (décisions 0001 à 0043)
 
 - **Couches** : `data/` (cartes et decks JSON) ← `rules/` (moteur pur, `RefCounted`, sans Node) ← `ai/` ← `app/` (hôte, horloge, journal) ← `ui/` (scènes). Une couche ne connaît que celles qui la précèdent. `rules/` ne lit jamais l'heure, n'importe aucun Node, ne tire au hasard que par `state.rng`.
 - **Flux** : intentions → `DuelEngine.submit(intent) -> Array[DuelEvent]` → événements. Seul le moteur et ses modules modifient `DuelState`. Une intention illégale produit un unique `IntentRejected` avec sa raison et ne change rien. `validate(intent)` est public et pur. Un duel démarre par `start_new_duel` avec un `DuelSetup` : decks, Heroes, graine, premier joueur optionnel, sinon tiré (0012).
@@ -81,6 +81,7 @@ tools/lint.sh                               # gdformat --check puis gdlint ; --f
 tools/check_typing.sh                       # warnings de typage traités en erreurs, tous les .gd
 python3 .claude/hooks/check_gdscript.py chemin.gd
 "$GODOT_BIN" --headless --path . --import   # après un ajout de ressource ou de classe
+"$GODOT_BIN" --headless --path . --export-release Web build/web/index.html   # modèles 4.7.2 requis
 ```
 
 Code de sortie des tests : 0 tout passe, 100 au moins un échec, autre erreur d'exécution. Les deux lignes `ERROR: … remote port … 127.0.0.1:0` sont voulues par GdUnit4. Ne jamais annoncer « tests réussis » sans avoir lancé une suite.
