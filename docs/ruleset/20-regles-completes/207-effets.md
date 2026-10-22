@@ -18,7 +18,7 @@ Aucun Invariant.
 
 **207.1.5** [ACTÉ] Un joueur peut annoncer un Spell de vitesse Réaction pendant sa phase principale, quand la pile est vide (décision 0061 ; voir 208.1.3).
 
-**207.1.6** [ACTÉ] Un joueur peut aussi annoncer un Spell de vitesse Réaction chaque fois qu'il peut répondre, y compris pendant le tour de son adversaire (décision 0061 ; voir 208.2.3, 208.2.4 et 208.3.1).
+**207.1.6** [ACTÉ] Un joueur peut aussi annoncer un Spell de vitesse Réaction chaque fois qu'il peut répondre, y compris pendant le tour de son adversaire (décisions 0061 et 0207 ; voir 208.2.3, 208.2.4, 208.3.1 et 208.7.12).
 
 **207.1.7** [ACTÉ] La carte d'un Spell résolu va dans la défausse du joueur à qui elle appartient (décision 0183 ; voir 201.3.3, 201.3.8, 201.5.1 et 208.3.2).
 
@@ -38,7 +38,7 @@ Aucun Invariant.
 
 **207.2.5** [ACTÉ] Un joueur ne peut pas répondre à un effet statique (décision 0093 ; voir 207.2.1 et 208.2.4).
 
-**207.2.6** [ACTÉ] Un joueur peut répondre à l'annonce de la pièce qui porte un effet statique (décision 0093 ; voir 207.2.5, 208.1.1 et 208.2.4).
+**207.2.6** Supprimée en édition 0.41, voir décision 0207.
 
 **207.2.7** [ACTÉ] Un effet statique dure toujours tant que la pièce qui le porte est en jeu, sans durée écrite (décision 0107 ; voir 207.2.2 et 207.4.10).
 

@@ -90,6 +90,18 @@ Une annonce faite en réponse pendant le tour de l'adversaire (208.2.3) empêche
 - Option B : une annonce faite en réponse depuis la fin de son tour précédent compte pour le tour qui suit ; compromis : une règle de rattachement à écrire, plus complexe à vérifier.
 Manque pour trancher : le choix du créateur.
 
+**Q-111 · Réponse aux effets déclenchés du début et de la fin du tour** · chapitres 204 et 208 · ouverte le 22 octobre 2026
+Un joueur peut-il répondre aux effets déclenchés qui s'ajoutent à la pile au début de la phase principale (208.4.10, 208.4.11) ou à la fin du tour (204.5.3, 204.5.5), alors que ces effets ne suivent aucune annonce et que la décision 0207 ne classe que les effets déclenchés par une annonce ou pendant sa résolution (208.7.8 à 208.7.11) ?
+- Option A : ils permettent de répondre, comme avant la décision 0207 (208.4.11 et 204.5.5 inchangées) ; compromis : une pile possible à chaque début et à chaque fin de tour, hors des deux cas de réponse de la décision 0207, mais 203.6.10 garde son objet.
+- Option B : ils sont sans réponse et se résolvent aussitôt ; compromis : 204.5.5 est à supprimer, 203.6.10 perd son objet et la réserve d'Essence ne sert plus à répondre pendant la fin du tour.
+Manque pour trancher : le choix du créateur. Tant que la question est ouverte, 208.2.4, 208.4.11 et 204.5.5 s'appliquent à ces effets comme avant la décision 0207.
+
+**Q-112 · Effet déclenché par un effet déclenché sans réponse** · chapitres 207 et 208 · ouverte le 22 octobre 2026
+Un effet déclenché pendant la résolution d'un effet déclenché sans réponse est-il lui-même sans réponse, alors que 208.7.8 et 208.7.9 ne classent que les effets déclenchés par une annonce sans réponse ou pendant sa résolution, et que 208.4.2 et 208.4.3 le font attendre la fin de la résolution avant de l'ajouter à la pile ?
+- Option A : il est sans réponse, la chaîne entière suit l'annonce qui l'a créée ; compromis : une règle de transmission à écrire, et aucune réponse possible à toute une chaîne née d'un déploiement.
+- Option B : il permet de répondre selon 208.2.4 ; compromis : le sort d'un effet dépend de sa profondeur dans la chaîne, et un déploiement peut ouvrir une réponse par ses effets de second rang.
+Manque pour trancher : le choix du créateur. Tant que la question est ouverte, 208.2.4 s'applique à cet effet comme avant la décision 0207.
+
 ## Tranchées
 
 | Question | Décision |

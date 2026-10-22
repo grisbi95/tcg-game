@@ -38,9 +38,9 @@ Aucun Invariant.
 
 **208.2.3** [ACTÉ] Un joueur qui répond n'annonce que des Spells de vitesse Réaction (décision 0061 ; voir 207.1.6).
 
-**208.2.4** [ACTÉ] Après tout ajout à la pile, l'adversaire du joueur à qui appartient l'entrée du sommet de la pile peut le premier répondre ou passer (décision 0070 ; voir 208.3.1 et 208.4.1).
+**208.2.4** [ACTÉ] Après tout ajout à la pile d'une entrée qui n'est pas sans réponse, l'adversaire du joueur à qui appartient l'entrée du sommet de la pile peut le premier répondre ou passer (décisions 0070 et 0207 ; voir 208.3.1, 208.4.1 et 208.7.12).
 
-**208.2.4a** [ACTÉ] Quand une annonce déclenche un effet déclenché qui appartient à l'adversaire du joueur qui annonce, le joueur qui annonce peut le premier répondre ou passer (décision 0070 ; voir 208.2.4 et 208.4.4).
+**208.2.4a** [ACTÉ] Quand l'annonce d'un Spell ou d'une attaque déclenche un effet déclenché qui appartient à l'adversaire du joueur qui annonce, le joueur qui annonce peut le premier répondre ou passer (décisions 0070 et 0207 ; voir 208.2.4, 208.4.4 et 208.7.10).
 
 ## 208.3 Passes et résolution
 
@@ -64,7 +64,7 @@ Aucun Invariant.
 
 **208.4.4** [ACTÉ] Un effet déclenché par une annonce s'ajoute au sommet de la pile aussitôt après cette annonce (décision 0064 ; voir 208.2.4 et 208.4.1).
 
-**208.4.5** [ACTÉ] Après l'ajout à la pile d'un effet déclenché selon 208.4.3, les joueurs peuvent y répondre (décision 0064 ; voir 208.2.3 et 208.4.3).
+**208.4.5** [ACTÉ] Après l'ajout à la pile d'un effet déclenché selon 208.4.3, les joueurs peuvent y répondre quand cet effet n'est pas sans réponse (décisions 0064 et 0207 ; voir 208.2.3, 208.4.3 et 208.7.9).
 
 **208.4.6** [ACTÉ] Quand plusieurs effets déclenchés doivent s'ajouter à la pile en même temps, le joueur actif ajoute d'abord les effets déclenchés par les cartes qui lui appartiennent, dans l'ordre de son choix (décision 0065 ; voir 201.5.1, 207.3.4, 207.3.11, 208.4.3 et 208.4.4).
 
@@ -88,7 +88,7 @@ Aucun Invariant.
 
 ## 208.6 Fenêtre de réponse
 
-**208.6.1** [ACTÉ] Dans une version du jeu sur écran, le jeu montre une fenêtre de réponse à un joueur chaque fois qu'il peut répondre ou passer (décision 0199 ; voir 208.2.4).
+**208.6.1** [ACTÉ] Dans une version du jeu sur écran, le jeu montre une fenêtre de réponse à un joueur chaque fois qu'il peut répondre ou passer selon 208.2.4 (décisions 0199 et 0207 ; voir 208.6.8).
 
 **208.6.2** [ACTÉ] La fenêtre de réponse reste ouverte jusqu'à ce que le joueur réponde ou passe (décisions 0199 et 0205 ; voir 208.6.4 et 209.4.10).
 
@@ -102,4 +102,36 @@ Aucun Invariant.
 
 **208.6.6** [ACTÉ] La fenêtre de réponse est la même pour tout joueur, qu'il ait ou non une Réaction jouable (décision 0199 ; voir 207.1.6).
 
-**208.6.7** [ACTÉ] La fenêtre de réponse ne s'applique qu'au moment où un joueur peut répondre ou passer (décision 0199 ; voir 208.6.1).
+**208.6.7** [ACTÉ] La fenêtre de réponse ne s'applique qu'au moment où un joueur peut répondre ou passer selon 208.2.4 (décisions 0199 et 0207 ; voir 208.6.1 et 208.6.8).
+
+**208.6.8** [ACTÉ] Le jeu ne montre aucune fenêtre de réponse après l'ajout à la pile d'une entrée sans réponse (décision 0207 ; voir 208.6.1 et 208.7.12).
+
+## 208.7 Annonces sans réponse
+
+**208.7.1** [ACTÉ] Un joueur peut répondre à l'annonce d'un Spell (décision 0207 ; voir 208.2.4).
+
+**208.7.2** [ACTÉ] Un joueur peut répondre à l'annonce d'une attaque (décision 0207 ; voir 205.2.3, 205.2.6 et 208.2.4).
+
+**208.7.3** [ACTÉ] L'annonce d'un déploiement est sans réponse (décision 0207 ; voir 208.1.1).
+
+**208.7.4** [ACTÉ] L'annonce de l'action normale d'une Unit vers une case libre est sans réponse (décision 0207 ; voir 205.2.6 et 208.1.2).
+
+**208.7.5** [ACTÉ] L'annonce de l'action normale d'un Hero est sans réponse (décision 0207 ; voir 205.3.3 et 208.1.2).
+
+**208.7.6** [ACTÉ] L'annonce d'un Gear est sans réponse (décision 0207 ; voir 208.1.5).
+
+**208.7.7** [ACTÉ] L'annonce de l'utilisation du pouvoir d'un Hero est sans réponse (décision 0207 ; voir 208.1.4).
+
+**208.7.8** [ACTÉ] Un effet déclenché par une annonce sans réponse est sans réponse (décision 0207 ; voir 208.4.4).
+
+**208.7.9** [ACTÉ] Un effet déclenché pendant la résolution d'une annonce sans réponse est sans réponse (décision 0207 ; voir 208.4.2 et 208.4.3).
+
+**208.7.10** [ACTÉ] Un joueur peut répondre à un effet déclenché par l'annonce d'un Spell ou d'une attaque (décision 0207 ; voir 208.2.4a et 208.4.4).
+
+**208.7.11** [ACTÉ] Un joueur peut répondre à un effet déclenché pendant la résolution d'un Spell ou d'une attaque (décision 0207 ; voir 208.4.3 et 208.4.5).
+
+**208.7.12** [ACTÉ] Aucun joueur ne peut répondre ni passer après l'ajout à la pile d'une entrée sans réponse (décision 0207 ; voir 208.2.4).
+
+**208.7.13** [ACTÉ] Une pile qui contient une entrée sans réponse se résout aussitôt, de la dernière entrée ajoutée à la première (décision 0207 ; voir 208.3.1 et 208.3.2).
+
+**208.7.14** [ACTÉ] Une annonce est sans réponse ou non selon l'état du plateau au moment de son annonce, jamais au moment de sa résolution (décision 0207 ; voir 205.4.1, 208.7.2 et 208.7.4).
