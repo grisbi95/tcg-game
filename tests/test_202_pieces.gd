@@ -1,7 +1,7 @@
 # gdlint: disable=max-public-methods
 
 extends GdUnitTestSuite
-## Pièces issues des cartes et des effets (ruleset 0.33, sections 202.2, 202.3 et 202.4) : Unit,
+## Pièces issues des cartes et des effets (ruleset 0.39, sections 202.2, 202.3 et 202.4) : Unit,
 ## Building, Gear sans case, Hero sur le plateau, jetons. Gear et pouvoir du Hero :
 ## test_202_gear_and_hero_power.gd.
 
@@ -48,6 +48,9 @@ func test_202_2_2_deployed_unit_is_a_piece_that_moves() -> void:
 	_resolve_stack()
 	var piece := _engine.get_state().piece_at(DuelStateBuilder.cell("B1"))
 	assert_int(piece.kind).is_equal(Piece.PieceKind.UNIT)
+	# 205.5.4, 204.3.10 : déployée, elle dort jusqu'au prochain tour de A.
+	_engine.submit(EndTurn.new(A))
+	_engine.submit(EndTurn.new(B))
 	_engine.submit(TakeNormalAction.new(A, piece.piece_id, DuelStateBuilder.cell("B2")))
 	_resolve_stack()
 	assert_str(BoardGeometry.cell_name(piece.cell)).is_equal("B2")

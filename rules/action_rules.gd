@@ -53,7 +53,7 @@ static func resolve_deploy(state: DuelState, entry: StackEntry, events: Array[Du
 		ZoneRules.return_card_to_hand(state, entry.card, events)
 
 
-## 204.4.5, 204.4.6, 208.1.2, 208.1.10, 208.1.11, 205.2.5, 205.2.6, 205.3.1 à 205.3.3,
+## 204.4.5, 205.5.3, 208.1.2, 208.1.10, 208.1.11, 205.2.5, 205.2.6, 205.3.1 à 205.3.3,
 ## 202.2.17 : raison du refus de `intent`, ou NONE. L'attente est contrôlée par DuelEngine. Pur.
 static func validate_normal_action(
 	state: DuelState, intent: TakeNormalAction
@@ -61,13 +61,13 @@ static func validate_normal_action(
 	var reason := StackRules.validate_main_phase_with_empty_stack(state, intent.player)
 	if reason != IntentRejected.RejectReason.NONE:
 		return reason
-	if state.get_player(intent.player).normal_action_used_this_turn:
-		return IntentRejected.RejectReason.NORMAL_ACTION_ALREADY_USED
 	var piece := state.find_piece(intent.piece_id)
 	if piece == null or piece.owner != intent.player:
 		return IntentRejected.RejectReason.PIECE_NOT_YOURS
 	if piece.kind == Piece.PieceKind.BUILDING:
 		return IntentRejected.RejectReason.NO_NORMAL_ACTION
+	if not piece.is_awake:
+		return IntentRejected.RejectReason.PIECE_ASLEEP
 	if not BoardGeometry.are_adjacent(piece.cell, intent.cell):
 		return IntentRejected.RejectReason.CELL_NOT_ADJACENT
 	if piece.kind == Piece.PieceKind.HERO:
@@ -75,12 +75,12 @@ static func validate_normal_action(
 	return _validate_unit_target(state, piece, intent.cell)
 
 
-## 205.4.7, 208.4.1 : l'action compte pour 204.4.6 dès l'annonce ; elle va sur la pile avec sa
-## case. Suppose l'intention validée.
+## 205.4.7, 208.4.1 : la pièce s'endort dès l'annonce, même si l'action échoue ensuite ; l'action
+## va sur la pile avec sa case. Suppose l'intention validée.
 static func announce_normal_action(
 	state: DuelState, intent: TakeNormalAction, events: Array[DuelEvent]
 ) -> void:
-	state.get_player(intent.player).normal_action_used_this_turn = true
+	state.find_piece(intent.piece_id).is_awake = false
 	events.append(NormalActionAnnounced.new(intent.player, intent.piece_id, intent.cell))
 	var entry := StackEntry.new()
 	entry.kind = StackEntry.StackEntryKind.NORMAL_ACTION
@@ -174,7 +174,8 @@ static func _enter_attacking(
 	CombatRules.resolve_attack(state, piece, defender, events)
 
 
-# 202.2.2, 202.2.3, 201.5.2 : une Unit ou un Building, contrôlé par le joueur de sa carte.
+# 202.2.2, 202.2.3, 201.5.2 : une Unit ou un Building, contrôlé par le joueur de sa carte ;
+# 205.5.4 : une Unit naît endormie (`is_awake` reste faux) ; sans objet pour un Building (205.5.6).
 static func _make_piece(state: DuelState, card: CardInstance) -> Piece:
 	var definition := state.catalog.get_card(card.definition_id)
 	var piece := Piece.new()

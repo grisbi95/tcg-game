@@ -1,10 +1,10 @@
 # Vision
 
-> Rôle : piliers, public et cadre du jeu. Court et stable, modifié seulement par décision. Statut : toutes les sections validées le 15 octobre 2026 (décisions 0001, 0002, 0003, 0004, 0005 et 0006). Créé le 15 octobre 2026.
+> Rôle : piliers, public et cadre du jeu. Court et stable, modifié seulement par décision. Statut : toutes les sections validées le 15 octobre 2026 (décisions 0001, 0002, 0003, 0004, 0005 et 0006) ; pilier « Une décision de plateau engage » corrigé le 22 octobre 2026 (décision 0200) ; phrase « Le jeu en une phrase » et ligne « Échecs » du tableau des références corrigées le 22 octobre 2026 (décision 0203). Créé le 15 octobre 2026.
 
 ## Le jeu en une phrase
 
-> Un TCG tactique en 1v1 : on dépense sa ressource pour déployer ses pièces et lancer ses Spells sur un plateau commun, on les déplace une à une comme aux échecs, et on gagne ses combats jusqu'à abattre le Hero adverse.
+> Un TCG tactique en 1v1 : on dépense sa ressource pour déployer ses pièces et lancer ses Spells sur un plateau commun, on fait agir chacune de ses pièces une fois par tour, et on gagne ses combats jusqu'à abattre le Hero adverse.
 
 ## Public et durée visée
 
@@ -19,7 +19,7 @@ Le jeu vise deux publics, dans cet ordre de priorité : d'abord les joueurs comp
 | Pilier | Ce qu'il impose |
 | --- | --- |
 | La géométrie produit la profondeur. | Une case, une trajectoire ou une zone de soutien peut changer la valeur d'une carte sans allonger son texte. |
-| Une décision de plateau engage. | Une seule action normale par tour structure le tour, même avec une armée nombreuse. |
+| Une décision de plateau engage. | Chaque pièce agit au plus une fois par tour, et une pièce qui arrive sur le plateau attend le tour suivant pour agir : déployer, avancer ou attaquer engage. |
 | Les réactions créent le contre-jeu. | La ressource non dépensée et l'ordre des réponses rendent les menaces contestables. |
 | La puissance reste lisible. | Une seule statistique de combat, aucun dégât persistant sur les permanents. |
 
@@ -27,7 +27,7 @@ Le jeu vise deux publics, dans cet ordre de priorité : d'abord les joueurs comp
 
 | Jeu | Ce que l'on retient | Ce que l'on ne reprend pas |
 | --- | --- | --- |
-| Échecs | Un seul coup par tour, qui engage. La lecture des menaces du plateau : fourchettes, pièces protégées. Un roi à protéger. | L'information totale : la main reste cachée. Les captures sans combat : on compare des Forces. |
+| Échecs | Des coups qui engagent : chaque pièce agit au plus une fois par tour. La lecture des menaces du plateau : fourchettes, pièces protégées. Un roi à protéger. | L'information totale : la main reste cachée. Les captures sans combat : on compare des Forces. Un seul coup par tour pour toute l'armée : chaque pièce agit (décision 0200). |
 | Yu-Gi-Oh! | Les combos et les retournements soudains. La chaîne de réponses, résolue d'un bloc après les passes des deux joueurs. | L'absence de ressource. Les invocations spéciales illimitées. La règle du « timing manqué ». Les textes de cartes longs qui exigent des rulings. |
 | Riftbound | Une ressource qui croît à chaque tour et que l'on peut sacrifier pour un gain immédiat. Un champion qui donne son identité au deck. Des mots-clés courts qui résument une règle. | La seconde monnaie liée à chaque couleur. La victoire aux points par le contrôle de champs de bataille. |
 

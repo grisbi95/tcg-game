@@ -1,5 +1,9 @@
 # 0165 · PV du Hero de test
 
+Remplacée en partie par 0202 (hypothèse de la valeur de 15 PV).
+
+Remplacée en partie par 0204 (figures de fin de partie de l'hypothèse des 15 PV).
+
 > Décision consignée le 16 octobre 2026. Statut : ACTÉ. Une décision ne se modifie jamais ; pour revenir dessus, une nouvelle décision la remplace et cette ligne reçoit « Remplacée par NNNN ».
 
 ## Contexte

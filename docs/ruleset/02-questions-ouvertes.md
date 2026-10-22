@@ -59,6 +59,17 @@ Le mulligan se fait-il en même temps pour deux humains sur un même appareil, a
 - Option B : 204.2.2 reste inchangée, l'écran partagé est une exception assumée de la version du jeu sur écran ; compromis : une règle que cette version ne suit pas à la lettre.
 Manque pour trancher : le choix du créateur.
 
+**Q-104 · Visibilité de l'état endormi ou éveillé** · chapitres 201 et 205 · ouverte le 22 octobre 2026
+L'état endormi ou éveillé d'une Unit ou d'un Hero (205.5.1 et 205.5.2) est-il visible des deux joueurs, alors que 201.4 ne liste aucune information du plateau et ne couvre ni cet état ni les pièces ?
+- Option A : l'état est visible des deux joueurs, règle ajoutée à la section 201.4 ; compromis : la version du jeu sur écran doit afficher cet état pour chaque pièce, et aucune information du plateau n'est cachée.
+- Option B : l'état n'est visible que du joueur qui contrôle la pièce ; compromis : une information cachée de plus, que l'adversaire ne peut que déduire du déroulé de la partie.
+Manque pour trancher : le choix du créateur, après avoir vu l'affichage d'une pièce endormie dans la version sur écran.
+
+**Q-105 · Vainqueur intact** · chapitres 205 et 206, `70-playtest/protocole.md` · ouverte le 22 octobre 2026
+Dans 54 à 76 % des parties simulées, quelle que soit la règle d'action, le vainqueur finit sans avoir perdu de PV, et 2,5 à 3,5 tours séparent le premier coup au Hero de la fin de la partie : faut-il agir sur ce constat ?
+- Aucune option formulée à ce jour : à examiner après la première série humaine, sans option tranchée.
+Manque pour trancher : la première série humaine (jalon J3), pour savoir si le constat de la simulation (agent sans anticipation) se retrouve en partie réelle.
+
 ## Tranchées
 
 | Question | Décision |

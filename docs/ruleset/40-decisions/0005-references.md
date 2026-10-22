@@ -1,5 +1,7 @@
 # 0005 · Références du jeu
 
+Remplacée en partie par 0203 (ligne « Échecs » du tableau des références).
+
 > Décision consignée le 15 octobre 2026. Statut : ACTÉ. Une décision ne se modifie jamais ; pour revenir dessus, une nouvelle décision la remplace et cette ligne reçoit « Remplacée par NNNN ».
 
 ## Contexte

@@ -22,6 +22,9 @@ var card: CardInstance
 var health: int = 0
 ## 209.1.1a : Force que l'effet créateur donne à un jeton ; sans objet pour une carte.
 var token_force: int = 0
+## 205.5.1, 205.5.2 : éveillée, la pièce peut faire une action normale (205.5.3) ; toute pièce
+## naît endormie (205.5.4, 204.1.18). Sans objet pour un Building (205.5.6).
+var is_awake: bool = false
 ## 202.2.8 : Gear porté, pour une Unit seulement.
 var attached_gear: CardInstance
 
@@ -39,5 +42,6 @@ func clone() -> Piece:
 	copy.card = card.clone() if card != null else null
 	copy.health = health
 	copy.token_force = token_force
+	copy.is_awake = is_awake
 	copy.attached_gear = attached_gear.clone() if attached_gear != null else null
 	return copy

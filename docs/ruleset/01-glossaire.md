@@ -5,7 +5,7 @@
 | Terme | Définition | Statut |
 | --- | --- | --- |
 | Abandonner | Pour un joueur, renoncer à poursuivre la partie, qu'il perd alors ; voir 201.1.3a, 206.4.6a, 209.2.5, 209.2.6 et 209.2.7. | |
-| Action normale | Action d'une de ses pièces qu'un joueur fait au plus une fois par tour ; le détail est au chapitre 205 ; voir 204.4.5, 204.4.6, 208.1.10 et 208.1.11. | |
+| Action normale | Action qu'un joueur fait avec une de ses pièces éveillées et après laquelle cette pièce s'endort ; le détail est au chapitre 205 ; voir 204.4.5, 205.4.7, 205.5.3, 208.1.10 et 208.1.11. | |
 | Action (vitesse) | Vitesse d'un Spell que son joueur n'annonce que pendant sa phase principale, quand la pile est vide, sans lien avec l'action normale ; voir 207.1.2, 207.1.3 et 207.1.4. | |
 | Adjacent | Se dit de deux cases qui partagent un côté, jamais en diagonale ; voir 205.2.5 et 210.2.1. | |
 | Adversaire | Pour un joueur, l'autre joueur de la partie ; voir 201.1.3a, 204.5.2, 207.1.6, 208.2.4 et 208.4.7. | |
@@ -50,9 +50,11 @@
 | Effet ponctuel | Effet qui n'est pas statique, dont le texte ne porte aucune durée et qui change l'état de la partie une fois ; voir 202.2.21, 207.4.9 et 207.4.6. | |
 | Effet statique | Effet qui s'applique sans passer par la pile, tant que la pièce qui le porte est en jeu ; voir 207.2.1, 207.2.2, 207.2.3, 207.2.3a, 207.2.4, 207.2.5, 207.2.6, 207.2.7, 207.2.8, 207.2.9, 207.2.9a et 207.2.9b ; le Passif d'un Hero et l'aura en sont des cas ; voir 202.3.18 et 206.5.4. | |
 | En jeu | État d'une pièce sur le plateau, ou d'une Source qui n'est ni dans la réserve ni dans la Fonte de son joueur ; voir 202.2.2, 202.2.3 et 203.5.4. | |
+| Endormie | État d'une Unit ou d'un Hero qui ne peut pas faire d'action normale jusqu'à son prochain réveil ; voir 204.1.18, 205.5.1, 205.5.2, 205.5.3, 205.5.4, 205.5.4a, 205.5.4b et 205.5.5. | |
 | Ennemi | Se dit d'une pièce que contrôle l'adversaire du joueur concerné ; voir 205.1.6 et 205.2.3. | |
 | Entrée de la pile | Annonce ou effet déclenché qui se trouve sur la pile, et qui appartient au joueur qui a fait l'annonce ou, pour un effet déclenché, au joueur de 207.3.4 ou de 207.3.4a ; voir 201.3.7, 201.5.4, 202.4.6, 208.1.1 et 208.2.4. | |
 | Essence | Ressource du jeu ; voir 203.1.1, 203.3.1 et 203.3.3. | |
+| Éveillée | État d'une Unit ou d'un Hero qui peut faire une action normale ; voir 204.3.10, 204.3.11, 204.4.5, 205.5.1 et 205.5.2. | |
 | Exemplaire | Chacune des cartes qui portent le même nom ; voir 201.6.2. | |
 | Fenêtre de réponse | Dans une version du jeu sur écran, affichage montré à un joueur chaque fois qu'il peut répondre ou passer, qui reste ouvert jusqu'à ce qu'il réponde ou passe ; voir 208.6.1, 208.6.2, 208.6.4, 208.6.6, 208.6.7 et 209.4.4g. | |
 | Fin du tour | Dernière partie du tour, qui commence quand le joueur actif termine son tour et précède le début du tour de son adversaire ; voir 204.4.7 et 204.5.3. | |
@@ -104,6 +106,7 @@
 | Réserve | Emplacement propre à chaque joueur, qui contient ses Sources qui ne sont pas encore entrées en jeu, sans rapport avec la réserve d'Essence ; voir 203.5.1, 204.1.12 et 204.3.5. | |
 | Réserve d'Essence | Essence qu'un joueur a produite pendant son propre tour et n'a pas encore dépensée, perdue à la fin de ce tour ; voir 203.1.3, 203.6.1, 203.6.2, 203.6.3, 203.6.4, 203.6.5, 203.6.10, 203.6.12, 201.4.10 et 204.5.7a. | |
 | Résoudre | Faire avoir lieu une annonce ou un effet déclenché de la pile ; voir 208.3.1, 208.3.2 et 208.3.2a. | |
+| Réveiller | Faire passer une Unit ou un Hero de l'état endormi à l'état éveillé, ce passage étant le réveil ; voir 204.3.8, 204.3.10 et 204.3.11. | |
 | Source | Élément d'un joueur qui produit l'Essence ; voir 203.1.2. | |
 | Sous-règle | Règle dont l'identifiant ajoute une lettre à celui de la règle qu'elle précise ; voir 200.1.1. | |
 | Spell | Type de carte de deck ; voir 202.2.5, 202.2.20, 202.2.21, 207.1.1, 207.1.7 et 207.1.7a. | |

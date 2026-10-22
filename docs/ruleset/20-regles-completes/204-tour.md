@@ -36,11 +36,13 @@ Aucun Invariant.
 
 **204.1.14** [ACTÉ] Le premier joueur est désigné par tirage au sort pendant la préparation (décisions 0029 et 0132).
 
-**204.1.15** [PROVISOIRE] Chaque joueur pioche 5 cartes pendant la préparation (décisions 0032 et 0132 ; à mesurer en playtest : fréquence des mulligans).
+**204.1.15** [PROVISOIRE] Chaque joueur pioche 4 cartes pendant la préparation (décisions 0032, 0132 et 0201 ; à mesurer en playtest : fréquence des mulligans).
 
 **204.1.16** [ACTÉ] La préparation se déroule dans cet ordre : 204.1.1 et 204.1.8, puis 204.1.12 et 204.1.13, puis 204.1.6, puis 204.1.15, puis le mulligan de la section 204.2, puis 204.1.14 (décision 0177 ; voir 204.1.10).
 
 **204.1.17** [ACTÉ] Une Source qu'un joueur met en jeu pendant la préparation arrive redressée (décision 0178 ; voir 204.1.12 et 204.3.3).
+
+**204.1.18** [ACTÉ] Le Hero que son joueur place sur le plateau selon 204.1.1 est endormi (décision 0200 ; voir 205.5.2 et 204.3.11).
 
 ## 204.2 Mulligan
 
@@ -88,9 +90,13 @@ Aucun Invariant.
 
 **204.3.7** [ACTÉ] Le premier joueur pioche à son premier tour (décision 0032).
 
-**204.3.8** [ACTÉ] Le début du tour se déroule dans cet ordre : 204.3.2, puis 204.3.1, puis 204.3.6 (décision 0034).
+**204.3.8** [ACTÉ] Le début du tour se déroule dans cet ordre : le réveil de 204.3.10 et de 204.3.11, puis 204.3.2, puis 204.3.1, puis 204.3.6 (décisions 0034 et 0200).
 
 **204.3.9** [ACTÉ] Aucun joueur ne peut répondre pendant le début du tour (décision 0034 ; voir 208.4.10).
+
+**204.3.10** [ACTÉ] Au début de son tour, un joueur réveille ses Units (décision 0200 ; voir 205.5.1 et 204.3.8).
+
+**204.3.11** [ACTÉ] Au début de son tour, un joueur réveille son Hero (décision 0200 ; voir 205.5.2 et 204.3.8).
 
 ## 204.4 Phase principale
 
@@ -102,9 +108,9 @@ Aucun Invariant.
 
 **204.4.4** [ACTÉ] Pendant sa phase principale, le joueur actif peut utiliser le pouvoir de son Hero (décision 0035 ; voir 202.3.14, 202.3.15 et 202.3.16).
 
-**204.4.5** [ACTÉ] Pendant sa phase principale, le joueur actif peut faire l'action normale d'une de ses pièces (décision 0035 ; voir 208.1.10 et 208.1.11).
+**204.4.5** [ACTÉ] Pendant sa phase principale, le joueur actif peut faire l'action normale d'une de ses pièces éveillées (décisions 0035 et 0200 ; voir 205.5.3, 208.1.10 et 208.1.11).
 
-**204.4.6** [ACTÉ] Le joueur actif fait au plus une action normale par tour (décisions 0001 et 0035).
+**204.4.6** Supprimée en édition 0.39, voir décision 0200.
 
 **204.4.7** [ACTÉ] Pendant sa phase principale, le joueur actif peut terminer son tour (décision 0035).
 

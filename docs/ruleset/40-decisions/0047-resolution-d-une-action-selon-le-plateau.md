@@ -1,5 +1,7 @@
 # 0047 · Résolution d'une action selon le plateau
 
+Remplacée en partie par 0200 (action normale comptée dès son annonce, remplacée par le sommeil de la pièce).
+
 > Décision consignée le 15 octobre 2026. Statut : ACTÉ. Une décision ne se modifie jamais ; pour revenir dessus, une nouvelle décision la remplace et cette ligne reçoit « Remplacée par NNNN ».
 
 ## Contexte

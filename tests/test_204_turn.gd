@@ -1,12 +1,13 @@
 # gdlint: disable=max-public-methods
 
 extends GdUnitTestSuite
-## Début, phase principale et fin du tour par DuelEngine (ruleset 0.33, sections 204.3 à 204.5).
+## Début, phase principale et fin du tour par DuelEngine (ruleset 0.39, sections 204.3 à 204.5 ;
+## décision de design 0200 : réveil au début du tour).
 
 const CARDS_PER_TURN: int = 2  # 204.3.6
 const SOURCES_IN_PLAY: int = 2  # 204.1.12
 const SOURCES_IN_RESERVE: int = 8  # 204.1.13
-const OPENING_HAND_SIZE: int = 5  # 204.1.15
+const OPENING_HAND_SIZE: int = 4  # 204.1.15
 const CARD: StringName = &"CARD_TEST"
 const CARD_FORCE: int = 3
 const CARD_COST: int = 2  # CatalogSamples.unit()
@@ -193,21 +194,81 @@ func test_204_3_7_first_player_draws_on_first_turn() -> void:
 
 func test_204_3_8_turn_start_steps_in_order() -> void:
 	_builder.with_sources_in_play(B, 0, 2)
-	var expected: Array[String] = ["TurnStarted:B", "SourcesUntapped:B", "SourceReceived:B"]
+	_builder.with_piece_awake(_builder.build().find_hero(B).piece_id, false)
+	var expected: Array[String] = [
+		"TurnStarted:B", "PiecesAwakened:B", "SourcesUntapped:B", "SourceReceived:B"
+	]
 	expected.append_array(EventLog.repeat("CardDrawn:B", CARDS_PER_TURN))
 	assert_array(EventLog.describe(_end_turn_of_a()).slice(1)).contains_exactly(expected)
+
+
+func test_204_3_10_turn_start_wakes_the_units_of_the_active_player() -> void:
+	var own_id := _place_asleep_unit(B, "B4")
+	var other_own_id := _place_asleep_unit(B, "D4")
+	var enemy_id := _place_asleep_unit(A, "B2")
+	_builder.with_piece_awake(_builder.build().find_hero(B).piece_id, false)
+	var events := _end_turn_of_a()
+	var state := _engine.get_state()
+	assert_bool(state.find_piece(own_id).is_awake).is_true()
+	assert_bool(state.find_piece(other_own_id).is_awake).is_true()
+	assert_bool(state.find_piece(enemy_id).is_awake).is_false()
+	var awakened := _first_event_of(events, "PiecesAwakened:B") as PiecesAwakened
+	assert_array(awakened.piece_ids).contains_exactly(
+		[state.find_hero(B).piece_id, own_id, other_own_id]
+	)
+
+
+func test_204_3_10_already_awake_unit_is_not_listed() -> void:
+	var asleep_id := _place_asleep_unit(B, "B4")
+	var awake_id := _builder.place_piece(B, Piece.PieceKind.UNIT, DuelStateBuilder.cell("D4"), CARD)
+	var hero_id := _builder.build().find_hero(B).piece_id
+	var events := _end_turn_of_a()
+	var state := _engine.get_state()
+	assert_bool(state.find_piece(awake_id).is_awake).is_true()
+	var awakened := _first_event_of(events, "PiecesAwakened:B") as PiecesAwakened
+	assert_array(awakened.piece_ids).contains_exactly([asleep_id])
+	assert_array(awakened.piece_ids).not_contains([awake_id, hero_id])
+
+
+func test_204_3_10_no_event_when_no_piece_sleeps() -> void:
+	_builder.place_piece(B, Piece.PieceKind.UNIT, DuelStateBuilder.cell("B4"), CARD)
+	_place_asleep_unit(A, "B2")
+	var labels := EventLog.describe(_end_turn_of_a())
+	assert_array(labels).not_contains(["PiecesAwakened:B"])
+	assert_array(labels).contains_exactly(
+		["TurnEnded:A", "TurnStarted:B", "SourceReceived:B", "CardDrawn:B", "CardDrawn:B"]
+	)
+
+
+func test_204_3_11_turn_start_wakes_the_hero_of_the_active_player() -> void:
+	_builder.with_piece_awake(_builder.build().find_hero(B).piece_id, false)
+	_builder.with_piece_awake(_builder.build().find_hero(A).piece_id, false)
+	_end_turn_of_a()
+	var state := _engine.get_state()
+	assert_bool(state.find_hero(B).is_awake).is_true()
+	assert_bool(state.find_hero(A).is_awake).is_false()
+
+
+func test_205_5_6_turn_start_does_not_wake_buildings() -> void:
+	var building_id := _builder.place_piece(
+		B, Piece.PieceKind.BUILDING, DuelStateBuilder.cell("B5"), CARD
+	)
+	_builder.with_piece_awake(_builder.build().find_hero(B).piece_id, false)
+	var events := _end_turn_of_a()
+	var state := _engine.get_state()
+	assert_bool(state.find_piece(building_id).is_awake).is_false()
+	var awakened := _first_event_of(events, "PiecesAwakened:B") as PiecesAwakened
+	assert_array(awakened.piece_ids).not_contains([building_id])
 
 
 func test_turn_start_resets_turn_counters_of_both_players() -> void:
 	for side: DuelState.PlayerSide in [A, B]:
 		_builder.with_recycled_this_turn(side, 2)
 		_builder.with_hero_power_used(side)
-		_builder.with_normal_action_used(side)
 	_end_turn_of_a()
 	for player: PlayerState in _engine.get_state().players:
 		assert_int(player.sources_recycled_this_turn).is_equal(0)
 		assert_bool(player.hero_power_used_this_turn).is_false()
-		assert_bool(player.normal_action_used_this_turn).is_false()
 
 
 func test_204_5_7_until_end_of_turn_effects_end() -> void:
@@ -250,6 +311,14 @@ func test_end_turn_while_decision_pending_rejected() -> void:
 	_builder.with_pending_decision(decision)
 	_engine.start_from_state(_builder.build())
 	_assert_rejected(EndTurn.new(A), REASON.DECISION_PENDING)
+
+
+func _place_asleep_unit(side: DuelState.PlayerSide, cell_name: String) -> int:
+	var piece_id := _builder.place_piece(
+		side, Piece.PieceKind.UNIT, DuelStateBuilder.cell(cell_name), CARD
+	)
+	_builder.with_piece_awake(piece_id, false)
+	return piece_id
 
 
 func _end_turn_of_a() -> Array[DuelEvent]:

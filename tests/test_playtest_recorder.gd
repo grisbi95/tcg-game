@@ -15,7 +15,7 @@ extends GdUnitTestSuite
 
 const GAME_NUMBER: int = 3
 const DATE_TEXT: String = "2026-10-21"
-const OPENING_HAND_SIZE: int = 5  # 204.1.15
+const OPENING_HAND_SIZE: int = 4  # 204.1.15
 const CARDS_DRAWN_PER_TURN: int = 2  # 204.3.6
 const STARTING_SOURCES: int = 2  # 204.1.2
 const SOURCES_RECEIVED_PER_TURN: int = 1  # 204.3.1
@@ -23,7 +23,7 @@ const CLOCK_MSEC: int = 600_000  # 209.4.3 : 10 minutes
 const IDLE_ROUNDS: int = 3
 const WAIT_MSEC: int = 75_000
 const SECOND_WAIT_MSEC: int = 3_000
-const SMALL_DECK_SIZE: int = 8  # 201.6.1 réduite : la fatigue arrive au deuxième tour de A
+const SMALL_DECK_SIZE: int = 7  # 201.6.1 réduite : la fatigue arrive au deuxième tour de A
 const FIRST_WINDOW_MSEC: int = 1_500
 const SECOND_WINDOW_MSEC: int = 800
 const THIRD_WINDOW_MSEC: int = 700
@@ -241,7 +241,7 @@ func test_209_5_2_first_fatigue_turn_is_the_rank_of_the_turn_it_appears() -> voi
 	for round_index: int in IDLE_ROUNDS:
 		driver.end_turn(A)
 		driver.end_turn(B)
-	# 5 en main, 3 au deck : A pioche 2 puis 1, la deuxième pioche de son tour 2 manque.
+	# 4 en main, 3 au deck : A pioche 2 puis 1, la deuxième pioche de son tour 2 manque.
 	assert_int(_sheet_of(driver).end_fields.first_fatigue_turn_rank).is_equal(2)
 
 

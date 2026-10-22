@@ -1,6 +1,6 @@
 # Ruleset du TCG tactique
 
-> Dossier de conception des règles, intégré au dépôt du jeu `tcg-game`, dans `docs/ruleset/` (décision 0014 du projet). Édition courante : **0.38** (fenêtre de réponse sans échéance, 21 octobre 2026). Historique dans [90-changelog.md](90-changelog.md).
+> Dossier de conception des règles, intégré au dépôt du jeu `tcg-game`, dans `docs/ruleset/` (décision 0014 du projet). Édition courante : **0.39** (action normale par pièce et réveil, 22 octobre 2026). Historique dans [90-changelog.md](90-changelog.md).
 
 ## Quel document pour quel lecteur
 
@@ -16,7 +16,7 @@
 | Équipe de design | [40-decisions/](40-decisions/) | Une décision par fichier, numérotée, jamais modifiée après coup. |
 | Design, moteur | `50-cartes/` | Catalogue en construction. Créé avec la première édition jouable. |
 | Arbitres, joueurs | `60-rulings.md` | Interactions de cartes tranchées. Créé avec le catalogue. |
-| Design | [70-playtest/](70-playtest/protocole.md) | Protocole, decks de test, métriques, comptes rendus de sessions. Protocole du premier playtest écrit le 16 octobre 2026 et complété le même jour (édition 0.28) et le 18 octobre 2026 (édition 0.35, mesure de l'Essence perdue ; édition 0.36, mesures de la fenêtre de réponse) et le 21 octobre 2026 (édition 0.38, définitions des mesures de la fenêtre de réponse sans échéance), avec les [decks de test](70-playtest/decks-de-test.md) ; les comptes rendus s'ajoutent après chaque série. |
+| Design | [70-playtest/](70-playtest/protocole.md) | Protocole, decks de test, métriques, comptes rendus de sessions. Protocole du premier playtest écrit le 16 octobre 2026 et complété le même jour (édition 0.28) et le 18 octobre 2026 (édition 0.35, mesure de l'Essence perdue ; édition 0.36, mesures de la fenêtre de réponse) et le 21 octobre 2026 (édition 0.38, définitions des mesures de la fenêtre de réponse sans échéance) et le 22 octobre 2026 (édition 0.39, mesure des PV perdus par un Hero en un tour), avec les [decks de test](70-playtest/decks-de-test.md) ; les comptes rendus s'ajoutent après chaque série. |
 | Tout le monde | [90-changelog.md](90-changelog.md) | Une entrée par édition, avec les règles touchées. |
 
 ## Chapitres des règles complètes
@@ -28,7 +28,7 @@
 | [202](20-regles-completes/202-cartes.md) | Cartes : anatomie, types, Hero, permanents, jetons |
 | [203](20-regles-completes/203-ressource.md) | Ressource : Essence, Sources, inclinaison, recyclage, réserve d'Essence |
 | [204](20-regles-completes/204-tour.md) | Tour : préparation, mulligan, structure, fin de partie |
-| [205](20-regles-completes/205-actions.md) | Actions : déploiement, action normale, déplacement du Hero |
+| [205](20-regles-completes/205-actions.md) | Actions : déploiement, action normale, déplacement du Hero, sommeil et réveil |
 | [206](20-regles-completes/206-combat.md) | Combat : comparaison, égalités, dégâts au Hero, auras |
 | [207](20-regles-completes/207-effets.md) | Effets : Spells, effets statiques, déclenchés, durées, cibles, Contrecarrer |
 | [208](20-regles-completes/208-pile-et-priorite.md) | Pile et priorité : passes, résolution en bloc, chaînes, fenêtre de réponse |

@@ -68,8 +68,9 @@ static func _check_sources(
 		violations.append("203.5.7 : %s a un compte de Sources négatif" % side)
 
 
-# 201.0.1, 205.3.2 : une pièce par case, sur le plateau ; le Hero reste dans ses deux rangées,
-# recalculées ici : A compte depuis la rangée 0, B depuis la dernière (201.2.5).
+# 201.0.1, 205.3.2, 205.5.6 : une pièce par case, sur le plateau ; le Hero reste dans ses deux
+# rangées, recalculées ici : A compte depuis la rangée 0, B depuis la dernière (201.2.5) ; un
+# Building n'est jamais éveillé.
 static func _check_board(state: DuelState, violations: PackedStringArray) -> void:
 	var occupied: Dictionary[Vector2i, bool] = {}
 	for piece: Piece in state.pieces:
@@ -80,6 +81,8 @@ static func _check_board(state: DuelState, violations: PackedStringArray) -> voi
 		var is_hero := piece.kind == Piece.PieceKind.HERO
 		if is_hero and absi(piece.cell.y - own_first_row) >= HERO_ROWS:
 			violations.append("205.3.2 : Hero hors de ses deux rangées")
+		if piece.kind == Piece.PieceKind.BUILDING and piece.is_awake:
+			violations.append("205.5.6 : Building %d éveillé" % piece.piece_id)
 
 
 # 208.3.1, 208.5.1, 209.2.2, décisions 0009 et 0017

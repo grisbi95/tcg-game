@@ -78,7 +78,8 @@ static func _set_starting_values(state: DuelState, side: DuelState.PlayerSide) -
 	player.fatigue_counter = state.config.starting_fatigue
 
 
-# 204.1.1, 204.1.8 ; 201.5.1 : la carte Hero appartient à son joueur.
+# 204.1.1, 204.1.8 ; 201.5.1 : la carte Hero appartient à son joueur ; 204.1.18 : il naît endormi
+# (`is_awake` reste faux).
 static func _place_hero(
 	state: DuelState, side: DuelState.PlayerSide, hero: HeroDefinition, events: Array[DuelEvent]
 ) -> void:

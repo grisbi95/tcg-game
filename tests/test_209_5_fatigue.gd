@@ -4,6 +4,7 @@ extends GdUnitTestSuite
 const HAND_LIMIT: int = 7  # 201.3.4
 const CARDS_PER_TURN: int = 2  # 204.3.6
 const STARTING_FATIGUE: int = 0  # 209.5.1
+const FIRST_DRAW_EVENT_INDEX: int = 3  # TurnEnded, TurnStarted, SourceReceived
 const HERO_HEALTH: int = DuelStateBuilder.DEFAULT_HERO_HEALTH
 const CARD: StringName = &"CARD_TEST"
 
@@ -51,22 +52,22 @@ func test_209_5_2_each_draw_from_empty_deck_increases_fatigue() -> void:
 	var expected: Array[String] = []
 	for draw: int in CARDS_PER_TURN:
 		expected.append_array(["FatigueIncreased:B", "HeroLostHealth:B"])
-	assert_array(EventLog.describe(events).slice(3)).contains_exactly(expected)
+	assert_array(EventLog.describe(events).slice(FIRST_DRAW_EVENT_INDEX)).contains_exactly(expected)
 	assert_int(_engine.get_state().get_player(B).fatigue_counter).is_equal(CARDS_PER_TURN)
 
 
 func test_209_5_3_hero_loses_new_counter_value() -> void:
 	_builder.with_fatigue(B, 2)
 	var events := _end_turn_of_a()
-	assert_int((events[3] as FatigueIncreased).fatigue_counter).is_equal(3)
-	assert_int((events[4] as HeroLostHealth).amount).is_equal(3)
-	assert_int((events[6] as HeroLostHealth).amount).is_equal(4)
+	assert_int((events[FIRST_DRAW_EVENT_INDEX] as FatigueIncreased).fatigue_counter).is_equal(3)
+	assert_int((events[FIRST_DRAW_EVENT_INDEX + 1] as HeroLostHealth).amount).is_equal(3)
+	assert_int((events[FIRST_DRAW_EVENT_INDEX + 3] as HeroLostHealth).amount).is_equal(4)
 	assert_int(_engine.get_state().find_hero(B).health).is_equal(HERO_HEALTH - 3 - 4)
 
 
 func test_209_5_2_last_card_then_fatigue() -> void:
 	_builder.add_to_deck(B, CARD)
-	var labels := EventLog.describe(_end_turn_of_a()).slice(3)
+	var labels := EventLog.describe(_end_turn_of_a()).slice(FIRST_DRAW_EVENT_INDEX)
 	assert_array(labels).contains_exactly(["CardDrawn:B", "FatigueIncreased:B", "HeroLostHealth:B"])
 
 
@@ -80,7 +81,7 @@ func test_209_5_4_card_kept_out_by_hand_limit_causes_no_fatigue() -> void:
 	_fill_hand(B)
 	for draw: int in CARDS_PER_TURN:
 		_builder.add_to_deck(B, CARD)
-	var labels := EventLog.describe(_end_turn_of_a()).slice(3)
+	var labels := EventLog.describe(_end_turn_of_a()).slice(FIRST_DRAW_EVENT_INDEX)
 	assert_array(labels).contains_exactly(
 		EventLog.repeat("DrawBlockedByHandLimit:B", CARDS_PER_TURN)
 	)
