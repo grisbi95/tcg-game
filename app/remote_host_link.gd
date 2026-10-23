@@ -6,7 +6,7 @@ extends RefCounted
 ## la scène porte les messages entre ce lien et le relais.
 
 ## Le temps seul ne part pas plus souvent : le second écran recale ses pendules à ce rythme.
-const TIME_SEND_INTERVAL_MSEC: int = 250
+const TIME_SEND_INTERVAL_MSEC: int = 100
 
 var _host: DuelHost
 var _remote_side: DuelState.PlayerSide

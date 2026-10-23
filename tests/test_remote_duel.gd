@@ -8,7 +8,7 @@ const AGENT_SEED_A: int = 31
 const AGENT_SEED_B: int = 32
 const HOST_TICKS: int = 400
 const TICK_MSEC: int = 700
-const SHORT_WAIT_MSEC: int = 100
+const SHORT_WAIT_MSEC: int = 40
 const EDITION: String = "0.43"
 const UNKNOWN_CARD_ID: int = 999_999
 
