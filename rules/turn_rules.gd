@@ -85,13 +85,12 @@ static func draw_cards(
 			return
 
 
-# 202.3.14, 203.4.2 : décomptes « par tour » des deux joueurs, remis à zéro au début
+# 203.4.2 : décomptes « par tour » des deux joueurs, remis à zéro au début
 # de chaque tour (convention de l'étape 1.3) ; 207.3.9 : « une fois par tour » aussi.
 static func _reset_turn_counters(state: DuelState) -> void:
 	state.once_per_turn_card_ids.clear()
 	for player: PlayerState in state.players:
 		player.sources_recycled_this_turn = 0
-		player.hero_power_used_this_turn = false
 		player.announced_this_turn = false  # 209.2.10
 
 

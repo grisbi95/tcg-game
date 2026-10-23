@@ -16,7 +16,7 @@ enum EffectKind {
 
 ## Quand l'effet a lieu.
 enum EffectTiming {
-	RESOLVE,  # à la résolution de l'entrée de la pile qui le porte (Spell, pouvoir du Hero)
+	RESOLVE,  # à la résolution de l'entrée de la pile qui le porte (Spell)
 	STATIC,  # 207.2 : sans pile, tant que la pièce qui le porte est en jeu
 	TRIGGERED,  # 207.3 : ajouté à la pile quand survient `trigger`
 }

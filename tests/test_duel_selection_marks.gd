@@ -1,12 +1,11 @@
 extends GdUnitTestSuite
-## DuelSelection sans scène : marques « jouable » éteintes pendant une sélection et pouvoir du
-## Hero choisi (ruleset 0.36 ; décisions 0024, 0031 et 0032). Voisine de test_duel_selection.gd.
+## DuelSelection sans scène : marques « jouable » éteintes pendant une sélection
+## (décisions 0024, 0031 et 0032 ; le Hero n'a plus de pouvoir depuis l'édition 0.42).
+## Voisine de test_duel_selection.gd.
 
 const UNIT: StringName = &"selection_unit"
 const UNIT_COST: int = 2  # SetupSamples.add_unit()
 const TARGETED_SPELL: StringName = &"sample_spell"  # cible une Unit alliée, coût 1
-const HERO: StringName = &"sample_hero"  # pouvoir : une Unit alliée gagne de la Force
-const HERO_POWER_COST: int = 2  # CatalogSamples.hero(), power_cost
 const UNIT_CELL: String = "A1"
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
@@ -30,49 +29,6 @@ func before_test() -> void:
 	_selection = DuelSelection.new()
 	_emitted = []
 	_selection.intent_chosen.connect(func(intent: DuelIntent) -> void: _emitted.append(intent))
-
-
-func test_decision_0032_hero_power_chosen_is_shown() -> void:
-	var piece_id := _builder.place_piece(A, Piece.PieceKind.UNIT, _cell(UNIT_CELL), UNIT)
-	_builder.add_to_hand(A, UNIT)
-	_builder.with_essence_reserve(A, HERO_POWER_COST)
-	_builder.with_hero_definition(A, HERO)
-	_start(A)
-	assert_bool(_selection.snapshot().is_hero_power_chosen).is_false()
-	_selection.press_hero_power()
-	var shown := _selection.snapshot()
-	assert_int(shown.selection_state).is_equal(SELECTION.TARGET_PENDING)
-	assert_bool(shown.is_hero_power_chosen).is_true()
-	assert_array(shown.playable_card_ids).is_empty()
-	assert_array(shown.legal_piece_ids).contains([piece_id])
-	_selection.press_piece(piece_id)
-	assert_object(_emitted[0]).is_instanceof(UseHeroPower)
-	assert_bool(_selection.snapshot().is_hero_power_chosen).is_false()
-
-
-func test_decision_0032_hero_power_cancel_clears_the_chosen_mark() -> void:
-	_builder.place_piece(A, Piece.PieceKind.UNIT, _cell(UNIT_CELL), UNIT)
-	_builder.with_essence_reserve(A, HERO_POWER_COST)
-	_builder.with_hero_definition(A, HERO)
-	_start(A)
-	_selection.press_hero_power()
-	assert_bool(_selection.snapshot().is_hero_power_chosen).is_true()
-	_selection.press_cancel()
-	var shown := _selection.snapshot()
-	assert_int(shown.selection_state).is_equal(SELECTION.IDLE)
-	assert_bool(shown.is_hero_power_chosen).is_false()
-	assert_array(_emitted).is_empty()
-
-
-func test_decision_0032_hero_power_mark_is_false_while_a_spell_awaits_its_target() -> void:
-	_builder.place_piece(A, Piece.PieceKind.UNIT, _cell(UNIT_CELL), UNIT)
-	var card_id := _builder.add_to_hand(A, TARGETED_SPELL)
-	_builder.with_essence_reserve(A, 1)
-	_start(A)
-	_selection.press_card(card_id)
-	var shown := _selection.snapshot()
-	assert_int(shown.selection_state).is_equal(SELECTION.TARGET_PENDING)
-	assert_bool(shown.is_hero_power_chosen).is_false()
 
 
 func test_decision_0024_no_playable_mark_while_a_card_is_chosen() -> void:
@@ -109,34 +65,6 @@ func test_decision_0024_no_playable_mark_while_a_target_is_pending() -> void:
 	assert_array(_selection.snapshot().playable_card_ids).contains_exactly([card_id])
 	_selection.press_card(card_id)
 	assert_array(_selection.snapshot().playable_card_ids).is_empty()
-
-
-func test_decision_0032_hero_card_pressed_again_deselects_the_power() -> void:
-	_builder.place_piece(A, Piece.PieceKind.UNIT, _cell(UNIT_CELL), UNIT)
-	_builder.with_essence_reserve(A, HERO_POWER_COST)
-	_builder.with_hero_definition(A, HERO)
-	_start(A)
-	_selection.press_hero_power()
-	assert_bool(_selection.snapshot().is_hero_power_chosen).is_true()
-	_selection.press_hero_power()
-	var shown := _selection.snapshot()
-	assert_int(shown.selection_state).is_equal(SELECTION.IDLE)
-	assert_bool(shown.is_hero_power_chosen).is_false()
-	assert_array(_emitted).is_empty()
-
-
-func test_decision_0032_hero_power_not_marked_during_another_selection() -> void:
-	var card_id := _builder.add_to_hand(A, UNIT)
-	_builder.with_essence_reserve(A, HERO_POWER_COST)
-	_builder.with_hero_definition(A, HERO)
-	_builder.place_piece(A, Piece.PieceKind.UNIT, _cell(UNIT_CELL), UNIT)
-	_start(A)
-	assert_bool(_selection.snapshot().can_use_hero_power).is_true()
-	_selection.press_card(card_id)
-	assert_int(_selection.snapshot().selection_state).is_equal(SELECTION.CARD_CHOSEN)
-	assert_bool(_selection.snapshot().can_use_hero_power).is_false()
-	_selection.press_cancel()
-	assert_bool(_selection.snapshot().can_use_hero_power).is_true()
 
 
 func test_decision_0032_drafting_payment_only_in_the_opponent_turn() -> void:

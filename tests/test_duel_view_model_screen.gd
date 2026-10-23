@@ -13,7 +13,6 @@ const SPELL_NAME: String = "Spell d'essai"
 const UNKNOWN_CARD_ID: int = 9999
 
 # Libellés de la pile : valeurs de DuelViewModel recopiées pour contrôler la vue (décision 0028).
-const HERO_POWER_LABEL: String = "Pouvoir du Hero"
 const NORMAL_ACTION_LABEL: String = "Action normale"
 const TRIGGERED_EFFECT_LABEL: String = "Effet déclenché"
 const ORDER_INSTRUCTION: String = "Ordre des effets : clique-les dans l'ordre d'ajout à la pile"
@@ -200,16 +199,6 @@ func test_201_4_8_announced_card_is_shown_with_its_own_tint() -> void:
 	var line := _model(B).stack_lines()[0]
 	assert_str(line.label).is_equal(BUILDING_NAME)
 	assert_int(line.tint).is_equal(DuelPalette.Tint.BUILDING)
-
-
-func test_208_1_4_hero_power_line_uses_the_hero_label_and_tint() -> void:
-	var entry := StackEntry.new()
-	entry.kind = StackEntry.StackEntryKind.HERO_POWER
-	entry.owner = A
-	_builder.push_stack_entry(entry)
-	var line := _model(A).stack_lines()[0]
-	assert_str(line.label).is_equal(HERO_POWER_LABEL)
-	assert_int(line.tint).is_equal(DuelPalette.Tint.HERO)
 
 
 func test_208_1_2_normal_action_line_has_its_label_and_no_card() -> void:

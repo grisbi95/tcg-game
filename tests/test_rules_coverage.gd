@@ -21,6 +21,7 @@ const TOKEN_HAS_NO_TRIGGERED_EFFECT: String = (
 ## Raison de refus que le moteur ne produit plus, et pourquoi ; gardée dans l'enum, journalisable.
 const RETIRED_REJECT_REASONS: Dictionary[String, String] = {
 	"NORMAL_ACTION_ALREADY_USED": "204.4.6 supprimée en édition 0.39 (décision 0044).",
+	"HERO_POWER_ALREADY_USED": "202.3.14 et 202.3.17 supprimées en édition 0.42 (décision 0208).",
 }
 
 ## Règle sans test à son nom, et pourquoi : règle de structure, ou vérifiée sous d'autres

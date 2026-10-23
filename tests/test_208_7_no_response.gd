@@ -12,8 +12,6 @@ const REACTION_ID: StringName = &"no_response_reaction"
 const REACTION_COST: int = 1  # CatalogSamples.spell()
 const GEAR_ID: StringName = &"sample_gear"
 const GEAR_COST: int = 1  # CatalogSamples.gear()
-const HERO_ID: StringName = &"sample_hero"
-const POWER_COST: int = 2  # CatalogSamples.hero()
 const UNIT_COST: int = 2  # CatalogSamples.unit()
 const SHORT_RESPONSE_MSEC: int = 1_234
 
@@ -105,19 +103,6 @@ func test_208_7_6_gear_announcement_is_without_response() -> void:
 	var labels := EventLog.describe(_engine.submit(attach))
 	assert_array(labels.slice(-4)).contains_exactly(
 		["GearAnnounced:A", "StackEntryAdded:A", "GearAttached:A", "StackEntryResolved:A"]
-	)
-	_assert_nobody_can_answer()
-
-
-func test_208_7_7_hero_power_announcement_is_without_response() -> void:
-	var unit_id := _place(A, TriggerSamples.SOLDIER, "B2")
-	_builder.with_hero_definition(A, HERO_ID)
-	_start()
-	var power := UseHeroPower.new(A, EssencePayment.new(POWER_COST))
-	power.target_piece_ids.append(unit_id)
-	var labels := EventLog.describe(_engine.submit(power))
-	assert_array(labels.slice(-4)).contains_exactly(
-		["HeroPowerAnnounced:A", "StackEntryAdded:A", "ForceModified:A", "StackEntryResolved:A"]
 	)
 	_assert_nobody_can_answer()
 

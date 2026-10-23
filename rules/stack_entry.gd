@@ -10,7 +10,7 @@ enum StackEntryKind {
 	DEPLOY,  # 208.1.1
 	NORMAL_ACTION,  # 208.1.2
 	SPELL,  # 208.1.3
-	HERO_POWER,  # 208.1.4
+	HERO_POWER,  # retiré en édition 0.42 (décision 0208)
 	ATTACH_GEAR,  # 208.1.5
 	TRIGGERED_EFFECT,  # 207.3.2
 	PENDING_COMBAT,  # 205.6.1 : combat en attente, décision 0046

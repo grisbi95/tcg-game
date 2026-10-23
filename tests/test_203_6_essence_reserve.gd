@@ -13,8 +13,6 @@ const DEPLOY_CELL: String = "B1"
 const DECK_SIZE: int = 4
 const GEAR: StringName = &"sample_gear"  # CatalogSamples.gear(), coût 1
 const GEAR_COST: int = 1
-const HERO: StringName = &"sample_hero"  # CatalogSamples.hero(), pouvoir de coût 2
-const POWER_COST: int = 2
 const UNIT_CELL: String = "B2"
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
@@ -84,18 +82,6 @@ func test_203_3_2a_gear_cost_paid_from_the_reserve() -> void:
 	_start()
 	var events := _engine.submit(AttachGear.new(A, gear_id, unit_id, EssencePayment.new()))
 	assert_int(EventLog.rejection_reason(events)).is_equal(EventLog.NOT_A_SINGLE_REJECTION)
-	assert_int(_player(A).essence_reserve).is_equal(0)
-
-
-func test_203_3_2a_hero_power_cost_paid_from_the_reserve() -> void:
-	var unit_id := _builder.place_piece(A, Piece.PieceKind.UNIT, _cell(UNIT_CELL), UNIT)
-	_builder.with_hero_definition(A, HERO).with_essence_reserve(A, POWER_COST)
-	_start()
-	var power := UseHeroPower.new(A, EssencePayment.new())
-	power.target_piece_ids.append(unit_id)
-	assert_int(EventLog.rejection_reason(_engine.submit(power))).is_equal(
-		EventLog.NOT_A_SINGLE_REJECTION
-	)
 	assert_int(_player(A).essence_reserve).is_equal(0)
 
 

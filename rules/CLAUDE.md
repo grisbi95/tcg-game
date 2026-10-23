@@ -8,7 +8,7 @@ Complète le `CLAUDE.md` racine pour `rules/` ; décisions 0001, 0003, 0004, 000
 | --- | --- | --- |
 | `duel_engine.gd` | — | Façade : `start_new_duel`, `start_from_state` (tests), `validate`, `submit`, `advance_clock`, `clock_owners`, `awaited_players`, requêtes en lecture pour la vue. Médiateur sans règle propre (`code-guidelines.md` §5) : après chaque intention, il enchaîne lui-même les étapes qui la suivent (effets en attente par `TriggerRules`, retour de la main par `StackRules`, suite de la fin du tour par `TurnRules`) et aiguille la résolution de chaque entrée de pile vers le module de son genre, que les modules ne déclenchent pas entre eux, et résout aussitôt, dans la même soumission, une pile qui contient une entrée sans réponse (208.7.13, décision 0046) ; détail aux commentaires de `_settle` et `_resolve_stack` dans `duel_engine.gd`. |
 | `zone_rules.gd` | 201 | zones, limite de main, appartenance, construction du deck, passage d'une pièce sur une case (`move_piece`) |
-| `card_rules.gd` | 202 | Gear (annonce, attachement, remplacement, retour en main), pouvoir du Hero |
+| `card_rules.gd` | 202 | Gear (annonce, attachement, remplacement, retour en main) |
 | `essence_rules.gd` | 203 | paiement à l'annonce, incliner, recycler, Fonte, réserve d'Essence (203.6, 0026) |
 | `preparation_rules.gd` | 204.1, 204.2 | préparation par `DuelSetup` (0012), mulligan simultané exécuté à la dernière réponse, joueur A puis B (0013, 0015) et Écart ; appelle `TurnRules` (premier tour, pioche), jamais l'inverse |
 | `turn_rules.gd` | 204.3 à 204.5 | début de tour (204.3.8, réveil et redressement compris), pioche, fin de tour (204.5) |

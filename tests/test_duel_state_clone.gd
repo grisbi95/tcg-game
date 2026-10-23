@@ -177,7 +177,6 @@ func _fill_player(builder: DuelStateBuilder, side: DuelState.PlayerSide) -> void
 	builder.with_sources_in_fonte(side, 2)
 	builder.with_essence_reserve(side, 1)
 	builder.with_recycled_this_turn(side, 1)
-	builder.with_hero_power_used(side)
 	builder.add_to_deck(side, UNIT_ID)
 	builder.add_to_deck(side, SPELL_ID)
 	builder.add_to_hand(side, UNIT_ID)

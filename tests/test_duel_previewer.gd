@@ -202,16 +202,6 @@ func test_decision_0030_hovered_stack_entry_shows_the_announced_card() -> void:
 	assert_str(_spy.shown_card.card_name).is_equal(SPELL_NAME)
 
 
-func test_decision_0030_hovered_hero_power_entry_shows_the_hero_of_its_owner() -> void:
-	var entry := StackEntry.new()
-	entry.kind = StackEntry.StackEntryKind.HERO_POWER
-	entry.owner = B
-	var entry_id := _builder.push_stack_entry(entry)
-	_previewer_for(A).show_stack_entry(entry_id)
-	assert_array(_spy.calls).contains_exactly(["show_hero"])
-	assert_str(_spy.shown_hero.hero_name).is_equal(HERO_OF_B_NAME)
-
-
 func test_decision_0030_hovered_triggered_effect_shows_its_source_card() -> void:
 	var entry_id := _builder.push_stack_entry(_trigger_of(A, UNIT))
 	_previewer_for(A).show_stack_entry(entry_id)

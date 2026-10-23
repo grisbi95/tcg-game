@@ -38,7 +38,7 @@ enum RejectReason {
 	ILLEGAL_TARGET,  # 207.5.6, 207.5.11 à 207.5.16 : cible qui ne remplit pas les conditions
 	NOT_A_SPELL,  # 208.1.3 : seule une carte Spell s'annonce comme Spell
 	NOT_A_GEAR,  # 208.1.5 : seule une carte Gear s'attache
-	HERO_POWER_ALREADY_USED,  # 202.3.14, 202.3.17
+	HERO_POWER_ALREADY_USED,  # retiré en édition 0.42 (décision 0208)
 	WRONG_TRIGGER_ORDER,  # 208.4.6, 208.4.7 : l'ordre cite chaque effet attendu une fois, seul
 	NO_ESSENCE_PRODUCED,  # 203.6.3, 203.6.4 : produire de l'Essence incline ou recycle une Source
 	PIECE_ASLEEP,  # 205.5.3 : une pièce endormie ne fait pas d'action normale
