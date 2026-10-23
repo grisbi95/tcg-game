@@ -1,8 +1,9 @@
 # gdlint: disable=max-public-methods
 
 extends GdUnitTestSuite
-## Gear et pouvoir du Hero (ruleset 0.32, sections 202.2 et 202.3 ; 207.5.17, 208.1.4 à
-## 208.1.7).
+## Gear et pouvoir du Hero (ruleset 0.41, sections 202.2 et 202.3 ; 207.5.17, 208.1.4 à
+## 208.1.7 ; décision de design 0207 : l'annonce d'un Gear et du pouvoir d'un Hero est sans
+## réponse, 208.7.6 et 208.7.7, donc résolue dans la même soumission).
 
 const UNIT_ID: StringName = &"gear_unit"
 const BUILDING_ID: StringName = &"gear_building"
@@ -44,25 +45,34 @@ func test_208_1_5_gear_is_announced_on_the_stack() -> void:
 	_start()
 	var events := _engine.submit(_attach(gear_id, unit_id))
 	assert_array(EventLog.describe(events)).contains_exactly(
-		["SourceInclined:A", "GearAnnounced:A", "StackEntryAdded:A"]
+		[
+			"SourceInclined:A",
+			"GearAnnounced:A",
+			"StackEntryAdded:A",
+			"GearAttached:A",
+			"StackEntryResolved:A"
+		]
 	)
-	assert_int(_engine.get_state().stack[0].kind).is_equal(StackEntry.StackEntryKind.ATTACH_GEAR)
+	assert_array(_engine.get_state().stack).is_empty()
 
 
 func test_202_2_22_unit_chosen_when_gear_is_announced() -> void:
 	var unit_id := _place(A, "B2")
 	var gear_id := _builder.add_to_hand(A, GEAR_ID)
 	_start()
-	_engine.submit(_attach(gear_id, unit_id))
-	assert_array(_engine.get_state().stack[0].target_piece_ids).contains_exactly([unit_id])
+	var events := _engine.submit(_attach(gear_id, unit_id))
+	assert_int((events[1] as GearAnnounced).piece_id).is_equal(unit_id)
+	assert_int(_engine.get_state().find_piece(unit_id).attached_gear.card_instance_id).is_equal(
+		gear_id
+	)
 
 
 func test_202_2_6_gear_attaches_to_its_unit() -> void:
 	var unit_id := _place(A, "B2")
 	var gear_id := _builder.add_to_hand(A, GEAR_ID)
 	_start()
-	_engine.submit(_attach(gear_id, unit_id))
-	assert_array(_resolve_stack()).contains(["GearAttached:A"])
+	var events := _engine.submit(_attach(gear_id, unit_id))
+	assert_array(EventLog.describe(events)).contains(["GearAttached:A"])
 	var unit := _engine.get_state().find_piece(unit_id)
 	assert_int(unit.attached_gear.card_instance_id).is_equal(gear_id)
 
@@ -71,9 +81,8 @@ func test_207_2_3a_gear_effect_starts_when_attached() -> void:
 	var unit_id := _place(A, "B2")
 	var gear_id := _builder.add_to_hand(A, GEAR_ID)
 	_start()
-	_engine.submit(_attach(gear_id, unit_id))
 	assert_int(_force(unit_id)).is_equal(UNIT_FORCE)
-	_resolve_stack()
+	_engine.submit(_attach(gear_id, unit_id))
 	assert_int(_force(unit_id)).is_equal(UNIT_FORCE + GEAR_BONUS)
 
 
@@ -83,7 +92,6 @@ func test_202_2_11_new_gear_replaces_the_old_one() -> void:
 	var gear_id := _builder.add_to_hand(A, GEAR_ID)
 	_start()
 	_engine.submit(_attach(gear_id, unit_id))
-	_resolve_stack()
 	assert_int(_engine.get_state().find_piece(unit_id).attached_gear.card_instance_id).is_equal(
 		gear_id
 	)
@@ -98,8 +106,8 @@ func test_202_2_12_replaced_gear_goes_to_discard() -> void:
 	_builder.attach_gear(unit_id, GEAR_ID)
 	var gear_id := _builder.add_to_hand(A, GEAR_ID)
 	_start()
-	_engine.submit(_attach(gear_id, unit_id))
-	assert_array(_resolve_stack()).contains(["CardDiscarded:A", "GearAttached:A"])
+	var events := _engine.submit(_attach(gear_id, unit_id))
+	assert_array(EventLog.describe(events)).contains(["CardDiscarded:A", "GearAttached:A"])
 
 
 func test_202_2_10_unit_carries_at_most_one_gear() -> void:
@@ -108,7 +116,6 @@ func test_202_2_10_unit_carries_at_most_one_gear() -> void:
 	var gear_id := _builder.add_to_hand(A, GEAR_ID)
 	_start()
 	_engine.submit(_attach(gear_id, unit_id))
-	_resolve_stack()
 	assert_int(_force(unit_id)).is_equal(UNIT_FORCE + GEAR_BONUS)
 
 
@@ -179,9 +186,8 @@ func test_208_1_5_only_a_gear_card_is_attached() -> void:
 
 func test_202_2_24_gear_not_attached_when_unit_is_gone() -> void:
 	var unit_id := _place(A, "B2")
-	var gear_id := _builder.add_to_hand(A, GEAR_ID)
+	_push_gear(unit_id)
 	_start()
-	_engine.submit(_attach(gear_id, unit_id))
 	var state := _engine.get_state()
 	state.pieces.erase(state.find_piece(unit_id))
 	assert_array(_resolve_stack()).not_contains(["GearAttached:A"])
@@ -189,9 +195,8 @@ func test_202_2_24_gear_not_attached_when_unit_is_gone() -> void:
 
 func test_202_2_24a_gear_not_attached_returns_to_hand() -> void:
 	var unit_id := _place(A, "B2")
-	var gear_id := _builder.add_to_hand(A, GEAR_ID)
+	var gear_id := _push_gear(unit_id)
 	_start()
-	_engine.submit(_attach(gear_id, unit_id))
 	var state := _engine.get_state()
 	state.pieces.erase(state.find_piece(unit_id))
 	assert_array(_resolve_stack()).contains(["CardReturnedToHand:A"])
@@ -200,9 +205,8 @@ func test_202_2_24a_gear_not_attached_returns_to_hand() -> void:
 
 func test_202_2_24b_gear_goes_to_discard_when_hand_is_full() -> void:
 	var unit_id := _place(A, "B2")
-	var gear_id := _builder.add_to_hand(A, GEAR_ID)
+	_push_gear(unit_id)
 	_start()
-	_engine.submit(_attach(gear_id, unit_id))
 	var state := _engine.get_state()
 	state.pieces.erase(state.find_piece(unit_id))
 	for index: int in HAND_LIMIT:
@@ -211,10 +215,10 @@ func test_202_2_24b_gear_goes_to_discard_when_hand_is_full() -> void:
 
 
 func test_202_2_24c_essence_of_unattached_gear_stays_spent() -> void:
+	_builder.with_sources_in_play(A, 3, GEAR_COST)
 	var unit_id := _place(A, "B2")
-	var gear_id := _builder.add_to_hand(A, GEAR_ID)
+	_push_gear(unit_id)
 	_start()
-	_engine.submit(_attach(gear_id, unit_id))
 	var state := _engine.get_state()
 	state.pieces.erase(state.find_piece(unit_id))
 	_resolve_stack()
@@ -226,9 +230,11 @@ func test_208_1_4_hero_power_is_announced_on_the_stack() -> void:
 	_start_with_sample_hero()
 	var events := _engine.submit(_power([unit_id] as Array[int]))
 	var expected := EventLog.repeat("SourceInclined:A", POWER_COST)
-	expected.append_array(["HeroPowerAnnounced:A", "StackEntryAdded:A"])
+	expected.append_array(
+		["HeroPowerAnnounced:A", "StackEntryAdded:A", "ForceModified:A", "StackEntryResolved:A"]
+	)
 	assert_array(EventLog.describe(events)).contains_exactly(expected)
-	assert_int(_engine.get_state().stack[0].kind).is_equal(StackEntry.StackEntryKind.HERO_POWER)
+	assert_array(_engine.get_state().stack).is_empty()
 
 
 func test_202_3_13_hero_power_costs_its_card_value() -> void:
@@ -242,8 +248,8 @@ func test_202_3_13_hero_power_costs_its_card_value() -> void:
 func test_202_3_12_hero_power_applies_its_effect() -> void:
 	var unit_id := _place(A, "B2")
 	_start_with_sample_hero()
-	_engine.submit(_power([unit_id] as Array[int]))
-	assert_array(_resolve_stack()).contains(["ForceModified:A"])
+	var events := _engine.submit(_power([unit_id] as Array[int]))
+	assert_array(EventLog.describe(events)).contains(["ForceModified:A"])
 	assert_int(_force(unit_id)).is_equal(UNIT_FORCE + POWER_BONUS)
 
 
@@ -251,7 +257,6 @@ func test_202_3_14_hero_power_once_per_turn() -> void:
 	var unit_id := _place(A, "B2")
 	_start_with_sample_hero()
 	_engine.submit(_power([unit_id] as Array[int]))
-	_resolve_stack()
 	_assert_rejected(_power([unit_id] as Array[int]), REASON.HERO_POWER_ALREADY_USED)
 
 
@@ -301,8 +306,7 @@ func test_207_5_17_hero_power_announced_without_legal_target() -> void:
 
 func test_207_5_17a_hero_power_without_target_does_not_happen() -> void:
 	_start_with_sample_hero()
-	_engine.submit(_power([] as Array[int]))
-	var labels := _resolve_stack()
+	var labels := EventLog.describe(_engine.submit(_power([] as Array[int])))
 	assert_array(labels).contains(["EffectLostAllTargets:A"])
 	assert_array(_engine.get_state().active_effects).is_empty()
 
@@ -310,7 +314,6 @@ func test_207_5_17a_hero_power_without_target_does_not_happen() -> void:
 func test_207_5_17b_hero_power_cost_stays_spent() -> void:
 	_start_with_sample_hero()
 	_engine.submit(_power([] as Array[int]))
-	_resolve_stack()
 	assert_int(_engine.get_state().get_player(A).sources_tilted).is_equal(POWER_COST)
 
 
@@ -320,7 +323,6 @@ func test_207_5_17c_hero_power_without_target_counts_for_the_turn() -> void:
 	var state := _engine.get_state()
 	state.pieces.erase(state.find_piece(unit_id))
 	_engine.submit(_power([] as Array[int]))
-	_resolve_stack()
 	DuelStateBuilder.place_unit_in(state, A, UNIT_ID, "D2")
 	_assert_rejected(_power([] as Array[int]), REASON.HERO_POWER_ALREADY_USED)
 
@@ -351,7 +353,20 @@ func _power(target_ids: Array[int]) -> UseHeroPower:
 	return intent
 
 
-## Le joueur qui a la priorité passe : la pile se résout. Renvoie les événements décrits.
+## Gear annoncé et payé à la main, puis posé sur la pile : une entrée construite ainsi garde
+## l'étiquette par défaut, avec réponse, et se résout par la passe du joueur qui a la priorité.
+func _push_gear(unit_id: int) -> int:
+	var entry := StackEntry.new()
+	entry.kind = StackEntry.StackEntryKind.ATTACH_GEAR
+	entry.owner = A
+	entry.card = _builder.make_card_instance(A, GEAR_ID)
+	entry.target_piece_ids.append(unit_id)
+	_builder.push_stack_entry(entry)
+	return entry.card.card_instance_id
+
+
+## Le joueur qui a la priorité passe : la pile construite à la main se résout. Renvoie les
+## événements décrits.
 func _resolve_stack() -> Array[String]:
 	var first := _engine.get_state().priority_player
 	var events := DuelChecks.pass_once(_engine, first)

@@ -86,6 +86,13 @@ var triggers_to_add: Array[StackEntry] = []
 ## 207.3.6, 207.3.7, 207.3.10 : cartes dont l'effet « une fois par tour » s'est ajouté à la
 ## pile pendant le tour ; remis à zéro au début de chaque tour (207.3.9).
 var once_per_turn_card_ids: Array[int] = []
+## 208.7.8 à 208.7.11, 208.7.15, 208.7.16 : étiquette que reçoit un effet déclenché qui survient
+## maintenant, celle de l'annonce ou de l'entrée en cours de résolution ; faux au début et à la
+## fin du tour. Vrai tant qu'aucune entrée n'a fixé l'étiquette. Fixée par `add_to_stack`, par la
+## prise de chaque entrée à résoudre, `start_turn` et `apply_end_turn` ; elle garde la valeur de la
+## dernière entrée résolue jusqu'à la prochaine fixation, et ne se lit que quand un effet se
+## déclenche, toujours après l'une d'elles.
+var triggers_allow_response: bool = true
 ## Null hors attente d'un choix (décision 0009).
 var pending_decision: PendingDecision
 var active_player: PlayerSide = PlayerSide.A
@@ -200,6 +207,7 @@ func clone() -> DuelState:
 	copy.waiting_triggers = _clone_entries(waiting_triggers)
 	copy.triggers_to_add = _clone_entries(triggers_to_add)
 	copy.once_per_turn_card_ids.assign(once_per_turn_card_ids)
+	copy.triggers_allow_response = triggers_allow_response
 	copy.pending_decision = pending_decision.clone() if pending_decision != null else null
 	copy.active_player = active_player
 	copy.priority_player = priority_player

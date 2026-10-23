@@ -1,6 +1,6 @@
 extends GdUnitTestSuite
-## Pile et priorité sans effet déclenché (ruleset 0.36, chapitre 208, décision 0197 du ruleset ;
-## 209.2.1 et 209.2.3).
+## Pile et priorité sans effet déclenché (ruleset 0.41, chapitre 208, décision 0197 du ruleset ;
+## 209.2.1 et 209.2.3 ; décision de design 0207 : 208.2.4 ne vaut que pour une entrée avec réponse).
 ##
 ## Les entrées sont posées par le builder ou par StackRules.add_to_stack, comme des annonces
 ## déjà faites, avec un Spell sans effet : ces suites ne vérifient que la mécanique de la pile.
@@ -44,6 +44,17 @@ func test_208_2_4_opponent_of_top_owner_answers_first() -> void:
 	assert_int(state.priority_player).is_equal(B)
 	StackRules.add_to_stack(state, _make_entry(B), events)
 	assert_int(state.priority_player).is_equal(A)
+
+
+func test_208_2_4_entry_without_response_gives_the_hand_to_nobody() -> void:
+	var state := _builder.build()
+	var events: Array[DuelEvent] = []
+	var entry := _make_entry(A)
+	entry.allows_response = false
+	StackRules.add_to_stack(state, entry, events)
+	assert_int(state.priority_player).is_equal(A)
+	StackRules.add_to_stack(state, _make_entry(A), events)
+	assert_int(state.priority_player).is_equal(B)
 
 
 func test_208_3_1_one_pass_resolves_whole_stack() -> void:

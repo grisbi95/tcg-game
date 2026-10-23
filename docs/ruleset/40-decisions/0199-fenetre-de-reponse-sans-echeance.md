@@ -2,6 +2,8 @@
 
 Modifiée par 0205 (la fenêtre de réponse a désormais l'échéance du temps de réponse).
 
+Modifiée par 0207 (la fenêtre de réponse ne se montre que quand un joueur peut répondre ou passer selon 208.2.4).
+
 > Décision consignée le 21 octobre 2026. Statut : ACTÉ. Une décision ne se modifie jamais ; pour revenir dessus, une nouvelle décision la remplace et cette ligne reçoit « Remplacée par NNNN ».
 
 ## Contexte

@@ -55,21 +55,23 @@ func end_turn(side: DuelState.PlayerSide) -> void:
 	play(EndTurn.new(side))
 
 
-## 208.2.4 : `side` déploie la première carte de sa main payée en inclinant des Sources, puis
-## son adversaire passe et le déploiement se résout.
+## 208.7.3 : `side` déploie la première carte de sa main payée en inclinant des Sources ; le
+## déploiement est sans réponse et se résout aussitôt.
 func deploy(side: DuelState.PlayerSide, cell: Vector2i) -> void:
 	var card: CardInstance = engine.get_state().get_player(side).hand[0]
 	var cost := engine.get_state().catalog.get_card(card.definition_id).cost
 	var payment := EssencePayment.new(cost, 0)
 	play(DeployCard.new(side, card.card_instance_id, cell, payment))
-	pass_priority(DuelState.opponent_of(side))
 
 
-## L'action normale de la pièce de `side` en `from` vers `to`, que l'adversaire laisse résoudre.
+## L'action normale de la pièce de `side` en `from` vers `to` : vers une case libre, elle se
+## résout aussitôt (208.7.4) ; vers une pièce ennemie, c'est une attaque (208.7.2) que
+## l'adversaire laisse résoudre en passant.
 func move(side: DuelState.PlayerSide, from: Vector2i, to: Vector2i) -> void:
 	var piece := engine.get_state().piece_at(from)
 	play(TakeNormalAction.new(side, piece.piece_id, to))
-	pass_priority(DuelState.opponent_of(side))
+	if not engine.get_state().stack.is_empty():
+		pass_priority(engine.get_state().priority_player)
 
 
 func pass_priority(side: DuelState.PlayerSide) -> void:

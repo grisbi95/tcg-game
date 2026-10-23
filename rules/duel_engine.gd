@@ -213,12 +213,17 @@ func _route_announcement_validation(intent: DuelIntent) -> IntentRejected.Reject
 	return IntentRejected.RejectReason.UNKNOWN_INTENT
 
 
-# 208.4.3, 208.5.1, 208.5.1a, 204.5.6, 204.5.7 : après chaque intention, les effets en attente
-# s'ajoutent à la pile ; une fin du tour dont la pile est vide se poursuit jusqu'au tour suivant,
-# dont les effets en attente s'ajoutent à leur tour (208.4.11).
+# 208.4.3, 208.5.1, 208.5.1a, 208.7.13, 204.5.6, 204.5.7 : après chaque intention, les effets en
+# attente s'ajoutent à la pile ; une pile qui contient une entrée sans réponse se résout aussitôt,
+# sans que personne puisse répondre, tant qu'aucun choix n'est attendu ; une fin du tour dont la
+# pile est vide se poursuit jusqu'au tour suivant, dont les effets en attente s'ajoutent à leur
+# tour (208.4.11).
 func _settle(events: Array[DuelEvent]) -> void:
 	while not _state.is_ended():
 		TriggerRules.add_waiting_triggers(_state, events)
+		if _state.pending_decision == null and StackRules.resolves_at_once(_state):
+			_resolve_stack(events)
+			continue
 		StackRules.return_priority_to_active_player(_state)
 		if not TurnRules.is_end_of_turn_ready(_state):
 			return
@@ -230,6 +235,7 @@ func _settle(events: Array[DuelEvent]) -> void:
 func _resolve_stack(events: Array[DuelEvent]) -> void:
 	while not _state.stack.is_empty():
 		var entry := StackRules.take_top_entry(_state)
+		_state.triggers_allow_response = entry.allows_response  # 208.7.9, 208.7.11
 		_resolve_entry(entry, events)
 		StackRules.announce_entry_resolved(_state, entry, events)
 		if StateCheckRules.check_victory(_state, events, DuelState.EndReason.HERO_HEALTH_ZERO):
@@ -251,6 +257,8 @@ func _resolve_entry(entry: StackEntry, events: Array[DuelEvent]) -> void:
 			CardRules.resolve_attach_gear(_state, entry, events)
 		StackEntry.StackEntryKind.TRIGGERED_EFFECT:
 			TriggerRules.resolve_triggered(_state, entry, events)
+		StackEntry.StackEntryKind.PENDING_COMBAT:
+			ActionRules.resolve_pending_combat(_state, entry, events)
 
 
 # 209.4.9, 209.4.10, 209.4.11a, 209.4.12 : le temps de `side` est écoulé. Le tour se termine, le

@@ -2,14 +2,17 @@
 
 extends GdUnitTestSuite
 ## Chaînes d'effets déclenchés : attente de fin de bloc, ordre d'ajout, cibles, fin du tour
-## (ruleset 0.33, sections 208.4, 208.5, 204.5.3 à 204.5.7 ; 207.5.1b, 207.5.2 ; décisions
-## 0004, 0009 et 0017).
+## (ruleset 0.41, sections 208.4, 208.5, 204.5.3 à 204.5.7 ; 207.5.1b, 207.5.2 ; décisions
+## 0004, 0009 et 0017 ; décision de design 0207 : les effets de la fin du tour sont sans réponse).
+##
+## Les déploiements posés par `_push_deploy` gardent l'étiquette par défaut d'une entrée de pile,
+## avec réponse : ils tiennent lieu d'un Spell ou d'une attaque dont la résolution déclenche des
+## effets (208.7.11).
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
 const B: DuelState.PlayerSide = DuelState.PlayerSide.B
 const REASON := IntentRejected.RejectReason
 const DECISION := PendingDecision.DecisionKind
-const SPELL_ID: StringName = &"sample_spell"  # CatalogSamples.spell(), Réaction
 const UNKNOWN_ENTRY_ID: int = 99
 
 var _builder: DuelStateBuilder
@@ -18,7 +21,6 @@ var _engine: DuelEngine
 
 func before_test() -> void:
 	var catalog := TriggerSamples.catalog()
-	catalog.add_card(CardDefinition.from_dict(CatalogSamples.spell()))
 	_builder = DuelStateBuilder.new(DuelConfig.new(), catalog)
 	_engine = DuelEngine.new(catalog)
 
@@ -74,11 +76,21 @@ func test_208_4_6_active_player_orders_his_own_triggers() -> void:
 	assert_array(state.pending_decision.awaited_players).contains_exactly([A])
 	var second_id := state.pending_decision.candidate_ids[1]
 	var events := _engine.submit(OrderTriggers.new(A, [second_id, first_id]))
-	var expected: Array[String] = ["TriggersOrdered:A"]
-	for index: int in 2:
-		expected.append_array(["DecisionResolvedAutomatically:A", "StackEntryAdded:A"])
-	assert_array(EventLog.describe(events)).contains_exactly(expected)
-	assert_array(_stack_ids()).contains_exactly([second_id, first_id])
+	var labels := EventLog.describe(events)
+	(
+		assert_array(labels.slice(0, 5))
+		. contains_exactly(
+			[
+				"TriggersOrdered:A",
+				"DecisionResolvedAutomatically:A",
+				"StackEntryAdded:A",
+				"DecisionResolvedAutomatically:A",
+				"StackEntryAdded:A",
+			]
+		)
+	)
+	assert_array(_ids_of(events, StackEntryAdded)).is_equal([second_id, first_id])
+	assert_array(_ids_of(events, StackEntryResolved)).is_equal([first_id, second_id])
 
 
 func test_204_5_4_end_of_turn_triggers_ask_for_their_order() -> void:
@@ -134,17 +146,15 @@ func test_decision_0017_answer_without_pending_decision_is_refused() -> void:
 func test_208_4_7_opponent_adds_his_triggers_next() -> void:
 	_place(A, TriggerSamples.SOLDIER, "D1")
 	_place(B, TriggerSamples.SOLDIER, "D5")
-	var a_beacon := _place_building(A, TriggerSamples.BEACON, "B2")
-	var b_beacon := _place_building(B, TriggerSamples.BEACON, "B4")
+	_place_building(A, TriggerSamples.BEACON, "B2")
+	_place_building(B, TriggerSamples.BEACON, "B4")
 	_engine.start_from_state(_builder.build())
 	var expected: Array[String] = ["TurnEnded:A", "EffectTriggered:A", "EffectTriggered:B"]
 	for side: String in ["A", "B"]:
 		expected.append_array(EventLog.repeat("DecisionResolvedAutomatically:" + side, 2))
 		expected.append("StackEntryAdded:" + side)
-	assert_array(EventLog.describe(_engine.submit(EndTurn.new(A)))).contains_exactly(expected)
-	var stack := _engine.get_state().stack
-	assert_int(stack[0].source_piece_id).is_equal(a_beacon)
-	assert_int(stack[1].source_piece_id).is_equal(b_beacon)
+	var labels := EventLog.describe(_engine.submit(EndTurn.new(A)))
+	assert_array(labels.slice(0, expected.size())).contains_exactly(expected)
 
 
 func test_208_4_8_opponent_triggers_resolve_first() -> void:
@@ -153,19 +163,9 @@ func test_208_4_8_opponent_triggers_resolve_first() -> void:
 	_place_building(A, TriggerSamples.BEACON, "B2")
 	_place_building(B, TriggerSamples.BEACON, "B4")
 	_engine.start_from_state(_builder.build())
-	_engine.submit(EndTurn.new(A))
-	var labels := EventLog.describe(_pass_once(A))
+	var labels := EventLog.describe(_engine.submit(EndTurn.new(A)))
 	assert_int(labels.find("ForceModified:B")).is_less(labels.find("ForceModified:A"))
-
-
-func test_208_2_4_after_triggers_opponent_of_top_owner_answers_first() -> void:
-	_place(A, TriggerSamples.SOLDIER, "D1")
-	_place(B, TriggerSamples.SOLDIER, "D5")
-	_place_building(A, TriggerSamples.BEACON, "B2")
-	_place_building(B, TriggerSamples.BEACON, "B4")
-	_engine.start_from_state(_builder.build())
-	_engine.submit(EndTurn.new(A))
-	assert_int(_engine.get_state().priority_player).is_equal(A)
+	assert_int(labels.find("StackEntryResolved:B")).is_less(labels.find("StackEntryResolved:A"))
 
 
 func test_207_5_1b_owner_chooses_among_several_legal_targets() -> void:
@@ -226,29 +226,24 @@ func test_204_5_3_end_of_turn_triggers_go_on_the_stack() -> void:
 		"DecisionResolvedAutomatically:A",
 		"DecisionResolvedAutomatically:A",
 		"StackEntryAdded:A",
+		"ForceModified:A",
+		"StackEntryResolved:A",
 	]
-	assert_array(EventLog.describe(_engine.submit(EndTurn.new(A)))).contains_exactly(expected)
-	var state := _engine.get_state()
-	assert_int(state.phase).is_equal(DuelState.DuelPhase.TURN_END)
-	assert_int(state.active_player).is_equal(A)
-
-
-func test_204_5_5_players_can_answer_end_of_turn_triggers() -> void:
-	_place(B, TriggerSamples.SOLDIER, "D5")
-	var spell_id := _builder.add_to_hand(B, SPELL_ID)
-	_end_turn_with_one_beacon()
-	var cast := CastSpell.new(B, spell_id, EssencePayment.new(1))
-	cast.target_piece_ids.append(_engine.get_state().piece_at(DuelStateBuilder.cell("D5")).piece_id)
-	assert_int(_engine.validate(cast)).is_equal(REASON.NONE)
+	var labels := EventLog.describe(_engine.submit(EndTurn.new(A)))
+	assert_array(labels.slice(0, expected.size())).contains_exactly(expected)
+	assert_array(_engine.get_state().stack).is_empty()
 
 
 func test_204_5_6_end_of_turn_stack_resolves_then_the_turn_passes() -> void:
-	var soldier_id := _end_turn_with_one_beacon()
-	var labels := EventLog.describe(_pass_once(B))
+	var soldier_id := _place(A, TriggerSamples.SOLDIER, "D1")
+	_place_building(A, TriggerSamples.BEACON, "B2")
+	_engine.start_from_state(_builder.build())
+	var labels := EventLog.describe(_engine.submit(EndTurn.new(A)))
 	var resolved_at := labels.find("ForceModified:A")
 	assert_int(resolved_at).is_less(labels.find("ActiveEffectEnded"))
 	assert_int(labels.find("ActiveEffectEnded")).is_less(labels.find("TurnStarted:B"))
 	assert_int(_force_of(soldier_id)).is_equal(TriggerSamples.SOLDIER_FORCE)
+	assert_int(_engine.get_state().active_player).is_equal(B)
 
 
 func test_204_5_7_effects_until_end_of_turn_wait_for_an_empty_stack() -> void:
@@ -261,8 +256,8 @@ func test_204_5_7_effects_until_end_of_turn_wait_for_an_empty_stack() -> void:
 	_place_building(A, TriggerSamples.BEACON, "B2")
 	_engine.start_from_state(_builder.build())
 	var labels := EventLog.describe(_engine.submit(EndTurn.new(A)))
-	assert_bool(labels.has("ActiveEffectEnded")).is_false()
-	assert_int(_engine.get_state().active_effects.size()).is_equal(1)
+	assert_int(labels.find("StackEntryResolved:A")).is_greater(-1)
+	assert_int(labels.find("ActiveEffectEnded")).is_greater(labels.find("StackEntryResolved:A"))
 
 
 func _end_turn_events_with_two_beacons() -> Array[DuelEvent]:
@@ -277,15 +272,6 @@ func _end_turn_events_with_two_beacons() -> Array[DuelEvent]:
 func _end_turn_with_two_beacons() -> int:
 	var events := _end_turn_events_with_two_beacons()
 	return (_first_event_of(events, "EffectTriggered") as EffectTriggered).stack_entry_id
-
-
-# Renvoie la pièce que l'effet de fin du tour renforce.
-func _end_turn_with_one_beacon() -> int:
-	var soldier_id := _place(A, TriggerSamples.SOLDIER, "D1")
-	_place_building(A, TriggerSamples.BEACON, "B2")
-	_engine.start_from_state(_builder.build())
-	_engine.submit(EndTurn.new(A))
-	return soldier_id
 
 
 # Le Héraut de A arrive face à deux Units ennemies ; renvoie la première.
@@ -329,10 +315,12 @@ func _pass_once(first: DuelState.PlayerSide) -> Array[DuelEvent]:
 	return DuelChecks.pass_once(_engine, first)
 
 
-func _stack_ids() -> Array[int]:
+# Identifiants d'entrée de pile des événements de la classe `event_class`, dans l'ordre.
+func _ids_of(events: Array[DuelEvent], event_class: GDScript) -> Array[int]:
 	var ids: Array[int] = []
-	for entry: StackEntry in _engine.get_state().stack:
-		ids.append(entry.stack_entry_id)
+	for event: DuelEvent in events:
+		if is_instance_of(event, event_class):
+			ids.append(event.get("stack_entry_id"))
 	return ids
 
 

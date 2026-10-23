@@ -257,20 +257,25 @@ func push_stack_entry(entry: StackEntry) -> int:
 
 
 ## Empile le déploiement de `card` vers `at_cell`, comme une annonce déjà payée (203.3.2).
-func push_deploy(card: CardInstance, at_cell: Vector2i) -> int:
+## `allows_response` faux pose l'étiquette d'une annonce sans réponse (208.7.3), que le moteur
+## résout à sa prochaine soumission.
+func push_deploy(card: CardInstance, at_cell: Vector2i, allows_response: bool = true) -> int:
 	var entry := _make_entry(StackEntry.StackEntryKind.DEPLOY, card.owner)
 	entry.card = card
+	entry.allows_response = allows_response
 	entry.target_cells.append(at_cell)
 	return push_stack_entry(entry)
 
 
 ## Empile l'action normale de la pièce `piece_id` vers `at_cell`, comme une annonce déjà
-## faite : l'action n'est pas marquée comme faite dans le tour (205.4.7).
-func push_normal_action(piece_id: int, at_cell: Vector2i) -> int:
+## faite : l'action n'est pas marquée comme faite dans le tour (205.4.7). `allows_response` faux
+## pose l'étiquette d'une action vers une case libre (208.7.4).
+func push_normal_action(piece_id: int, at_cell: Vector2i, allows_response: bool = true) -> int:
 	var entry := _make_entry(
 		StackEntry.StackEntryKind.NORMAL_ACTION, _state.find_piece(piece_id).owner
 	)
 	entry.source_piece_id = piece_id
+	entry.allows_response = allows_response
 	entry.target_cells.append(at_cell)
 	return push_stack_entry(entry)
 

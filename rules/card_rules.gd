@@ -32,8 +32,8 @@ static func validate_attach_gear(
 	return EssenceRules.validate_payment(state, intent.player, intent.payment, definition.cost)
 
 
-## 203.3.2, 203.3.2a, 201.3.8, 202.2.22, 208.4.1 : paie le coût ; le Gear quitte la main pour
-## la pile avec l'Unit choisie. Suppose l'intention validée.
+## 203.3.2, 203.3.2a, 201.3.8, 202.2.22, 208.4.1, 208.7.6 : paie le coût ; le Gear quitte la main
+## pour la pile avec l'Unit choisie. Suppose l'intention validée.
 static func announce_gear(state: DuelState, intent: AttachGear, events: Array[DuelEvent]) -> void:
 	var player := state.get_player(intent.player)
 	var card := player.find_card_in_hand(intent.card_instance_id)
@@ -45,6 +45,7 @@ static func announce_gear(state: DuelState, intent: AttachGear, events: Array[Du
 	entry.kind = StackEntry.StackEntryKind.ATTACH_GEAR
 	entry.owner = intent.player
 	entry.card = card
+	entry.allows_response = false  # 208.7.6
 	entry.target_piece_ids.append(intent.unit_piece_id)
 	StackRules.add_to_stack(state, entry, events)
 
@@ -84,8 +85,8 @@ static func validate_hero_power(
 	return _validate_power_targets(state, _make_power_entry(state, intent), hero)
 
 
-## 202.3.17, 203.3.2, 208.4.1 : l'utilisation compte pour 202.3.14 dès l'annonce ; le coût est
-## payé et l'entrée va sur la pile avec ses cibles. Suppose l'intention validée.
+## 202.3.17, 203.3.2, 208.4.1, 208.7.7 : l'utilisation compte pour 202.3.14 dès l'annonce ; le coût
+## est payé et l'entrée va sur la pile avec ses cibles. Suppose l'intention validée.
 static func announce_hero_power(
 	state: DuelState, intent: UseHeroPower, events: Array[DuelEvent]
 ) -> void:
@@ -141,6 +142,7 @@ static func _make_power_entry(state: DuelState, intent: UseHeroPower) -> StackEn
 	var entry := StackEntry.new()
 	entry.kind = StackEntry.StackEntryKind.HERO_POWER
 	entry.owner = intent.player
+	entry.allows_response = false  # 208.7.7
 	entry.source_piece_id = state.find_hero(intent.player).piece_id
 	entry.target_piece_ids.assign(intent.target_piece_ids)
 	entry.target_cells.assign(intent.target_cells)

@@ -41,19 +41,25 @@ static func idle_rounds(round_count: int) -> HumanDuelDriver:
 	return driver
 
 
-## A laisse expirer son premier tour (209.4.9) ; B déploie et A, qui peut répondre, laisse
-## expirer son temps de réponse (209.4.10) : il passe et le déploiement se résout.
+## A laisse expirer son premier tour (209.4.9) ; B, dont le deck n'est que la Réaction d'essai,
+## l'annonce (208.7.1) et A, qui peut répondre, laisse expirer son temps de réponse (209.4.10) :
+## il passe et le Spell se résout.
 static func expiring() -> HumanDuelDriver:
-	var driver := fresh()
+	var config := _large_copies_config()
+	var setup := SetupSamples.setup()
+	setup.deck_b = _repeated(REACTION_ID, config.deck_size)
+	var driver := HumanDuelDriver.new(
+		ResponseWindowSamples.catalog_with_reaction(REACTION_ID), config
+	)
+	driver.start(setup)
 	driver.wait(TURN_TIME_MSEC)
 	driver.host.confirm_relay()
-	var card: CardInstance = driver.engine.get_state().get_player(B).hand[0]
-	driver.play(DeployCard.new(B, card.card_instance_id, A5, EssencePayment.new(UNIT_COST, 0)))
+	_cast_reaction(driver, B, EssencePayment.new(REACTION_COST))
 	driver.wait(RESPONSE_TIME_MSEC)
 	return driver
 
 
-## A déploie, B laisse résoudre, puis chacun termine son tour et A termine son deuxième tour.
+## A déploie (sans réponse), puis chacun termine son tour et A termine son deuxième tour.
 static func deploying() -> HumanDuelDriver:
 	var driver := fresh()
 	driver.deploy(A, A1)
@@ -75,21 +81,19 @@ static func economy() -> HumanDuelDriver:
 	return driver
 
 
-## A déploie ; B, dont le deck n'est que la Réaction d'essai, y répond (208.2.4) ; les tours
-## s'enchaînent ensuite jusqu'à la fin du deuxième tour de B.
+## A annonce la Réaction d'essai, dont les deux decks se composent (208.7.1) ; B y répond
+## (208.2.4) ; les tours s'enchaînent ensuite jusqu'à la fin du deuxième tour de B.
 static func answering() -> HumanDuelDriver:
 	var config := _large_copies_config()
 	var setup := SetupSamples.setup()
+	setup.deck_a = _repeated(REACTION_ID, config.deck_size)
 	setup.deck_b = _repeated(REACTION_ID, config.deck_size)
 	var driver := HumanDuelDriver.new(
 		ResponseWindowSamples.catalog_with_reaction(REACTION_ID), config
 	)
 	driver.start(setup)
-	var card: CardInstance = driver.engine.get_state().get_player(A).hand[0]
-	var payment := EssencePayment.new(UNIT_COST, 0)
-	driver.play(DeployCard.new(A, card.card_instance_id, A1, payment))
-	var reaction: CardInstance = driver.engine.get_state().get_player(B).hand[0]
-	driver.play(CastSpell.new(B, reaction.card_instance_id, EssencePayment.new(REACTION_COST)))
+	_cast_reaction(driver, A, EssencePayment.new(REACTION_COST))
+	_cast_reaction(driver, B, EssencePayment.new(REACTION_COST))
 	driver.pass_priority(A)
 	for round_index: int in 2:
 		driver.end_turn(A)
@@ -97,10 +101,10 @@ static func answering() -> HumanDuelDriver:
 	return driver
 
 
-## Le tour 2 de A se termine par un échange de réponses. Au tour 1, A déploie une Unit, cible du
-## Beacon (207.5.1a), puis le Beacon : à chaque fin de tour, de A ou de B, le Beacon met un effet
-## sur la pile (204.5.3), que l'adversaire de A laisse résoudre. Le scénario s'arrête au tour 2 de
-## A, avant `EndTurn`, sans que A ait joué de carte pendant sa phase principale.
+## Le tour 2 de A comporte un échange de réponses. Au tour 1, A déploie une Unit, cible du Beacon
+## (207.5.1a), puis le Beacon : à chaque fin de tour, de A ou de B, l'effet du Beacon se résout
+## aussitôt (204.5.3, 208.7.16). Le scénario s'arrête au tour 2 de A, avant toute action de ce
+## tour.
 static func before_own_end_of_turn() -> HumanDuelDriver:
 	var config := _large_copies_config()
 	config.max_hand_size = LARGE_HAND_SIZE
@@ -114,27 +118,27 @@ static func before_own_end_of_turn() -> HumanDuelDriver:
 	driver.start(setup)
 	_deploy_from_hand(driver, SetupSamples.deck()[0], A1, UNIT_COST)
 	_deploy_from_hand(driver, TriggerSamples.BEACON, A2, BEACON_COST)
-	_end_turn_letting_beacon_resolve(driver, A)
-	_end_turn_letting_beacon_resolve(driver, B)
+	driver.end_turn(A)
+	driver.end_turn(B)
 	return driver
 
 
-## Suite de `before_own_end_of_turn()` : A termine son tour 2 ; B répond à l'effet du Beacon
-## (208.2.4), puis A, qui produit l'Essence en recyclant une Source (203.2.2) et la dépense sur sa
-## Réaction ; B passe et la pile se résout. B termine ensuite son tour 2 et A son tour 3.
-static func end_own_turn_with_answers(driver: HumanDuelDriver) -> HumanDuelDriver:
-	driver.end_turn(A)
-	_cast_reaction(driver, B, EssencePayment.new(REACTION_COST))
+## Suite de `before_own_end_of_turn()` : A produit l'Essence en recyclant une Source (203.2.2) et
+## l'utilise pour annoncer sa Réaction ; B y répond (208.2.4) ; A passe et la pile se résout. A
+## termine ensuite son tour 2, B son tour 2 et A son tour 3.
+static func answer_then_end_own_turn(driver: HumanDuelDriver) -> HumanDuelDriver:
 	driver.play(ProduceEssence.new(A, EssencePayment.new(REACTION_COST, REACTION_COST)))
 	_cast_reaction(driver, A, EssencePayment.new())
-	driver.pass_priority(B)
-	_end_turn_letting_beacon_resolve(driver, B)
-	_end_turn_letting_beacon_resolve(driver, A)
+	_cast_reaction(driver, B, EssencePayment.new(REACTION_COST))
+	driver.pass_priority(A)
+	driver.end_turn(A)
+	driver.end_turn(B)
+	driver.end_turn(A)
 	return driver
 
 
-static func answering_at_own_end_of_turn() -> HumanDuelDriver:
-	return end_own_turn_with_answers(before_own_end_of_turn())
+static func answering_in_own_turn() -> HumanDuelDriver:
+	return answer_then_end_own_turn(before_own_end_of_turn())
 
 
 ## A avance sa Unit d'une rangée par tour jusqu'à la case A5 de la Unit de B, qu'elle attaque à
@@ -222,21 +226,12 @@ static func _catalog_with_beacon_and_reaction() -> Catalog:
 	return catalog
 
 
-# 208.2.4 : A déploie la carte `definition_id` de sa main, puis B passe et le déploiement se résout.
+# 208.7.3 : A déploie la carte `definition_id` de sa main ; le déploiement se résout aussitôt.
 static func _deploy_from_hand(
 	driver: HumanDuelDriver, definition_id: StringName, cell: Vector2i, cost: int
 ) -> void:
 	var card := _hand_card(driver, A, definition_id)
 	driver.play(DeployCard.new(A, card.card_instance_id, cell, EssencePayment.new(cost, 0)))
-	driver.pass_priority(B)
-
-
-# L'effet du Beacon de A, mis sur la pile par la fin du tour de `side`, est laissé par B.
-static func _end_turn_letting_beacon_resolve(
-	driver: HumanDuelDriver, side: DuelState.PlayerSide
-) -> void:
-	driver.end_turn(side)
-	driver.pass_priority(B)
 
 
 static func _cast_reaction(

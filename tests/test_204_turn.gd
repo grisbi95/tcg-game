@@ -1,8 +1,9 @@
 # gdlint: disable=max-public-methods
 
 extends GdUnitTestSuite
-## Début, phase principale et fin du tour par DuelEngine (ruleset 0.39, sections 204.3 à 204.5 ;
-## décision de design 0200 : réveil au début du tour).
+## Début, phase principale et fin du tour par DuelEngine (ruleset 0.41, sections 204.3 à 204.5 ;
+## décision de design 0200 : réveil au début du tour ; décision 0207 : une annonce sans réponse se
+## résout aussitôt).
 
 const CARDS_PER_TURN: int = 2  # 204.3.6
 const SOURCES_IN_PLAY: int = 2  # 204.1.12
@@ -52,16 +53,13 @@ func test_204_4_2_active_player_chooses_the_order_of_his_actions() -> void:
 	var deploy_first := _engine_from(state.clone())
 	var move_first := _engine_from(state.clone())
 	deploy_first.submit(deploy)
-	_resolve_stack(deploy_first)
 	assert_int(deploy_first.validate(move)).is_equal(REASON.NONE)
 	deploy_first.submit(move)
 	assert_int(move_first.validate(deploy)).is_equal(REASON.NONE)
 	move_first.submit(move)
-	_resolve_stack(move_first)
 	assert_int(move_first.validate(deploy)).is_equal(REASON.NONE)
 	move_first.submit(deploy)
 	for engine: DuelEngine in [deploy_first, move_first]:
-		_resolve_stack(engine)
 		assert_object(engine.get_state().piece_at(DuelStateBuilder.cell("B3"))).is_not_null()
 		assert_object(engine.get_state().piece_at(DuelStateBuilder.cell("A1"))).is_not_null()
 
@@ -95,7 +93,9 @@ func test_204_4_4_active_player_uses_his_hero_power_in_main_phase() -> void:
 	power.target_piece_ids.append(unit_id)
 	var events := _engine_from(_builder.build()).submit(power)
 	var expected := EventLog.repeat("SourceInclined:A", POWER_COST)
-	expected.append_array(["HeroPowerAnnounced:A", "StackEntryAdded:A"])
+	expected.append_array(
+		["HeroPowerAnnounced:A", "StackEntryAdded:A", "ForceModified:A", "StackEntryResolved:A"]
+	)
 	assert_array(EventLog.describe(events)).contains_exactly(expected)
 
 
@@ -330,12 +330,6 @@ func _engine_from(state: DuelState) -> DuelEngine:
 	var engine := DuelEngine.new(state.catalog)
 	engine.start_from_state(state)
 	return engine
-
-
-# Le joueur qui a la priorité passe : la pile se résout (208.3.1).
-func _resolve_stack(engine: DuelEngine) -> void:
-	var first := engine.get_state().priority_player
-	DuelChecks.pass_once(engine, first)
 
 
 func _first_event_of(events: Array[DuelEvent], description: String) -> DuelEvent:

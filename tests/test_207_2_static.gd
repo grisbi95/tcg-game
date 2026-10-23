@@ -1,5 +1,5 @@
 extends GdUnitTestSuite
-## Effets statiques et auras lus par ForceRules (ruleset 0.33, sections 207.2 et 206.5 ;
+## Effets statiques et auras lus par ForceRules (ruleset 0.41, sections 207.2 et 206.5 ;
 ## 202.3.18 pour le passif du Hero).
 
 const UNIT_ID: StringName = &"plain_unit"
@@ -9,16 +9,13 @@ const BUILDING_ID: StringName = &"plain_building"
 const GEAR_ID: StringName = &"sample_gear"
 const AURA_GEAR_ID: StringName = &"aura_gear"
 const STRONG_GEAR_ID: StringName = &"strong_gear"
-const SPELL_ID: StringName = &"sample_spell"
 const HERO_ID: StringName = &"sample_hero"
 const UNIT_FORCE: int = 3
 const AURA: int = 1  # CatalogSamples.modify_force_static()
 const BUILDING_FORCE: int = 4
 const TOKEN_FORCE: int = 1
 const STRONG_GEAR_BONUS: int = 2
-const UNIT_COST: int = 2  # CatalogSamples.unit()
 const GEAR_COST: int = 1  # CatalogSamples.gear()
-const SPELL_COST: int = 1  # CatalogSamples.spell()
 const CARDS_PER_TURN: int = 2  # 204.3.6
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
@@ -42,7 +39,6 @@ func before_test() -> void:
 	)
 	catalog.add_card(CardDefinition.from_dict(aura_unit))
 	catalog.add_card(CardDefinition.from_dict(CatalogSamples.gear()))
-	catalog.add_card(CardDefinition.from_dict(CatalogSamples.spell()))
 	catalog.add_card(
 		_gear(AURA_GEAR_ID, CatalogSamples.modify_force_static({"scope": "adjacent_allied_units"}))
 	)
@@ -116,25 +112,6 @@ func test_207_2_5_nobody_answers_a_static_effect() -> void:
 	var state := _engine.get_state()
 	assert_array(state.stack).is_empty()
 	assert_int(state.priority_player).is_equal(A)
-
-
-func test_207_2_6_player_answers_the_announcement_of_the_bearer() -> void:
-	var ally_id := _place(A, UNIT_ID, "B2")
-	var enemy_id := _place(B, ENEMY_ID, "D4")
-	var aura_card_id := _builder.add_to_hand(A, AURA_UNIT_ID)
-	var spell_card_id := _builder.add_to_hand(B, SPELL_ID)
-	_start()
-	var deploy := DeployCard.new(
-		A, aura_card_id, DuelStateBuilder.cell("B1"), EssencePayment.new(UNIT_COST)
-	)
-	_engine.submit(deploy)
-	var state := _engine.get_state()
-	assert_int(state.priority_player).is_equal(B)
-	assert_int(_live_force(ally_id)).is_equal(UNIT_FORCE)
-	var answer := CastSpell.new(B, spell_card_id, EssencePayment.new(SPELL_COST))
-	answer.target_piece_ids.append(enemy_id)
-	assert_array(EventLog.describe(_engine.submit(answer))).contains(["SpellAnnounced:B"])
-	assert_int(state.stack.size()).is_equal(2)
 
 
 func test_207_2_7_static_effect_lasts_while_the_bearer_is_in_play() -> void:

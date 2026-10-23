@@ -22,8 +22,8 @@ static func validate_deploy(state: DuelState, intent: DeployCard) -> IntentRejec
 	return EssenceRules.validate_payment(state, intent.player, intent.payment, definition.cost)
 
 
-## 203.3.2, 203.3.2a, 201.3.8, 205.1.5, 208.4.1 : paie le coût, puis la carte quitte la main pour la
-## pile avec sa case. Suppose l'intention validée.
+## 203.3.2, 203.3.2a, 201.3.8, 205.1.5, 208.4.1, 208.7.3 : paie le coût, puis la carte quitte la
+## main pour la pile avec sa case. Suppose l'intention validée.
 static func announce_deploy(state: DuelState, intent: DeployCard, events: Array[DuelEvent]) -> void:
 	var player := state.get_player(intent.player)
 	var card := player.find_card_in_hand(intent.card_instance_id)
@@ -35,22 +35,26 @@ static func announce_deploy(state: DuelState, intent: DeployCard, events: Array[
 	entry.kind = StackEntry.StackEntryKind.DEPLOY
 	entry.owner = intent.player
 	entry.card = card
+	entry.allows_response = false  # 208.7.3
 	entry.target_cells.append(intent.cell)
 	StackRules.add_to_stack(state, entry, events)
 
 
-## 205.1.2 à 205.1.10 : résout le déploiement `entry` selon le plateau du moment ; 205.1.2b :
-## la case n'est pas recontrôlée, même si le Building qui permettait Avant-poste est parti.
+## 205.1.2 à 205.1.10, 205.6.1 : résout le déploiement `entry` selon le plateau du moment ;
+## 205.1.2b : la case n'est pas recontrôlée, même si le Building qui permettait Avant-poste est
+## parti. Une Unit dont la case est occupée par une pièce ennemie ne se déploie pas encore : son
+## combat attend la fin de la résolution (205.1.6, 205.6.2, 205.6.3).
 static func resolve_deploy(state: DuelState, entry: StackEntry, events: Array[DuelEvent]) -> void:
-	var cell := entry.target_cells[0]
-	var occupant := state.piece_at(cell)
+	var occupant := state.piece_at(entry.target_cells[0])
 	var definition := state.catalog.get_card(entry.card.definition_id)
-	if occupant == null:
-		_deploy_on_free_cell(state, entry.card, cell, events)
-	elif definition.card_type == CardDefinition.CardType.UNIT and occupant.owner != entry.owner:
-		_enter_attacking(state, entry.card, occupant, events)
+	if (
+		occupant != null
+		and definition.card_type == CardDefinition.CardType.UNIT
+		and occupant.owner != entry.owner
+	):
+		_put_deploy_combat_on_hold(state, entry, events)
 	else:
-		ZoneRules.return_card_to_hand(state, entry.card, events)
+		_finish_deploy(state, entry, events)
 
 
 ## 204.4.5, 205.5.3, 208.1.2, 208.1.10, 208.1.11, 205.2.5, 205.2.6, 205.3.1 à 205.3.3,
@@ -75,8 +79,9 @@ static func validate_normal_action(
 	return _validate_unit_target(state, piece, intent.cell)
 
 
-## 205.4.7, 208.4.1 : la pièce s'endort dès l'annonce, même si l'action échoue ensuite ; l'action
-## va sur la pile avec sa case. Suppose l'intention validée.
+## 205.4.7, 208.4.1, 208.7.2, 208.7.4, 208.7.5 : la pièce s'endort dès l'annonce, même si l'action
+## échoue ensuite ; l'action va sur la pile avec sa case, sans réponse sauf si c'est une attaque.
+## Suppose l'intention validée.
 static func announce_normal_action(
 	state: DuelState, intent: TakeNormalAction, events: Array[DuelEvent]
 ) -> void:
@@ -86,28 +91,38 @@ static func announce_normal_action(
 	entry.kind = StackEntry.StackEntryKind.NORMAL_ACTION
 	entry.owner = intent.player
 	entry.source_piece_id = intent.piece_id
+	entry.allows_response = _is_attack(state, state.find_piece(intent.piece_id), intent.cell)
 	entry.target_cells.append(intent.cell)
 	StackRules.add_to_stack(state, entry, events)
 
 
 ## 205.4.1 : l'action se résout selon le plateau du moment ; 205.4.3, 205.4.4 : elle échoue si
 ## sa pièce a quitté le plateau ou n'est plus adjacente à la case visée. Le Hero ne se déplace
-## que vers une case encore libre (205.3.1, 200.4.1).
+## que vers une case encore libre (205.3.1, 200.4.1). 205.2.3, 205.2.3a : une attaque annoncée a
+## lieu aussitôt ; annoncée vers une case libre, elle attend la fin de la résolution.
 static func resolve_normal_action(
 	state: DuelState, entry: StackEntry, events: Array[DuelEvent]
 ) -> void:
 	var piece := state.find_piece(entry.source_piece_id)
-	var cell := entry.target_cells[0]
-	if piece == null or not BoardGeometry.are_adjacent(piece.cell, cell):
+	if piece == null:
 		events.append(NormalActionFailed.new(entry.owner, entry.source_piece_id))
 		return
-	var occupant := state.piece_at(cell)
-	if occupant == null:
-		ZoneRules.move_piece(piece, cell, events)
-	elif piece.kind == Piece.PieceKind.UNIT and occupant.owner != piece.owner:
-		CombatRules.resolve_attack(state, piece, occupant, events)
-	else:
-		events.append(NormalActionFailed.new(entry.owner, entry.source_piece_id))
+	_act_on_target_cell(state, entry, piece, events)
+
+
+## 205.6.9 : le combat en attente se résout selon le plateau du moment, comme 205.4.1 ; 205.6.10 :
+## l'Unit d'une action normale a quitté le plateau, 205.6.16 : la carte d'un déploiement a quitté
+## la pile, le combat n'a pas lieu.
+static func resolve_pending_combat(
+	state: DuelState, entry: StackEntry, events: Array[DuelEvent]
+) -> void:
+	if _is_deploy_combat(entry):
+		if entry.card != null:  # 205.6.16
+			_resolve_deploy_combat(state, entry, events)
+		return
+	var piece := state.find_piece(entry.source_piece_id)
+	if piece != null:  # 205.6.10
+		_act_on_target_cell(state, entry, piece, events)
 
 
 # 205.3.2, 205.3.3 ; 202.3.10 : le Hero n'attaque jamais, sa case visée est libre.
@@ -172,6 +187,94 @@ static func _enter_attacking(
 	events.append(PieceEnteredAttacking.new(piece.owner, piece.piece_id, defender.cell))
 	TriggerRules.trigger(state, piece, EffectDefinition.TriggerEvent.ARRIVAL, events)
 	CombatRules.resolve_attack(state, piece, defender, events)
+
+
+# 205.6.2, 205.6.3 : un combat en attente de déploiement n'a pas de pièce source.
+static func _is_deploy_combat(combat: StackEntry) -> bool:
+	return combat.source_piece_id == DuelState.NO_ID
+
+
+# 208.7.2, 208.7.4 : l'étiquette « avec réponse » d'une action normale dit qu'elle a été annoncée
+# comme attaque (205.2.3), sinon vers une case libre (205.2.3a).
+static func _was_announced_as_attack(action: StackEntry) -> bool:
+	return action.allows_response
+
+
+# 205.2.3, 205.2.3a, 205.6.9 : une attaque annoncée a lieu aussitôt, un combat en attente à sa
+# résolution ; une action annoncée vers une case libre met son combat en attente.
+static func _attacks_now(entry: StackEntry) -> bool:
+	return entry.kind == StackEntry.StackEntryKind.PENDING_COMBAT or _was_announced_as_attack(entry)
+
+
+# 205.4.1, 205.4.4, 205.4.5, 205.6.11, 205.6.13, 205.6.15, 205.6.17 : suite commune de l'action
+# normale et de son combat en attente, selon le plateau du moment.
+static func _act_on_target_cell(
+	state: DuelState, entry: StackEntry, piece: Piece, events: Array[DuelEvent]
+) -> void:
+	var cell := entry.target_cells[0]
+	if not BoardGeometry.are_adjacent(piece.cell, cell):
+		events.append(NormalActionFailed.new(entry.owner, entry.source_piece_id))
+		return
+	var occupant := state.piece_at(cell)
+	if occupant == null:
+		ZoneRules.move_piece(piece, cell, events)
+	elif piece.kind == Piece.PieceKind.UNIT and occupant.owner != piece.owner:
+		if _attacks_now(entry):
+			CombatRules.resolve_attack(state, piece, occupant, events)
+		else:
+			_put_action_combat_on_hold(state, piece, cell, events)
+	else:
+		events.append(NormalActionFailed.new(entry.owner, entry.source_piece_id))
+
+
+# 205.1.2, 205.1.7, 205.1.9, 205.1.10, 205.6.12, 205.6.14 : case libre, la pièce entre en jeu ;
+# sinon la carte revient dans la main.
+static func _finish_deploy(state: DuelState, entry: StackEntry, events: Array[DuelEvent]) -> void:
+	var cell := entry.target_cells[0]
+	if state.piece_at(cell) == null:
+		_deploy_on_free_cell(state, entry.card, cell, events)
+	else:
+		ZoneRules.return_card_to_hand(state, entry.card, events)
+
+
+# 205.2.6, 208.7.2 : une Unit qui vise une case occupée par une pièce ennemie attaque.
+static func _is_attack(state: DuelState, piece: Piece, cell: Vector2i) -> bool:
+	var occupant := state.piece_at(cell)
+	return piece.kind == Piece.PieceKind.UNIT and occupant != null and occupant.owner != piece.owner
+
+
+# 205.1.6, 205.6.1, 205.6.8 : la carte reste sur la pile avec le combat, qui appartient au joueur
+# de l'attaquant (205.6.5).
+static func _put_deploy_combat_on_hold(
+	state: DuelState, deploy: StackEntry, events: Array[DuelEvent]
+) -> void:
+	var combat := StackEntry.new()
+	combat.owner = deploy.owner
+	combat.card = deploy.card
+	combat.target_cells.assign(deploy.target_cells)
+	TriggerRules.wait_pending_combat(state, combat, events)
+
+
+# 205.2.3a, 205.6.1, 205.6.7 : l'Unit reste sur sa case de départ pendant l'attente.
+static func _put_action_combat_on_hold(
+	state: DuelState, unit: Piece, cell: Vector2i, events: Array[DuelEvent]
+) -> void:
+	var combat := StackEntry.new()
+	combat.owner = unit.owner
+	combat.source_piece_id = unit.piece_id
+	combat.target_cells.append(cell)
+	TriggerRules.wait_pending_combat(state, combat, events)
+
+
+# 205.6.12, 205.6.14, 205.6.15
+static func _resolve_deploy_combat(
+	state: DuelState, combat: StackEntry, events: Array[DuelEvent]
+) -> void:
+	var occupant := state.piece_at(combat.target_cells[0])
+	if occupant != null and occupant.owner != combat.owner:
+		_enter_attacking(state, combat.card, occupant, events)
+	else:
+		_finish_deploy(state, combat, events)
 
 
 # 202.2.2, 202.2.3, 201.5.2 : une Unit ou un Building, contrôlé par le joueur de sa carte ;

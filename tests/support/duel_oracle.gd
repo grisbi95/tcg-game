@@ -108,9 +108,10 @@ static func _all_cards(state: DuelState) -> Array[CardInstance]:
 			player.deck, player.hand, player.discard, player.set_aside
 		]:
 			cards.append_array(zone)
-	for entry: StackEntry in state.stack:
-		if entry.card != null:
-			cards.append(entry.card)
+	for entries: Array[StackEntry] in [state.stack, state.waiting_triggers, state.triggers_to_add]:
+		for entry: StackEntry in entries:
+			if entry.card != null:
+				cards.append(entry.card)
 	for piece: Piece in state.pieces:
 		if piece.card != null:
 			cards.append(piece.card)

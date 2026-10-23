@@ -182,17 +182,6 @@ func test_203_6_9_not_while_a_choice_is_awaited_from_him() -> void:
 	_assert_rejected(_produce(A, 1, 0), REASON.DECISION_PENDING)
 
 
-func test_203_6_10_reserve_answers_during_the_end_of_the_turn() -> void:
-	var card_id := _builder.add_to_hand(A, SPELL)
-	_builder.push_spell(_builder.make_card_instance(B, SPELL))
-	_builder.with_phase(DuelState.DuelPhase.TURN_END).with_priority_player(A)
-	_builder.with_essence_reserve(A, 1)
-	_start()
-	var events := _engine.submit(CastSpell.new(A, card_id, EssencePayment.new()))
-	assert_int(EventLog.rejection_reason(events)).is_equal(EventLog.NOT_A_SINGLE_REJECTION)
-	assert_int(_player(A).essence_reserve).is_equal(0)
-
-
 func test_203_6_11_producing_essence_is_not_an_announcement() -> void:
 	_start()
 	var labels := EventLog.describe(_engine.submit(_produce(A, 1, 0)))

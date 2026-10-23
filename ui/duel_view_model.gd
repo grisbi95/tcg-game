@@ -22,6 +22,7 @@ const TOKEN_CARD_TYPES: Dictionary[Piece.PieceKind, CardDefinition.CardType] = {
 }
 const HERO_POWER_LABEL: String = "Pouvoir du Hero"
 const NORMAL_ACTION_LABEL: String = "Action normale"
+const PENDING_COMBAT_LABEL: String = "Combat"
 const TRIGGERED_EFFECT_LABEL: String = "Effet déclenché"
 const TRIGGERED_EFFECT_FORMAT: String = "Effet : %s"
 const ORDER_INSTRUCTION: String = "Ordre des effets : clique-les dans l'ordre d'ajout à la pile"
@@ -242,11 +243,17 @@ func _stack_label(entry: StackEntry, definition: CardDefinition) -> String:
 			return HERO_POWER_LABEL
 		StackEntry.StackEntryKind.NORMAL_ACTION:
 			return NORMAL_ACTION_LABEL
+		StackEntry.StackEntryKind.PENDING_COMBAT:
+			return PENDING_COMBAT_LABEL
 		StackEntry.StackEntryKind.TRIGGERED_EFFECT:
-			if definition == null:
-				return TRIGGERED_EFFECT_LABEL
-			return TRIGGERED_EFFECT_FORMAT % definition.card_name
+			return _triggered_label(definition)
 	return definition.card_name
+
+
+func _triggered_label(definition: CardDefinition) -> String:
+	if definition == null:
+		return TRIGGERED_EFFECT_LABEL
+	return TRIGGERED_EFFECT_FORMAT % definition.card_name
 
 
 # La teinte de la carte annoncée ; celle du Hero pour son pouvoir ; celle d'un Spell à défaut.

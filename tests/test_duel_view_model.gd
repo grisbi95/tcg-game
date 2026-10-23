@@ -207,5 +207,22 @@ func test_202_3_4_hero_definition_comes_from_the_hero_piece() -> void:
 	assert_str(definition.hero_name).is_equal("Hero d'essai")
 
 
+func test_205_6_pending_combat_is_labeled_combat_with_or_without_a_card() -> void:
+	var state := _builder.build()
+	var held := StackEntry.new()
+	held.kind = StackEntry.StackEntryKind.PENDING_COMBAT
+	held.stack_entry_id = state.allocate_stack_entry_id()
+	var deploying := StackEntry.new()
+	deploying.kind = StackEntry.StackEntryKind.PENDING_COMBAT
+	deploying.stack_entry_id = state.allocate_stack_entry_id()
+	deploying.card = _builder.make_card_instance(A, UNIT)
+	state.stack.append(held)
+	state.stack.append(deploying)
+	var lines := _model(A).stack_lines()
+	assert_int(lines.size()).is_equal(2)
+	assert_str(lines[0].label).is_equal("Combat")
+	assert_str(lines[1].label).is_equal("Combat")
+
+
 func _model(viewer: DuelState.PlayerSide) -> DuelViewModel:
 	return DuelViewModel.new(_builder.build(), _catalog, viewer)

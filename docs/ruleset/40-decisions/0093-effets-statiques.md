@@ -1,5 +1,7 @@
 # 0093 · Effets statiques
 
+Remplacée en partie par 0207 (l'annonce du déploiement d'une pièce est sans réponse ; 207.2.6 supprimée).
+
 > Décision consignée le 15 octobre 2026. Statut : ACTÉ. Une décision ne se modifie jamais ; pour revenir dessus, une nouvelle décision la remplace et cette ligne reçoit « Remplacée par NNNN ».
 
 ## Contexte

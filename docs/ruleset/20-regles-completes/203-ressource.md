@@ -86,7 +86,7 @@
 
 **203.6.9** [ACTÉ] Un joueur ne peut pas agir pendant que les règles attendent de lui un mulligan, l'ordre de ses effets déclenchés ou le choix des cibles d'une entrée de la pile qui lui appartient (décision 0192 ; voir 204.2.2, 209.4.4c, 209.4.4d et 209.4.7).
 
-**203.6.10** [ACTÉ] Pendant la fin du tour, le joueur actif peut dépenser sa réserve d'Essence pour répondre (décision 0193 ; voir 204.5.5 et 204.5.7a).
+**203.6.10** Supprimée en édition 0.41, voir décision 0207.
 
 **203.6.11** [ACTÉ] Produire de l'Essence selon 203.6.3 ou 203.6.4 n'est pas une annonce (décision 0196 ; voir 208.1.1, 208.1.2, 208.1.3, 208.1.4 et 208.1.5).
 

@@ -1,8 +1,8 @@
 # gdlint: disable=max-public-methods
 
 extends GdUnitTestSuite
-## DuelHost : machine à états, relais, agents et temps réel (ruleset 0.40, 209.4.4f, 209.4.9,
-## 209.4.10 ; décisions 0020, 0021 et 0045).
+## DuelHost : machine à états, relais, agents et temps réel (ruleset 0.41, 209.4.4f, 209.4.9,
+## 209.4.10 ; décisions 0020, 0021, 0045 et 0046).
 ##
 ## Sans scène : `ManualClock` tient lieu de temps réel, et chaque lot d'événements est confirmé
 ## comme affiché par l'appel que ferait la scène.
@@ -15,7 +15,6 @@ const MAX_HOST_STEPS: int = 5_000
 const UNKNOWN_HERO: StringName = &"unknown_hero"
 const SHORT_RESPONSE_MSEC: int = 3_000  # 209.4.6 réduit
 const OVERRUN_MSEC: int = 5_000  # temps écoulé fenêtre ouverte, plus que le temps de réponse de B
-const UNIT_COST: int = 2  # CatalogSamples.unit()
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
 const B: DuelState.PlayerSide = DuelState.PlayerSide.B
@@ -265,22 +264,16 @@ func _reach_first_turn_of_a() -> void:
 
 
 # 209.4.6 : temps de réponse réduit, qui tombe pendant la fenêtre de réponse de B (209.4.4g). A a
-# déployé une Unit, B a pris l'appareil et reçoit sa fenêtre de réponse.
+# annoncé un Spell (208.7.1), B a pris l'appareil et reçoit sa fenêtre de réponse.
 func _reach_window_of_b_with_short_response_time() -> void:
 	var config := DuelConfig.new()
 	config.response_time_msec = SHORT_RESPONSE_MSEC
-	_engine = DuelEngine.new(SetupSamples.catalog(), config)
+	var catalog := ResponseWindowSamples.catalog_with_reaction(ResponseWindowSamples.REACTION_ID)
+	_engine = DuelEngine.new(catalog, config)
 	_host = DuelHost.new(_engine, _clock)
 	_reach_human_a()
 	ResponseWindowSamples.accept_mulligans(_host)
-	var is_deployed := false
-	for card: CardInstance in _engine.get_state().get_player(A).hand:
-		is_deployed = (
-			is_deployed or ResponseWindowSamples.try_deploy(_host, _engine, card, UNIT_COST)
-		)
-		if is_deployed:
-			break
-	assert_bool(is_deployed).is_true()
+	assert_bool(ResponseWindowSamples.announce_reaction(_host, _engine)).is_true()
 	_host.confirm_events_played()
 	_host.confirm_relay()
 	assert_bool(_host.is_response_window_open()).is_true()

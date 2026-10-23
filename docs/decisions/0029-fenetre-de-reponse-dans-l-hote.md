@@ -1,6 +1,6 @@
 # 0029 — Fenêtre de réponse dans l'hôte
 
-- Statut : acceptée ; modifiée par le ruleset 0.38 (décision de design 0199) le 2026-10-21 : plus de décompte ni de passe automatique, `DuelHost` ouvre la fenêtre quand il attend un humain qui peut répondre ou passer et la ferme à l'affichage des événements de son geste ; `DuelConfig.response_window_msec` retiré, 208.6.2 PROVISOIRE n'ayant plus de valeur chiffrée (exception à « une valeur par règle PROVISOIRE ») ; les tests 208.6.3, 208.6.5 et 208.6.5a sont remplacés par des tests 208.6.2 et 208.6.4 ; modifiée par 0045 : la fenêtre retrouve une échéance de 30 s et une passe à expiration.
+- Statut : acceptée ; modifiée par le ruleset 0.38 (décision de design 0199) le 2026-10-21 : plus de décompte ni de passe automatique, `DuelHost` ouvre la fenêtre quand il attend un humain qui peut répondre ou passer et la ferme à l'affichage des événements de son geste ; `DuelConfig.response_window_msec` retiré, 208.6.2 PROVISOIRE n'ayant plus de valeur chiffrée (exception à « une valeur par règle PROVISOIRE ») ; les tests 208.6.3, 208.6.5 et 208.6.5a sont remplacés par des tests 208.6.2 et 208.6.4 ; modifiée par 0045 : la fenêtre retrouve une échéance de 30 s et une passe à expiration ; modifiée par 0046.
 - Date : 2026-10-18
 - Décideur : créateur du projet
 - Périmètre : fenêtre de réponse à l'écran (`app/` DuelHost, `ui/` DuelSelection et écran de duel ; étape 2.3)

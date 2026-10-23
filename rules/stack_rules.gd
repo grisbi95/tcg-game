@@ -7,20 +7,30 @@ extends RefCounted
 ## aiguille chaque entrée vers le module de son genre : StackRules n'appelle aucun autre module.
 
 
-## 208.4.1, 208.2.4 : ajoute `entry` au sommet de la pile ; l'adversaire du joueur à qui elle
-## appartient peut le premier répondre ou passer. Renvoie l'identifiant de l'entrée, attribué
-## ici sauf pour un effet déclenché, qui a le sien depuis son attente (décision 0017).
+## 208.4.1, 208.2.4, 208.7.12 : ajoute `entry` au sommet de la pile ; l'adversaire du joueur à
+## qui elle appartient peut le premier répondre ou passer, sauf si elle est sans réponse, qui ne
+## donne la main à personne. 208.7.8 : les effets déclenchés qui surviennent ensuite reçoivent son
+## étiquette. Renvoie l'identifiant de l'entrée, attribué ici sauf pour un effet déclenché, qui a
+## le sien depuis son attente (décision 0017).
 static func add_to_stack(state: DuelState, entry: StackEntry, events: Array[DuelEvent]) -> int:
 	if entry.stack_entry_id == DuelState.NO_ID:
 		entry.stack_entry_id = state.allocate_stack_entry_id()
 	state.stack.append(entry)
-	state.priority_player = DuelState.opponent_of(entry.owner)
-	state.get_player(state.priority_player).response_time_remaining_msec = (
-		state.config.response_time_msec
-	)
+	state.triggers_allow_response = entry.allows_response
+	if entry.allows_response:
+		state.priority_player = DuelState.opponent_of(entry.owner)
+		state.get_player(state.priority_player).response_time_remaining_msec = (
+			state.config.response_time_msec
+		)
 	_record_announcement(state, entry)
 	events.append(StackEntryAdded.new(entry.owner, entry.stack_entry_id))
 	return entry.stack_entry_id
+
+
+## 208.7.13 : vrai si la pile contient une entrée sans réponse, qui se résout aussitôt avec le
+## reste de la pile. Pur.
+static func resolves_at_once(state: DuelState) -> bool:
+	return state.stack.any(func(entry: StackEntry) -> bool: return not entry.allows_response)
 
 
 ## 208.1.6 à 208.1.11, 202.3.15, 202.3.16 : annonce du joueur actif, phase principale, pile vide.

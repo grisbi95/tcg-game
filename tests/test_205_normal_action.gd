@@ -1,10 +1,15 @@
 # gdlint: disable=max-public-methods
 
 extends GdUnitTestSuite
-## Action normale d'une Unit, déplacement du Hero et échecs (ruleset 0.39, sections 205.2 à
+## Action normale d'une Unit, déplacement du Hero et échecs (ruleset 0.41, sections 205.2 à
 ## 205.4 ; 204.4.5, 208.1.2, 208.1.10, 208.1.11 ; décision de design 0200 du ruleset : une
-## action normale par pièce éveillée, la pièce s'endort dès l'annonce). Sommeil et réveil :
-## test_205_5_sleep.gd.
+## action normale par pièce éveillée, la pièce s'endort dès l'annonce ; décision de design 0207 :
+## une action vers une case libre est sans réponse, une attaque se résout à la passe de
+## l'adversaire). Sommeil et réveil : test_205_5_sleep.gd. Combat en attente :
+## test_205_6_pending_combat.gd.
+##
+## Les cas où la case change entre l'annonce et la résolution partent d'une attaque annoncée, seule
+## action normale qui laisse un temps de réponse.
 
 const UNIT_ID: StringName = &"acting_unit"
 const WEAK_ID: StringName = &"weak_unit"
@@ -37,11 +42,11 @@ func test_208_1_2_normal_action_is_announced_on_the_stack() -> void:
 	_start()
 	var events := _engine.submit(_act(unit_id, "B3"))
 	assert_array(EventLog.describe(events)).contains_exactly(
-		["NormalActionAnnounced:A", "StackEntryAdded:A"]
+		["NormalActionAnnounced:A", "StackEntryAdded:A", "PieceMoved:A", "StackEntryResolved:A"]
 	)
 	var state := _engine.get_state()
-	assert_int(state.stack[0].kind).is_equal(StackEntry.StackEntryKind.NORMAL_ACTION)
-	assert_int(state.priority_player).is_equal(B)
+	assert_array(state.stack).is_empty()
+	assert_int(state.priority_player).is_equal(A)
 
 
 func test_205_2_4_normal_action_costs_no_essence() -> void:
@@ -57,8 +62,8 @@ func test_205_2_4_normal_action_costs_no_essence() -> void:
 func test_205_2_2_unit_moves_to_free_target_cell() -> void:
 	var unit_id := _place(A, UNIT_ID, "B2")
 	_start()
-	_engine.submit(_act(unit_id, "B3"))
-	assert_array(_resolve_stack()).contains(["PieceMoved:A"])
+	var events := _engine.submit(_act(unit_id, "B3"))
+	assert_array(EventLog.describe(events)).contains(["PieceMoved:A"])
 	assert_str(_cell_of(unit_id)).is_equal("B3")
 
 
@@ -114,7 +119,6 @@ func test_205_4_7_piece_falls_asleep_from_announcement() -> void:
 	_engine.submit(_act(unit_id, "B3"))
 	assert_bool(_engine.get_state().find_piece(unit_id).is_awake).is_false()
 	assert_bool(_engine.get_state().find_piece(other_id).is_awake).is_true()
-	_resolve_stack()
 	_assert_rejected(_act(unit_id, "B4"), REASON.PIECE_ASLEEP)
 	assert_int(_engine.validate(_act(other_id, "D3"))).is_equal(REASON.NONE)
 
@@ -122,9 +126,10 @@ func test_205_4_7_piece_falls_asleep_from_announcement() -> void:
 func test_205_4_7_piece_falls_asleep_even_when_action_fails() -> void:
 	var unit_id := _place(A, UNIT_ID, "B2")
 	var other_id := _place(A, WEAK_ID, "D2")
+	_place(B, WEAK_ID, "B3")
 	_start()
 	_engine.submit(_act(unit_id, "B3"))
-	DuelStateBuilder.place_unit_in(_engine.get_state(), A, WEAK_ID, "B3")
+	_replace_occupant_of_b3_with_an_ally()
 	assert_array(_resolve_stack()).contains(["NormalActionFailed:A"])
 	assert_bool(_engine.get_state().find_piece(unit_id).is_awake).is_false()
 	_assert_rejected(_act(unit_id, "B1"), REASON.PIECE_ASLEEP)
@@ -141,7 +146,6 @@ func test_204_4_5_two_awake_pieces_act_in_the_same_turn() -> void:
 		assert_array(EventLog.describe(_engine.submit(_act(piece_id, targets[piece_id])))).contains(
 			["NormalActionAnnounced:A"]
 		)
-		_resolve_stack()
 	assert_str(_cell_of(unit_id)).is_equal("B3")
 	assert_str(_cell_of(other_id)).is_equal("D3")
 	assert_str(_cell_of(hero_id)).is_equal("C2")
@@ -149,15 +153,17 @@ func test_204_4_5_two_awake_pieces_act_in_the_same_turn() -> void:
 
 func test_205_4_5_ally_on_target_at_resolution_makes_action_fail() -> void:
 	var unit_id := _place(A, UNIT_ID, "B2")
+	_place(B, WEAK_ID, "B3")
 	_start()
 	_engine.submit(_act(unit_id, "B3"))
-	DuelStateBuilder.place_unit_in(_engine.get_state(), A, WEAK_ID, "B3")
+	_replace_occupant_of_b3_with_an_ally()
 	assert_array(_resolve_stack()).contains(["NormalActionFailed:A"])
 	assert_str(_cell_of(unit_id)).is_equal("B2")
 
 
 func test_205_4_3_unit_gone_at_resolution_makes_action_fail() -> void:
 	var unit_id := _place(A, UNIT_ID, "B2")
+	_place(B, WEAK_ID, "B3")
 	_start()
 	_engine.submit(_act(unit_id, "B3"))
 	var state := _engine.get_state()
@@ -167,6 +173,7 @@ func test_205_4_3_unit_gone_at_resolution_makes_action_fail() -> void:
 
 func test_205_4_4_target_no_longer_adjacent_makes_action_fail() -> void:
 	var unit_id := _place(A, UNIT_ID, "B2")
+	_place(B, WEAK_ID, "B3")
 	_start()
 	_engine.submit(_act(unit_id, "B3"))
 	_engine.get_state().find_piece(unit_id).cell = DuelStateBuilder.cell("D2")
@@ -176,19 +183,24 @@ func test_205_4_4_target_no_longer_adjacent_makes_action_fail() -> void:
 
 func test_205_4_6_failed_action_does_not_happen() -> void:
 	var unit_id := _place(A, UNIT_ID, "B2")
+	_place(B, WEAK_ID, "B3")
 	_start()
 	_engine.submit(_act(unit_id, "B3"))
-	DuelStateBuilder.place_unit_in(_engine.get_state(), A, WEAK_ID, "B3")
+	_replace_occupant_of_b3_with_an_ally()
 	var labels := _resolve_stack()
 	assert_array(labels).not_contains(["PieceMoved:A", "CombatResolved"])
 
 
 func test_205_4_1_action_resolves_on_board_at_resolution() -> void:
 	var unit_id := _place(A, UNIT_ID, "B2")
+	var enemy_id := _place(B, WEAK_ID, "B3")
 	_start()
 	_engine.submit(_act(unit_id, "B3"))
-	DuelStateBuilder.place_unit_in(_engine.get_state(), B, WEAK_ID, "B3")
-	assert_array(_resolve_stack()).contains(["CombatResolved", "PieceDestroyed:B"])
+	var state := _engine.get_state()
+	state.pieces.erase(state.find_piece(enemy_id))
+	var labels := _resolve_stack()
+	assert_array(labels).contains(["PieceMoved:A"])
+	assert_array(labels).not_contains(["CombatResolved"])
 	assert_str(_cell_of(unit_id)).is_equal("B3")
 
 
@@ -222,15 +234,14 @@ func test_202_4_10_unit_token_takes_normal_action() -> void:
 	var token_id := _builder.place_token(A, Piece.PieceKind.UNIT, DuelStateBuilder.cell("B2"), 1)
 	_start()
 	_engine.submit(_act(token_id, "B3"))
-	_resolve_stack()
 	assert_str(_cell_of(token_id)).is_equal("B3")
 
 
 func test_205_3_1_hero_moves_to_free_adjacent_cell() -> void:
 	_start()
 	var hero_id := _engine.get_state().find_hero(A).piece_id
-	_engine.submit(_act(hero_id, "C2"))
-	assert_array(_resolve_stack()).contains(["PieceMoved:A"])
+	var events := _engine.submit(_act(hero_id, "C2"))
+	assert_array(EventLog.describe(events)).contains(["PieceMoved:A"])
 	assert_str(_cell_of(hero_id)).is_equal("C2")
 
 
@@ -253,8 +264,13 @@ func test_202_3_10_hero_never_attacks() -> void:
 	_start()
 	var hero_id := _engine.get_state().find_hero(A).piece_id
 	_assert_rejected(_act(hero_id, "B1"), REASON.CELL_NOT_FREE)
-	_engine.submit(_act(hero_id, "D1"))
-	DuelStateBuilder.place_unit_in(_engine.get_state(), B, WEAK_ID, "D1")
+
+
+func test_202_3_10_hero_action_on_an_enemy_cell_fails_at_resolution() -> void:
+	var hero_id := _builder.build().find_hero(A).piece_id
+	_place(B, WEAK_ID, "D1")
+	_builder.push_normal_action(hero_id, DuelStateBuilder.cell("D1"))
+	_start()
 	var labels := _resolve_stack()
 	assert_array(labels).contains(["NormalActionFailed:A"])
 	assert_array(labels).not_contains(["CombatResolved"])
@@ -286,7 +302,15 @@ func _act(piece_id: int, cell_name: String) -> TakeNormalAction:
 	return TakeNormalAction.new(A, piece_id, DuelStateBuilder.cell(cell_name))
 
 
-## Le joueur qui a la priorité passe : la pile se résout. Renvoie les événements décrits.
+## L'adversaire a répondu sans rien changer, ou en changeant la case : un allié de A prend B3.
+func _replace_occupant_of_b3_with_an_ally() -> void:
+	var state := _engine.get_state()
+	state.pieces.erase(state.piece_at(DuelStateBuilder.cell("B3")))
+	DuelStateBuilder.place_unit_in(state, A, WEAK_ID, "B3")
+
+
+## Le joueur qui a la priorité passe : l'attaque annoncée se résout. Renvoie les événements
+## décrits.
 func _resolve_stack() -> Array[String]:
 	var first := _engine.get_state().priority_player
 	var events := DuelChecks.pass_once(_engine, first)

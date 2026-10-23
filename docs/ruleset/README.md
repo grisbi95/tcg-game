@@ -1,6 +1,6 @@
 # Ruleset du TCG tactique
 
-> Dossier de conception des règles, intégré au dépôt du jeu `tcg-game`, dans `docs/ruleset/` (décision 0014 du projet). Édition courante : **0.40** (temps de tour et temps de réponse à la place de la pendule, 22 octobre 2026). Historique dans [90-changelog.md](90-changelog.md).
+> Dossier de conception des règles, intégré au dépôt du jeu `tcg-game`, dans `docs/ruleset/` (décision 0014 du projet). Édition courante : **0.41** (réponse limitée aux Spells et aux attaques, 22 octobre 2026). Historique dans [90-changelog.md](90-changelog.md).
 
 ## Quel document pour quel lecteur
 
@@ -28,10 +28,10 @@
 | [202](20-regles-completes/202-cartes.md) | Cartes : anatomie, types, Hero, permanents, jetons |
 | [203](20-regles-completes/203-ressource.md) | Ressource : Essence, Sources, inclinaison, recyclage, réserve d'Essence |
 | [204](20-regles-completes/204-tour.md) | Tour : préparation, mulligan, structure, fin de partie |
-| [205](20-regles-completes/205-actions.md) | Actions : déploiement, action normale, déplacement du Hero, sommeil et réveil |
+| [205](20-regles-completes/205-actions.md) | Actions : déploiement, action normale, déplacement du Hero, sommeil et réveil, combat en attente |
 | [206](20-regles-completes/206-combat.md) | Combat : comparaison, égalités, dégâts au Hero, auras |
 | [207](20-regles-completes/207-effets.md) | Effets : Spells, effets statiques, déclenchés, durées, cibles, Contrecarrer |
-| [208](20-regles-completes/208-pile-et-priorite.md) | Pile et priorité : passes, résolution en bloc, chaînes, fenêtre de réponse |
+| [208](20-regles-completes/208-pile-et-priorite.md) | Pile et priorité : passes, résolution en bloc, chaînes, fenêtre de réponse, annonces sans réponse |
 | [209](20-regles-completes/209-controles-d-etat.md) | Contrôles d'état : Force ≤ 0, victoire, nul, inactivité, temps de tour et temps de réponse, fatigue |
 | [210](20-regles-completes/210-mots-cles.md) | Mots-clés : conventions, texte de règle de chacun, mots-clés de déclencheurs et de combat |
 

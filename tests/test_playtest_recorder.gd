@@ -1,7 +1,7 @@
 # gdlint: disable=max-public-methods
 
 extends GdUnitTestSuite
-## Relevé de playtest d'un journal, `PlaytestRecorder` (ruleset 0.37 ; décision 0042).
+## Relevé de playtest d'un journal, `PlaytestRecorder` (ruleset 0.41 ; décision 0042).
 ##
 ## Suit les décisions de design du ruleset 0155 (fiche de relevé), 0159 (compte des tours), 0160
 ## (moment de l'Essence inutilisée), 0161 (compléments de la fiche), 0168 (précisions du
@@ -25,7 +25,7 @@ const SECOND_WAIT_MSEC: int = 3_000
 const SMALL_DECK_SIZE: int = 7  # 201.6.1 réduite : la fatigue arrive au deuxième tour de A
 const MARTYR_COUNT_AT_TIE: int = 2  # les deux Units de la rencontre portent Dernier souffle
 const ATTACK_TURN_RANK: int = 5  # PlaytestScenarios.walk_to_attack : l'Unit de A attaque au tour 5
-const OWN_END_ROW: int = 2  # tour 2 de A, dans PlaytestScenarios.answering_at_own_end_of_turn
+const OWN_END_ROW: int = 2  # tour 2 de A, dans PlaytestScenarios.answering_in_own_turn
 const END_OF_TURN_ROW_COUNT: int = 6  # tours 1 à 3 de A et de B, le dernier ouvert
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
@@ -296,10 +296,10 @@ func _cells(
 	return row.cells[side]
 
 
-func test_204_5_7a_end_of_turn_cells_cover_the_end_of_turn_responses() -> void:
+func test_204_5_7a_turn_cells_cover_the_responses_of_the_turn() -> void:
 	var driver := PlaytestScenarios.before_own_end_of_turn()
 	var hands_before := _hand_counts(driver)
-	PlaytestScenarios.end_own_turn_with_answers(driver)
+	PlaytestScenarios.answer_then_end_own_turn(driver)
 	var sheet := _sheet_of(driver)
 	assert_int(sheet.turn_rows.size()).is_equal(END_OF_TURN_ROW_COUNT)
 	var row_cells := _cells(sheet, OWN_END_ROW, A)
@@ -310,16 +310,16 @@ func test_204_5_7a_end_of_turn_cells_cover_the_end_of_turn_responses() -> void:
 	assert_int(next_row.card_played).is_equal(PlaytestSheet.Mark.NO)
 
 
-func test_decision_0168_response_at_opponents_end_of_turn_counts_on_next_own_row() -> void:
-	var sheet := _sheet_of(PlaytestScenarios.answering_at_own_end_of_turn())
+func test_decision_0168_response_in_the_opponents_turn_counts_on_next_own_row() -> void:
+	var sheet := _sheet_of(PlaytestScenarios.answering_in_own_turn())
 	assert_int(_cells(sheet, OWN_END_ROW - 1, B).card_played).is_equal(PlaytestSheet.Mark.NO)
 	assert_int(_cells(sheet, OWN_END_ROW + 1, B).card_played).is_equal(PlaytestSheet.Mark.YES)
 
 
-func test_203_2_2_sources_of_the_end_of_turn_payments_are_on_the_row_of_the_turn() -> void:
+func test_203_2_2_sources_of_the_payments_are_on_the_row_of_the_turn() -> void:
 	var driver := PlaytestScenarios.before_own_end_of_turn()
 	var sources_before := _sources_in_play(driver)
-	PlaytestScenarios.end_own_turn_with_answers(driver)
+	PlaytestScenarios.answer_then_end_own_turn(driver)
 	var sheet := _sheet_of(driver)
 	var row_cells := _cells(sheet, OWN_END_ROW, A)
 	# A a recyclé une Source pour produire l'Essence de sa Réaction ; la réserve garde l'autre.

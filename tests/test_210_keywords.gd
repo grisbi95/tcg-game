@@ -162,34 +162,27 @@ func test_210_2_1a_outpost_never_allows_the_central_row() -> void:
 
 
 func test_205_1_2b_deploy_resolves_after_the_outpost_building_left() -> void:
-	var camp_id := _place_building(A, CAMP, "B2")
-	var card_id := _builder.add_to_hand(A, SOLDIER)
+	var card := _builder.make_card_instance(A, SOLDIER)
+	_builder.push_deploy(card, DuelStateBuilder.cell("A2"))
 	var engine := DuelEngine.new(_builder.build().catalog)
 	engine.start_from_state(_builder.build())
-	var deploy := DeployCard.new(
-		A, card_id, DuelStateBuilder.cell("A2"), EssencePayment.new(UNIT_COST)
-	)
-	engine.submit(deploy)
 	var state := engine.get_state()
-	state.pieces.erase(state.find_piece(camp_id))
-	var labels := EventLog.describe(engine.submit(PassPriority.new(B)))
+	var labels := EventLog.describe(engine.submit(PassPriority.new(state.priority_player)))
 	assert_bool(labels.has("PieceDeployed:A")).is_true()
 	assert_object(state.piece_at(DuelStateBuilder.cell("A2"))).is_not_null()
 
 
 func test_205_1_2b_outpost_deploy_on_an_enemy_attacks_it() -> void:
-	_place_building(A, CAMP, "B2")
-	var card_id := _builder.add_to_hand(A, RAIDER)
+	var card := _builder.make_card_instance(A, RAIDER)
+	_place(B, SOLDIER, "A2")
+	_builder.push_deploy(card, DuelStateBuilder.cell("A2"))
 	var engine := DuelEngine.new(_builder.build().catalog)
 	engine.start_from_state(_builder.build())
-	var deploy := DeployCard.new(
-		A, card_id, DuelStateBuilder.cell("A2"), EssencePayment.new(UNIT_COST)
-	)
-	engine.submit(deploy)
-	DuelStateBuilder.place_unit_in(engine.get_state(), B, SOLDIER, "A2")
-	var labels := EventLog.describe(engine.submit(PassPriority.new(B)))
+	var state := engine.get_state()
+	engine.submit(PassPriority.new(state.priority_player))
+	var labels := EventLog.describe(engine.submit(PassPriority.new(state.priority_player)))
 	assert_bool(labels.has("PieceEnteredAttacking:A")).is_true()
-	assert_int(engine.get_state().piece_at(DuelStateBuilder.cell("A2")).owner).is_equal(A)
+	assert_int(state.piece_at(DuelStateBuilder.cell("A2")).owner).is_equal(A)
 
 
 func _add_with_keyword(

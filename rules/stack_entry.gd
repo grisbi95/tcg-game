@@ -13,13 +13,15 @@ enum StackEntryKind {
 	HERO_POWER,  # 208.1.4
 	ATTACH_GEAR,  # 208.1.5
 	TRIGGERED_EFFECT,  # 207.3.2
+	PENDING_COMBAT,  # 205.6.1 : combat en attente, décision 0046
 }
 
 var stack_entry_id: int = DuelState.NO_ID
 var kind: StackEntryKind = StackEntryKind.DEPLOY
 ## 208.2.4 : joueur à qui appartient l'entrée ; pour un effet déclenché, 207.3.4.
 var owner: DuelState.PlayerSide = DuelState.PlayerSide.A
-## Carte déployée, Spell joué ou Gear attaché ; null pour les autres genres.
+## Carte déployée, Spell joué ou Gear attaché ; null pour les autres genres. Un combat en attente
+## porte la carte de l'Unit qui se déploie (205.6.8) et reste sans carte pour une action normale.
 var card: CardInstance
 ## Pièce qui agit (action normale, 205.4.3) ou qui porte l'effet déclenché (207.3.3).
 var source_piece_id: int = DuelState.NO_ID
@@ -27,6 +29,11 @@ var source_piece_id: int = DuelState.NO_ID
 ## de sa pièce du plateau ; NO_ID et vide pour les autres genres.
 var source_card_instance_id: int = DuelState.NO_ID
 var source_definition_id: StringName = &""
+## 208.7 : faux pour une entrée sans réponse, posé à sa naissance (décision 0046). Aucun joueur ne
+## peut répondre ni passer après son ajout, et la pile qui la contient se résout aussitôt
+## (208.7.12, 208.7.13). Vrai par défaut : Spell, attaque, combat en attente (208.7.1, 208.7.2,
+## 208.7.14).
+var allows_response: bool = true
 ## Rang de l'effet dans la définition de la carte, pour un effet déclenché ou un Spell.
 var effect_index: int = 0
 ## 205.1.5, 205.2.5, 207.5.11 : cases choisies à l'annonce (déploiement, action, cibles).
@@ -46,6 +53,7 @@ func clone() -> StackEntry:
 	copy.source_piece_id = source_piece_id
 	copy.source_card_instance_id = source_card_instance_id
 	copy.source_definition_id = source_definition_id
+	copy.allows_response = allows_response
 	copy.effect_index = effect_index
 	copy.target_cells.assign(target_cells)
 	copy.target_piece_ids.assign(target_piece_ids)

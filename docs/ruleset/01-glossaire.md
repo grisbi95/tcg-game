@@ -11,10 +11,11 @@
 | Adversaire | Pour un joueur, l'autre joueur de la partie ; voir 201.1.3a, 204.5.2, 207.1.6, 208.2.4 et 208.4.7. | |
 | Allié | Se dit d'une pièce que contrôle le joueur concerné ; voir 205.1.7 et 205.4.5. | |
 | Annoncer | Déclarer une action, qui s'ajoute au sommet de la pile en attendant d'être résolue ; voir 203.3.2, 208.1.1, 208.1.2, 208.1.3, 208.1.4, 208.1.5 et 208.4.1. | |
-| Appartenir | Relation d'une carte avec le joueur dont le deck ou le Hero la fournit, d'un effet déclenché avec le joueur à qui appartient la carte ou le jeton qui porte cet effet, ou d'un jeton avec le joueur à qui appartient l'entrée de la pile qui l'a créé ; voir 201.5.1, 201.5.3, 201.5.4, 207.3.4 et 207.3.4a. | |
+| Appartenir | Relation d'une carte avec le joueur dont le deck ou le Hero la fournit, d'un effet déclenché avec le joueur à qui appartient la carte ou le jeton qui porte cet effet, d'un jeton avec le joueur à qui appartient l'entrée de la pile qui l'a créé, ou d'un combat en attente avec le joueur à qui appartient l'attaquant ; voir 201.5.1, 201.5.3, 201.5.4, 205.6.5, 207.3.4 et 207.3.4a. | |
 | Arrivée | Mot-clé de déclencheur dont l'effet se déclenche quand la pièce qui le porte arrive sur le plateau ; voir 210.3.1, 210.3.1a, 210.3.1b, 210.3.1c et 202.4.13a. | |
 | Assaut | Mot-clé de combat à valeur X, qui donne à la pièce X de Force de plus quand elle attaque ; voir 210.4.1, 210.4.1a, 210.4.1b et 210.4.1c. | |
 | Attacher | Lier un Gear à une pièce, qui porte alors ce Gear ; voir 202.2.6, 202.2.8, 202.2.22, 202.2.24, 207.2.8 et 208.1.5. | |
+| Attaque | Action normale d'une Unit annoncée sur une case occupée par une pièce ennemie ; voir 205.2.3, 205.2.6 et 208.7.2. | |
 | Attaquant | Pièce qui attaque, dans un combat ; voir 206.1.1. | |
 | Attaquer | Pour une pièce, engager un combat contre une pièce ennemie, réglé au chapitre 206 ; voir 205.1.6, 205.2.3 et 206.1.1. | |
 | Aura | Effet statique dont le résultat dépend de la position des pièces sur le plateau ; voir Effet statique, 206.5.2, 206.5.3, 206.5.4 et 206.5.5. | |
@@ -26,6 +27,7 @@
 | Cible légale | Cible qui remplit, au moment où l'entrée s'ajoute à la pile, les conditions que la carte pose à ses cibles et celles de la section 207.5 ; voir 207.5.8, 207.5.9, 207.5.10 et 207.5.17. | |
 | Colonne | Alignement de cases du plateau qui s'étend d'un joueur à l'autre. | |
 | Combat | Affrontement d'un attaquant et d'un défenseur, réglé au chapitre 206 ; voir 206.1.1, 206.1.2, 206.2.1 et 206.4.2. | |
+| Combat en attente | Combat qui naît à la résolution d'un déploiement ou d'une action normale annoncée vers une case libre, et qui attend la fin de cette résolution avant de s'ajouter à la pile ; voir 205.1.6, 205.2.3a, 205.6.1 à 205.6.17 et 208.7.14. | |
 | Compteur de fatigue | Valeur propre à chaque joueur, qui augmente chaque fois qu'il doit piocher alors que son deck est vide et fixe les PV que perd alors son Hero ; voir 209.5.1, 209.5.2, 209.5.2a, 209.5.3, 209.5.4 et 209.5.4a. | |
 | Condition de fin de partie | Condition, fixée par les règles du jeu, qui fait gagner, perdre ou finir la partie sur un nul ; voir 201.0.4, 201.1.2, 201.1.2a, 201.1.3a, 201.1.3d, 209.2.10 et 209.3.1. | |
 | Contrecarrer | Effet qui fait qu'un Spell qui se trouve sur la pile n'a pas lieu ; voir 207.6.1, 207.6.2, 207.6.4 et 207.6.5. | |
@@ -46,17 +48,17 @@
 | Écarter | Choisir, pendant son mulligan, une carte de sa main à remettre dans son deck, la carte allant alors dans l'Écart ; voir 204.2.4, 204.2.6, 204.2.8 et 204.2.10. | |
 | Échouer | Pour une action annoncée, ne pas avoir lieu à sa résolution ; voir 205.4.6. | |
 | Effet | Instruction du texte d'une carte qui change l'état de la partie ou les règles qui s'y appliquent. | |
-| Effet déclenché | Effet qui a lieu quand survient un événement indiqué par son texte ; voir 204.5.3, 207.3.1, 207.3.2, 207.3.3, 207.3.4, 207.3.4a, 207.3.5, 207.3.7a, 207.3.11, 207.3.11a, 208.3.2a, 208.4.2, 208.4.3, 208.4.4, 208.4.5, 208.4.6, 208.4.7, 208.4.8, 208.4.10, 208.4.11, 208.5.1a, 210.3.1b et 210.3.2a. | |
+| Effet déclenché | Effet qui a lieu quand survient un événement indiqué par son texte ; voir 204.5.3, 207.3.1, 207.3.2, 207.3.3, 207.3.4, 207.3.4a, 207.3.5, 207.3.7a, 207.3.11, 207.3.11a, 208.3.2a, 208.4.2, 208.4.3, 208.4.4, 208.4.5, 208.4.6, 208.4.7, 208.4.8, 208.4.10, 208.4.11, 208.5.1a, 208.7.8, 208.7.9, 208.7.10, 208.7.11, 208.7.15, 208.7.16, 210.3.1b et 210.3.2a. | |
 | Effet ponctuel | Effet qui n'est pas statique, dont le texte ne porte aucune durée et qui change l'état de la partie une fois ; voir 202.2.21, 207.4.9 et 207.4.6. | |
-| Effet statique | Effet qui s'applique sans passer par la pile, tant que la pièce qui le porte est en jeu ; voir 207.2.1, 207.2.2, 207.2.3, 207.2.3a, 207.2.4, 207.2.5, 207.2.6, 207.2.7, 207.2.8, 207.2.9, 207.2.9a et 207.2.9b ; le Passif d'un Hero et l'aura en sont des cas ; voir 202.3.18 et 206.5.4. | |
+| Effet statique | Effet qui s'applique sans passer par la pile, tant que la pièce qui le porte est en jeu ; voir 207.2.1, 207.2.2, 207.2.3, 207.2.3a, 207.2.4, 207.2.5, 207.2.7, 207.2.8, 207.2.9, 207.2.9a et 207.2.9b ; le Passif d'un Hero et l'aura en sont des cas ; voir 202.3.18 et 206.5.4. | |
 | En jeu | État d'une pièce sur le plateau, ou d'une Source qui n'est ni dans la réserve ni dans la Fonte de son joueur ; voir 202.2.2, 202.2.3 et 203.5.4. | |
 | Endormie | État d'une Unit ou d'un Hero qui ne peut pas faire d'action normale jusqu'à son prochain réveil ; voir 204.1.18, 205.5.1, 205.5.2, 205.5.3, 205.5.4, 205.5.4a, 205.5.4b et 205.5.5. | |
 | Ennemi | Se dit d'une pièce que contrôle l'adversaire du joueur concerné ; voir 205.1.6 et 205.2.3. | |
-| Entrée de la pile | Annonce ou effet déclenché qui se trouve sur la pile, et qui appartient au joueur qui a fait l'annonce ou, pour un effet déclenché, au joueur de 207.3.4 ou de 207.3.4a ; voir 201.3.7, 201.5.4, 202.4.6, 208.1.1 et 208.2.4. | |
+| Entrée de la pile | Annonce, effet déclenché ou combat en attente qui se trouve sur la pile, et qui appartient au joueur qui a fait l'annonce ou, pour un effet déclenché, au joueur de 207.3.4 ou de 207.3.4a ou, pour un combat en attente, au joueur de 205.6.5 ; voir 201.3.7, 201.5.4, 202.4.6, 208.1.1 et 208.2.4. | |
 | Essence | Ressource du jeu ; voir 203.1.1, 203.3.1 et 203.3.3. | |
 | Éveillée | État d'une Unit ou d'un Hero qui peut faire une action normale ; voir 204.3.10, 204.3.11, 204.4.5, 205.5.1 et 205.5.2. | |
 | Exemplaire | Chacune des cartes qui portent le même nom ; voir 201.6.2. | |
-| Fenêtre de réponse | Dans une version du jeu sur écran, affichage montré à un joueur chaque fois qu'il peut répondre ou passer, qui reste ouvert jusqu'à ce qu'il réponde ou passe ; voir 208.6.1, 208.6.2, 208.6.4, 208.6.6, 208.6.7 et 209.4.4g. | |
+| Fenêtre de réponse | Dans une version du jeu sur écran, affichage montré à un joueur chaque fois qu'il peut répondre ou passer, qui reste ouvert jusqu'à ce qu'il réponde ou passe ; voir 208.6.1, 208.6.2, 208.6.4, 208.6.6, 208.6.7, 208.6.8 et 209.4.4g. | |
 | Fin du tour | Dernière partie du tour, qui commence quand le joueur actif termine son tour et précède le début du tour de son adversaire ; voir 204.4.7 et 204.5.3. | |
 | Fonte | Emplacement propre à chaque joueur, qui accueille ses Sources recyclées ; voir 203.5.2, 203.5.3, 203.5.4 et 203.5.6. | |
 | Force | Statistique de combat des Units et des Buildings ; voir 202.1.5, 202.1.6, 202.4.9, 206.2.2, 206.2.3 et 209.1.1. | |
@@ -87,14 +89,14 @@
 | Pendule | Retiré en édition 0.40 : remplacé par le temps de tour et le temps de réponse ; voir décision 0205. | |
 | Phase principale | Phase du tour qui suit le début du tour, pendant laquelle le joueur actif agit ; voir 204.4.1, 204.4.2 et 208.4.11. | |
 | Pièce | Élément qui occupe une case du plateau. | |
-| Pile | Zone commune aux deux joueurs qui forme l'ensemble ordonné des annonces et des effets déclenchés en attente de résolution ; voir 201.3.7, 201.3.8, 201.4.7, 207.3.2 et le chapitre 208. | |
+| Pile | Zone commune aux deux joueurs qui forme l'ensemble ordonné des annonces, des effets déclenchés et des combats en attente qui attendent leur résolution ; voir 201.3.7, 201.3.8, 201.4.7, 207.3.2 et le chapitre 208. | |
 | Piocher | Faire passer la carte du dessus de son deck dans sa main ; voir 204.1.15, 204.2.5, 204.3.6 et 204.3.7. | |
 | Plateau | Surface de jeu commune aux deux joueurs, divisée en cases. | |
 | Pouvoir | Capacité d'un Hero que son joueur choisit d'utiliser ; voir 202.3.12, 202.3.13, 202.3.14, 202.3.15, 202.3.16, 202.3.17 et 207.5.17. | |
 | Premier joueur | Joueur qui joue le premier tour de la partie ; voir 204.3.4. | |
 | Première rangée | Rangée du plateau la plus proche d'un joueur. | |
 | Préparation | Période de la partie qui précède le premier tour et comprend la mise en place de la section 204.1 et le mulligan ; voir 204.1.9, 204.1.10 et 204.1.11. | |
-| Priorité | Droit d'un joueur d'agir, soit d'annoncer pendant sa phase principale quand la pile est vide, soit de répondre ou de passer après un ajout à la pile ; voir 208.2.4, 208.3.1 et 208.5.1. | |
+| Priorité | Droit d'un joueur d'agir, soit d'annoncer pendant sa phase principale quand la pile est vide, soit de répondre ou de passer après l'ajout à la pile d'une entrée qui n'est pas sans réponse ; voir 208.2.4, 208.3.1 et 208.5.1. | |
 | PV | Points de vie d'un Hero ; voir 202.3.7 et 204.1.8. | |
 | Rangée | Alignement de cases du plateau dont toutes les cases sont à la même distance de chaque joueur. | |
 | Rangée centrale | Rangée 3 du plateau, à égale distance des deux joueurs ; voir 205.1.4. | |
@@ -103,11 +105,12 @@
 | Redresser | Faire passer une Source de l'état incliné à l'état redressé ; une Source dans cet état est dite redressée ; voir 203.2.1 et 204.1.17. | |
 | Règle du jeu | Règle numérotée des règles complètes, par opposition au texte d'une carte ; voir 200.2.1 et 200.3.1b. | |
 | Rempart | Mot-clé de combat à valeur X, qui donne à la pièce X de Force de plus quand elle défend ; voir 210.4.2, 210.4.2a, 210.4.2b et 210.4.2c. | |
-| Répondre | Agir pendant le tour d'un autre joueur ou en réaction à une action ; voir 204.3.9, 208.2.3, 208.2.4 et 208.4.5. | |
+| Répondre | Agir pendant le tour d'un autre joueur ou en réaction à une action ; voir 204.3.9, 208.2.3, 208.2.4, 208.4.5, 208.7.1, 208.7.2, 208.7.10 et 208.7.11. | |
 | Réserve | Emplacement propre à chaque joueur, qui contient ses Sources qui ne sont pas encore entrées en jeu, sans rapport avec la réserve d'Essence ; voir 203.5.1, 204.1.12 et 204.3.5. | |
-| Réserve d'Essence | Essence qu'un joueur a produite pendant son propre tour et n'a pas encore dépensée, perdue à la fin de ce tour ; voir 203.1.3, 203.6.1, 203.6.2, 203.6.3, 203.6.4, 203.6.5, 203.6.10, 203.6.12, 201.4.10 et 204.5.7a. | |
+| Réserve d'Essence | Essence qu'un joueur a produite pendant son propre tour et n'a pas encore dépensée, perdue à la fin de ce tour ; voir 203.1.3, 203.6.1, 203.6.2, 203.6.3, 203.6.4, 203.6.5, 203.6.12, 201.4.10 et 204.5.7a. | |
 | Résoudre | Faire avoir lieu une annonce ou un effet déclenché de la pile ; voir 208.3.1, 208.3.2 et 208.3.2a. | |
 | Réveiller | Faire passer une Unit ou un Hero de l'état endormi à l'état éveillé, ce passage étant le réveil ; voir 204.3.8, 204.3.10 et 204.3.11. | |
+| Sans réponse | Se dit d'une entrée de la pile, annonce ou effet déclenché, à laquelle aucun joueur ne peut répondre et qui se résout aussitôt ; voir 208.7.3, 208.7.4, 208.7.5, 208.7.6, 208.7.7, 208.7.8, 208.7.9, 208.7.12, 208.7.13, 208.7.15 et 208.7.16. | |
 | Source | Élément d'un joueur qui produit l'Essence ; voir 203.1.2. | |
 | Sous-règle | Règle dont l'identifiant ajoute une lettre à celui de la règle qu'elle précise ; voir 200.1.1. | |
 | Spell | Type de carte de deck ; voir 202.2.5, 202.2.20, 202.2.21, 207.1.1, 207.1.7 et 207.1.7a. | |

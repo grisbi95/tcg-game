@@ -1,5 +1,7 @@
 # 0193 · Perte de l'Essence non dépensée
 
+Remplacée en partie par 0207 (le joueur actif ne répond plus pendant la fin du tour ; 203.6.10 supprimée).
+
 > Décision consignée le 18 octobre 2026. Statut : ACTÉ. Une décision ne se modifie jamais ; pour revenir dessus, une nouvelle décision la remplace et cette ligne reçoit « Remplacée par NNNN ».
 
 ## Contexte

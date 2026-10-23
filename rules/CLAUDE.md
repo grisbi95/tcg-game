@@ -1,24 +1,24 @@
 # Moteur de duel — consignes locales
 
-Complète le `CLAUDE.md` racine pour `rules/` ; décisions 0001, 0003, 0004, 0007, 0008, 0009, 0010, 0012, 0013, 0015, 0016, 0017, 0018, 0026, 0037 et 0045.
+Complète le `CLAUDE.md` racine pour `rules/` ; décisions 0001, 0003, 0004, 0007, 0008, 0009, 0010, 0012, 0013, 0015, 0016, 0017, 0018, 0026, 0037, 0045 et 0046.
 
 ## Carte des modules (cible du jalon J1)
 
 | Fichier | Chapitre | Rôle |
 | --- | --- | --- |
-| `duel_engine.gd` | — | Façade : `start_new_duel`, `start_from_state` (tests), `validate`, `submit`, `advance_clock`, `clock_owners`, `awaited_players`, requêtes en lecture pour la vue. Médiateur sans règle propre (`code-guidelines.md` §5) : après chaque intention, il enchaîne lui-même les étapes qui la suivent (effets en attente par `TriggerRules`, retour de la main par `StackRules`, suite de la fin du tour par `TurnRules`) et aiguille la résolution de chaque entrée de pile vers le module de son genre, que les modules ne déclenchent pas entre eux ; détail aux commentaires de `_settle` et `_resolve_stack` dans `duel_engine.gd`. |
+| `duel_engine.gd` | — | Façade : `start_new_duel`, `start_from_state` (tests), `validate`, `submit`, `advance_clock`, `clock_owners`, `awaited_players`, requêtes en lecture pour la vue. Médiateur sans règle propre (`code-guidelines.md` §5) : après chaque intention, il enchaîne lui-même les étapes qui la suivent (effets en attente par `TriggerRules`, retour de la main par `StackRules`, suite de la fin du tour par `TurnRules`) et aiguille la résolution de chaque entrée de pile vers le module de son genre, que les modules ne déclenchent pas entre eux, et résout aussitôt, dans la même soumission, une pile qui contient une entrée sans réponse (208.7.13, décision 0046) ; détail aux commentaires de `_settle` et `_resolve_stack` dans `duel_engine.gd`. |
 | `zone_rules.gd` | 201 | zones, limite de main, appartenance, construction du deck, passage d'une pièce sur une case (`move_piece`) |
 | `card_rules.gd` | 202 | Gear (annonce, attachement, remplacement, retour en main), pouvoir du Hero |
 | `essence_rules.gd` | 203 | paiement à l'annonce, incliner, recycler, Fonte, réserve d'Essence (203.6, 0026) |
 | `preparation_rules.gd` | 204.1, 204.2 | préparation par `DuelSetup` (0012), mulligan simultané exécuté à la dernière réponse, joueur A puis B (0013, 0015) et Écart ; appelle `TurnRules` (premier tour, pioche), jamais l'inverse |
 | `turn_rules.gd` | 204.3 à 204.5 | début de tour (204.3.8, réveil et redressement compris), pioche, fin de tour (204.5) |
-| `action_rules.gd` | 205 | déploiement (annonce, résolution), action normale d'une pièce éveillée (205.5), déplacement du Hero, échecs |
+| `action_rules.gd` | 205 | déploiement (annonce, résolution), action normale d'une pièce éveillée (205.5), déplacement du Hero, échecs, combat en attente (205.6 : naissance à la résolution, résolution selon le plateau du moment) |
 | `combat_rules.gd` | 206 | comparaison, égalité, Hero défenseur, avance, auras lues avant l'avance |
 | `spell_rules.gd` | 207.1 | Spells : vitesses, annonce, résolution ; appelle `EffectRules`, jamais l'inverse |
 | `effect_rules.gd` | 207.4 à 207.6 | cibles et validité, effets à la résolution (Force à durée, destruction, jetons), Contrecarrer (207.6, avec l'effet COUNTER) |
 | `effect_context.gd` | 207.4, 207.5 | état, entrée de pile, effet et événements de l'effet en cours d'application, passés aux fonctions d'`EffectRules` ; jamais dans l'état |
-| `trigger_rules.gd` | 207.3, 208.4 | effets déclenchés (0017) : attente, ordre d'ajout (`ORDER_TRIGGERS`), cibles (`CHOOSE_TARGETS`), choix unique automatique (0004), « une fois par tour », résolution |
-| `stack_rules.gd` | 208 | annonce, priorité (208.2.4), passe (208.3.1), entrée du sommet et fin de sa résolution (208.3.2), retour au joueur actif (208.5.1) ; n'appelle aucun autre module, la boucle de résolution est dans `DuelEngine` |
+| `trigger_rules.gd` | 207.3, 208.4 | effets déclenchés (0017) : attente, ordre d'ajout (`ORDER_TRIGGERS`), cibles (`CHOOSE_TARGETS`), choix unique automatique (0004), « une fois par tour », résolution ; étiquette « sans réponse » recopiée de l'annonce ou de l'entrée en cours (208.7.8 à 208.7.11, `DuelState.triggers_allow_response`) ; un combat en attente (205.6) attend dans la même liste et compte comme un effet de l'attaquant (205.6.6) |
+| `stack_rules.gd` | 208 | annonce, priorité (208.2.4, aucune pour une entrée sans réponse, 208.7.12), passe (208.3.1), entrée du sommet et fin de sa résolution (208.3.2), retour au joueur actif (208.5.1) ; n'appelle aucun autre module, la boucle de résolution est dans `DuelEngine` |
 | `state_check_rules.gd` | 209 | Force plancher 0, victoire après chaque effet, abandon, inactivité (209.2.10), temps de tour et de réponse (209.4), fatigue |
 | `keyword_rules.gd` | 210 | texte de règle de chaque mot-clé |
 | `force_rules.gd` | 206.5, 209.1 | Force actuelle calculée à la demande, jamais stockée |
@@ -49,10 +49,11 @@ Le champ **et** sa copie dans `clone()` de la même classe, puis une valeur non 
 
 ## Invariants à ne pas casser
 
+- `StackEntry.allows_response` est posé à la naissance de l'entrée (annonce : son genre et le plateau à l'annonce, 208.7.1 à 208.7.7 ; effet déclenché : `DuelState.triggers_allow_response`, que `add_to_stack`, la résolution de chaque entrée, `start_turn` et `apply_end_turn` fixent) ; une pile qui contient une entrée sans réponse ne reste jamais en attente d'une passe (elle attend seulement un choix d'ordre ou de cibles, décision 0009).
 - Aléa, heure et Node : règle du `CLAUDE.md` racine §3 ; concrètement, jamais `randi()` ni `Array.shuffle()`.
 - Une `CardInstance` est dans une seule zone à la fois : la déplacer, jamais la copier. Une pièce qui revient sur le plateau reçoit un nouveau `piece_id`.
 - La Force actuelle se calcule par `ForceRules`, jamais ne se stocke.
 - Phase `ENDED` ⇒ toute intention refusée ; `state.pending_decision` non null ⇒ seule l'intention qui y répond est acceptée, et `Concede` (209.2.5 : à tout moment).
 - Un Hero ne perd de PV que par `StateCheckRules.lose_health()` ou `apply_fatigue()`, qui vérifient la victoire avec la raison de fin (209.2.1, décision 0040).
-- Le temps de tour et le temps de réponse ne s'écoulent que par `advance_clock()`, jamais pendant un `submit()` ; ils ne se remettent à neuf que par `TurnRules.start_turn`, `StackRules.add_to_stack` et `TriggerRules` (nouvelle attente).
+- Le temps de tour et le temps de réponse ne s'écoulent que par `advance_clock()`, jamais pendant un `submit()` ; ils ne se remettent à neuf que par `TurnRules.start_turn`, `StackRules.add_to_stack` (entrée avec réponse seulement) et `TriggerRules` (nouvelle attente).
 - Les modules ne lisent que `state`, le catalogue compris par `state.catalog`, en lecture seule (0016) ; aucune injection, aucun accès à la vue.

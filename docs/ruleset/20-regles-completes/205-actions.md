@@ -22,7 +22,7 @@ Aucun Invariant.
 
 **205.1.5** [ACTÉ] Un joueur choisit la case d'un déploiement quand il annonce ce déploiement (décision 0048 ; voir 208.1.1).
 
-**205.1.6** [ACTÉ] Si une pièce ennemie occupe la case d'une Unit à la résolution de son déploiement, l'Unit entre en jeu en attaquant cette pièce (décision 0048).
+**205.1.6** [ACTÉ] Si une pièce ennemie occupe la case d'une Unit à la résolution de son déploiement, l'Unit entre en jeu en attaquant cette pièce, par un combat en attente (décisions 0048 et 0207 ; voir 205.6.1).
 
 **205.1.7** [ACTÉ] Si une pièce alliée occupe la case d'une Unit à la résolution de son déploiement, la carte revient dans la main de son joueur (décision 0048).
 
@@ -38,7 +38,9 @@ Aucun Invariant.
 
 **205.2.2** [ACTÉ] Si la case visée est libre à la résolution de l'action normale, l'Unit se déplace sur cette case (décisions 0042 et 0047).
 
-**205.2.3** [ACTÉ] Si une pièce ennemie occupe la case visée à la résolution de l'action normale, l'Unit attaque cette pièce (décisions 0042 et 0047).
+**205.2.3** [ACTÉ] Si une pièce ennemie occupe la case visée à la résolution de l'action normale, l'Unit attaque cette pièce (décisions 0042 et 0047 ; voir 205.2.3a).
+
+**205.2.3a** [ACTÉ] L'attaque de 205.2.3 est un combat en attente quand l'action normale a été annoncée vers une case libre (décision 0207 ; voir 205.6.1 et 208.7.4).
 
 **205.2.4** [ACTÉ] Une action normale ne coûte aucune Essence (décision 0042).
 
@@ -56,7 +58,7 @@ Aucun Invariant.
 
 ## 205.4 Échecs d'une action
 
-**205.4.1** [ACTÉ] Une action normale se résout selon l'état du plateau au moment de sa résolution (décision 0047).
+**205.4.1** [ACTÉ] Une action normale se résout selon l'état du plateau au moment de sa résolution (décision 0047 ; voir 205.6.9).
 
 **205.4.2** [ACTÉ] L'action normale d'une Unit vise une case, jamais la pièce qui l'occupe (décision 0047).
 
@@ -87,3 +89,39 @@ Aucun Invariant.
 **205.5.5** [ACTÉ] Une pièce endormie le reste jusqu'à son prochain réveil (décision 0200 ; voir 204.3.10 et 204.3.11).
 
 **205.5.6** [ACTÉ] Un Building n'est ni endormi ni éveillé (décision 0200 ; voir 202.2.17).
+
+## 205.6 Combat en attente
+
+**205.6.1** [ACTÉ] Un combat en attente est le combat qui naît à la résolution d'un déploiement selon 205.1.6 ou d'une action normale selon 205.2.3a (décision 0207).
+
+**205.6.2** [ACTÉ] Un combat en attente n'a pas lieu pendant la résolution qui le fait naître (décision 0207 ; voir 208.3.1 et 208.3.3).
+
+**205.6.3** [ACTÉ] Un combat en attente attend la fin de la résolution qui le fait naître (décision 0207 ; voir 208.4.2).
+
+**205.6.4** [ACTÉ] Une fois cette résolution terminée, un combat en attente s'ajoute au sommet de la pile avant que ce soit de nouveau au joueur actif d'agir (décision 0207 ; voir 208.4.3 et 208.5.1a).
+
+**205.6.5** [ACTÉ] Un combat en attente appartient au joueur à qui appartient l'attaquant (décision 0207 ; voir 201.5.1).
+
+**205.6.6** [ACTÉ] Pour l'ordre d'ajout à la pile, un combat en attente compte comme un effet déclenché qui appartient au joueur de 205.6.5 (décision 0207 ; voir 208.4.6, 208.4.7 et 208.4.8).
+
+**205.6.7** [ACTÉ] Pendant l'attente d'un combat en attente, l'Unit qui fait son action normale reste sur sa case de départ (décision 0207 ; voir 205.2.3a).
+
+**205.6.8** [ACTÉ] La carte de l'Unit dont le déploiement crée un combat en attente reste sur la pile avec ce combat, jusqu'à la résolution de ce combat (décision 0207 ; voir 201.3.8 et 205.1.6).
+
+**205.6.9** [ACTÉ] Un combat en attente se résout selon l'état du plateau au moment de sa résolution (décision 0207 ; voir 205.4.1).
+
+**205.6.10** [ACTÉ] Si l'Unit qui fait son action normale a quitté le plateau à la résolution du combat en attente, ce combat n'a pas lieu (décision 0207 ; voir 205.4.3).
+
+**205.6.11** [ACTÉ] Si la case est libre à la résolution du combat en attente d'une action normale, l'Unit se déplace sur cette case (décision 0207 ; voir 205.2.2).
+
+**205.6.12** [ACTÉ] Si la case est libre à la résolution du combat en attente d'un déploiement, l'Unit entre en jeu sur cette case (décision 0207 ; voir 205.1.2).
+
+**205.6.13** [ACTÉ] Si une pièce alliée occupe la case à la résolution du combat en attente d'une action normale, cette action normale échoue (décision 0207 ; voir 205.4.5 et 205.4.6).
+
+**205.6.14** [ACTÉ] Si une pièce alliée occupe la case à la résolution du combat en attente d'un déploiement, la carte revient dans la main de son joueur (décision 0207 ; voir 205.1.7, 205.1.9 et 205.1.10).
+
+**205.6.15** [ACTÉ] Si une pièce ennemie occupe la case à la résolution d'un combat en attente, ce combat a lieu (décision 0207 ; voir 206.1.1).
+
+**205.6.16** [ACTÉ] Si la carte de l'Unit qui se déployait a quitté la pile avant la résolution du combat en attente d'un déploiement, ce combat n'a pas lieu (décision 0207 ; voir 205.6.8).
+
+**205.6.17** [ACTÉ] Si la case visée n'est plus adjacente à l'Unit à la résolution du combat en attente d'une action normale, cette action normale échoue (décision 0207 ; voir 205.4.4, 205.4.6 et 205.6.7).
