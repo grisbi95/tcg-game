@@ -7,6 +7,8 @@ description: Propage une règle du ruleset nouvelle ou modifiée vers le moteur,
 
 Arguments : un identifiant (`206.3.6`), une section (`208.3`) ou une liste.
 
+Moment : entre deux étapes, à la clôture de l'une ou à l'ouverture de la suivante par `/open-step`, ou hors étape ; jamais pendant une étape ouverte (rétro J2). Si une règle change pendant une étape, elle se note dans « État actuel » de `docs/roadmap.md` et attend la clôture de l'étape.
+
 1. Lis la règle (texte, statut), sa ligne dans `docs/ruleset/90-changelog.md`, les règles qui y renvoient (`grep -rnw "<identifiant>" docs/ruleset`) et le code qui la cite (`grep -rnw "<identifiant>" rules tests data app ui`). Si le code est déjà conforme au texte courant, dis-le et arrête-toi.
 2. Si le point tranché n'est pas encore consigné, lance `ruleset-editor` avec ce qui a été décidé : identifiants, texte, décision de design, édition. Rien n'entre dans `docs/ruleset/` autrement.
 3. Lance `verifier` sur `res://tests/test_rules_coverage.gd`. Une règle nouvelle sans test fait échouer la couverture : c'est attendu, le test attendu se nomme par l'identifiant.
