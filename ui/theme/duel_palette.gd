@@ -124,7 +124,7 @@ const CORNER_RADIUS: int = 8
 ## Variation de Label déclarée dans ui/theme/duel_theme.tres (thème unique).
 const SMALL_LABEL: StringName = &"SmallLabel"
 const CONTENT_MARGIN: int = 8
-## Marge intérieure d'un panneau centré (fin de partie, confirmation, rideau de relais).
+## Marge intérieure d'un panneau centré (fin de partie, confirmation).
 const MODAL_MARGIN: float = 32.0
 
 
@@ -215,7 +215,7 @@ static func player_button_style(side: DuelState.PlayerSide, state: ButtonState) 
 	return fill_style(color, CORNER_RADIUS, CONTENT_MARGIN)
 
 
-## Cadre d'un panneau centré (fin de partie, confirmation, rideau, préparation) : fond
+## Cadre d'un panneau centré (fin de partie, confirmation, préparation) : fond
 ## `background`, bordure `accent`.
 static func modal_style(accent: Color, background: Color = PANEL_COLOR) -> StyleBoxFlat:
 	return framed_style(background, accent, PLAYER_BORDER_WIDTH, MODAL_MARGIN)
