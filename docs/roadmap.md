@@ -2,14 +2,14 @@
 
 > **Rôle** : plan unique du projet : périmètre, jalons, étapes et état. Les règles font foi dans [ruleset/](ruleset/README.md) ; l'architecture dans [decisions/](decisions/).
 
-**État actuel (23 octobre 2026)** : jalons J0 et J1 terminés ; J2 en cours, étapes 2.1 à 2.7 fusionnées (PR 11 à 16, 32 à 35, assainissement PR 17 à 30, décisions 0038 à 0045) ; à l'étape 2.7, Q-109 lue selon son option A, Q-110 non tranchée. Étape 2.7b fusionnée (PR 36) : réponse seulement aux Spells et aux attaques, combat en attente (ruleset 0.41, décision de design 0207, décision 0046). Ruleset 0.42 fusionné (PR 37, décision de design 0208) : le Hero n'a plus de pouvoir ; écran non vérifié visuellement. Le 23 octobre 2026, sur `feat/204-3-6-pioche-une-carte` (`/sync-rule`, hors étape) : pioche de 1 carte par tour (204.3.6, ruleset 0.43, décision de design 0209), moteur, tests, cartes et fixture de rejeu suivis. Prochaine action : 2.8 (duel à distance, forme du relais WebSocket à décider, 0043). Dettes au [backlog.md](backlog.md) ; questions de règles dans [ruleset/02-questions-ouvertes.md](ruleset/02-questions-ouvertes.md).
+**État actuel (23 octobre 2026)** : jalons J0 et J1 terminés ; J2 en cours, étapes 2.1 à 2.7 fusionnées (PR 11 à 16, 32 à 35, assainissement PR 17 à 30, décisions 0038 à 0045) ; à l'étape 2.7, Q-109 lue selon son option A, Q-110 non tranchée. Étape 2.7b fusionnée (PR 36) : réponse seulement aux Spells et aux attaques, combat en attente (ruleset 0.41, décision de design 0207, décision 0046). Ruleset 0.42 fusionné (PR 37, décision de design 0208) : le Hero n'a plus de pouvoir ; écran non vérifié visuellement. Le 23 octobre 2026, sur `feat/204-3-6-pioche-une-carte` (`/sync-rule`, hors étape) : pioche de 1 carte par tour (204.3.6, ruleset 0.43, décision de design 0209), moteur, tests, cartes et fixture de rejeu suivis. Décision 0048 (23 octobre 2026, `feat/0048-sans-rideau-de-relais`) : rideau de relais retiré de `ui/`, tests verts ; écran non vérifié visuellement. Prochaine action : 2.8 (duel à distance, forme du relais WebSocket à décider, 0043). Dettes au [backlog.md](backlog.md) ; questions de règles dans [ruleset/02-questions-ouvertes.md](ruleset/02-questions-ouvertes.md).
 
 ## Périmètre
 
 | Sujet | Décision |
 | --- | --- |
 | Plateformes | Web d'abord (playtests), desktop pour développer. |
-| Mode de jeu V1 | Duel à deux joueurs humains : sur un même écran avec relais (0036), ou à distance entre deux navigateurs par un relais WebSocket, l'hôte dans le navigateur du créateur de la partie (0043) ; IA simple au J4. |
+| Mode de jeu V1 | Duel à deux joueurs humains : sur un même écran sans rideau de relais (0036, 0048), ou à distance entre deux navigateurs par un relais WebSocket, l'hôte dans le navigateur du créateur de la partie (0043) ; IA simple au J4. |
 | Catalogue | Les decks de test du ruleset (`ruleset/70-playtest/decks-de-test.md`), puis `50-cartes/` quand il existera. |
 | Hors périmètre | Serveur de jeu autoritaire et mains cachées par l'architecture (0043), comptes, matchmaking, classement, collection, boutique, IA avancée, mobile. Décision après J3. |
 

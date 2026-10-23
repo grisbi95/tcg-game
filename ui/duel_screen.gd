@@ -9,7 +9,8 @@ extends Control
 ## Flux : geste → `DuelSelection` → `intent_chosen` → `DuelHost.submit_human` → événements →
 ## `EventPlayer` → `batch_played` → `confirm_events_played` → recalage. `InputShield` bloque les
 ## commandes pendant la lecture et hors du tour d'un humain. `OverlayLayer`, au-dessus du bouclier,
-## porte le rideau de relais, la confirmation d'abandon et le panneau de fin (décision 0036).
+## porte la confirmation d'abandon et le panneau de fin (décision 0036). Entre deux humains sur le
+## même écran, le relais est confirmé aussitôt, sans rideau (décision 0048).
 
 ## Le panneau de fin demande une nouvelle partie : l'autre joueur commence, nouvelle graine.
 signal rematch_requested
@@ -95,7 +96,7 @@ func start_duel(duel_setup: DuelSetup, config: DuelConfig, catalog: Catalog) -> 
 	_setup_views(duel_setup)
 	_selection.setup(_engine, DuelState.PlayerSide.A)
 	_selection.selection_changed.connect(_refresh_marks)
-	_refresh_zones_hiding_hand()
+	_refresh_zones()
 	_event_player.play(first_events)
 
 
@@ -187,7 +188,6 @@ func _connect_previews() -> void:
 
 func _connect_overlays() -> void:
 	_column.concede_pressed.connect(_on_concede_pressed)
-	_overlays.relay_confirmed.connect(_on_relay_confirmed)
 	_overlays.concede_confirmed.connect(_on_concede_confirmed)
 	_overlays.rematch_pressed.connect(rematch_requested.emit)
 	_overlays.setup_pressed.connect(setup_requested.emit)
@@ -198,15 +198,15 @@ func _on_intent_chosen(intent: DuelIntent) -> void:
 	_event_player.play(_host.submit_human(intent))
 
 
-# Décision 0036 : les commandes ne passent que pendant le tour d'un humain ; le relais attend le
-# clic du joueur attendu sur le rideau, sauf tant que des intentions scriptées restent.
+# Décision 0036 : les commandes ne passent que pendant le tour d'un humain ; décision 0048 : le
+# relais est confirmé aussitôt, sans rideau, et l'écran passe au joueur attendu.
 func _on_host_state_changed(host_state: DuelHost.HostState) -> void:
 	_input_shield.visible = host_state != DuelHost.HostState.AWAITING_HUMAN
 	_refresh_overlays(host_state)
 	_center.refresh_response_window()
 	match host_state:
 		DuelHost.HostState.RELAY:
-			_start_relay()
+			_host.confirm_relay.call_deferred()
 		DuelHost.HostState.AWAITING_HUMAN:
 			_selection.set_player(_host.get_screen_player())
 			_refresh_zones()
@@ -216,10 +216,8 @@ func _on_host_state_changed(host_state: DuelHost.HostState) -> void:
 			_show_end_panel()
 
 
-# Rideau et confirmation ne vivent que dans l'état qui les appelle.
+# La confirmation d'abandon ne vit que dans l'état qui l'appelle.
 func _refresh_overlays(host_state: DuelHost.HostState) -> void:
-	if host_state != DuelHost.HostState.RELAY:
-		_overlays.hide_relay()
 	if host_state != DuelHost.HostState.AWAITING_HUMAN:
 		_overlays.hide_concede_confirm()
 	_refresh_concede_button()
@@ -238,19 +236,6 @@ func _refresh_concede_button() -> void:
 		_column.show_concede(_host.get_screen_player())
 	else:
 		_column.hide_concede()
-
-
-func _start_relay() -> void:
-	if _scripted.has_pending():
-		_host.confirm_relay.call_deferred()
-		return
-	_refresh_zones_hiding_hand()
-	_overlays.show_relay(_host.get_awaited_player())
-
-
-func _on_relay_confirmed() -> void:
-	_overlays.hide_relay()
-	_host.confirm_relay()
 
 
 func _on_concede_pressed() -> void:
@@ -285,13 +270,6 @@ func _on_batch_played(events: Array[DuelEvent]) -> void:
 func _refresh_zones() -> void:
 	_use_viewer_model()
 	_refresh_zones_around(_model.hand_cards())
-
-
-# Pendant le relais, l'appareil montre encore le joueur d'avant : sa main ne reste pas affichée sous
-# le rideau (201.4.2).
-func _refresh_zones_hiding_hand() -> void:
-	_use_viewer_model()
-	_refresh_zones_around([])
 
 
 func _use_viewer_model() -> void:
