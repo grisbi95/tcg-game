@@ -50,13 +50,10 @@ func test_decision_0027_keyword_chip_replaces_its_written_name() -> void:
 	assert_str(CardText.body_bbcode(unit)).is_equal(CardText.chip("Arrivée"))
 
 
-func test_decision_0027_hero_power_follows_its_chip() -> void:
+func test_decision_0027_hero_text_is_shown_as_is_without_chip() -> void:
 	var hero := HeroDefinition.from_dict(CatalogSamples.hero())
-	hero.power_cost = 2
-	hero.text = "Passif. Pouvoir (2 Essence) : effet [rare]."
-	assert_str(CardText.hero_body_bbcode(hero)).is_equal(
-		"Passif.\n" + CardText.chip("Pouvoir · 2") + " effet [lb]rare]."
-	)
+	hero.text = "Passif : effet [rare]."
+	assert_str(CardText.hero_body_bbcode(hero)).is_equal("Passif : effet [lb]rare].")
 
 
 func test_decision_0025_keywords_line_names_each_keyword_with_its_value() -> void:

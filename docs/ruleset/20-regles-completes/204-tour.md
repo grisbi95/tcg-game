@@ -86,7 +86,7 @@ Aucun Invariant.
 
 **204.3.5** [ACTÉ] Une Source reçue au début du tour vient de la réserve de son joueur (décision 0028).
 
-**204.3.6** [PROVISOIRE] Au début de son tour, un joueur pioche 1 carte (décisions 0031 et 0208 ; à mesurer en playtest : taille de main moyenne par tour, Essence inutilisée, tour où le deck se vide).
+**204.3.6** [PROVISOIRE] Au début de son tour, un joueur pioche 1 carte (décisions 0031 et 0209 ; à mesurer en playtest : taille de main moyenne par tour, Essence inutilisée, tour où le deck se vide).
 
 **204.3.7** [ACTÉ] Le premier joueur pioche à son premier tour (décision 0032).
 
@@ -106,7 +106,7 @@ Aucun Invariant.
 
 **204.4.3** [ACTÉ] Pendant sa phase principale, le joueur actif peut jouer des cartes (décision 0035 ; voir 207.1.3, 207.1.6, 208.1.6 et 208.1.8).
 
-**204.4.4** [ACTÉ] Pendant sa phase principale, le joueur actif peut utiliser le pouvoir de son Hero (décision 0035 ; voir 202.3.14, 202.3.15 et 202.3.16).
+**204.4.4** Supprimée en édition 0.42, voir décision 0208.
 
 **204.4.5** [ACTÉ] Pendant sa phase principale, le joueur actif peut faire l'action normale d'une de ses pièces éveillées (décisions 0035 et 0200 ; voir 205.5.3, 208.1.10 et 208.1.11).
 

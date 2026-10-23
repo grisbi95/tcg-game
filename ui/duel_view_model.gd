@@ -20,7 +20,6 @@ const TOKEN_CARD_TYPES: Dictionary[Piece.PieceKind, CardDefinition.CardType] = {
 	Piece.PieceKind.UNIT: CardDefinition.CardType.UNIT,
 	Piece.PieceKind.BUILDING: CardDefinition.CardType.BUILDING,
 }
-const HERO_POWER_LABEL: String = "Pouvoir du Hero"
 const NORMAL_ACTION_LABEL: String = "Action normale"
 const PENDING_COMBAT_LABEL: String = "Combat"
 const TRIGGERED_EFFECT_LABEL: String = "Effet déclenché"
@@ -203,7 +202,7 @@ func stack_lines(
 
 
 ## Carte que montre l'aperçu d'une entrée de pile : celle qu'elle annonce, ou la carte source d'un
-## effet déclenché ; null sans carte (pouvoir du Hero, action normale).
+## effet déclenché ; null sans carte (action normale).
 func entry_definition(entry: StackEntry) -> CardDefinition:
 	if entry.card != null:
 		return _catalog.get_card(entry.card.definition_id)
@@ -230,17 +229,12 @@ func _to_hand_card(card: CardInstance) -> HandView.HandCard:
 func _stack_line(entry: StackEntry) -> StackView.StackLine:
 	var definition := entry_definition(entry)
 	return StackView.StackLine.new(
-		entry.stack_entry_id,
-		_stack_label(entry, definition),
-		_stack_tint(entry, definition),
-		entry.owner
+		entry.stack_entry_id, _stack_label(entry, definition), _stack_tint(definition), entry.owner
 	)
 
 
 func _stack_label(entry: StackEntry, definition: CardDefinition) -> String:
 	match entry.kind:
-		StackEntry.StackEntryKind.HERO_POWER:
-			return HERO_POWER_LABEL
 		StackEntry.StackEntryKind.NORMAL_ACTION:
 			return NORMAL_ACTION_LABEL
 		StackEntry.StackEntryKind.PENDING_COMBAT:
@@ -256,10 +250,8 @@ func _triggered_label(definition: CardDefinition) -> String:
 	return TRIGGERED_EFFECT_FORMAT % definition.card_name
 
 
-# La teinte de la carte annoncée ; celle du Hero pour son pouvoir ; celle d'un Spell à défaut.
-func _stack_tint(entry: StackEntry, definition: CardDefinition) -> DuelPalette.Tint:
-	if entry.kind == StackEntry.StackEntryKind.HERO_POWER:
-		return DuelPalette.Tint.HERO
+# La teinte de la carte annoncée ; celle d'un Spell à défaut.
+func _stack_tint(definition: CardDefinition) -> DuelPalette.Tint:
 	if definition == null:
 		return DuelPalette.Tint.SPELL
 	return DuelPalette.tint_of(definition.card_type)

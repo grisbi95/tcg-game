@@ -23,9 +23,6 @@ const SEPARATOR: String = " · "
 const HERO_TYPE_NAME: String = "Hero"
 ## Décision 0027 : nom affiché d'un jeton, qui ne correspond à aucune carte (202.4.2).
 const TOKEN_NAME: String = "Jeton"
-## 202.3.13 : le texte d'un Hero annonce son pouvoir ainsi : « Pouvoir (2 Essence) : … ».
-const POWER_PATTERN: String = "Pouvoir \\(\\d+ Essence\\)\\s*:\\s*"
-const POWER_CHIP: String = "Pouvoir · %d"
 const KEYWORD_SEPARATOR: String = ":"
 
 
@@ -64,16 +61,10 @@ static func body_bbcode(definition: CardDefinition) -> String:
 	return _joined(chips, text)
 
 
-## Décision 0027 : texte d'un Hero, son pouvoir à la ligne derrière l'étiquette « Pouvoir · N ».
+## Décision 0027, édition 0.42 (décision de design 0208) : le texte d'un Hero est son passif,
+## rendu tel quel.
 static func hero_body_bbcode(hero: HeroDefinition) -> String:
-	var power_marker := RegEx.create_from_string(POWER_PATTERN)
-	var found := power_marker.search(hero.text)
-	var power_chip := chip(POWER_CHIP % hero.power_cost)
-	if found == null:
-		return _joined(PackedStringArray(), hero.text.strip_edges()) + "\n" + power_chip
-	var passive := hero.text.substr(0, found.get_start()).strip_edges()
-	var power := hero.text.substr(found.get_end()).strip_edges()
-	return escaped(passive) + "\n" + _joined(PackedStringArray([power_chip]), power)
+	return escaped(hero.text.strip_edges())
 
 
 ## « Assaut 2 », « Avant-poste ».

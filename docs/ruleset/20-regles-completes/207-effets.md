@@ -150,17 +150,17 @@ Aucun Invariant.
 
 **207.5.14** [ACTÉ] Un effet peut cibler un Spell qui se trouve sur la pile, ce que 207.5.13 n'exclut pas (décision 0087 ; voir 201.3.8 et 207.5.11).
 
-**207.5.15** [ACTÉ] Un effet ne cible ni un déploiement, ni une action normale, ni le pouvoir d'un Hero, ni un effet déclenché qui se trouve sur la pile (décision 0087 ; voir 207.5.14).
+**207.5.15** [ACTÉ] Un effet ne cible ni un déploiement, ni une action normale, ni un effet déclenché qui se trouve sur la pile (décisions 0087 et 0208 ; voir 207.5.14).
 
 **207.5.16** [ACTÉ] Une entrée de la pile ne se cible jamais elle-même, ni à son ajout à la pile, ni ensuite (décision 0088 ; voir 207.5.1).
 
-**207.5.17** [ACTÉ] Un joueur peut annoncer l'utilisation du pouvoir de son Hero qui exige une cible même s'il n'existe aucune cible légale (décision 0185 ; voir 202.3.12, 207.5.8 et 208.1.4).
+**207.5.17** Supprimée en édition 0.42, voir décision 0208.
 
-**207.5.17a** [ACTÉ] Une utilisation du pouvoir du Hero annoncée selon 207.5.17 n'a pas lieu à sa résolution (décision 0185 ; voir 200.4.1 et 207.5.5).
+**207.5.17a** Supprimée en édition 0.42, voir décision 0208.
 
-**207.5.17b** [ACTÉ] Le coût payé pour une utilisation du pouvoir du Hero annoncée selon 207.5.17 reste dépensé (décision 0185 ; voir 203.3.3 et 207.5.7).
+**207.5.17b** Supprimée en édition 0.42, voir décision 0208.
 
-**207.5.17c** [ACTÉ] Une utilisation du pouvoir du Hero annoncée selon 207.5.17 compte pour la limite de 202.3.14 (décision 0185 ; voir 202.3.17).
+**207.5.17c** Supprimée en édition 0.42, voir décision 0208.
 
 ## 207.6 Contrecarrer
 
@@ -168,7 +168,7 @@ Aucun Invariant.
 
 **207.6.2** [ACTÉ] Contrecarrer ne vise qu'un Spell qui se trouve sur la pile (décision 0075 ; voir 201.3.8 et 207.5.1a).
 
-**207.6.3** [ACTÉ] Contrecarrer ne vise ni un déploiement, ni une action normale, ni le pouvoir d'un Hero, ni un effet déclenché (décision 0075 ; voir 207.6.2).
+**207.6.3** [ACTÉ] Contrecarrer ne vise ni un déploiement, ni une action normale, ni un effet déclenché (décisions 0075 et 0208 ; voir 207.6.2).
 
 **207.6.4** [ACTÉ] Un Spell contrecarré n'a pas lieu (décision 0075 ; voir 207.6.2).
 

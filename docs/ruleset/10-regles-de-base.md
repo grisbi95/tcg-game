@@ -12,7 +12,7 @@ Le livret suit l'ordre d'une première partie. Le tableau donne, pour chaque par
 | 2 | Préparer une partie : deck, Sources, main, mulligan | 201, 203, 204 | 1 |
 | 3 | Le tour : début, phase principale, fin | 204 | 1 |
 | 4 | L'Essence et les Sources | 203 | 1 |
-| 5 | Jouer ses cartes : déploiement, Spells, Gear, pouvoir du Hero | 202, 205, 207 | 1 |
+| 5 | Jouer ses cartes : déploiement, Spells, Gear | 202, 205, 207 | 1 |
 | 6 | Bouger et combattre | 205, 206 | 2 |
 | 7 | Répondre : la pile et la priorité | 208 | 2 |
 | 8 | Effets et mots-clés | 207, 210 | 1 |

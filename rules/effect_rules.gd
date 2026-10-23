@@ -55,7 +55,7 @@ static func end_effects_on_piece(state: DuelState, piece: Piece, events: Array[D
 	state.active_effects = remaining
 
 
-## 207.5.8, 207.5.10, 207.5.17 : nombre de cibles légales pour `spec` d'une entrée de `owner`.
+## 207.5.8, 207.5.10 : nombre de cibles légales pour `spec` d'une entrée de `owner`.
 static func legal_target_count(
 	state: DuelState, owner: DuelState.PlayerSide, spec: TargetSpec
 ) -> int:

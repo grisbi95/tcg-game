@@ -8,7 +8,7 @@ Complète le `CLAUDE.md` racine pour `rules/` ; décisions 0001, 0003, 0004, 000
 | --- | --- | --- |
 | `duel_engine.gd` | — | Façade : `start_new_duel`, `start_from_state` (tests), `validate`, `submit`, `advance_clock`, `clock_owners`, `awaited_players`, requêtes en lecture pour la vue. Médiateur sans règle propre (`code-guidelines.md` §5) : après chaque intention, il enchaîne lui-même les étapes qui la suivent (effets en attente par `TriggerRules`, retour de la main par `StackRules`, suite de la fin du tour par `TurnRules`) et aiguille la résolution de chaque entrée de pile vers le module de son genre, que les modules ne déclenchent pas entre eux, et résout aussitôt, dans la même soumission, une pile qui contient une entrée sans réponse (208.7.13, décision 0046) ; détail aux commentaires de `_settle` et `_resolve_stack` dans `duel_engine.gd`. |
 | `zone_rules.gd` | 201 | zones, limite de main, appartenance, construction du deck, passage d'une pièce sur une case (`move_piece`) |
-| `card_rules.gd` | 202 | Gear (annonce, attachement, remplacement, retour en main), pouvoir du Hero |
+| `card_rules.gd` | 202 | Gear (annonce, attachement, remplacement, retour en main) |
 | `essence_rules.gd` | 203 | paiement à l'annonce, incliner, recycler, Fonte, réserve d'Essence (203.6, 0026) |
 | `preparation_rules.gd` | 204.1, 204.2 | préparation par `DuelSetup` (0012), mulligan simultané exécuté à la dernière réponse, joueur A puis B (0013, 0015) et Écart ; appelle `TurnRules` (premier tour, pioche), jamais l'inverse |
 | `turn_rules.gd` | 204.3 à 204.5 | début de tour (204.3.8, réveil et redressement compris), pioche, fin de tour (204.5) |
@@ -45,11 +45,11 @@ Complète le `CLAUDE.md` racine pour `rules/` ; décisions 0001, 0003, 0004, 000
 
 ## Ajouter un champ d'état
 
-Le champ **et** sa copie dans `clone()` de la même classe, puis une valeur non par défaut dans `_build_full_state()` du test de clonage : le test échoue sinon. Un enum porté par l'état est journalisable : ajouter à la fin.
+Le champ **et** sa copie dans `clone()` de la même classe, puis une valeur non par défaut dans `_build_full_state()` du test de clonage : le test échoue sinon. Un enum enregistré dans un fichier (journal, JSON, `.tres`, CSV) prend ses nouvelles valeurs à la fin et ne se réordonne pas ; une valeur devenue inutile d'un enum non enregistré se supprime (décision 0047).
 
 ## Invariants à ne pas casser
 
-- `StackEntry.allows_response` est posé à la naissance de l'entrée (annonce : son genre et le plateau à l'annonce, 208.7.1 à 208.7.7 ; effet déclenché : `DuelState.triggers_allow_response`, que `add_to_stack`, la résolution de chaque entrée, `start_turn` et `apply_end_turn` fixent) ; une pile qui contient une entrée sans réponse ne reste jamais en attente d'une passe (elle attend seulement un choix d'ordre ou de cibles, décision 0009).
+- `StackEntry.allows_response` est posé à la naissance de l'entrée (annonce : son genre et le plateau à l'annonce, 208.7.1 à 208.7.6 ; effet déclenché : `DuelState.triggers_allow_response`, que `add_to_stack`, la résolution de chaque entrée, `start_turn` et `apply_end_turn` fixent) ; une pile qui contient une entrée sans réponse ne reste jamais en attente d'une passe (elle attend seulement un choix d'ordre ou de cibles, décision 0009).
 - Aléa, heure et Node : règle du `CLAUDE.md` racine §3 ; concrètement, jamais `randi()` ni `Array.shuffle()`.
 - Une `CardInstance` est dans une seule zone à la fois : la déplacer, jamais la copier. Une pièce qui revient sur le plateau reçoit un nouveau `piece_id`.
 - La Force actuelle se calcule par `ForceRules`, jamais ne se stocke.

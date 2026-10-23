@@ -31,12 +31,6 @@ func card_announcement(card_id: int, target: SelectionTarget) -> DuelIntent:
 	return cast
 
 
-func hero_power_announcement(target: SelectionTarget) -> UseHeroPower:
-	var power := UseHeroPower.new(_side, _copy_payment())
-	target.assign_to(power)
-	return power
-
-
 ## Réponse à l'attente CHOOSE_TARGETS, avec `target`.
 func targets_answer(target: SelectionTarget) -> ChooseTargets:
 	var answer := ChooseTargets.new(_side)
@@ -56,10 +50,6 @@ func card_targets(card_id: int) -> Array[SelectionTarget]:
 	return _legal_targets(
 		func(target: SelectionTarget) -> DuelIntent: return card_announcement(card_id, target)
 	)
-
-
-func hero_power_targets() -> Array[SelectionTarget]:
-	return _legal_targets(hero_power_announcement)
 
 
 func decision_targets() -> Array[SelectionTarget]:
@@ -83,12 +73,6 @@ func is_card_announcement_possible(card_id: int) -> bool:
 	if is_legal(card_announcement(card_id, SelectionTarget.new())):
 		return true
 	return not card_targets(card_id).is_empty()
-
-
-func is_hero_power_possible() -> bool:
-	if is_legal(hero_power_announcement(SelectionTarget.new())):
-		return true
-	return not hero_power_targets().is_empty()
 
 
 ## La carte `card_id` de la main peut être jouée maintenant d'une manière au moins.

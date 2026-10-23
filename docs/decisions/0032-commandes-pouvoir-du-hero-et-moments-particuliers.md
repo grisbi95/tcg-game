@@ -1,6 +1,6 @@
 # 0032 — Commandes, pouvoir du Hero et moments particuliers de l'écran
 
-- Statut : acceptée ; complétée par 0036
+- Statut : acceptée ; complétée par 0036 ; point 3 modifié par 0047
 - Date : 2026-10-20
 - Décideur : créateur du projet
 - Périmètre : écran de duel (`ui/`, étape 2.3)

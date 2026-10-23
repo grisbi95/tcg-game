@@ -407,11 +407,22 @@
 - Q-113, Q-114 et Q-115 tranchées le 23 octobre 2026, même édition 0.41, décision 0207 complétée. Identifiants ajoutés : 205.6.16, 205.6.17. Identifiant modifié : 205.6.8 (la carte reste sur la pile avec le combat en attente). Identifiant dont seul le renvoi change : 201.3.8. Chapitre 208 non scindé (61 identifiants), comme le chapitre 207 (décision 0116). Glossaire : renvois de Combat en attente étendus à 205.6.17. Questions Q-113, Q-114 et Q-115 descendues dans Tranchées.
 - [README.md](README.md) : édition courante passée à 0.41.
 
-## 0.42 · 23 octobre 2026 · majeure · pioche de 1 carte par tour
+## 0.42 · 23 octobre 2026 · majeure · le Hero n'a pas de pouvoir
 
-- Pioche du début du tour passée de 2 cartes à 1 carte, dans [204-tour.md](20-regles-completes/204-tour.md), section 204.3. Identifiant modifié : 204.3.6 (toujours PROVISOIRE, même mesure : taille de main moyenne par tour, Essence inutilisée, tour où le deck se vide). Identifiants non modifiés : 204.1.15, 204.3.7, 204.3.8 et les règles de mulligan.
-- Aucun terme ajouté ni modifié au glossaire. Aucune question ouverte créée ni tranchée.
-- Textes relus pour une mention de la pioche de 2 cartes comme règle courante : aucun trouvé, aucun texte modifié hors 204.3.6, la décision 0031 et le README. Livret [10-regles-de-base.md](10-regles-de-base.md), [00-vision.md](00-vision.md), glossaire, [protocole.md](70-playtest/protocole.md) et [decks-de-test.md](70-playtest/decks-de-test.md) ne citent pas le nombre de cartes piochées par tour.
-- Décision marquée d'une ligne en tête : 0031 (remplacée en partie).
-- Décision associée : [0208](40-decisions/0208-pioche-de-1-carte-par-tour.md), qui remplace en partie [0031](40-decisions/0031-pioche-de-2-cartes-par-tour.md).
+- Pouvoir du Hero supprimé : le passif est la seule capacité du texte de la carte Hero. Identifiants supprimés, identifiants conservés avec mention de suppression : 202.3.12, 202.3.13, 202.3.14, 202.3.15, 202.3.16, 202.3.17 ([202-cartes.md](20-regles-completes/202-cartes.md)), 204.4.4 ([204-tour.md](20-regles-completes/204-tour.md)), 207.5.17, 207.5.17a, 207.5.17b, 207.5.17c ([207-effets.md](20-regles-completes/207-effets.md)), 208.1.4, 208.7.7 ([208-pile-et-priorite.md](20-regles-completes/208-pile-et-priorite.md)). Identifiants modifiés : 202.4.6 (la source « pouvoir d'un Hero » est retirée), 207.5.15 et 207.6.3 (la mention du pouvoir d'un Hero est retirée). Identifiants dont seuls les renvois changent, sans changement de sens : 203.3.2, 203.6.11, 209.2.10. Identifiants inchangés : 202.3.11, 202.3.18.
+- Glossaire : Pouvoir marqué « Retiré en édition 0.42 » ; Coût ramené à « Valeur que porte toute carte de deck » ; renvois retirés dans Annoncer, Cible légale et Sans réponse.
+- Question ouverte Q-099 (pouvoir du Hero à plusieurs cibles), sans objet, descendue dans Tranchées.
+- Playtest : [decks-de-test.md](70-playtest/decks-de-test.md) (lignes Pouvoir et Coût du pouvoir retirées) et [protocole.md](70-playtest/protocole.md) (Hero de test, règles du Hero éprouvées, mesure « Carte jouée »). Hero de test : passif inchangé (les Units alliées adjacentes au Hero ont +1 Force), pouvoir et coût de 2 Essence retirés.
+- Livret [10-regles-de-base.md](10-regles-de-base.md) : « pouvoir du Hero » retiré de la partie 5, sur consigne explicite.
+- Décisions marquées d'une ligne en tête : 0018 (remplacée en partie, le passif reste), 0062, 0185 (remplacées), 0066 et 0170 (remplacées en partie, leur partie sur le pouvoir).
+- Décision associée : [0208](40-decisions/0208-le-hero-n-a-pas-de-pouvoir.md). Principe de conception sur le passif consigné dans la décision ; `30-guides-de-design/` n'existe pas encore.
 - [README.md](README.md) : édition courante passée à 0.42.
+
+## 0.43 · 23 octobre 2026 · majeure · pioche de 1 carte par tour
+
+- Pioche du début du tour ramenée de 2 cartes à 1 carte, valeur PROVISOIRE à mesurer en playtest : taille de main moyenne par tour, Essence inutilisée, tour où le deck se vide. Identifiant modifié : 204.3.6 ([204-tour.md](20-regles-completes/204-tour.md)), décisions citées 0031 et 0209. Identifiants inchangés : 204.1.15, 204.3.7, 204.3.8 et les règles de mulligan.
+- Aucun terme ajouté ni modifié au glossaire. Aucune question ouverte créée ni tranchée.
+- Textes relus sans modification : glossaire, livret [10-regles-de-base.md](10-regles-de-base.md), [protocole.md](70-playtest/protocole.md) et [decks-de-test.md](70-playtest/decks-de-test.md) (y compris les textes de l'édition 0.42) n'énoncent pas de pioche de 2 cartes par tour.
+- Décision 0031 marquée d'une ligne en tête (remplacée en partie : nombre de cartes piochées à chaque tour).
+- Décision associée : [0209](40-decisions/0209-pioche-de-1-carte-par-tour.md). Numéro 0208 réservé à la décision de l'édition 0.42.
+- [README.md](README.md) : édition courante passée à 0.43.

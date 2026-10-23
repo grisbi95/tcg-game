@@ -33,7 +33,7 @@ static func resolves_at_once(state: DuelState) -> bool:
 	return state.stack.any(func(entry: StackEntry) -> bool: return not entry.allows_response)
 
 
-## 208.1.6 à 208.1.11, 202.3.15, 202.3.16 : annonce du joueur actif, phase principale, pile vide.
+## 208.1.6 à 208.1.11 : annonce du joueur actif, phase principale, pile vide.
 static func validate_main_phase_with_empty_stack(
 	state: DuelState, side: DuelState.PlayerSide
 ) -> IntentRejected.RejectReason:

@@ -282,13 +282,10 @@ func test_207_6_3_counter_spell_aims_at_no_other_entry_kind() -> void:
 	var unit_id := _place(A, UNIT_ID, "B2")
 	_builder.push_deploy(card, DuelStateBuilder.cell("B1"))
 	_builder.push_normal_action(unit_id, DuelStateBuilder.cell("B3"))
-	for kind: StackEntry.StackEntryKind in [
-		StackEntry.StackEntryKind.HERO_POWER, StackEntry.StackEntryKind.TRIGGERED_EFFECT
-	]:
-		var entry := StackEntry.new()
-		entry.kind = kind
-		entry.owner = A
-		_builder.push_stack_entry(entry)
+	var triggered := StackEntry.new()
+	triggered.kind = StackEntry.StackEntryKind.TRIGGERED_EFFECT
+	triggered.owner = A
+	_builder.push_stack_entry(triggered)
 	var spell_id := _builder.push_spell(_builder.make_card_instance(A, SPELL_ID))
 	var state := _builder.build()
 	var legal := EffectRules.legal_target_ids(state, B, _counter().target, DuelState.NO_ID)

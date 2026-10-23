@@ -104,17 +104,17 @@ Aucun Invariant.
 
 **202.3.11** [ACTÉ] Le texte de la carte Hero porte un passif (décision 0018).
 
-**202.3.12** [ACTÉ] Le texte de la carte Hero porte un pouvoir (décision 0018).
+**202.3.12** Supprimée en édition 0.42, voir décision 0208.
 
-**202.3.13** [ACTÉ] La carte Hero porte le coût en Essence de son pouvoir (décision 0062 ; voir 202.3.12).
+**202.3.13** Supprimée en édition 0.42, voir décision 0208.
 
-**202.3.14** [ACTÉ] Un joueur utilise le pouvoir de son Hero au plus une fois par tour (décision 0062).
+**202.3.14** Supprimée en édition 0.42, voir décision 0208.
 
-**202.3.15** [ACTÉ] Un joueur n'annonce l'utilisation du pouvoir de son Hero que pendant sa phase principale (décision 0062 ; voir 208.1.4).
+**202.3.15** Supprimée en édition 0.42, voir décision 0208.
 
-**202.3.16** [ACTÉ] Un joueur n'annonce l'utilisation du pouvoir de son Hero que si la pile est vide (décision 0062 ; voir 208.1.4).
+**202.3.16** Supprimée en édition 0.42, voir décision 0208.
 
-**202.3.17** [ACTÉ] Une utilisation du pouvoir du Hero compte pour la limite de 202.3.14 dès son annonce, même si elle n'a pas lieu (décision 0066 ; voir 202.3.14, 205.4.7 et 208.1.4).
+**202.3.17** Supprimée en édition 0.42, voir décision 0208.
 
 **202.3.18** [ACTÉ] Le passif du Hero est un effet statique, soumis aux règles de la section 207.2 (décision 0101 ; voir 202.3.11 et 207.2.1).
 
@@ -132,7 +132,7 @@ Aucun Invariant.
 
 **202.4.5a** [ACTÉ] Après sa création, un jeton peut recevoir un effet d'une source autre que l'effet qui le crée, soit un Gear attaché à ce jeton, soit un Spell, soit une aura (décision 0141 ; voir 200.1.1, 202.2.8, 202.4.5, 206.5.4 et 207.2.8).
 
-**202.4.6** [ACTÉ] Un jeton ne se crée que par l'effet d'une entrée de la pile, soit un Spell, un effet déclenché ou le pouvoir d'un Hero (décision 0104 ; voir 201.5.4, 202.4.1 et 208.1.4).
+**202.4.6** [ACTÉ] Un jeton ne se crée que par l'effet d'une entrée de la pile, soit un Spell, soit un effet déclenché (décisions 0104 et 0208 ; voir 201.5.4 et 202.4.1).
 
 **202.4.7** [ACTÉ] Un effet statique ne crée pas de jeton (décision 0104 ; voir 202.4.6 et 207.2.1).
 

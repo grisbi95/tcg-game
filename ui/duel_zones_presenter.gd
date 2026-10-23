@@ -84,15 +84,6 @@ func refresh_sources(model: DuelViewModel, shown: SelectionSnapshot) -> void:
 		view.set_interactive(side == model.get_viewer())
 
 
-## Décision 0032, point 3 : seul le joueur qui a l'appareil clique sa carte Hero.
-func refresh_hero_cards(model: DuelViewModel, shown: SelectionSnapshot) -> void:
-	for side: DuelState.PlayerSide in DuelState.SIDES:
-		var is_viewer := side == model.get_viewer()
-		_hero_cards[side].set_clickable(is_viewer)
-		_hero_cards[side].set_power_usable(is_viewer and shown.can_use_hero_power)
-		_hero_cards[side].set_power_chosen(is_viewer and shown.is_hero_power_chosen)
-
-
 # La pièce est posée sur sa case avant d'être remplie : ses nœuds n'existent qu'une fois en scène.
 func _fill_piece(piece_view: PieceView, piece: Piece, model: DuelViewModel) -> void:
 	var gear := model.gear_definition(piece)

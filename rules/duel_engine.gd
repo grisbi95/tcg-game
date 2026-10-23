@@ -202,8 +202,6 @@ func _route_play_validation(intent: DuelIntent) -> IntentRejected.RejectReason:
 func _route_announcement_validation(intent: DuelIntent) -> IntentRejected.RejectReason:
 	if intent is AttachGear:
 		return CardRules.validate_attach_gear(_state, intent as AttachGear)
-	if intent is UseHeroPower:
-		return CardRules.validate_hero_power(_state, intent as UseHeroPower)
 	if intent is DeployCard:
 		return ActionRules.validate_deploy(_state, intent as DeployCard)
 	if intent is TakeNormalAction:
@@ -251,8 +249,6 @@ func _resolve_entry(entry: StackEntry, events: Array[DuelEvent]) -> void:
 			ActionRules.resolve_normal_action(_state, entry, events)
 		StackEntry.StackEntryKind.SPELL:
 			SpellRules.resolve_spell(_state, entry, events)
-		StackEntry.StackEntryKind.HERO_POWER:
-			CardRules.resolve_hero_power(_state, entry, events)
 		StackEntry.StackEntryKind.ATTACH_GEAR:
 			CardRules.resolve_attach_gear(_state, entry, events)
 		StackEntry.StackEntryKind.TRIGGERED_EFFECT:
@@ -322,5 +318,3 @@ func _apply(intent: DuelIntent, events: Array[DuelEvent]) -> void:
 		SpellRules.announce_spell(_state, intent as CastSpell, events)
 	elif intent is AttachGear:
 		CardRules.announce_gear(_state, intent as AttachGear, events)
-	elif intent is UseHeroPower:
-		CardRules.announce_hero_power(_state, intent as UseHeroPower, events)

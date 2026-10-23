@@ -171,7 +171,6 @@ func _connect_gestures() -> void:
 	_column.stack_entry_pressed.connect(_selection.press_stack_entry)
 	for side: DuelState.PlayerSide in DuelState.SIDES:
 		_sources[side].source_pressed.connect(_selection.press_source)
-		_hero_cards[side].hero_card_pressed.connect(_selection.press_hero_power)
 
 
 func _connect_previews() -> void:
@@ -309,14 +308,13 @@ func _refresh_zones_around(hand_cards: Array[HandView.HandCard]) -> void:
 	_refresh_marks()
 
 
-# Ce que la sélection change : marques, Sources, pouvoir du Hero et centre de la colonne.
+# Ce que la sélection change : marques, Sources et centre de la colonne.
 func _refresh_marks() -> void:
 	var shown := _selection.snapshot()
 	_board.show_highlighted_cells(shown.legal_cells)
 	_zones.show_piece_marks(shown)
 	_hand.show_marks(shown.playable_card_ids, _chosen_card_ids(shown))
 	_zones.refresh_sources(_model, shown)
-	_zones.refresh_hero_cards(_model, shown)
 	_center.show_center(_model, shown)
 
 

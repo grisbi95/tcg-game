@@ -2,8 +2,7 @@
 
 extends GdUnitTestSuite
 ## Pièces issues des cartes et des effets (ruleset 0.39, sections 202.2, 202.3 et 202.4) : Unit,
-## Building, Gear sans case, Hero sur le plateau, jetons. Gear et pouvoir du Hero :
-## test_202_gear_and_hero_power.gd.
+## Building, Gear sans case, Hero sur le plateau, jetons. Gear : test_202_gear.gd.
 
 const SOLDIER: StringName = &"piece_soldier"
 const WEAK: StringName = &"piece_weak"
