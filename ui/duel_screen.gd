@@ -167,19 +167,11 @@ func _setup_views(duel_setup: DuelSetup) -> void:
 	_column.setup(config.turn_time_msec, config.response_time_msec, bottom_side)
 	if bottom_side != DuelState.PlayerSide.A:
 		_board.show_from_side(bottom_side)
-		_swap_player_zones()
+		for zones: Dictionary in [_sources, _deck_corners, _hero_cards]:
+			ScreenSides.swap(zones)
 	for side: DuelState.PlayerSide in DuelState.SIDES:
 		_setup_player_zones(side, duel_setup, side == bottom_side)
 	_connect_previews()
-
-
-# Décision 0050 : les zones nommées A sont en bas, celles nommées B en haut ; vu de B, elles
-# changent de joueur.
-func _swap_player_zones() -> void:
-	for zones: Dictionary in [_sources, _deck_corners, _hero_cards]:
-		var zone_a: Variant = zones[DuelState.PlayerSide.A]
-		zones[DuelState.PlayerSide.A] = zones[DuelState.PlayerSide.B]
-		zones[DuelState.PlayerSide.B] = zone_a
 
 
 # Décision 0030 : le camp du bas a compteurs et libellé au-dessus ; celui du haut, en dessous.

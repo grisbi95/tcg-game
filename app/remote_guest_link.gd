@@ -32,7 +32,8 @@ func receive(message: RemoteMessage) -> Array[DuelEvent]:
 		RemoteMessage.Kind.HELLO:
 			_incompatibility = message.find_incompatibility(_edition)
 		RemoteMessage.Kind.SETUP:
-			events = _start(message.setup)
+			if _incompatibility.is_empty():
+				events = _start(message.setup)
 		RemoteMessage.Kind.JOURNAL_ENTRY:
 			if _is_started:
 				_journal.record(message.entry)
