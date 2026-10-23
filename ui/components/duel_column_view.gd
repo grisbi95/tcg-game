@@ -67,8 +67,15 @@ func _ready() -> void:
 
 
 ## Temps des joueurs : un temps de tour part de `turn_duration_msec`, un temps de réponse de
-## `response_duration_msec` (209.4.3).
-func setup(turn_duration_msec: int, response_duration_msec: int) -> void:
+## `response_duration_msec` (209.4.3) ; le temps de `bottom_side` est en bas (décision 0050).
+func setup(
+	turn_duration_msec: int,
+	response_duration_msec: int,
+	bottom_side: DuelState.PlayerSide = DuelState.PlayerSide.A
+) -> void:
+	if bottom_side != DuelState.PlayerSide.A:
+		_swap_sides(_clocks)
+		_swap_sides(_concede_buttons)
 	for side: DuelState.PlayerSide in _clocks:
 		_clocks[side].setup(
 			side, PlayerNames.display_name(side), turn_duration_msec, response_duration_msec
@@ -156,6 +163,12 @@ func show_concede(side: DuelState.PlayerSide) -> void:
 func hide_concede() -> void:
 	for button: Button in _concede_buttons.values():
 		button.visible = false
+
+
+static func _swap_sides(nodes: Dictionary) -> void:
+	var node_a: Variant = nodes[DuelState.PlayerSide.A]
+	nodes[DuelState.PlayerSide.A] = nodes[DuelState.PlayerSide.B]
+	nodes[DuelState.PlayerSide.B] = node_a
 
 
 func _set_actor(text: String, side: DuelState.PlayerSide) -> void:

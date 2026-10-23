@@ -1,10 +1,11 @@
 class_name BoardView
 extends GridContainer
-## Plateau 5×5 (201.2 ; décision 0030) : 25 CellView, la rangée 1 en bas et la rangée 5 en haut,
-## les colonnes A à E de gauche à droite ; le joueur A est toujours en bas (201.2.5). Les repères
-## « A » à « E » sont sous la grille, « 1 » à « 5 » à gauche. Le parent pose la grille au pixel :
-## le coin haut-gauche de la grille est à `GRID_OFFSET` du coin du plateau. Les pièces viennent du
-## parent ; un clic sur une case, pièce comprise, devient `cell_pressed`.
+## Plateau 5×5 (201.2 ; décision 0030) : 25 CellView, la rangée 1 en bas et la rangée 5 en haut, les
+## colonnes A à E de gauche à droite : le joueur A en bas (201.2.5). Décision 0050 : vu du joueur B,
+## le plateau est tourné d'un demi-tour, rangée 5 en bas et colonne E à gauche. Les repères « A » à
+## « E » sont sous la grille, « 1 » à « 5 » à gauche. Le parent pose la grille au pixel : le coin
+## haut-gauche de la grille est à `GRID_OFFSET` du coin du plateau. Les pièces viennent du parent ;
+## un clic sur une case, pièce comprise, devient `cell_pressed`.
 
 signal cell_pressed(cell: Vector2i)
 
@@ -29,14 +30,16 @@ var _cell_views: Dictionary[Vector2i, CellView] = {}
 func _ready() -> void:
 	add_theme_constant_override("h_separation", CELL_GAP)
 	add_theme_constant_override("v_separation", CELL_GAP)
-	for row: int in range(BoardGeometry.ROW_COUNT - 1, -1, -1):
-		add_child(_make_coordinate(str(row + 1), true))
-		for column: int in BoardGeometry.COLUMN_COUNT:
-			_add_cell(Vector2i(column, row))
-	add_child(Control.new())
-	for column: int in BoardGeometry.COLUMN_COUNT:
-		var letter := BoardGeometry.cell_name(Vector2i(column, 0)).left(1)
-		add_child(_make_coordinate(letter, false))
+	_build(DuelState.PlayerSide.A)
+
+
+## Décision 0050 : redessine la grille vue du côté de `bottom_side`, avant de poser les pièces.
+func show_from_side(bottom_side: DuelState.PlayerSide) -> void:
+	for child: Node in get_children():
+		remove_child(child)
+		child.queue_free()
+	_cell_views.clear()
+	_build(bottom_side)
 
 
 ## Place `piece_view` sur la case `cell`, à la place de sa pièce précédente.
@@ -54,6 +57,23 @@ func clear_pieces() -> void:
 func show_highlighted_cells(cells: Array[Vector2i]) -> void:
 	for cell: Vector2i in _cell_views:
 		_cell_views[cell].set_highlighted(cells.has(cell))
+
+
+# Rangées de haut en bas, chacune précédée de son repère, puis la ligne des lettres.
+func _build(bottom_side: DuelState.PlayerSide) -> void:
+	var rows := range(BoardGeometry.ROW_COUNT - 1, -1, -1)
+	var column_indexes := range(BoardGeometry.COLUMN_COUNT)
+	if bottom_side != DuelState.PlayerSide.A:
+		rows.reverse()
+		column_indexes.reverse()
+	for row: int in rows:
+		add_child(_make_coordinate(str(row + 1), true))
+		for column: int in column_indexes:
+			_add_cell(Vector2i(column, row))
+	add_child(Control.new())
+	for column: int in column_indexes:
+		var letter := BoardGeometry.cell_name(Vector2i(column, 0)).left(1)
+		add_child(_make_coordinate(letter, false))
 
 
 func _add_cell(cell: Vector2i) -> void:

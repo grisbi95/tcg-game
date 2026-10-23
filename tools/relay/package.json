@@ -1,0 +1,17 @@
+{
+  "name": "tcg-relay",
+  "private": true,
+  "description": "Relais WebSocket du duel à distance (décisions 0043 et 0049) : apparie deux navigateurs par un code de partie et transmet leurs messages, sans règle ni état durable.",
+  "type": "module",
+  "main": "server.js",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "ws": "8.21.3"
+  }
+}

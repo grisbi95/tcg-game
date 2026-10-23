@@ -2,15 +2,18 @@ class_name DuelScreen
 extends Control
 ## Écran de duel de l'étape 2.3 (décisions 0020, 0028 à 0032) : assemble les composants de
 ## `ui/components/` aux cotes de 0030 (repère 1920×1080, marges de 16 px, joueur A en bas), les
-## câble à `DuelSelection` et à `DuelHost`, et les recale sur `get_state()` après chaque lot
+## câble à `DuelSelection` et à une `DuelSession` (décision 0050 : même appareil, hôte ou second
+## écran d'un duel à distance), et les recale sur `get_state()` après chaque lot
 ## d'événements joué par `EventPlayer`. Aucune règle ici : seul `DuelSelection` fait d'un geste une
 ## intention, et `DuelViewModel` filtre ce que voit le joueur de l'appareil (201.4).
 ##
-## Flux : geste → `DuelSelection` → `intent_chosen` → `DuelHost.submit_human` → événements →
+## Flux : geste → `DuelSelection` → `intent_chosen` → `DuelSession.submit` → événements →
 ## `EventPlayer` → `batch_played` → `confirm_events_played` → recalage. `InputShield` bloque les
-## commandes pendant la lecture et hors du tour d'un humain. `OverlayLayer`, au-dessus du bouclier,
-## porte la confirmation d'abandon et le panneau de fin (décision 0036). Entre deux humains sur le
-## même écran, le relais est confirmé aussitôt, sans rideau (décision 0048).
+## commandes pendant la lecture et quand le joueur de l'écran n'est pas attendu. `OverlayLayer`,
+## au-dessus du bouclier, porte la confirmation d'abandon et le panneau de fin (décision 0036).
+## Entre deux humains sur le même écran, le relais est confirmé aussitôt, sans rideau (décision
+## 0048). Le camp du joueur de l'écran est en bas : A, sauf pour le second écran d'un duel à
+## distance (décision 0050).
 
 ## Le panneau de fin demande une nouvelle partie : l'autre joueur commence, nouvelle graine.
 signal rematch_requested
@@ -18,10 +21,12 @@ signal rematch_requested
 signal setup_requested
 ## Le panneau de fin demande la fiche de relevé de la partie.
 signal sheet_requested
+## Duel à distance : la connexion est perdue ou les navigateurs sont incompatibles (`reason`).
+signal connection_lost(reason: String)
 
 var _catalog: Catalog
 var _engine: DuelEngine
-var _host: DuelHost
+var _session: DuelSession
 var _selection: DuelSelection = DuelSelection.new()
 var _previewer: DuelPreviewer = DuelPreviewer.new()
 var _model: DuelViewModel
@@ -64,37 +69,43 @@ func _ready() -> void:
 	_scripted.intent_chosen.connect(_on_intent_chosen)
 	_event_player.batch_played.connect(_on_batch_played)
 	_connect_gestures()
-	_connect_previews()
 	_connect_overlays()
 
 
 # Décision 0021 : le temps réel avance sans événement ; les temps se relisent.
 func _process(_delta: float) -> void:
-	if _host == null or _engine.get_state() == null:
+	if _session == null or _engine.get_state() == null:
 		return
-	_event_player.play(_host.tick())
+	_event_player.play(_session.tick())
 	_center.refresh_clocks()
 
 
-## Démarre le duel de `duel_setup`, une seule fois, après l'entrée de l'écran dans l'arbre.
+## Démarre sur cet appareil le duel de `duel_setup`, une seule fois, après l'entrée de l'écran
+## dans l'arbre.
 func start_duel(duel_setup: DuelSetup, config: DuelConfig, catalog: Catalog) -> void:
-	if _host != null:
+	var host := DuelHost.new(DuelEngine.new(catalog, config))
+	start_session(HostedDuelSession.new(host, duel_setup), catalog)
+
+
+## Démarre le duel de `session`, une seule fois, après l'entrée de l'écran dans l'arbre.
+func start_session(session: DuelSession, catalog: Catalog) -> void:
+	if _session != null:
 		push_error("DuelScreen : le duel est déjà démarré")
 		return
 	_catalog = catalog
-	_engine = DuelEngine.new(_catalog, config)
+	_session = session
+	_engine = session.get_engine()
 	_previewer.setup(_preview, _engine)
 	_zones.setup(_board, _engine, _previewer.show_piece, _previewer.hide_preview)
-	_host = DuelHost.new(_engine)
-	_scripted.setup(_engine, _host)
-	_center.setup(_column, _engine, _host)
-	_host.host_state_changed.connect(_on_host_state_changed)
-	var first_events := _host.start(duel_setup)
+	_scripted.setup(_session)
+	_center.setup(_column, _session)
+	_session.session_state_changed.connect(_on_session_state_changed)
+	var first_events := _session.start()
 	if _engine.get_state() == null:
 		push_error("DuelScreen : le duel n'a pas démarré")
 		return
-	_setup_views(duel_setup)
-	_selection.setup(_engine, DuelState.PlayerSide.A)
+	_setup_views(_session.get_setup())
+	_selection.setup(_engine, _session.get_viewer())
 	_selection.selection_changed.connect(_refresh_marks)
 	_refresh_zones()
 	_event_player.play(first_events)
@@ -108,7 +119,17 @@ func play_scripted_intents(intents: Array[DuelIntent]) -> void:
 
 ## Journal de la partie, d'où se lit la fiche de relevé (décision 0042).
 func get_journal() -> DuelJournal:
-	return _host.get_journal()
+	return _session.get_journal()
+
+
+## Vrai pour un duel à distance (décision 0050).
+func is_remote() -> bool:
+	return _session.is_remote()
+
+
+## Ferme la connexion d'un duel à distance, avant de quitter l'écran.
+func close_session() -> void:
+	_session.close()
 
 
 ## Dit au joueur, sous les boutons du panneau de fin, ce qu'est devenue sa demande de fiche.
@@ -142,14 +163,29 @@ func _place_zones() -> void:
 
 func _setup_views(duel_setup: DuelSetup) -> void:
 	var config := _engine.get_state().config
-	_column.setup(config.turn_time_msec, config.response_time_msec)
+	var bottom_side := _session.get_bottom_side()
+	_column.setup(config.turn_time_msec, config.response_time_msec, bottom_side)
+	if bottom_side != DuelState.PlayerSide.A:
+		_board.show_from_side(bottom_side)
+		_swap_player_zones()
 	for side: DuelState.PlayerSide in DuelState.SIDES:
-		_setup_player_zones(side, duel_setup)
+		_setup_player_zones(side, duel_setup, side == bottom_side)
+	_connect_previews()
 
 
-# Décision 0030 : A en bas, compteurs et libellé au-dessus ; B en haut, en dessous.
-func _setup_player_zones(side: DuelState.PlayerSide, duel_setup: DuelSetup) -> void:
-	var is_bottom := side == DuelState.PlayerSide.A
+# Décision 0050 : les zones nommées A sont en bas, celles nommées B en haut ; vu de B, elles
+# changent de joueur.
+func _swap_player_zones() -> void:
+	for zones: Dictionary in [_sources, _deck_corners, _hero_cards]:
+		var zone_a: Variant = zones[DuelState.PlayerSide.A]
+		zones[DuelState.PlayerSide.A] = zones[DuelState.PlayerSide.B]
+		zones[DuelState.PlayerSide.B] = zone_a
+
+
+# Décision 0030 : le camp du bas a compteurs et libellé au-dessus ; celui du haut, en dessous.
+func _setup_player_zones(
+	side: DuelState.PlayerSide, duel_setup: DuelSetup, is_bottom: bool
+) -> void:
 	var source_count := _engine.get_state().config.total_sources_per_player
 	var counter_placement := (
 		SourcesView.CounterPlacement.ABOVE if is_bottom else SourcesView.CounterPlacement.BELOW
@@ -195,30 +231,33 @@ func _connect_overlays() -> void:
 
 
 func _on_intent_chosen(intent: DuelIntent) -> void:
-	_event_player.play(_host.submit_human(intent))
+	_event_player.play(_session.submit(intent))
 
 
-# Décision 0036 : les commandes ne passent que pendant le tour d'un humain ; décision 0048 : le
-# relais est confirmé aussitôt, sans rideau, et l'écran passe au joueur attendu.
-func _on_host_state_changed(host_state: DuelHost.HostState) -> void:
-	_input_shield.visible = host_state != DuelHost.HostState.AWAITING_HUMAN
-	_refresh_overlays(host_state)
+# Décision 0036 : les commandes ne passent que quand le joueur de l'écran est attendu ; le relais
+# entre deux humains est confirmé par la session (décision 0048). Le coup d'un autre joueur
+# (agent, joueur distant) recale aussi l'écran.
+func _on_session_state_changed(session_state: DuelSession.SessionState) -> void:
+	_input_shield.visible = session_state != DuelSession.SessionState.AWAITING_VIEWER
+	_refresh_overlays(session_state)
 	_center.refresh_response_window()
-	match host_state:
-		DuelHost.HostState.RELAY:
-			_host.confirm_relay.call_deferred()
-		DuelHost.HostState.AWAITING_HUMAN:
-			_selection.set_player(_host.get_screen_player())
+	match session_state:
+		DuelSession.SessionState.AWAITING_VIEWER:
+			_selection.set_player(_session.get_viewer())
 			_refresh_zones()
 			_scripted.submit_next.call_deferred()
-		DuelHost.HostState.ENDED:
+		DuelSession.SessionState.AWAITING_OTHER:
+			_refresh_zones()
+		DuelSession.SessionState.ENDED:
 			_refresh_zones()
 			_show_end_panel()
+		DuelSession.SessionState.DISCONNECTED:
+			connection_lost.emit(_session.get_disconnection())
 
 
 # La confirmation d'abandon ne vit que dans l'état qui l'appelle.
-func _refresh_overlays(host_state: DuelHost.HostState) -> void:
-	if host_state != DuelHost.HostState.AWAITING_HUMAN:
+func _refresh_overlays(session_state: DuelSession.SessionState) -> void:
+	if session_state != DuelSession.SessionState.AWAITING_VIEWER:
 		_overlays.hide_concede_confirm()
 	_refresh_concede_button()
 
@@ -226,31 +265,31 @@ func _refresh_overlays(host_state: DuelHost.HostState) -> void:
 # Décision 0042 : la réponse commencée est notée au journal pour le relevé ; la fenêtre reste
 # ouverte (208.6.2).
 func _on_response_started() -> void:
-	_host.begin_response()
+	_session.begin_response()
 
 
-# Décision 0036 : « Abandonner » est pour le joueur qui a l'appareil, en AWAITING_HUMAN, fenêtre
+# Décision 0036 : « Abandonner » est pour le joueur de l'écran quand il est attendu, fenêtre
 # de réponse ouverte ou non (208.6.2) : aucune passe automatique ne ferme la confirmation.
 func _refresh_concede_button() -> void:
-	if _host.get_host_state() == DuelHost.HostState.AWAITING_HUMAN:
-		_column.show_concede(_host.get_screen_player())
+	if _session.get_session_state() == DuelSession.SessionState.AWAITING_VIEWER:
+		_column.show_concede(_session.get_viewer())
 	else:
 		_column.hide_concede()
 
 
 func _on_concede_pressed() -> void:
-	_overlays.show_concede_confirm(_host.get_screen_player())
+	_overlays.show_concede_confirm(_session.get_viewer())
 
 
-# 209.2.5 : le joueur qui a l'appareil abandonne.
+# 209.2.5 : le joueur de l'écran abandonne.
 func _on_concede_confirmed() -> void:
 	_overlays.hide_concede_confirm()
-	_event_player.play(_host.concede(_host.get_screen_player()))
+	_event_player.play(_session.concede())
 
 
 func _show_end_panel() -> void:
 	var state := _engine.get_state()
-	var elapsed_msec := _host.get_journal().total_elapsed_msec()
+	var elapsed_msec := _session.get_journal().total_elapsed_msec()
 	_overlays.show_end(
 		state.result,
 		DuelViewModel.result_text(state.result),
@@ -259,11 +298,11 @@ func _show_end_panel() -> void:
 	)
 
 
-# L'hôte attend la confirmation de chaque lot ; c'est son changement d'état qui recale l'écran.
+# La session attend la confirmation de chaque lot ; c'est son changement d'état qui recale l'écran.
 func _on_batch_played(events: Array[DuelEvent]) -> void:
 	if events.any(func(event: DuelEvent) -> bool: return event is DuelEnded):
 		_final_events = events
-	_host.confirm_events_played()
+	_session.confirm_events_played()
 
 
 # Recalage sur l'état, zone par zone, après des événements ou un changement d'appareil.
@@ -274,7 +313,7 @@ func _refresh_zones() -> void:
 
 func _use_viewer_model() -> void:
 	_previewer.hide_preview()
-	_model = DuelViewModel.new(_engine.get_state(), _catalog, _host.get_screen_player())
+	_model = DuelViewModel.new(_engine.get_state(), _catalog, _session.get_viewer())
 	_previewer.use_model(_model)
 
 

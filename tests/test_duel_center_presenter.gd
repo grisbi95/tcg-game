@@ -294,7 +294,7 @@ func _use_built_state() -> void:
 	_engine.start_from_state(_builder.build())
 	_host = DuelHost.new(_engine, _clock)
 	_presenter = DuelCenterPresenter.new()
-	_presenter.setup(_spy, _engine, _host)
+	_presenter.setup(_spy, HostedDuelSession.new(_host, SetupSamples.setup()))
 
 
 func _show_center(viewer: DuelState.PlayerSide, shown: SelectionSnapshot) -> void:
@@ -337,7 +337,7 @@ func _add_waiting_combat(side: DuelState.PlayerSide) -> int:
 # Montage de duel mené : deux humains, A commence, présentateur câblé sur l'hôte.
 func _show_center_of_duel(viewer: DuelState.PlayerSide) -> void:
 	_presenter = DuelCenterPresenter.new()
-	_presenter.setup(_spy, _engine, _host)
+	_presenter.setup(_spy, HostedDuelSession.new(_host, SetupSamples.setup()))
 	var model := DuelViewModel.new(_engine.get_state(), _engine.get_state().catalog, viewer)
 	_presenter.show_center(model, _shown())
 

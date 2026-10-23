@@ -6,15 +6,16 @@ extends RefCounted
 
 var _column: DuelColumnView
 var _engine: DuelEngine
-var _host: DuelHost
+var _session: DuelSession
 var _center_state: DuelColumnView.CenterState = DuelColumnView.CenterState.TURN
 
 
-## `column` est la colonne pilotée ; `engine` et `host` donnent l'état et le temps réel.
-func setup(column: DuelColumnView, engine: DuelEngine, host: DuelHost) -> void:
+## `column` est la colonne pilotée ; `session` donne l'état, le temps réel et la fenêtre de
+## réponse (décision 0050).
+func setup(column: DuelColumnView, session: DuelSession) -> void:
 	_column = column
-	_engine = engine
-	_host = host
+	_engine = session.get_engine()
+	_session = session
 
 
 ## Recale le centre sur l'état du moteur, `model` pour la pile et `shown` pour les boutons.
@@ -57,12 +58,14 @@ func refresh_clocks() -> void:
 
 
 ## Décision 0029 : la mention de la fenêtre de réponse (208.6.1) se montre sous la pile tant que
-## l'hôte attend un humain qui peut répondre ou passer ; elle n'a pas d'échéance (208.6.2).
+## le joueur de l'écran peut répondre ou passer ; elle n'a pas d'échéance (208.6.2).
 func refresh_response_window() -> void:
 	if _center_state != DuelColumnView.CenterState.STACK:
 		return
-	var is_awaiting_human := _host.get_host_state() == DuelHost.HostState.AWAITING_HUMAN
-	if is_awaiting_human and _host.is_response_window_open():
+	var is_awaiting_viewer := (
+		_session.get_session_state() == DuelSession.SessionState.AWAITING_VIEWER
+	)
+	if is_awaiting_viewer and _session.is_response_window_open():
 		_column.show_response_open()
 	else:
 		_column.hide_response()

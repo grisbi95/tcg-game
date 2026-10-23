@@ -27,7 +27,7 @@ func before_test() -> void:
 	_host.confirm_events_played()
 	_host.confirm_relay()
 	_player = ScriptedIntentsPlayer.new()
-	_player.setup(_engine, _host)
+	_player.setup(HostedDuelSession.new(_host, setup))
 	_chosen = []
 	_player.intent_chosen.connect(func(intent: DuelIntent) -> void: _chosen.append(intent))
 

@@ -23,3 +23,6 @@ CLAUDE.local.md
 /addons/.godot_ai_update/
 /.mcp.json
 override.cfg
+
+# Relais du duel à distance : dépendances Node
+/tools/relay/node_modules/
