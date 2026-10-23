@@ -1,5 +1,7 @@
 # 0066 · Paiement à l'annonce et pouvoir consommé à l'annonce
 
+Remplacée en partie par 0208 (la partie sur le pouvoir du Hero ; le paiement à l'annonce reste).
+
 > Décision consignée le 15 octobre 2026. Statut : ACTÉ. Une décision ne se modifie jamais ; pour revenir dessus, une nouvelle décision la remplace et cette ligne reçoit « Remplacée par NNNN ».
 
 ## Contexte

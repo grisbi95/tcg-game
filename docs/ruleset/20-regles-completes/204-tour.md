@@ -106,7 +106,7 @@ Aucun Invariant.
 
 **204.4.3** [ACTÉ] Pendant sa phase principale, le joueur actif peut jouer des cartes (décision 0035 ; voir 207.1.3, 207.1.6, 208.1.6 et 208.1.8).
 
-**204.4.4** [ACTÉ] Pendant sa phase principale, le joueur actif peut utiliser le pouvoir de son Hero (décision 0035 ; voir 202.3.14, 202.3.15 et 202.3.16).
+**204.4.4** Supprimée en édition 0.42, voir décision 0208.
 
 **204.4.5** [ACTÉ] Pendant sa phase principale, le joueur actif peut faire l'action normale d'une de ses pièces éveillées (décisions 0035 et 0200 ; voir 205.5.3, 208.1.10 et 208.1.11).
 

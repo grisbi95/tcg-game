@@ -13,9 +13,7 @@ Les deux joueurs jouent le même Hero de test et le même deck (décisions 0153 
 | Nom | Capitaine | décisions 0164 et 0173 |
 | PV | 15 PV | décision 0165 ; 202.3.7 |
 | Force | aucune | 202.3.9 |
-| Passif | Les Units alliées adjacentes au Hero ont +1 Force. | décision 0170 ; 202.3.11, 202.3.18 |
-| Pouvoir | Une Unit alliée ciblée a +1 Force jusqu'à la fin du tour. | décision 0170 ; 202.3.12 |
-| Coût du pouvoir | 2 Essence | décision 0170 ; 202.3.13 |
+| Passif | Les Units alliées adjacentes au Hero ont +1 Force. | décisions 0170 et 0208 ; 202.3.11, 202.3.18 |
 
 ## Répartition des 30 cartes
 
