@@ -9,7 +9,7 @@ const SOLDIER_FORCE: int = 2
 const STARTING_SOURCES: int = 2  # 204.1.2
 const SOLDIER_COST: int = 2  # CatalogSamples.unit()
 const SOURCES_RECEIVED_PER_TURN: int = 2  # valeur d'essai : 204.3.1 vaut 1 (PROVISOIRE)
-const CARDS_DRAWN_PER_TURN: int = 2  # 204.3.6
+const CARDS_DRAWN_PER_TURN: int = 1  # 204.3.6
 const OVERKILL_FORCE: int = 40
 const HERO_HEALTH: int = DuelStateBuilder.DEFAULT_HERO_HEALTH
 

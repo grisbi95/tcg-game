@@ -16,7 +16,7 @@ const BUILDING_FORCE: int = 4
 const TOKEN_FORCE: int = 1
 const STRONG_GEAR_BONUS: int = 2
 const GEAR_COST: int = 1  # CatalogSamples.gear()
-const CARDS_PER_TURN: int = 2  # 204.3.6
+const CARDS_PER_TURN: int = 1  # 204.3.6
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
 const B: DuelState.PlayerSide = DuelState.PlayerSide.B
@@ -231,7 +231,7 @@ func _push_aura_deploy(cell_name: String) -> void:
 	_builder.with_priority_player(B)
 
 
-# Deux tours complets pigent quatre cartes par joueur (204.3.6).
+# Deux tours complets pigent deux cartes par joueur (204.3.6).
 func _fill_decks() -> void:
 	for side: DuelState.PlayerSide in [A, B]:
 		for index: int in CARDS_PER_TURN * 2:

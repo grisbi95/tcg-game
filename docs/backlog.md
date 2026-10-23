@@ -15,6 +15,7 @@ Priorité : **haute** = écart au ruleset ou défaut visible en partie ; **moyen
 | Le test de 209.2.3 part d'un Hero déjà à 0 PV au lieu de l'y amener. | 209.2.3 | basse | J2 |
 | Rien ne garantit que la suite tire la décision `OrderTriggers` (ordre des déclencheurs). | 0017 | basse | J2 |
 | `RandomLegalAgent` épuise ses Sources en quelques centaines de pas ; depuis la fin de la défaite au temps (0045), rien ne borne plus un duel aléatoire où les deux agents agissent : `test_random_duels.gd` à revoir à l'étape 2.7. | 0019, 0045 | moyenne | J4 |
+| Depuis la pioche de 1 carte par tour (0.42), deux `RandomLegalAgent` peuvent garder la main pleine sans vider leur deck : la pioche est bloquée par la limite de main, la fatigue n'arrive pas et le duel ne finit pas. `test_duel_host.gd` (0020) passe par une graine choisie à l'essai (2 ; la 3 ne finit pas en 5000 pas) : critère de fin à revoir. | 204.3.6, 201.3.4, 0020 | moyenne | J4 |
 | `RandomLegalAgent` ne remplit jamais sa réserve d'Essence (il paie à l'annonce) : la réserve n'est couverte que par ses tests dédiés. | 203.6.5, 0026 | moyenne | J4 |
 | Les conventions de l'étape 1.3 (zones, Essence, tour) ne sont écrites que dans le code. | `rules/CLAUDE.md` | basse | J2 |
 | `DuelConfig.tie_destroys_both` ne connaît que l'option A de la décision de design 0053 ; `find_errors()` refuse l'option B, premier correctif nommé par 0053. | 206.3.6, 0053 | moyenne | avant J3 |

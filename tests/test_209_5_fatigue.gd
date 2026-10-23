@@ -2,7 +2,7 @@ extends GdUnitTestSuite
 ## Compteur de fatigue à la pioche du début du tour (ruleset 0.30, section 209.5).
 
 const HAND_LIMIT: int = 7  # 201.3.4
-const CARDS_PER_TURN: int = 2  # 204.3.6
+const CARDS_PER_TURN: int = 1  # 204.3.6
 const STARTING_FATIGUE: int = 0  # 209.5.1
 const FIRST_DRAW_EVENT_INDEX: int = 3  # TurnEnded, TurnStarted, SourceReceived
 const HERO_HEALTH: int = DuelStateBuilder.DEFAULT_HERO_HEALTH
@@ -61,14 +61,19 @@ func test_209_5_3_hero_loses_new_counter_value() -> void:
 	var events := _end_turn_of_a()
 	assert_int((events[FIRST_DRAW_EVENT_INDEX] as FatigueIncreased).fatigue_counter).is_equal(3)
 	assert_int((events[FIRST_DRAW_EVENT_INDEX + 1] as HeroLostHealth).amount).is_equal(3)
-	assert_int((events[FIRST_DRAW_EVENT_INDEX + 3] as HeroLostHealth).amount).is_equal(4)
-	assert_int(_engine.get_state().find_hero(B).health).is_equal(HERO_HEALTH - 3 - 4)
+	assert_int(_engine.get_state().find_hero(B).health).is_equal(HERO_HEALTH - 3)
+	var next_events := _engine.submit(EndTurn.new(B))
+	assert_int(_engine.get_state().get_player(B).fatigue_counter).is_equal(3)
+	assert_array(EventLog.describe(next_events)).not_contains(["FatigueIncreased:B"])
 
 
 func test_209_5_2_last_card_then_fatigue() -> void:
 	_builder.add_to_deck(B, CARD)
-	var labels := EventLog.describe(_end_turn_of_a()).slice(FIRST_DRAW_EVENT_INDEX)
-	assert_array(labels).contains_exactly(["CardDrawn:B", "FatigueIncreased:B", "HeroLostHealth:B"])
+	var first_turn := EventLog.describe(_end_turn_of_a()).slice(FIRST_DRAW_EVENT_INDEX)
+	assert_array(first_turn).contains_exactly(["CardDrawn:B"])
+	_engine.submit(EndTurn.new(B))
+	var labels := EventLog.describe(_engine.submit(EndTurn.new(A))).slice(FIRST_DRAW_EVENT_INDEX)
+	assert_array(labels).contains_exactly(["FatigueIncreased:B", "HeroLostHealth:B"])
 
 
 func test_209_5_2a_full_hand_does_not_prevent_fatigue() -> void:
