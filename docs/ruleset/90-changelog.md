@@ -417,3 +417,12 @@
 - Décisions marquées d'une ligne en tête : 0018 (remplacée en partie, le passif reste), 0062, 0185 (remplacées), 0066 et 0170 (remplacées en partie, leur partie sur le pouvoir).
 - Décision associée : [0208](40-decisions/0208-le-hero-n-a-pas-de-pouvoir.md). Principe de conception sur le passif consigné dans la décision ; `30-guides-de-design/` n'existe pas encore.
 - [README.md](README.md) : édition courante passée à 0.42.
+
+## 0.43 · 23 octobre 2026 · majeure · pioche de 1 carte par tour
+
+- Pioche du début du tour ramenée de 2 cartes à 1 carte, valeur PROVISOIRE à mesurer en playtest : taille de main moyenne par tour, Essence inutilisée, tour où le deck se vide. Identifiant modifié : 204.3.6 ([204-tour.md](20-regles-completes/204-tour.md)), décisions citées 0031 et 0209. Identifiants inchangés : 204.1.15, 204.3.7, 204.3.8 et les règles de mulligan.
+- Aucun terme ajouté ni modifié au glossaire. Aucune question ouverte créée ni tranchée.
+- Textes relus sans modification : glossaire, livret [10-regles-de-base.md](10-regles-de-base.md), [protocole.md](70-playtest/protocole.md) et [decks-de-test.md](70-playtest/decks-de-test.md) (y compris les textes de l'édition 0.42) n'énoncent pas de pioche de 2 cartes par tour.
+- Décision 0031 marquée d'une ligne en tête (remplacée en partie : nombre de cartes piochées à chaque tour).
+- Décision associée : [0209](40-decisions/0209-pioche-de-1-carte-par-tour.md). Numéro 0208 réservé à la décision de l'édition 0.42.
+- [README.md](README.md) : édition courante passée à 0.43.

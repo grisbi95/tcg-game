@@ -163,10 +163,148 @@
 		},
 		{
 			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					0
+				],
+				"piece_id": 3,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"card_instance_id": 45,
+				"cell": [
+					0,
+					4
+				],
+				"payment": {
+					"incline_count": 2,
+					"recycle_count": 0
+				},
+				"player": 1,
+				"type": "DeployCard"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					4
+				],
+				"piece_id": 5,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					4
+				],
+				"piece_id": 2,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					1
+				],
+				"piece_id": 1,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"card_instance_id": 25,
+				"payment": {
+					"incline_count": 3,
+					"recycle_count": 0
+				},
+				"player": 0,
+				"target_cells": [],
+				"target_piece_ids": [
+					6
+				],
+				"target_stack_entry_ids": [],
+				"type": "CastSpell"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
 				"card_instance_id": 54,
 				"payment": {
-					"incline_count": 0,
-					"recycle_count": 1
+					"incline_count": 1,
+					"recycle_count": 0
 				},
 				"player": 1,
 				"target_cells": [],
@@ -191,128 +329,8 @@
 		},
 		{
 			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"card_instance_id": 19,
-				"cell": [
-					1,
-					1
-				],
-				"payment": {
-					"incline_count": 1,
-					"recycle_count": 1
-				},
-				"player": 0,
-				"type": "DeployCard"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
 				"player": 0,
 				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					4
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"card_instance_id": 32,
-				"cell": [
-					3,
-					4
-				],
-				"payment": {
-					"incline_count": 1,
-					"recycle_count": 0
-				},
-				"player": 1,
-				"type": "DeployCard"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"card_instance_id": 60,
-				"payment": {
-					"incline_count": 1,
-					"recycle_count": 0
-				},
-				"player": 1,
-				"type": "AttachGear",
-				"unit_piece_id": 5
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					3
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
 			}
 		},
 		{
@@ -326,11 +344,25 @@
 					4
 				],
 				"payment": {
-					"incline_count": 0,
-					"recycle_count": 2
+					"incline_count": 2,
+					"recycle_count": 0
 				},
 				"player": 1,
 				"type": "DeployCard"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					4
+				],
+				"piece_id": 5,
+				"player": 1,
+				"type": "TakeNormalAction"
 			}
 		},
 		{
@@ -353,7 +385,25 @@
 					0
 				],
 				"payment": {
-					"incline_count": 2,
+					"incline_count": 4,
+					"recycle_count": 0
+				},
+				"player": 0,
+				"type": "DeployCard"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"card_instance_id": 16,
+				"cell": [
+					4,
+					0
+				],
+				"payment": {
+					"incline_count": 0,
 					"recycle_count": 2
 				},
 				"player": 0,
@@ -367,452 +417,9 @@
 			"intent": {
 				"cell": [
 					3,
-					0
+					1
 				],
 				"piece_id": 3,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					2,
-					4
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					3
-				],
-				"piece_id": 8,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"card_instance_id": 45,
-				"cell": [
-					1,
-					4
-				],
-				"payment": {
-					"incline_count": 1,
-					"recycle_count": 1
-				},
-				"player": 1,
-				"type": "DeployCard"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					0
-				],
-				"piece_id": 9,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					4
-				],
-				"piece_id": 10,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"card_instance_id": 35,
-				"cell": [
-					1,
-					4
-				],
-				"payment": {
-					"incline_count": 1,
-					"recycle_count": 1
-				},
-				"player": 1,
-				"type": "DeployCard"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					3
-				],
-				"piece_id": 7,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					2
-				],
-				"piece_id": 8,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"card_instance_id": 16,
-				"cell": [
-					1,
-					0
-				],
-				"payment": {
-					"incline_count": 2,
-					"recycle_count": 0
-				},
-				"player": 0,
-				"type": "DeployCard"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					2,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					3
-				],
-				"piece_id": 7,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					3
-				],
-				"piece_id": 10,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"card_instance_id": 21,
-				"cell": [
-					2,
-					0
-				],
-				"payment": {
-					"incline_count": 3,
-					"recycle_count": 0
-				},
-				"player": 0,
-				"type": "DeployCard"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"card_instance_id": 26,
-				"payment": {
-					"incline_count": 0,
-					"recycle_count": 3
-				},
-				"player": 0,
-				"target_cells": [],
-				"target_piece_ids": [
-					7
-				],
-				"target_stack_entry_ids": [],
-				"type": "CastSpell"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"card_instance_id": 57,
-				"payment": {
-					"incline_count": 1,
-					"recycle_count": 1
-				},
-				"player": 1,
-				"target_cells": [],
-				"target_piece_ids": [],
-				"target_stack_entry_ids": [
-					34
-				],
-				"type": "CastSpell"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "PassPriority"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					1
-				],
-				"piece_id": 9,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					0
-				],
-				"piece_id": 3,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					4
-				],
-				"piece_id": 10,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					4
-				],
-				"piece_id": 7,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					0
-				],
-				"piece_id": 12,
 				"player": 0,
 				"type": "TakeNormalAction"
 			}
@@ -824,13 +431,13 @@
 			"intent": {
 				"card_instance_id": 28,
 				"payment": {
-					"incline_count": 1,
-					"recycle_count": 1
+					"incline_count": 0,
+					"recycle_count": 2
 				},
 				"player": 0,
 				"target_cells": [
 					[
-						1,
+						2,
 						0
 					]
 				],
@@ -853,29 +460,6 @@
 		},
 		{
 			"intent": {
-				"cell": [
-					0,
-					2
-				],
-				"piece_id": 9,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "PassPriority"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
 				"player": 0,
 				"type": "EndTurn"
 			}
@@ -885,15 +469,33 @@
 		},
 		{
 			"intent": {
-				"card_instance_id": 56,
+				"card_instance_id": 35,
+				"cell": [
+					3,
+					4
+				],
 				"payment": {
 					"incline_count": 2,
-					"recycle_count": 1
+					"recycle_count": 0
+				},
+				"player": 1,
+				"type": "DeployCard"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"card_instance_id": 56,
+				"payment": {
+					"incline_count": 3,
+					"recycle_count": 0
 				},
 				"player": 1,
 				"target_cells": [],
 				"target_piece_ids": [
-					12
+					9
 				],
 				"target_stack_entry_ids": [],
 				"type": "CastSpell"
@@ -914,7 +516,36 @@
 		{
 			"intent": {
 				"cell": [
-					4,
+					1,
+					4
+				],
+				"piece_id": 5,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"card_instance_id": 60,
+				"payment": {
+					"incline_count": 0,
+					"recycle_count": 1
+				},
+				"player": 1,
+				"type": "AttachGear",
+				"unit_piece_id": 7
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					0,
 					3
 				],
 				"piece_id": 7,
@@ -928,10 +559,180 @@
 		{
 			"intent": {
 				"cell": [
-					0,
+					4,
 					3
 				],
+				"piece_id": 2,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"card_instance_id": 48,
+				"cell": [
+					4,
+					4
+				],
+				"payment": {
+					"incline_count": 0,
+					"recycle_count": 3
+				},
+				"player": 1,
+				"type": "DeployCard"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					1
+				],
+				"piece_id": 3,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"card_instance_id": 19,
+				"cell": [
+					3,
+					1
+				],
+				"payment": {
+					"incline_count": 1,
+					"recycle_count": 1
+				},
+				"player": 0,
+				"type": "DeployCard"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					0,
+					1
+				],
+				"piece_id": 1,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					0
+				],
 				"piece_id": 10,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					0,
+					0
+				],
+				"piece_id": 8,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					4
+				],
+				"piece_id": 5,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"card_instance_id": 32,
+				"cell": [
+					1,
+					4
+				],
+				"payment": {
+					"incline_count": 1,
+					"recycle_count": 0
+				},
+				"player": 1,
+				"type": "DeployCard"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					0,
+					4
+				],
+				"piece_id": 7,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					3
+				],
+				"piece_id": 2,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -951,10 +752,10 @@
 		{
 			"intent": {
 				"cell": [
-					0,
+					1,
 					1
 				],
-				"piece_id": 9,
+				"piece_id": 3,
 				"player": 0,
 				"type": "TakeNormalAction"
 			}
@@ -964,13 +765,277 @@
 		},
 		{
 			"intent": {
-				"card_instance_id": 3,
+				"cell": [
+					4,
+					0
+				],
+				"piece_id": 10,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					3
+				],
+				"piece_id": 2,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
 				"cell": [
 					0,
+					3
+				],
+				"piece_id": 7,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					0,
+					4
+				],
+				"piece_id": 14,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					4
+				],
+				"piece_id": 5,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"card_instance_id": 26,
+				"payment": {
+					"incline_count": 2,
+					"recycle_count": 1
+				},
+				"player": 0,
+				"target_cells": [],
+				"target_piece_ids": [
+					7
+				],
+				"target_stack_entry_ids": [],
+				"type": "CastSpell"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "PassPriority"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					0
+				],
+				"piece_id": 10,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					1
+				],
+				"piece_id": 3,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					1
+				],
+				"piece_id": 1,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					3
+				],
+				"piece_id": 11,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"card_instance_id": 42,
+				"cell": [
+					2,
+					4
+				],
+				"payment": {
+					"incline_count": 4,
+					"recycle_count": 1
+				},
+				"player": 1,
+				"type": "DeployCard"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					4
+				],
+				"piece_id": 12,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					0,
+					3
+				],
+				"piece_id": 14,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					0
+				],
+				"piece_id": 10,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					2
+				],
+				"piece_id": 3,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"card_instance_id": 21,
+				"cell": [
+					1,
 					0
 				],
 				"payment": {
-					"incline_count": 1,
+					"incline_count": 2,
 					"recycle_count": 1
 				},
 				"player": 0,
@@ -1006,12 +1071,307 @@
 		{
 			"intent": {
 				"cell": [
+					3,
+					2
+				],
+				"piece_id": 11,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"card_instance_id": 51,
+				"cell": [
+					3,
+					3
+				],
+				"payment": {
+					"incline_count": 3,
+					"recycle_count": 0
+				},
+				"player": 1,
+				"type": "DeployCard"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					3
+				],
+				"piece_id": 14,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					4
+				],
+				"piece_id": 12,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
 					0,
 					4
 				],
-				"piece_id": 10,
+				"piece_id": 5,
 				"player": 1,
 				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"card_instance_id": 4,
+				"cell": [
+					3,
+					0
+				],
+				"payment": {
+					"incline_count": 1,
+					"recycle_count": 1
+				},
+				"player": 0,
+				"type": "DeployCard"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					0
+				],
+				"piece_id": 1,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					0,
+					1
+				],
+				"piece_id": 8,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					1
+				],
+				"piece_id": 10,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					2
+				],
+				"piece_id": 3,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "PassPriority"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					0
+				],
+				"piece_id": 10,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					0,
+					2
+				],
+				"piece_id": 8,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					4
+				],
+				"piece_id": 14,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					0,
+					3
+				],
+				"piece_id": 8,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					1
+				],
+				"piece_id": 10,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					0
+				],
+				"piece_id": 18,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					0
+				],
+				"piece_id": 1,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
 			}
 		},
 		{
@@ -1021,12 +1381,12 @@
 			"intent": {
 				"card_instance_id": 44,
 				"cell": [
-					4,
+					3,
 					4
 				],
 				"payment": {
-					"incline_count": 1,
-					"recycle_count": 1
+					"incline_count": 2,
+					"recycle_count": 0
 				},
 				"player": 1,
 				"type": "DeployCard"
@@ -1037,448 +1397,9 @@
 		},
 		{
 			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					1
-				],
-				"piece_id": 3,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					2
-				],
-				"piece_id": 9,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					1
-				],
-				"piece_id": 15,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					0
-				],
-				"piece_id": 14,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					2
-				],
-				"piece_id": 7,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					0
-				],
-				"piece_id": 3,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
 				"cell": [
 					0,
 					3
-				],
-				"piece_id": 9,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					0
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					2
-				],
-				"piece_id": 15,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					0
-				],
-				"piece_id": 14,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					1
-				],
-				"piece_id": 7,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					3
-				],
-				"piece_id": 16,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					4
-				],
-				"piece_id": 9,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "PassPriority"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					1
-				],
-				"piece_id": 15,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					0
-				],
-				"piece_id": 14,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					1
-				],
-				"piece_id": 3,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "PassPriority"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					0
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					2
-				],
-				"piece_id": 3,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					4
-				],
-				"piece_id": 9,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "PassPriority"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					2
-				],
-				"piece_id": 3,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					2
-				],
-				"piece_id": 15,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					0
-				],
-				"piece_id": 14,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					4
 				],
 				"piece_id": 5,
 				"player": 1,
@@ -1500,172 +1421,10 @@
 		{
 			"intent": {
 				"cell": [
-					4,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					2
-				],
-				"piece_id": 16,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					1
-				],
-				"piece_id": 3,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
 					0,
-					0
+					4
 				],
 				"piece_id": 14,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					3
-				],
-				"piece_id": 15,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					0
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					1
-				],
-				"piece_id": 16,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					2,
-					4
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					3
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					2
-				],
-				"piece_id": 16,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -1679,109 +1438,7 @@
 					1,
 					4
 				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					2
-				],
-				"piece_id": 3,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					0
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					1
-				],
-				"piece_id": 14,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					2
-				],
 				"piece_id": 15,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					3
-				],
-				"piece_id": 2,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -1791,27 +1448,18 @@
 		},
 		{
 			"intent": {
-				"cell": [
-					2,
-					4
-				],
-				"piece_id": 5,
+				"card_instance_id": 55,
+				"payment": {
+					"incline_count": 1,
+					"recycle_count": 2
+				},
 				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					2
+				"target_cells": [],
+				"target_piece_ids": [
+					10
 				],
-				"piece_id": 16,
-				"player": 1,
-				"type": "TakeNormalAction"
+				"target_stack_entry_ids": [],
+				"type": "CastSpell"
 			}
 		},
 		{
@@ -1838,850 +1486,10 @@
 		{
 			"intent": {
 				"cell": [
-					3,
-					0
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					3
-				],
-				"piece_id": 15,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					0
-				],
-				"piece_id": 14,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					4
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					1
-				],
-				"piece_id": 14,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
 					0,
 					4
 				],
-				"piece_id": 15,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					0
-				],
-				"piece_id": 14,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					2,
-					4
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					4
-				],
-				"piece_id": 15,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					0
-				],
-				"piece_id": 14,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					4
-				],
-				"piece_id": 15,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					0
-				],
-				"piece_id": 14,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					4
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					0
-				],
-				"piece_id": 14,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					3
-				],
-				"piece_id": 15,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					2,
-					4
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					2
-				],
-				"piece_id": 15,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					2
-				],
-				"piece_id": 15,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					0
-				],
-				"piece_id": 14,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					3
-				],
-				"piece_id": 15,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					0
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					1
-				],
-				"piece_id": 14,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					4
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					2
-				],
-				"piece_id": 15,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					0
-				],
-				"piece_id": 14,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					0
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					4
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					0
-				],
-				"piece_id": 14,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					0
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					3
-				],
-				"piece_id": 15,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					4
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					4
-				],
-				"piece_id": 15,
+				"piece_id": 8,
 				"player": 0,
 				"type": "TakeNormalAction"
 			}
@@ -2700,8 +1508,190 @@
 		},
 		{
 			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					0,
+					4
+				],
+				"piece_id": 15,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "PassPriority"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"card_instance_id": 58,
+				"payment": {
+					"incline_count": 1,
+					"recycle_count": 1
+				},
+				"player": 1,
+				"target_cells": [
+					[
+						2,
+						4
+					]
+				],
+				"target_piece_ids": [],
+				"target_stack_entry_ids": [],
+				"type": "CastSpell"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "PassPriority"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
 				"cell": [
 					4,
+					1
+				],
+				"piece_id": 18,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					0
+				],
+				"piece_id": 1,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					2
+				],
+				"piece_id": 18,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					1
+				],
+				"piece_id": 1,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
 					1
 				],
 				"piece_id": 1,
@@ -2715,12 +1705,431 @@
 		{
 			"intent": {
 				"cell": [
-					0,
-					0
+					4,
+					3
 				],
-				"piece_id": 14,
+				"piece_id": 18,
 				"player": 0,
 				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "PassPriority"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					4
+				],
+				"piece_id": 15,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					2
+				],
+				"piece_id": 18,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					0,
+					1
+				],
+				"piece_id": 1,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					0,
+					4
+				],
+				"piece_id": 15,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					4
+				],
+				"piece_id": 20,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					4
+				],
+				"piece_id": 19,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					2
+				],
+				"piece_id": 18,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					3
+				],
+				"piece_id": 20,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					1
+				],
+				"piece_id": 1,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					1
+				],
+				"piece_id": 18,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					0,
+					3
+				],
+				"piece_id": 20,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					4
+				],
+				"piece_id": 19,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					3
+				],
+				"piece_id": 20,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					4
+				],
+				"piece_id": 15,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					0
+				],
+				"piece_id": 18,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					1
+				],
+				"piece_id": 1,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					0
+				],
+				"piece_id": 18,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					0
+				],
+				"piece_id": 1,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					2
+				],
+				"piece_id": 20,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
 			}
 		},
 		{
@@ -2741,7 +2150,7 @@
 					2,
 					4
 				],
-				"piece_id": 5,
+				"piece_id": 19,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -2752,256 +2161,11 @@
 		{
 			"intent": {
 				"cell": [
-					3,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					0
-				],
-				"piece_id": 14,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					4
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					3
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					0
-				],
-				"piece_id": 14,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					4
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					3
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					1
-				],
-				"piece_id": 14,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					3
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					3
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
+					2,
 					2
 				],
-				"piece_id": 14,
-				"player": 0,
+				"piece_id": 20,
+				"player": 1,
 				"type": "TakeNormalAction"
 			}
 		},
@@ -3010,11 +2174,20 @@
 		},
 		{
 			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
 				"cell": [
-					3,
+					4,
 					0
 				],
-				"piece_id": 1,
+				"piece_id": 18,
 				"player": 0,
 				"type": "TakeNormalAction"
 			}
@@ -3024,26 +2197,8 @@
 		},
 		{
 			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
 				"cell": [
-					3,
+					2,
 					1
 				],
 				"piece_id": 1,
@@ -3056,20 +2211,6 @@
 		},
 		{
 			"intent": {
-				"cell": [
-					1,
-					2
-				],
-				"piece_id": 14,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
 				"player": 0,
 				"type": "EndTurn"
 			}
@@ -3080,130 +2221,10 @@
 		{
 			"intent": {
 				"cell": [
-					0,
-					4
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					3
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					4
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
+					2,
 					1
 				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					3
-				],
-				"piece_id": 14,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					3
-				],
-				"piece_id": 5,
+				"piece_id": 20,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -3223,356 +2244,146 @@
 		{
 			"intent": {
 				"cell": [
+					3,
+					4
+				],
+				"piece_id": 12,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					3
+				],
+				"piece_id": 15,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					4
+				],
+				"piece_id": 19,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					0
+				],
+				"piece_id": 1,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					2
+				],
+				"piece_id": 20,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					0
+				],
+				"piece_id": 18,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					4
+				],
+				"piece_id": 19,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
 					4,
-					3
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
 					4
 				],
 				"piece_id": 2,
 				"player": 1,
 				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					4
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					2,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					2,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					2,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					4
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					3
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					3
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
 			}
 		},
 		{
@@ -3584,7 +2395,7 @@
 					0,
 					2
 				],
-				"piece_id": 5,
+				"piece_id": 20,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -3598,7 +2409,53 @@
 					0,
 					3
 				],
-				"piece_id": 2,
+				"piece_id": 15,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					2
+				],
+				"piece_id": 20,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					0,
+					2
+				],
+				"piece_id": 15,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -3630,7 +2487,7 @@
 					1,
 					3
 				],
-				"piece_id": 2,
+				"piece_id": 20,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -3642,9 +2499,185 @@
 			"intent": {
 				"cell": [
 					0,
-					1
+					3
 				],
-				"piece_id": 5,
+				"piece_id": 15,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					3
+				],
+				"piece_id": 2,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					4
+				],
+				"piece_id": 19,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					0,
+					4
+				],
+				"piece_id": 19,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					4
+				],
+				"piece_id": 12,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					0
+				],
+				"piece_id": 18,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					2
+				],
+				"piece_id": 20,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					0,
+					2
+				],
+				"piece_id": 15,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					4
+				],
+				"piece_id": 19,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					4
+				],
+				"piece_id": 2,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					4
+				],
+				"piece_id": 12,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -3687,10 +2720,24 @@
 		{
 			"intent": {
 				"cell": [
-					0,
-					0
+					2,
+					2
 				],
-				"piece_id": 5,
+				"piece_id": 20,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					0,
+					3
+				],
+				"piece_id": 15,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -3702,7 +2749,35 @@
 			"intent": {
 				"cell": [
 					1,
+					3
+				],
+				"piece_id": 19,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
 					4
+				],
+				"piece_id": 12,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					3
 				],
 				"piece_id": 2,
 				"player": 1,
@@ -3724,8 +2799,22 @@
 		{
 			"intent": {
 				"cell": [
-					3,
+					4,
 					1
+				],
+				"piece_id": 18,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					0
 				],
 				"piece_id": 1,
 				"player": 0,
@@ -3747,7 +2836,159 @@
 		{
 			"intent": {
 				"cell": [
+					4,
+					4
+				],
+				"piece_id": 2,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					2
+				],
+				"piece_id": 20,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					3
+				],
+				"piece_id": 2,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
 					0,
+					2
+				],
+				"piece_id": 15,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					0
+				],
+				"piece_id": 1,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					0
+				],
+				"piece_id": 1,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					2
+				],
+				"piece_id": 18,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
 					4
 				],
 				"piece_id": 2,
@@ -3762,9 +3003,125 @@
 			"intent": {
 				"cell": [
 					0,
+					3
+				],
+				"piece_id": 15,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					2
+				],
+				"piece_id": 19,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					3
+				],
+				"piece_id": 18,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					4
+				],
+				"piece_id": 12,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
 					1
 				],
-				"piece_id": 5,
+				"piece_id": 19,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					2
+				],
+				"piece_id": 20,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					3
+				],
+				"piece_id": 15,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					4
+				],
+				"piece_id": 2,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -3808,7 +3165,49 @@
 			"intent": {
 				"cell": [
 					0,
+					1
+				],
+				"piece_id": 19,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					0,
 					3
+				],
+				"piece_id": 15,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					2
+				],
+				"piece_id": 20,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					4
 				],
 				"piece_id": 2,
 				"player": 1,
@@ -3820,8 +3219,13 @@
 		},
 		{
 			"intent": {
+				"cell": [
+					1,
+					3
+				],
+				"piece_id": 12,
 				"player": 1,
-				"type": "EndTurn"
+				"type": "TakeNormalAction"
 			}
 		},
 		{
@@ -3829,13 +3233,8 @@
 		},
 		{
 			"intent": {
-				"cell": [
-					3,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
+				"player": 1,
+				"type": "EndTurn"
 			}
 		},
 		{
@@ -3854,9 +3253,9 @@
 			"intent": {
 				"cell": [
 					1,
-					3
+					1
 				],
-				"piece_id": 2,
+				"piece_id": 19,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -3867,10 +3266,135 @@
 		{
 			"intent": {
 				"cell": [
-					0,
+					2,
+					2
+				],
+				"piece_id": 20,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
 					0
 				],
-				"piece_id": 5,
+				"piece_id": 1,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					3
+				],
+				"piece_id": 18,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "PassPriority"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					2
+				],
+				"piece_id": 12,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					0,
+					4
+				],
+				"piece_id": 15,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					1
+				],
+				"piece_id": 20,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					4
+				],
+				"piece_id": 2,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					0,
+					1
+				],
+				"piece_id": 19,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -3914,9 +3438,9 @@
 			"intent": {
 				"cell": [
 					0,
-					1
+					3
 				],
-				"piece_id": 5,
+				"piece_id": 15,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -3928,9 +3452,37 @@
 			"intent": {
 				"cell": [
 					0,
-					3
+					2
 				],
-				"piece_id": 2,
+				"piece_id": 12,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					0
+				],
+				"piece_id": 20,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					1
+				],
+				"piece_id": 19,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -3962,41 +3514,9 @@
 					1,
 					3
 				],
-				"piece_id": 2,
+				"piece_id": 15,
 				"player": 1,
 				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
 			}
 		},
 		{
@@ -4006,9 +3526,9 @@
 			"intent": {
 				"cell": [
 					1,
-					1
+					0
 				],
-				"piece_id": 5,
+				"piece_id": 20,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -4031,41 +3551,9 @@
 					0,
 					3
 				],
-				"piece_id": 2,
+				"piece_id": 12,
 				"player": 1,
 				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					0
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
 			}
 		},
 		{
@@ -4075,101 +3563,9 @@
 			"intent": {
 				"cell": [
 					0,
-					4
+					1
 				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					0
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					0
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					0
-				],
-				"piece_id": 5,
+				"piece_id": 19,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -4195,80 +3591,6 @@
 			"intent": {
 				"player": 1,
 				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					1
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
 			}
 		},
 		{
@@ -4289,1015 +3611,7 @@
 					1,
 					2
 				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					2,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					2
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					3
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					3
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					0
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					0
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					3
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					3
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					4
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					2,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					3
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					4
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					2,
-					4
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					0
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					4
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					3
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					2
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					3
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					3
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					1
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					2,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					2,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					1
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					2,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					1
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					1
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					2,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					2,
-					4
-				],
-				"piece_id": 2,
+				"piece_id": 15,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -5311,7 +3625,7 @@
 					0,
 					2
 				],
-				"piece_id": 5,
+				"piece_id": 12,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -5321,43 +3635,11 @@
 		},
 		{
 			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
 				"cell": [
-					3,
+					1,
 					1
 				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					1
-				],
-				"piece_id": 5,
+				"piece_id": 19,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -5400,7 +3682,35 @@
 		{
 			"intent": {
 				"cell": [
-					0,
+					2,
+					1
+				],
+				"piece_id": 19,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					2
+				],
+				"piece_id": 15,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
 					4
 				],
 				"piece_id": 2,
@@ -5413,36 +3723,8 @@
 		},
 		{
 			"intent": {
-				"cell": [
-					0,
-					2
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
 				"player": 1,
 				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
 			}
 		},
 		{
@@ -5463,27 +3745,9 @@
 					0,
 					1
 				],
-				"piece_id": 5,
+				"piece_id": 12,
 				"player": 1,
 				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
 			}
 		},
 		{
@@ -5492,12 +3756,21 @@
 		{
 			"intent": {
 				"cell": [
-					0,
-					2
+					3,
+					1
 				],
-				"piece_id": 5,
+				"piece_id": 19,
 				"player": 1,
 				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "PassPriority"
 			}
 		},
 		{
@@ -5539,43 +3812,11 @@
 			"intent": {
 				"cell": [
 					1,
-					4
+					1
 				],
-				"piece_id": 2,
+				"piece_id": 12,
 				"player": 1,
 				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					2
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
 			}
 		},
 		{
@@ -5585,6 +3826,20 @@
 			"intent": {
 				"cell": [
 					2,
+					1
+				],
+				"piece_id": 15,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
 					4
 				],
 				"piece_id": 2,
@@ -5630,10 +3885,65 @@
 		{
 			"intent": {
 				"cell": [
-					0,
-					2
+					3,
+					1
 				],
-				"piece_id": 5,
+				"piece_id": 15,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "PassPriority"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					1
+				],
+				"piece_id": 15,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					4
+				],
+				"piece_id": 2,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -5662,10 +3972,38 @@
 		{
 			"intent": {
 				"cell": [
-					0,
-					3
+					1,
+					2
 				],
-				"piece_id": 5,
+				"piece_id": 12,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					0
+				],
+				"piece_id": 15,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					4
+				],
+				"piece_id": 2,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -5711,7 +4049,150 @@
 					0,
 					2
 				],
-				"piece_id": 5,
+				"piece_id": 12,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					0
+				],
+				"piece_id": 1,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					4
+				],
+				"piece_id": 2,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					2
+				],
+				"piece_id": 12,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					0
+				],
+				"piece_id": 15,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "PassPriority"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					0
+				],
+				"piece_id": 1,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					1
+				],
+				"piece_id": 12,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					0,
+					0
+				],
+				"piece_id": 15,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -5767,6 +4248,52 @@
 		},
 		{
 			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					1
+				],
+				"piece_id": 1,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					1
+				],
+				"piece_id": 12,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
 				"cell": [
 					4,
 					4
@@ -5781,11 +4308,163 @@
 		},
 		{
 			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					1
+				],
+				"piece_id": 1,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
 				"cell": [
 					0,
 					1
 				],
-				"piece_id": 5,
+				"piece_id": 15,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					1
+				],
+				"piece_id": 12,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					4
+				],
+				"piece_id": 2,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					0
+				],
+				"piece_id": 1,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					1
+				],
+				"piece_id": 1,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					4
+				],
+				"piece_id": 2,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					1
+				],
+				"piece_id": 15,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -5806,6 +4485,34 @@
 			"intent": {
 				"player": 0,
 				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					0
+				],
+				"piece_id": 12,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					2
+				],
+				"piece_id": 15,
+				"player": 1,
+				"type": "TakeNormalAction"
 			}
 		},
 		{
@@ -5849,53 +4556,7 @@
 					1,
 					1
 				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					2,
-					1
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					2,
-					4
-				],
-				"piece_id": 2,
+				"piece_id": 15,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -5939,9 +4600,249 @@
 			"intent": {
 				"cell": [
 					2,
+					1
+				],
+				"piece_id": 15,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					1
+				],
+				"piece_id": 1,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					4
+				],
+				"piece_id": 2,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					1
+				],
+				"piece_id": 12,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
 					0
 				],
-				"piece_id": 5,
+				"piece_id": 15,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					0
+				],
+				"piece_id": 1,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					0
+				],
+				"piece_id": 15,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					4
+				],
+				"piece_id": 2,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					1
+				],
+				"piece_id": 12,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					4
+				],
+				"piece_id": 2,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					1
+				],
+				"piece_id": 15,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					1
+				],
+				"piece_id": 1,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					1
+				],
+				"piece_id": 15,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -5974,793 +4875,11 @@
 		},
 		{
 			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					0
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					0
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "PassPriority"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					2,
-					1
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					3
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					2,
-					0
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					0
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					2,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					0
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					2,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					2,
-					0
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					0
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					2,
-					0
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "PassPriority"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					1
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					2,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					0
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					1
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					0
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					0
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					0
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					3,
-					0
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					0
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					1
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					0
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					3
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
 				"cell": [
 					1,
 					1
 				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					1
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					3
-				],
-				"piece_id": 2,
+				"piece_id": 12,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -6772,80 +4891,6 @@
 			"intent": {
 				"player": 1,
 				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					1,
-					0
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 0,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					4
-				],
-				"piece_id": 2,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					4,
-					2
-				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"player": 1,
-				"type": "EndTurn"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					2,
-					0
-				],
-				"piece_id": 1,
-				"player": 0,
-				"type": "TakeNormalAction"
 			}
 		},
 		{
@@ -6866,7 +4911,95 @@
 					3,
 					2
 				],
-				"piece_id": 5,
+				"piece_id": 15,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					4
+				],
+				"piece_id": 2,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					1
+				],
+				"piece_id": 12,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					1
+				],
+				"piece_id": 1,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					2,
+					0
+				],
+				"piece_id": 12,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					4,
+					2
+				],
+				"piece_id": 15,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -6910,9 +5043,9 @@
 			"intent": {
 				"cell": [
 					3,
-					1
+					4
 				],
-				"piece_id": 5,
+				"piece_id": 2,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -6922,8 +5055,13 @@
 		},
 		{
 			"intent": {
+				"cell": [
+					2,
+					1
+				],
+				"piece_id": 12,
 				"player": 1,
-				"type": "EndTurn"
+				"type": "TakeNormalAction"
 			}
 		},
 		{
@@ -6932,7 +5070,7 @@
 		{
 			"intent": {
 				"player": 0,
-				"type": "EndTurn"
+				"type": "PassPriority"
 			}
 		},
 		{
@@ -6941,24 +5079,10 @@
 		{
 			"intent": {
 				"cell": [
-					3,
-					0
+					4,
+					1
 				],
-				"piece_id": 5,
-				"player": 1,
-				"type": "TakeNormalAction"
-			}
-		},
-		{
-			"elapsed_msec": 1500
-		},
-		{
-			"intent": {
-				"cell": [
-					0,
-					3
-				],
-				"piece_id": 2,
+				"piece_id": 15,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -7001,7 +5125,7 @@
 		{
 			"intent": {
 				"cell": [
-					0,
+					4,
 					4
 				],
 				"piece_id": 2,
@@ -7015,10 +5139,70 @@
 		{
 			"intent": {
 				"cell": [
-					3,
-					1
+					4,
+					0
 				],
-				"piece_id": 5,
+				"piece_id": 15,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					1,
+					0
+				],
+				"piece_id": 12,
+				"player": 1,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 1,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					0
+				],
+				"piece_id": 1,
+				"player": 0,
+				"type": "TakeNormalAction"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"player": 0,
+				"type": "EndTurn"
+			}
+		},
+		{
+			"elapsed_msec": 1500
+		},
+		{
+			"intent": {
+				"cell": [
+					3,
+					0
+				],
+				"piece_id": 15,
 				"player": 1,
 				"type": "TakeNormalAction"
 			}
@@ -7034,7 +5218,7 @@
 		}
 	],
 	"format_version": 2,
-	"ruleset_edition": "0.42",
+	"ruleset_edition": "0.43",
 	"setup": {
 		"deck_a": [
 			"recrue",

@@ -19,7 +19,7 @@ var setup_sources_in_reserve: int = 8  # 204.1.13
 var opening_hand_size: int = 4  # 204.1.15
 var sources_received_per_turn: int = 1  # 204.3.1
 var first_player_receives_source_on_first_turn: bool = false  # 204.3.4
-var cards_drawn_per_turn: int = 2  # 204.3.6
+var cards_drawn_per_turn: int = 1  # 204.3.6
 ## 206.3.6, dont 206.3.3a et 206.3.4a portent le statut : option A de la décision 0053 du
 ## ruleset, seule définie par les règles ; `find_errors()` refuse toute autre valeur.
 var tie_destroys_both: bool = true

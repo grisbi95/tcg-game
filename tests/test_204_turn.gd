@@ -5,7 +5,7 @@ extends GdUnitTestSuite
 ## décision de design 0200 : réveil au début du tour ; décision 0207 : une annonce sans réponse se
 ## résout aussitôt).
 
-const CARDS_PER_TURN: int = 2  # 204.3.6
+const CARDS_PER_TURN: int = 1  # 204.3.6
 const SOURCES_IN_PLAY: int = 2  # 204.1.12
 const SOURCES_IN_RESERVE: int = 8  # 204.1.13
 const OPENING_HAND_SIZE: int = 4  # 204.1.15
@@ -163,7 +163,7 @@ func test_204_3_4_second_player_receives_source_on_first_turn() -> void:
 	assert_int(_engine.get_state().get_player(B).sources_upright).is_equal(SOURCES_IN_PLAY + 1)
 
 
-func test_204_3_6_player_draws_two_cards() -> void:
+func test_204_3_6_player_draws_one_card() -> void:
 	_end_turn_of_a()
 	var player := _engine.get_state().get_player(B)
 	assert_int(player.hand.size()).is_equal(CARDS_PER_TURN)
@@ -219,9 +219,9 @@ func test_204_3_10_no_event_when_no_piece_sleeps() -> void:
 	_place_asleep_unit(A, "B2")
 	var labels := EventLog.describe(_end_turn_of_a())
 	assert_array(labels).not_contains(["PiecesAwakened:B"])
-	assert_array(labels).contains_exactly(
-		["TurnEnded:A", "TurnStarted:B", "SourceReceived:B", "CardDrawn:B", "CardDrawn:B"]
-	)
+	var expected: Array[String] = ["TurnEnded:A", "TurnStarted:B", "SourceReceived:B"]
+	expected.append_array(EventLog.repeat("CardDrawn:B", CARDS_PER_TURN))
+	assert_array(labels).contains_exactly(expected)
 
 
 func test_204_3_11_turn_start_wakes_the_hero_of_the_active_player() -> void:

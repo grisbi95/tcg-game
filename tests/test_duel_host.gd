@@ -8,7 +8,7 @@ extends GdUnitTestSuite
 ## comme affiché par l'appel que ferait la scène.
 
 const CLOCK_MSEC: int = 90_000  # 209.4.3 : temps de tour de 90 secondes
-const AGENT_SEED: int = 3
+const AGENT_SEED: int = 2
 const AGENT_STEP_MSEC: int = 1_000
 ## Un duel d'agents finit bien avant : l'hôte qui avance sans bloquer atteint ENDED.
 const MAX_HOST_STEPS: int = 5_000

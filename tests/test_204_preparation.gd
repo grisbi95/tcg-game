@@ -7,7 +7,7 @@ extends GdUnitTestSuite
 const SOURCES_IN_PLAY: int = 2  # 204.1.2, 204.1.12
 const SOURCES_IN_RESERVE: int = 8  # 204.1.13
 const OPENING_HAND_SIZE: int = 4  # 204.1.15
-const CARDS_PER_TURN: int = 2  # 204.3.6
+const CARDS_PER_TURN: int = 1  # 204.3.6
 const SEEDS_TRIED: int = 20
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A

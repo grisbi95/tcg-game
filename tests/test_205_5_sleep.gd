@@ -13,7 +13,7 @@ const TOKEN_SPELL_ID: StringName = &"sleeper_token_spell"
 const UNIT_FORCE: int = 3
 const UNIT_COST: int = 2  # CatalogSamples.unit()
 const TOKEN_SPELL_COST: int = 2
-const CARDS_PER_TURN: int = 2  # 204.3.6
+const CARDS_PER_TURN: int = 1  # 204.3.6
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
 const B: DuelState.PlayerSide = DuelState.PlayerSide.B

@@ -29,14 +29,16 @@ const DEV_DECK_SIZE: int = 12
 const FATIGUE_DECK_SIZE: int = 6
 const FATIGUE_OPENING_HAND_SIZE: int = 2
 const SEED_LIMIT: int = 60
-const MAX_TURNS_TO_FATIGUE: int = 8
+## 1 carte par tour (204.3.6) : 4 cartes de deck après la main, la 5e pioche du premier joueur
+## (tour 9, 204.3.7) est la première fatigue ; le reste est une marge.
+const MAX_TURNS_TO_FATIGUE: int = 12
 ## CARTE D'ESSAI, pour l'outil de développement seulement : un Building dont la fin du tour
 ## déclenche un effet, pour obtenir deux effets déclenchés d'un même joueur (208.4.6), ce que les
 ## cartes de `data/cards/` ne font pas. Elle n'existe que dans ce catalogue d'essai : absente de
 ## `data/cards/` et des decks de test du ruleset, elle ne doit jamais y entrer.
 const BEACON_ID: StringName = &"essai_balise"
 const BEACON_JSON: String = """{
-	"edition": "0.42",
+	"edition": "0.43",
 	"cards": [{
 		"id": "essai_balise", "name": "Balise (essai)", "cost": 1, "type": "building", "force": 4,
 		"text": "Fin du tour : une pièce alliée ciblée a +1 Force jusqu'à la fin du tour.",
