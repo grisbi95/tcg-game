@@ -36,7 +36,7 @@
 
 **203.3.1** [ACTÉ] Un coût se paie en Essence (décision 0021).
 
-**203.3.2** [ACTÉ] Un joueur paie le coût d'une annonce au moment où il fait cette annonce (décisions 0066 et 0190 ; voir 202.1.2, 202.3.13, 203.2.4 et 203.3.2a).
+**203.3.2** [ACTÉ] Un joueur paie le coût d'une annonce au moment où il fait cette annonce (décisions 0066 et 0190 ; voir 202.1.2, 203.2.4 et 203.3.2a).
 
 **203.3.2a** [ACTÉ] Pendant son tour, un joueur paie le coût d'une annonce avec l'Essence de sa réserve d'Essence (décision 0190 ; voir 203.3.2 et 203.6.5).
 
@@ -88,7 +88,7 @@
 
 **203.6.10** Supprimée en édition 0.41, voir décision 0207.
 
-**203.6.11** [ACTÉ] Produire de l'Essence selon 203.6.3 ou 203.6.4 n'est pas une annonce (décision 0196 ; voir 208.1.1, 208.1.2, 208.1.3, 208.1.4 et 208.1.5).
+**203.6.11** [ACTÉ] Produire de l'Essence selon 203.6.3 ou 203.6.4 n'est pas une annonce (décision 0196 ; voir 208.1.1, 208.1.2, 208.1.3 et 208.1.5).
 
 **203.6.12** [ACTÉ] L'Essence produite selon 203.6.3 ou 203.6.4 s'ajoute aussitôt à la réserve d'Essence, sans passer par la pile (décision 0196 ; voir 203.6.11 et 208.4.1).
 

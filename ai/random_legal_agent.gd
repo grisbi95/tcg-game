@@ -45,7 +45,6 @@ static func candidates(state: DuelState, side: DuelState.PlayerSide) -> Array[Du
 	var intents: Array[DuelIntent] = [PassPriority.new(side), EndTurn.new(side)]
 	intents.append_array(_hand_candidates(state, side))
 	intents.append_array(_normal_action_candidates(state, side))
-	intents.append_array(_hero_power_candidates(state, side))
 	return intents
 
 
@@ -137,22 +136,6 @@ static func _normal_action_candidates(
 			continue
 		for cell: Vector2i in BoardGeometry.adjacent_cells(piece.cell):
 			intents.append(TakeNormalAction.new(side, piece.piece_id, cell))
-	return intents
-
-
-static func _hero_power_candidates(
-	state: DuelState, side: DuelState.PlayerSide
-) -> Array[DuelIntent]:
-	var hero := state.find_hero(side)
-	var cost := state.catalog.get_hero(hero.card.definition_id).power_cost
-	var payment := simple_payment(state, side, cost)
-	var intents: Array[DuelIntent] = []
-	for variant: TargetVariant in _target_variants(state):
-		var power := UseHeroPower.new(side, payment)
-		power.target_piece_ids.assign(variant.piece_ids)
-		power.target_cells.assign(variant.cells)
-		power.target_stack_entry_ids.assign(variant.stack_entry_ids)
-		intents.append(power)
 	return intents
 
 

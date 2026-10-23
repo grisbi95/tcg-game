@@ -14,7 +14,7 @@ Aucun Invariant.
 
 **208.1.3** [ACTÉ] Un joueur annonce chaque Spell qu'il joue (décision 0045 ; voir 207.1.3, 207.1.4, 207.1.5 et 207.1.6).
 
-**208.1.4** [ACTÉ] Un joueur annonce chaque utilisation du pouvoir de son Hero (décision 0045 ; voir 202.3.14, 202.3.15 et 202.3.16).
+**208.1.4** Supprimée en édition 0.42, voir décision 0208.
 
 **208.1.5** [ACTÉ] Un joueur annonce chaque Gear qu'il attache (décision 0050).
 
@@ -122,7 +122,7 @@ Aucun Invariant.
 
 **208.7.6** [ACTÉ] L'annonce d'un Gear est sans réponse (décision 0207 ; voir 208.1.5).
 
-**208.7.7** [ACTÉ] L'annonce de l'utilisation du pouvoir d'un Hero est sans réponse (décision 0207 ; voir 208.1.4).
+**208.7.7** Supprimée en édition 0.42, voir décision 0208.
 
 **208.7.8** [ACTÉ] Un effet déclenché par une annonce sans réponse ou par un effet déclenché sans réponse est sans réponse (décision 0207 ; voir 208.4.4).
 

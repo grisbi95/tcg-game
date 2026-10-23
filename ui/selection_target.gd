@@ -38,18 +38,13 @@ static func all_in(state: DuelState) -> Array[SelectionTarget]:
 	return targets
 
 
-## Renseigne les cibles de `intent`, un CastSpell, un UseHeroPower ou un ChooseTargets.
+## Renseigne les cibles de `intent`, un CastSpell ou un ChooseTargets.
 func assign_to(intent: DuelIntent) -> void:
 	if intent is CastSpell:
 		var cast := intent as CastSpell
 		cast.target_piece_ids.assign(piece_ids)
 		cast.target_cells.assign(cells)
 		cast.target_stack_entry_ids.assign(stack_entry_ids)
-	elif intent is UseHeroPower:
-		var power := intent as UseHeroPower
-		power.target_piece_ids.assign(piece_ids)
-		power.target_cells.assign(cells)
-		power.target_stack_entry_ids.assign(stack_entry_ids)
 	elif intent is ChooseTargets:
 		var choice := intent as ChooseTargets
 		choice.target_piece_ids.assign(piece_ids)

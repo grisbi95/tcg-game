@@ -1,5 +1,7 @@
 # 0170 · Passif et pouvoir du Hero de test
 
+Remplacée en partie par 0208 (le pouvoir du Hero de test et son coût sont retirés ; le passif reste).
+
 > Décision consignée le 16 octobre 2026. Statut : ACTÉ. Une décision ne se modifie jamais ; pour revenir dessus, une nouvelle décision la remplace et cette ligne reçoit « Remplacée par NNNN ».
 
 ## Contexte

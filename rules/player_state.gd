@@ -24,8 +24,6 @@ var sources_in_fonte: int = 0
 var essence_reserve: int = 0
 ## 203.4.2 : recyclages du tour en cours.
 var sources_recycled_this_turn: int = 0
-## 202.3.14, 202.3.17 : le pouvoir du Hero compte dès son annonce.
-var hero_power_used_this_turn: bool = false
 ## 209.5.1
 var fatigue_counter: int = 0
 ## 209.4.3, 209.4.8a : temps de tour restant ; remis à la valeur de départ au début de son tour.
@@ -64,7 +62,6 @@ func clone() -> PlayerState:
 	copy.sources_in_fonte = sources_in_fonte
 	copy.essence_reserve = essence_reserve
 	copy.sources_recycled_this_turn = sources_recycled_this_turn
-	copy.hero_power_used_this_turn = hero_power_used_this_turn
 	copy.fatigue_counter = fatigue_counter
 	copy.turn_time_remaining_msec = turn_time_remaining_msec
 	copy.response_time_remaining_msec = response_time_remaining_msec

@@ -25,7 +25,7 @@ Le premier playtest éprouve les règles de base. Il mesure les 23 règles PROVI
 | Échelle de Force des Buildings de test | [0167](../40-decisions/0167-echelle-de-force-des-buildings-de-test.md) | Decks de test |
 | Cinq précisions du protocole | [0168](../40-decisions/0168-precisions-du-protocole.md) | Série, Fiche de relevé, Cibles et seuils |
 | Force d'une Unit à mot-clé | [0169](../40-decisions/0169-force-d-une-unit-a-mot-cle.md) | Decks de test |
-| Passif et pouvoir du Hero de test | [0170](../40-decisions/0170-passif-et-pouvoir-du-hero-de-test.md) | Decks de test |
+| Passif du Hero de test (le pouvoir est retiré par la décision 0208) | [0170](../40-decisions/0170-passif-et-pouvoir-du-hero-de-test.md) | Decks de test |
 | Répartition des 30 cartes | [0171](../40-decisions/0171-repartition-des-30-cartes-des-decks-de-test.md) | Decks de test |
 | Textes et valeurs des cartes à effet | [0172](../40-decisions/0172-textes-et-valeurs-des-cartes-a-effet-des-decks-de-test.md) | Decks de test |
 | Ajustements et noms des decks de test | [0173](../40-decisions/0173-ajustements-et-noms-des-decks-de-test.md) | Decks de test, Fiche de relevé, Cibles et seuils |
@@ -61,8 +61,8 @@ Le premier playtest se joue avec deux decks de test simples et presque identique
 | Élément | Valeur | Règle ou décision |
 | --- | --- | --- |
 | Hero de test | le même pour les deux decks | décision 0164 |
-| Passif, pouvoir et coût du pouvoir du Hero de test | fixés ; texte dans [decks-de-test.md](decks-de-test.md), section Hero de test | décision 0170 ; 202.3.11 à 202.3.13 |
-| Règles du Hero éprouvées | une utilisation du pouvoir par tour, paiement à l'annonce, phase principale, pile vide | 202.3.11 à 202.3.18, 203.3.2 |
+| Passif du Hero de test | fixé ; texte dans [decks-de-test.md](decks-de-test.md), section Hero de test ; le Hero de test n'a pas de pouvoir | décisions 0170 et 0208 ; 202.3.11 |
+| Règles du Hero éprouvées | le passif du Hero, effet statique | 202.3.11, 202.3.18 |
 | PV du Hero de test | 15 PV | décision 0165 ; 202.3.7, 204.1.8 |
 | Force d'une Unit de test sans texte | coût plus 1, pour des coûts de 1 à 5 (Force 2 à 6) | décision 0166 |
 | Force d'une Unit de test qui porte un mot-clé | égale au coût, soit 1 de moins que l'échelle de base ; mots-clés modestes : Assaut 1, Rempart 1, effet simple pour Arrivée et Dernier souffle | décision 0169 |
@@ -77,7 +77,7 @@ Le premier playtest se joue avec deux decks de test simples et presque identique
 
 ### À faire avant la première série
 
-Aucune tâche en attente sur les decks. Les deux decks sont composés (décisions 0171 et 0172) et le Passif, le pouvoir et le coût du pouvoir du Hero de test sont fixés (décision 0170).
+Aucune tâche en attente sur les decks. Les deux decks sont composés (décisions 0171 et 0172) et le Passif du Hero de test est fixé (décisions 0170 et 0208).
 
 ## Série
 
@@ -108,7 +108,7 @@ Une fiche par partie, avec un relevé léger à chaque tour (décisions 0155, 01
 | Sources en jeu, pour chaque joueur | fin du tour | nombre de Sources en jeu (203.5.4) |
 | Sources recyclées, pour chaque joueur | fin du tour | nombre de Sources qu'il a recyclées pendant le tour (203.2.2) |
 | Combat, pour chaque joueur | fin du tour | oui si ce joueur a attaqué pendant le tour (206.1.1), sinon non |
-| Carte jouée du joueur actif | fin du tour | oui si ce joueur a joué au moins une carte de sa main depuis son tour précédent, pendant son tour ou en réponse pendant le tour adverse, sinon non ; le pouvoir du Hero ne compte pas (décisions 0161, 0168 et 0173) |
+| Carte jouée du joueur actif | fin du tour | oui si ce joueur a joué au moins une carte de sa main depuis son tour précédent, pendant son tour ou en réponse pendant le tour adverse, sinon non (décisions 0161, 0168 et 0173) |
 
 L'Essence inutilisée se relève sur la ligne du tour qui commence, pour le seul joueur actif ; la cellule de l'autre joueur reste vide.
 
@@ -229,7 +229,7 @@ Ces termes ne figurent pas au glossaire. Ils ne valent que pour ce protocole.
 | Réponse passée par l'expiration du temps de réponse | Passe d'un joueur selon 209.4.10 (décision 0205). |
 | Défaite par inactivité | Partie dont la cause de fin est « inactivité » (209.2.10 ; décision 0205). |
 | Aperçu au survol | Carte survolée par le pointeur, affichée en grand dans la colonne de gauche de l'écran, où son texte se lit (décision 0035 du projet, hors ruleset). |
-| Carte jouée | Valeur de la fiche : oui si le joueur a joué au moins une carte de sa main depuis son tour précédent, pendant son tour ou en réponse pendant le tour adverse ; le pouvoir du Hero ne compte pas, la mesure portant sur les cartes du deck (201.6.1 et 201.6.2 ; décision 0168) ; relevée seulement sur la ligne du propre tour du joueur (décision 0173). |
+| Carte jouée | Valeur de la fiche : oui si le joueur a joué au moins une carte de sa main depuis son tour précédent, pendant son tour ou en réponse pendant le tour adverse, la mesure portant sur les cartes du deck (201.6.1 et 201.6.2 ; décision 0168) ; relevée seulement sur la ligne du propre tour du joueur (décision 0173). |
 | Deux tours sans rien jouer | Deux tours consécutifs du même joueur, pendant lesquels la valeur « Carte jouée » de ce joueur est non (décision 0168). |
 | Tour passé à main pleine | Tour d'un joueur à la fin duquel il a 7 cartes en main (201.3.4) ; définition validée par la décision 0161. |
 | Fatigue qui apparaît | Compteur de fatigue d'un joueur qui augmente au moins une fois dans la partie (209.5.2). |
@@ -294,4 +294,4 @@ Deux points ouverts dans [02-questions-ouvertes.md](../02-questions-ouvertes.md)
 - Q-102 : le mulligan de la série et le rôle de chaque joueur connu d'avance, à trancher avant la première série (jalon J3) ;
 - Q-103 : le mulligan de deux humains sur un même écran, à trancher avant une série jouée à deux humains.
 
-Q-070 est tranchée le 16 octobre 2026 par la décision 0163 ; Q-071, Q-072, Q-073 et Q-074 sont tranchées le même jour par les décisions 0158 à 0162. Le Passif, le pouvoir et le coût du pouvoir du Hero de test sont fixés par la décision 0170.
+Q-070 est tranchée le 16 octobre 2026 par la décision 0163 ; Q-071, Q-072, Q-073 et Q-074 sont tranchées le même jour par les décisions 0158 à 0162. Le Passif du Hero de test est fixé par la décision 0170 ; le pouvoir et son coût sont retirés par la décision 0208.

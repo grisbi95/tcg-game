@@ -16,8 +16,6 @@ const GEAR_ID: StringName = &"sample_gear"
 const GEAR_COST: int = 1  # CatalogSamples.gear()
 const SPELL_ID: StringName = &"main_phase_spell"
 const SPELL_COST: int = 1  # CatalogSamples.spell()
-const HERO_ID: StringName = &"sample_hero"
-const POWER_COST: int = 2  # CatalogSamples.hero()
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
 const B: DuelState.PlayerSide = DuelState.PlayerSide.B
@@ -34,7 +32,6 @@ func before_test() -> void:
 	var action_spell := CatalogSamples.with_field(CatalogSamples.spell(), "id", String(SPELL_ID))
 	action_spell = CatalogSamples.with_field(action_spell, "speed", "action")
 	catalog.add_card(CardDefinition.from_dict(action_spell))
-	catalog.add_hero(HeroDefinition.from_dict(CatalogSamples.hero()))
 	_builder = DuelStateBuilder.new(DuelConfig.new(), catalog)
 	_engine = DuelEngine.new(SetupSamples.catalog())
 	for side: DuelState.PlayerSide in [A, B]:
@@ -84,19 +81,6 @@ func test_204_4_3_active_player_plays_cards_in_main_phase() -> void:
 		assert_array(EventLog.describe(events)).contains(
 			[expected_announcements[intent], "StackEntryAdded:A"]
 		)
-
-
-func test_204_4_4_active_player_uses_his_hero_power_in_main_phase() -> void:
-	var unit_id := _builder.place_piece(A, Piece.PieceKind.UNIT, DuelStateBuilder.cell("B2"), CARD)
-	_builder.with_hero_definition(A, HERO_ID)
-	var power := UseHeroPower.new(A, EssencePayment.new(POWER_COST))
-	power.target_piece_ids.append(unit_id)
-	var events := _engine_from(_builder.build()).submit(power)
-	var expected := EventLog.repeat("SourceInclined:A", POWER_COST)
-	expected.append_array(
-		["HeroPowerAnnounced:A", "StackEntryAdded:A", "ForceModified:A", "StackEntryResolved:A"]
-	)
-	assert_array(EventLog.describe(events)).contains_exactly(expected)
 
 
 func test_204_4_7_active_player_ends_turn() -> void:
@@ -264,11 +248,9 @@ func test_205_5_6_turn_start_does_not_wake_buildings() -> void:
 func test_turn_start_resets_turn_counters_of_both_players() -> void:
 	for side: DuelState.PlayerSide in [A, B]:
 		_builder.with_recycled_this_turn(side, 2)
-		_builder.with_hero_power_used(side)
 	_end_turn_of_a()
 	for player: PlayerState in _engine.get_state().players:
 		assert_int(player.sources_recycled_this_turn).is_equal(0)
-		assert_bool(player.hero_power_used_this_turn).is_false()
 
 
 func test_204_5_7_until_end_of_turn_effects_end() -> void:

@@ -1,6 +1,6 @@
 # 0019 — Agent aléatoire qui essaie des intentions candidates
 
-- Statut : acceptée
+- Statut : acceptée ; modifiée par 0047
 - Date : 2026-10-17
 - Décideur : créateur du projet
 - Périmètre : `ai/` (premier fichier du dossier), agent `RandomLegalAgent` de l'étape 1.10 (duels aléatoires avec oracle, déterminisme) ; prépare `GreedyAgent` (J4)

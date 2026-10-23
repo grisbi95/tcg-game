@@ -10,7 +10,7 @@
 | Adjacent | Se dit de deux cases qui partagent un côté, jamais en diagonale ; voir 205.2.5 et 210.2.1. | |
 | Adversaire | Pour un joueur, l'autre joueur de la partie ; voir 201.1.3a, 204.5.2, 207.1.6, 208.2.4 et 208.4.7. | |
 | Allié | Se dit d'une pièce que contrôle le joueur concerné ; voir 205.1.7 et 205.4.5. | |
-| Annoncer | Déclarer une action, qui s'ajoute au sommet de la pile en attendant d'être résolue ; voir 203.3.2, 208.1.1, 208.1.2, 208.1.3, 208.1.4, 208.1.5 et 208.4.1. | |
+| Annoncer | Déclarer une action, qui s'ajoute au sommet de la pile en attendant d'être résolue ; voir 203.3.2, 208.1.1, 208.1.2, 208.1.3, 208.1.5 et 208.4.1. | |
 | Appartenir | Relation d'une carte avec le joueur dont le deck ou le Hero la fournit, d'un effet déclenché avec le joueur à qui appartient la carte ou le jeton qui porte cet effet, d'un jeton avec le joueur à qui appartient l'entrée de la pile qui l'a créé, ou d'un combat en attente avec le joueur à qui appartient l'attaquant ; voir 201.5.1, 201.5.3, 201.5.4, 205.6.5, 207.3.4 et 207.3.4a. | |
 | Arrivée | Mot-clé de déclencheur dont l'effet se déclenche quand la pièce qui le porte arrive sur le plateau ; voir 210.3.1, 210.3.1a, 210.3.1b, 210.3.1c et 202.4.13a. | |
 | Assaut | Mot-clé de combat à valeur X, qui donne à la pièce X de Force de plus quand elle attaque ; voir 210.4.1, 210.4.1a, 210.4.1b et 210.4.1c. | |
@@ -24,7 +24,7 @@
 | Carte | Élément de jeu qui se trouve dans une zone. | |
 | Case | Position du plateau. | |
 | Cible | Pièce du plateau, case ou Spell de la pile qu'un effet vise, choisie quand l'entrée de la pile qui porte cet effet s'y ajoute ; voir 202.2.23, 202.4.12, 207.5.1, 207.5.2, 207.5.3, 207.5.6, 207.5.11, 207.5.14 et 207.5.16. | |
-| Cible légale | Cible qui remplit, au moment où l'entrée s'ajoute à la pile, les conditions que la carte pose à ses cibles et celles de la section 207.5 ; voir 207.5.8, 207.5.9, 207.5.10 et 207.5.17. | |
+| Cible légale | Cible qui remplit, au moment où l'entrée s'ajoute à la pile, les conditions que la carte pose à ses cibles et celles de la section 207.5 ; voir 207.5.8, 207.5.9 et 207.5.10. | |
 | Colonne | Alignement de cases du plateau qui s'étend d'un joueur à l'autre. | |
 | Combat | Affrontement d'un attaquant et d'un défenseur, réglé au chapitre 206 ; voir 206.1.1, 206.1.2, 206.2.1 et 206.4.2. | |
 | Combat en attente | Combat qui naît à la résolution d'un déploiement ou d'une action normale annoncée vers une case libre, et qui attend la fin de cette résolution avant de s'ajouter à la pile ; voir 205.1.6, 205.2.3a, 205.6.1 à 205.6.17 et 208.7.14. | |
@@ -32,7 +32,7 @@
 | Condition de fin de partie | Condition, fixée par les règles du jeu, qui fait gagner, perdre ou finir la partie sur un nul ; voir 201.0.4, 201.1.2, 201.1.2a, 201.1.3a, 201.1.3d, 209.2.10 et 209.3.1. | |
 | Contrecarrer | Effet qui fait qu'un Spell qui se trouve sur la pile n'a pas lieu ; voir 207.6.1, 207.6.2, 207.6.4 et 207.6.5. | |
 | Contrôler | Relation d'un joueur avec chaque carte et chaque jeton qui lui appartiennent ; voir 201.5.2 et 201.5.2a. | |
-| Coût | Valeur que porte toute carte de deck, et que porte aussi la carte Hero pour son pouvoir ; voir 202.1.2, 202.3.13 et 203.3.2. | |
+| Coût | Valeur que porte toute carte de deck ; voir 202.1.2. | |
 | Début du tour | Première partie du tour, qui précède la phase principale ; voir 204.3.8, 204.4.1, 208.4.10 et 208.4.11. | |
 | Deck | Zone hors du plateau qui forme l'ensemble de cartes face cachée d'un joueur ; voir 201.3.1 et 201.4.1. | |
 | Déclencher | Faire qu'un effet déclenché doive avoir lieu, pour un événement indiqué par le texte de cet effet ; voir 207.3.1, 208.4.2 et 208.4.4. | |
@@ -92,7 +92,7 @@
 | Pile | Zone commune aux deux joueurs qui forme l'ensemble ordonné des annonces, des effets déclenchés et des combats en attente qui attendent leur résolution ; voir 201.3.7, 201.3.8, 201.4.7, 207.3.2 et le chapitre 208. | |
 | Piocher | Faire passer la carte du dessus de son deck dans sa main ; voir 204.1.15, 204.2.5, 204.3.6 et 204.3.7. | |
 | Plateau | Surface de jeu commune aux deux joueurs, divisée en cases. | |
-| Pouvoir | Capacité d'un Hero que son joueur choisit d'utiliser ; voir 202.3.12, 202.3.13, 202.3.14, 202.3.15, 202.3.16, 202.3.17 et 207.5.17. | |
+| Pouvoir | Retiré en édition 0.42 ; voir décision 0208. | |
 | Premier joueur | Joueur qui joue le premier tour de la partie ; voir 204.3.4. | |
 | Première rangée | Rangée du plateau la plus proche d'un joueur. | |
 | Préparation | Période de la partie qui précède le premier tour et comprend la mise en place de la section 204.1 et le mulligan ; voir 204.1.9, 204.1.10 et 204.1.11. | |
@@ -110,7 +110,7 @@
 | Réserve d'Essence | Essence qu'un joueur a produite pendant son propre tour et n'a pas encore dépensée, perdue à la fin de ce tour ; voir 203.1.3, 203.6.1, 203.6.2, 203.6.3, 203.6.4, 203.6.5, 203.6.12, 201.4.10 et 204.5.7a. | |
 | Résoudre | Faire avoir lieu une annonce ou un effet déclenché de la pile ; voir 208.3.1, 208.3.2 et 208.3.2a. | |
 | Réveiller | Faire passer une Unit ou un Hero de l'état endormi à l'état éveillé, ce passage étant le réveil ; voir 204.3.8, 204.3.10 et 204.3.11. | |
-| Sans réponse | Se dit d'une entrée de la pile, annonce ou effet déclenché, à laquelle aucun joueur ne peut répondre et qui se résout aussitôt ; voir 208.7.3, 208.7.4, 208.7.5, 208.7.6, 208.7.7, 208.7.8, 208.7.9, 208.7.12, 208.7.13, 208.7.15 et 208.7.16. | |
+| Sans réponse | Se dit d'une entrée de la pile, annonce ou effet déclenché, à laquelle aucun joueur ne peut répondre et qui se résout aussitôt ; voir 208.7.3, 208.7.4, 208.7.5, 208.7.6, 208.7.8, 208.7.9, 208.7.12, 208.7.13, 208.7.15 et 208.7.16. | |
 | Source | Élément d'un joueur qui produit l'Essence ; voir 203.1.2. | |
 | Sous-règle | Règle dont l'identifiant ajoute une lettre à celui de la règle qu'elle précise ; voir 200.1.1. | |
 | Spell | Type de carte de deck ; voir 202.2.5, 202.2.20, 202.2.21, 207.1.1, 207.1.7 et 207.1.7a. | |

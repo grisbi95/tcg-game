@@ -1,6 +1,6 @@
 # 0044 — État endormi ou éveillé porté par la pièce
 
-- Statut : acceptée
+- Statut : acceptée ; modifiée par 0047
 - Date : 2026-10-22
 - Décideur : créateur du projet
 - Périmètre : état « endormi ou éveillé » des Units et du Hero dans le moteur (`Piece`, `ActionRules`, `TurnRules`, `PreparationRules`, `EffectRules`, `IntentRejected`)

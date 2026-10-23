@@ -188,33 +188,11 @@ func test_202_3_11_hero_has_a_passive() -> void:
 	assert_bool(_mentions(errors, "202.3.11")).is_true()
 
 
-func test_202_3_12_hero_has_a_power() -> void:
-	var errors := _hero_errors(CatalogSamples.with_field(CatalogSamples.hero(), "power", []))
-	assert_bool(_mentions(errors, "202.3.11")).is_true()
-
-
-func test_202_3_13_hero_power_has_a_cost() -> void:
-	var missing := _hero_errors(CatalogSamples.without_field(CatalogSamples.hero(), "power_cost"))
-	assert_bool(_mentions(missing, "202.3.13")).is_true()
-
-
-func test_202_3_13_hero_power_cost_may_be_zero() -> void:
-	var errors := _hero_errors(CatalogSamples.with_field(CatalogSamples.hero(), "power_cost", 0))
-	assert_array(Array(errors)).is_empty()
-
-
 func test_202_3_18_hero_passive_is_static() -> void:
 	var data := CatalogSamples.with_field(
 		CatalogSamples.hero(), "passive", [CatalogSamples.modify_force_resolve()]
 	)
 	assert_bool(_mentions(_hero_errors(data), "passive 1 : timing refusé")).is_true()
-
-
-func test_208_1_4_hero_power_goes_through_the_stack() -> void:
-	var data := CatalogSamples.with_field(
-		CatalogSamples.hero(), "power", [CatalogSamples.modify_force_static()]
-	)
-	assert_bool(_mentions(_hero_errors(data), "power 1 : timing refusé")).is_true()
 
 
 func test_id_is_ascii_snake_case() -> void:

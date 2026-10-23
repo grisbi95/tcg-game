@@ -1,21 +1,20 @@
 class_name DuelScenarios
 extends RefCounted
 ## Outil de développement : prépare les situations de l'écran de duel qu'on ne rencontre pas au
-## début d'une partie (choix du moteur, fin de partie, aperçus, pouvoir du Hero, fatigue, paiement
+## début d'une partie (choix du moteur, fin de partie, aperçus, fatigue, paiement
 ## préparé). Un scénario fixe un catalogue, une configuration de développement (decks courts de
 ## cartes identiques ou presque, fenêtre de réponse longue), un premier joueur et un plan de
 ## gestes que `ScenarioRecorder` joue à blanc ; les intentions acceptées sont rejouées par l'écran.
 ## Aucune règle ici : le plan tente des gestes, le moteur dit ce qui passe. La graine est cherchée
 ## jusqu'à ce que le plan réussisse avec les mains tirées.
 
-## Ajouter à la fin, sans réordonner.
+## Ordre des touches de l'essai ; non enregistré (décision 0047).
 enum Scenario {
 	CHOICE_TARGET,
 	CHOICE_ORDER,
 	ENDED,
 	PREVIEW_GEAR,
 	PREVIEW_PILES,
-	HERO_POWER,
 	FATIGUE,
 	PAYMENT_PREPARED,
 }
@@ -37,7 +36,7 @@ const MAX_TURNS_TO_FATIGUE: int = 8
 ## `data/cards/` et des decks de test du ruleset, elle ne doit jamais y entrer.
 const BEACON_ID: StringName = &"essai_balise"
 const BEACON_JSON: String = """{
-	"edition": "0.40",
+	"edition": "0.42",
 	"cards": [{
 		"id": "essai_balise", "name": "Balise (essai)", "cost": 1, "type": "building", "force": 4,
 		"text": "Fin du tour : une pièce alliée ciblée a +1 Force jusqu'à la fin du tour.",
@@ -54,7 +53,6 @@ const SCENARIO_NAMES: Dictionary[Scenario, String] = {
 	Scenario.ENDED: "fin de partie par abandon",
 	Scenario.PREVIEW_GEAR: "aperçu d'une Unit avec son Gear",
 	Scenario.PREVIEW_PILES: "aperçu depuis la défausse et la pile",
-	Scenario.HERO_POWER: "pouvoir du Hero",
 	Scenario.FATIGUE: "fatigue",
 	Scenario.PAYMENT_PREPARED: "paiement préparé au tour adverse",
 }
@@ -171,9 +169,6 @@ static func _spec_of(scenario: Scenario) -> ScenarioSpec:
 		Scenario.PREVIEW_PILES:
 			_fill(spec, {&"frappe": DEV_DECK_SIZE}, {&"soldat": DEV_DECK_SIZE}, B)
 			spec.plan = _plan_preview_piles
-		Scenario.HERO_POWER:
-			_fill(spec, {&"recrue": DEV_DECK_SIZE}, {&"soldat": DEV_DECK_SIZE}, A)
-			spec.plan = _plan_hero_power
 		Scenario.FATIGUE:
 			spec.deck_size = FATIGUE_DECK_SIZE
 			spec.opening_hand_size = FATIGUE_OPENING_HAND_SIZE
@@ -256,18 +251,6 @@ static func _plan_preview_piles(recorder: ScenarioRecorder) -> bool:
 		and recorder.resolve_stack()
 		and recorder.end_turn(B)
 		and recorder.announce(A, &"frappe")
-	)
-
-
-# Au second tour de A : une Unit alliée et de quoi payer le pouvoir, qui est utilisable.
-static func _plan_hero_power(recorder: ScenarioRecorder) -> bool:
-	var hero := recorder.state().catalog.get_hero(HERO_ID)
-	return (
-		recorder.deploy(A, &"recrue")
-		and recorder.resolve_stack()
-		and recorder.end_turn(A)
-		and recorder.end_turn(B)
-		and recorder.produce_essence(A, hero.power_cost)
 	)
 
 

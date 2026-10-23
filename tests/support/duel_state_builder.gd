@@ -18,7 +18,7 @@ const DEFAULT_SEED: int = 1
 const FIRST_TURN: int = 1
 ## 202.3.7 : les PV viennent de la carte Hero ; 15 est la valeur du Capitaine de test.
 const DEFAULT_HERO_HEALTH: int = 15
-## Hero sans passif ni pouvoir, ajouté au catalogue s'il n'y est pas (décision 0016).
+## Hero sans passif, ajouté au catalogue s'il n'y est pas (décision 0016).
 const HERO_DEFINITION_ID: StringName = &"builder_hero"
 
 var _state: DuelState
@@ -148,11 +148,6 @@ func with_essence_reserve(side: DuelState.PlayerSide, essence: int) -> DuelState
 
 func with_recycled_this_turn(side: DuelState.PlayerSide, count: int) -> DuelStateBuilder:
 	_state.get_player(side).sources_recycled_this_turn = count
-	return self
-
-
-func with_hero_power_used(side: DuelState.PlayerSide, used: bool = true) -> DuelStateBuilder:
-	_state.get_player(side).hero_power_used_this_turn = used
 	return self
 
 
@@ -297,7 +292,6 @@ func _register_default_hero() -> void:
 		return
 	var data := CatalogSamples.with_field(CatalogSamples.hero(), "id", String(HERO_DEFINITION_ID))
 	data = CatalogSamples.with_field(data, "passive", [])
-	data = CatalogSamples.with_field(data, "power", [])
 	_state.catalog.add_hero(HeroDefinition.from_dict(data))
 
 

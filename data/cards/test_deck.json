@@ -1,33 +1,17 @@
 {
-	"edition": "0.41",
+	"edition": "0.42",
 	"heroes": [
 		{
 			"id": "capitaine",
 			"name": "Capitaine",
 			"health": 15,
-			"text": "Les Units alliées adjacentes au Hero ont +1 Force. Pouvoir (2 Essence) : une Unit alliée ciblée a +1 Force jusqu'à la fin du tour.",
-			"power_cost": 2,
+			"text": "Les Units alliées adjacentes au Hero ont +1 Force.",
 			"passive": [
 				{
 					"kind": "modify_force",
 					"timing": "static",
 					"amount": 1,
 					"scope": "adjacent_allied_units"
-				}
-			],
-			"power": [
-				{
-					"kind": "modify_force",
-					"timing": "resolve",
-					"amount": 1,
-					"duration": "until_end_of_turn",
-					"target": {
-						"what": "piece",
-						"side": "ally",
-						"piece_kinds": [
-							"unit"
-						]
-					}
 				}
 			]
 		}

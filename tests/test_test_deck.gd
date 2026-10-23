@@ -8,7 +8,6 @@ extends GdUnitTestSuite
 
 const DECK_SIZE: int = 30  # 201.6.1
 const CAPTAIN_HEALTH: int = 15  # 202.3.7
-const CAPTAIN_POWER_COST: int = 2  # 202.3.13
 const SEED: int = 11
 const TYPE := CardDefinition.CardType
 const SPEED := CardDefinition.SpellSpeed
@@ -154,10 +153,6 @@ func test_decision_0037_test_deck_file_matches_the_playtest_table() -> void:
 
 func test_202_3_7_captain_has_fifteen_health() -> void:
 	assert_int(_captain().health).is_equal(CAPTAIN_HEALTH)
-
-
-func test_202_3_13_captain_power_costs_two_essence() -> void:
-	assert_int(_captain().power_cost).is_equal(CAPTAIN_POWER_COST)
 
 
 func test_decision_0012_duel_starts_with_the_test_decks() -> void:

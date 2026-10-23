@@ -1,6 +1,6 @@
 class_name CardRules
 extends RefCounted
-## Cartes (202) : Gear (annonce, attachement, remplacement) et pouvoir du Hero. Les jetons se
+## Cartes (202) : Gear (annonce, attachement, remplacement). Les jetons se
 ## créent par EffectRules (202.4), les effets statiques se lisent dans ForceRules (207.2).
 
 
@@ -68,46 +68,6 @@ static func resolve_attach_gear(
 	events.append(GearAttached.new(entry.owner, entry.card.card_instance_id, unit_id))
 
 
-## 202.3.14 à 202.3.17, 208.1.4, 203.3.2, 207.5.1, 207.5.17 : raison du refus de `intent`, ou
-## NONE. L'attente est contrôlée par DuelEngine. Pur.
-static func validate_hero_power(
-	state: DuelState, intent: UseHeroPower
-) -> IntentRejected.RejectReason:
-	var reason := StackRules.validate_main_phase_with_empty_stack(state, intent.player)
-	if reason != IntentRejected.RejectReason.NONE:
-		return reason
-	if state.get_player(intent.player).hero_power_used_this_turn:
-		return IntentRejected.RejectReason.HERO_POWER_ALREADY_USED
-	var hero := _hero_definition(state, intent.player)
-	reason = EssenceRules.validate_payment(state, intent.player, intent.payment, hero.power_cost)
-	if reason != IntentRejected.RejectReason.NONE:
-		return reason
-	return _validate_power_targets(state, _make_power_entry(state, intent), hero)
-
-
-## 202.3.17, 203.3.2, 208.4.1, 208.7.7 : l'utilisation compte pour 202.3.14 dès l'annonce ; le coût
-## est payé et l'entrée va sur la pile avec ses cibles. Suppose l'intention validée.
-static func announce_hero_power(
-	state: DuelState, intent: UseHeroPower, events: Array[DuelEvent]
-) -> void:
-	state.get_player(intent.player).hero_power_used_this_turn = true
-	var cost := _hero_definition(state, intent.player).power_cost
-	events.append_array(EssenceRules.pay_cost(state, intent.player, intent.payment, cost))
-	events.append(HeroPowerAnnounced.new(intent.player))
-	StackRules.add_to_stack(state, _make_power_entry(state, intent), events)
-
-
-## 202.3.12, 208.3.2 : applique les effets du pouvoir ; 207.5.17a : sans cible, il n'a pas lieu.
-static func resolve_hero_power(
-	state: DuelState, entry: StackEntry, events: Array[DuelEvent]
-) -> void:
-	for effect: EffectDefinition in _hero_definition(state, entry.owner).power:
-		if effect.timing == EffectDefinition.EffectTiming.RESOLVE:
-			EffectRules.resolve_effect(state, entry, effect, events)
-		if state.is_ended():
-			return
-
-
 # 202.2.8, 202.2.9, 202.2.14, 202.4.5a, 202.2.23 : une Unit alliée en jeu, jeton compris.
 static func _is_valid_gear_unit(state: DuelState, side: DuelState.PlayerSide, unit_id: int) -> bool:
 	var unit := state.find_piece(unit_id)
@@ -120,36 +80,3 @@ static func _gear_target() -> TargetSpec:
 	spec.side = TargetSpec.TargetSide.ALLY
 	spec.piece_kinds.append(Piece.PieceKind.UNIT)
 	return spec
-
-
-# 207.5.17 : sans aucune cible légale, le pouvoir s'annonce sans cible ; sinon 207.5.1, 207.5.10.
-static func _validate_power_targets(
-	state: DuelState, entry: StackEntry, hero: HeroDefinition
-) -> IntentRejected.RejectReason:
-	for effect: EffectDefinition in hero.power:
-		if effect.target == null:
-			continue
-		var none_legal := EffectRules.legal_target_count(state, entry.owner, effect.target) == 0
-		if none_legal and EffectRules.chosen_count(entry, effect.target) == 0:
-			continue
-		var reason := EffectRules.validate_targets(state, entry, effect.target)
-		if reason != IntentRejected.RejectReason.NONE:
-			return reason
-	return EffectRules.validate_no_extra_targets(entry, hero.power)
-
-
-static func _make_power_entry(state: DuelState, intent: UseHeroPower) -> StackEntry:
-	var entry := StackEntry.new()
-	entry.kind = StackEntry.StackEntryKind.HERO_POWER
-	entry.owner = intent.player
-	entry.allows_response = false  # 208.7.7
-	entry.source_piece_id = state.find_hero(intent.player).piece_id
-	entry.target_piece_ids.assign(intent.target_piece_ids)
-	entry.target_cells.assign(intent.target_cells)
-	entry.target_stack_entry_ids.assign(intent.target_stack_entry_ids)
-	return entry
-
-
-# 202.3.4, 202.3.13 : la carte Hero porte le coût et les effets du pouvoir.
-static func _hero_definition(state: DuelState, side: DuelState.PlayerSide) -> HeroDefinition:
-	return state.catalog.get_hero(state.find_hero(side).card.definition_id)

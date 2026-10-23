@@ -56,10 +56,8 @@ static func hero() -> Dictionary:
 		"id": "sample_hero",
 		"name": "Hero d'essai",
 		"health": 15,
-		"text": "Passif et pouvoir.",
-		"power_cost": 2,
+		"text": "Passif.",
 		"passive": [modify_force_static({"scope": "adjacent_allied_units"})],
-		"power": [modify_force_resolve({"amount": 1})],
 	}
 
 

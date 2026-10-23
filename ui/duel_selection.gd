@@ -19,13 +19,7 @@ enum SelectionState {
 	IDLE,
 	CARD_CHOSEN,  # Unit ou Building choisi, en attente de sa case
 	PIECE_CHOSEN,  # pièce choisie, en attente de la case de son action normale
-	TARGET_PENDING,  # Spell, Gear ou pouvoir du Hero choisi, en attente de sa cible
-}
-
-## Ce qu'annonce la sélection en TARGET_PENDING.
-enum AnnouncementSubject {
-	CARD,  # Spell ou Gear de la main
-	HERO_POWER,  # 202.3.13
+	TARGET_PENDING,  # Spell ou Gear choisi, en attente de sa cible
 }
 
 const DECISION := PendingDecision.DecisionKind
@@ -33,7 +27,6 @@ const DECISION := PendingDecision.DecisionKind
 var _engine: DuelEngine
 var _side: DuelState.PlayerSide = DuelState.PlayerSide.A
 var _selection_state: SelectionState = SelectionState.IDLE
-var _subject: AnnouncementSubject = AnnouncementSubject.CARD
 var _card_id: int = DuelState.NO_ID
 var _piece_id: int = DuelState.NO_ID
 ## Décision 0023 : paiement préparé pendant le tour adverse ; vide pendant son tour.
@@ -134,15 +127,6 @@ func press_source(is_tilted: bool) -> void:
 		selection_changed.emit()
 
 
-func press_hero_power() -> void:
-	if _has_pending_decision():
-		return
-	if _is_hero_power_chosen():
-		reset()
-	else:
-		_choose_announcement(AnnouncementSubject.HERO_POWER, DuelState.NO_ID)
-
-
 func press_pass() -> void:
 	_emit_if_legal(PassPriority.new(_side))
 
@@ -178,38 +162,31 @@ func snapshot() -> SelectionSnapshot:
 	shown.can_pass = candidates.is_legal(PassPriority.new(_side))
 	shown.can_end_turn = candidates.is_legal(EndTurn.new(_side))
 	shown.can_confirm = _can_confirm(candidates)
-	shown.can_use_hero_power = (
-		_selection_state == SelectionState.IDLE
-		and not _has_pending_decision()
-		and candidates.is_hero_power_possible()
-	)
-	shown.is_hero_power_chosen = _is_hero_power_chosen()
 	shown.is_drafting_payment = not _is_own_turn()
 	return shown
 
 
 func _choose_card(card_id: int) -> void:
 	if _candidates().is_announced_card(card_id):
-		_choose_announcement(AnnouncementSubject.CARD, card_id)
+		_choose_announcement(card_id)
 	elif _candidates().is_card_playable(card_id):
 		_enter(SelectionState.CARD_CHOSEN, card_id, DuelState.NO_ID)
 
 
 # Décision 0031 : une annonce sans cible part aussitôt ; avec cible, elle attend sa cible.
-func _choose_announcement(subject: AnnouncementSubject, card_id: int) -> void:
-	_subject = subject
+func _choose_announcement(card_id: int) -> void:
 	_card_id = card_id
 	var candidates := _candidates()
-	var untargeted := _announcement(candidates, SelectionTarget.new())
+	var untargeted := candidates.card_announcement(_card_id, SelectionTarget.new())
 	if candidates.is_legal(untargeted):
 		_emit_if_legal(untargeted)
-	elif not _announcement_targets(candidates).is_empty():
+	elif not candidates.card_targets(_card_id).is_empty():
 		_enter(SelectionState.TARGET_PENDING, card_id, DuelState.NO_ID)
 
 
 # Décision 0031 : l'annonce part dès que sa cible est choisie.
 func _choose_target(target: SelectionTarget) -> void:
-	_emit_if_legal(_announcement(_candidates(), target))
+	_emit_if_legal(_candidates().card_announcement(_card_id, target))
 
 
 func _toggle_set_aside(card_id: int) -> void:
@@ -263,7 +240,7 @@ func _fill_board_highlights(shown: SelectionSnapshot, candidates: SelectionCandi
 	if _is_awaiting(DECISION.CHOOSE_TARGETS):
 		_show_targets(shown, candidates.decision_targets())
 	elif _selection_state == SelectionState.TARGET_PENDING:
-		_show_targets(shown, _announcement_targets(candidates))
+		_show_targets(shown, candidates.card_targets(_card_id))
 	elif _is_awaiting(DECISION.ORDER_TRIGGERS):
 		for entry_id: int in _engine.get_state().pending_decision.candidate_ids:
 			if not _ordered_entry_ids.has(entry_id):
@@ -283,22 +260,6 @@ func _show_targets(shown: SelectionSnapshot, targets: Array[SelectionTarget]) ->
 		shown.legal_piece_ids.append_array(target.piece_ids)
 		shown.legal_cells.append_array(target.cells)
 		shown.legal_stack_entry_ids.append_array(target.stack_entry_ids)
-
-
-func _announcement(candidates: SelectionCandidates, target: SelectionTarget) -> DuelIntent:
-	match _subject:
-		AnnouncementSubject.HERO_POWER:
-			return candidates.hero_power_announcement(target)
-		_:
-			return candidates.card_announcement(_card_id, target)
-
-
-func _announcement_targets(candidates: SelectionCandidates) -> Array[SelectionTarget]:
-	match _subject:
-		AnnouncementSubject.HERO_POWER:
-			return candidates.hero_power_targets()
-		_:
-			return candidates.card_targets(_card_id)
 
 
 func _can_confirm(candidates: SelectionCandidates) -> bool:
@@ -324,13 +285,6 @@ func _shown_tilted_sources() -> int:
 
 func _copy_draft() -> EssencePayment:
 	return EssencePayment.new(_draft_payment.incline_count, _draft_payment.recycle_count)
-
-
-func _is_hero_power_chosen() -> bool:
-	return (
-		_selection_state == SelectionState.TARGET_PENDING
-		and _subject == AnnouncementSubject.HERO_POWER
-	)
 
 
 func _is_own_turn() -> bool:
