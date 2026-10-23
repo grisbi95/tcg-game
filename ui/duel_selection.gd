@@ -177,16 +177,16 @@ func _choose_card(card_id: int) -> void:
 func _choose_announcement(card_id: int) -> void:
 	_card_id = card_id
 	var candidates := _candidates()
-	var untargeted := _announcement(candidates, SelectionTarget.new())
+	var untargeted := candidates.card_announcement(_card_id, SelectionTarget.new())
 	if candidates.is_legal(untargeted):
 		_emit_if_legal(untargeted)
-	elif not _announcement_targets(candidates).is_empty():
+	elif not candidates.card_targets(_card_id).is_empty():
 		_enter(SelectionState.TARGET_PENDING, card_id, DuelState.NO_ID)
 
 
 # Décision 0031 : l'annonce part dès que sa cible est choisie.
 func _choose_target(target: SelectionTarget) -> void:
-	_emit_if_legal(_announcement(_candidates(), target))
+	_emit_if_legal(_candidates().card_announcement(_card_id, target))
 
 
 func _toggle_set_aside(card_id: int) -> void:
@@ -240,7 +240,7 @@ func _fill_board_highlights(shown: SelectionSnapshot, candidates: SelectionCandi
 	if _is_awaiting(DECISION.CHOOSE_TARGETS):
 		_show_targets(shown, candidates.decision_targets())
 	elif _selection_state == SelectionState.TARGET_PENDING:
-		_show_targets(shown, _announcement_targets(candidates))
+		_show_targets(shown, candidates.card_targets(_card_id))
 	elif _is_awaiting(DECISION.ORDER_TRIGGERS):
 		for entry_id: int in _engine.get_state().pending_decision.candidate_ids:
 			if not _ordered_entry_ids.has(entry_id):
@@ -260,14 +260,6 @@ func _show_targets(shown: SelectionSnapshot, targets: Array[SelectionTarget]) ->
 		shown.legal_piece_ids.append_array(target.piece_ids)
 		shown.legal_cells.append_array(target.cells)
 		shown.legal_stack_entry_ids.append_array(target.stack_entry_ids)
-
-
-func _announcement(candidates: SelectionCandidates, target: SelectionTarget) -> DuelIntent:
-	return candidates.card_announcement(_card_id, target)
-
-
-func _announcement_targets(candidates: SelectionCandidates) -> Array[SelectionTarget]:
-	return candidates.card_targets(_card_id)
 
 
 func _can_confirm(candidates: SelectionCandidates) -> bool:

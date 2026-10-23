@@ -8,7 +8,7 @@ extends RefCounted
 ## Aucune règle ici : le plan tente des gestes, le moteur dit ce qui passe. La graine est cherchée
 ## jusqu'à ce que le plan réussisse avec les mains tirées.
 
-## Ajouter à la fin, sans réordonner.
+## Ordre des touches de l'essai ; non enregistré (décision 0047).
 enum Scenario {
 	CHOICE_TARGET,
 	CHOICE_ORDER,

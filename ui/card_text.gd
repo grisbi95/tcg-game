@@ -61,7 +61,8 @@ static func body_bbcode(definition: CardDefinition) -> String:
 	return _joined(chips, text)
 
 
-## Décision 0027, édition 0.42 (décision 0208) : le texte d'un Hero est son passif, rendu tel quel.
+## Décision 0027, édition 0.42 (décision de design 0208) : le texte d'un Hero est son passif,
+## rendu tel quel.
 static func hero_body_bbcode(hero: HeroDefinition) -> String:
 	return escaped(hero.text.strip_edges())
 

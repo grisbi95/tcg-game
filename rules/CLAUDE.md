@@ -45,11 +45,11 @@ Complète le `CLAUDE.md` racine pour `rules/` ; décisions 0001, 0003, 0004, 000
 
 ## Ajouter un champ d'état
 
-Le champ **et** sa copie dans `clone()` de la même classe, puis une valeur non par défaut dans `_build_full_state()` du test de clonage : le test échoue sinon. Un enum porté par l'état est journalisable : ajouter à la fin.
+Le champ **et** sa copie dans `clone()` de la même classe, puis une valeur non par défaut dans `_build_full_state()` du test de clonage : le test échoue sinon. Un enum enregistré dans un fichier (journal, JSON, `.tres`, CSV) prend ses nouvelles valeurs à la fin et ne se réordonne pas ; une valeur devenue inutile d'un enum non enregistré se supprime (décision 0047).
 
 ## Invariants à ne pas casser
 
-- `StackEntry.allows_response` est posé à la naissance de l'entrée (annonce : son genre et le plateau à l'annonce, 208.7.1 à 208.7.7 ; effet déclenché : `DuelState.triggers_allow_response`, que `add_to_stack`, la résolution de chaque entrée, `start_turn` et `apply_end_turn` fixent) ; une pile qui contient une entrée sans réponse ne reste jamais en attente d'une passe (elle attend seulement un choix d'ordre ou de cibles, décision 0009).
+- `StackEntry.allows_response` est posé à la naissance de l'entrée (annonce : son genre et le plateau à l'annonce, 208.7.1 à 208.7.6 ; effet déclenché : `DuelState.triggers_allow_response`, que `add_to_stack`, la résolution de chaque entrée, `start_turn` et `apply_end_turn` fixent) ; une pile qui contient une entrée sans réponse ne reste jamais en attente d'une passe (elle attend seulement un choix d'ordre ou de cibles, décision 0009).
 - Aléa, heure et Node : règle du `CLAUDE.md` racine §3 ; concrètement, jamais `randi()` ni `Array.shuffle()`.
 - Une `CardInstance` est dans une seule zone à la fois : la déplacer, jamais la copier. Une pièce qui revient sur le plateau reçoit un nouveau `piece_id`.
 - La Force actuelle se calcule par `ForceRules`, jamais ne se stocke.

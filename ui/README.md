@@ -12,7 +12,7 @@ Une vue émet des gestes (`cell_pressed`, `card_pressed`, `pass_pressed`) ; `Due
 
 ## Écran de duel
 
-Décision 0030 : joueur A toujours en bas, couleurs fixes des joueurs (`DuelPalette`) ; en duel local, la main du bas et les Sources pressables sont celles du joueur qui a l'appareil ; une carte agrandie (aperçu) multiplie les tailles du thème par son échelle, 2,2 seul, 1,7 avec la carte de son Gear, d'après la maquette (décisions 0027 et 0028). Commandes (décision 0032) : un seul grand bouton (« Terminer le tour », « Passer », « Confirmer » au mulligan), aucun « Annuler » ; le Hero n'a pas de pouvoir (édition 0.42, décision 0208) : sa carte Hero ne se presse pas, le Hero du plateau ne fait que se déplacer. Icônes provisoires tracées en code par `DuelIcons`.
+Décision 0030 : joueur A toujours en bas, couleurs fixes des joueurs (`DuelPalette`) ; en duel local, la main du bas et les Sources pressables sont celles du joueur qui a l'appareil ; une carte agrandie (aperçu) multiplie les tailles du thème par son échelle, 2,2 seul, 1,7 avec la carte de son Gear, d'après la maquette (décisions 0027 et 0028). Commandes (décision 0032) : un seul grand bouton (« Terminer le tour », « Passer », « Confirmer » au mulligan), aucun « Annuler » ; le Hero n'a pas de pouvoir (édition 0.42, décision de design 0208) : sa carte Hero ne se presse pas, le Hero du plateau ne fait que se déplacer. Icônes provisoires tracées en code par `DuelIcons`.
 
 ## Composants (`ui/components/`)
 

@@ -47,7 +47,7 @@ func find_errors() -> PackedStringArray:
 		errors.append("202.3.6 : nom absent")
 	if health < _MIN_HEALTH:
 		errors.append("202.3.7 : un Hero a au moins %d PV" % _MIN_HEALTH)
-	_check_effects(errors, passive, "passive", EffectDefinition.EffectTiming.STATIC)
+	_check_passive(errors)
 	return errors
 
 
@@ -63,16 +63,11 @@ func _read_effects(reader: CatalogReader, key: String) -> Array[EffectDefinition
 
 
 # 202.3.11 : le texte porte un passif ; 202.3.18 : le passif est statique.
-func _check_effects(
-	errors: PackedStringArray,
-	effects: Array[EffectDefinition],
-	label: String,
-	expected_timing: EffectDefinition.EffectTiming
-) -> void:
-	if effects.is_empty():
-		errors.append("202.3.11 : le Hero porte un passif, %s est vide" % label)
-	for index: int in effects.size():
-		for message: String in effects[index].find_errors():
-			errors.append("%s %d : %s" % [label, index + 1, message])
-		if effects[index].timing != expected_timing:
-			errors.append("%s %d : timing refusé pour le Hero" % [label, index + 1])
+func _check_passive(errors: PackedStringArray) -> void:
+	if passive.is_empty():
+		errors.append("202.3.11 : le Hero porte un passif, passive est vide")
+	for index: int in passive.size():
+		for message: String in passive[index].find_errors():
+			errors.append("passive %d : %s" % [index + 1, message])
+		if passive[index].timing != EffectDefinition.EffectTiming.STATIC:
+			errors.append("passive %d : timing refusé pour le Hero" % (index + 1))

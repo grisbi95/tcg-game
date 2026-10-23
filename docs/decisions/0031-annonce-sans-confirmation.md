@@ -1,6 +1,6 @@
 # 0031 — Annonce sans confirmation
 
-- Statut : acceptée
+- Statut : acceptée ; modifiée par 0047
 - Date : 2026-10-18
 - Décideur : créateur du projet
 - Périmètre : `DuelSelection` (`ui/`, étape 2.3)

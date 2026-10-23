@@ -29,7 +29,6 @@ func before_test() -> void:
 	var spell := CatalogSamples.with_field(CatalogSamples.spell(), "id", String(SPELL))
 	catalog.add_card(CardDefinition.from_dict(CatalogSamples.with_field(spell, "effects", [])))
 	catalog.add_card(CardDefinition.from_dict(CatalogSamples.gear()))
-	catalog.add_hero(HeroDefinition.from_dict(CatalogSamples.hero()))
 	_builder = DuelStateBuilder.new(DuelConfig.new(), catalog)
 	_engine = DuelEngine.new(catalog)
 	for side: DuelState.PlayerSide in [A, B]:

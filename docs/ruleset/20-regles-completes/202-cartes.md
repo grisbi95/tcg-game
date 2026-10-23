@@ -132,7 +132,7 @@ Aucun Invariant.
 
 **202.4.5a** [ACTÉ] Après sa création, un jeton peut recevoir un effet d'une source autre que l'effet qui le crée, soit un Gear attaché à ce jeton, soit un Spell, soit une aura (décision 0141 ; voir 200.1.1, 202.2.8, 202.4.5, 206.5.4 et 207.2.8).
 
-**202.4.6** [ACTÉ] Un jeton ne se crée que par l'effet d'une entrée de la pile, soit un Spell ou un effet déclenché (décisions 0104 et 0208 ; voir 201.5.4 et 202.4.1).
+**202.4.6** [ACTÉ] Un jeton ne se crée que par l'effet d'une entrée de la pile, soit un Spell, soit un effet déclenché (décisions 0104 et 0208 ; voir 201.5.4 et 202.4.1).
 
 **202.4.7** [ACTÉ] Un effet statique ne crée pas de jeton (décision 0104 ; voir 202.4.6 et 207.2.1).
 

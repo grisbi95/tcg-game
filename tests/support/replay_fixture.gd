@@ -9,8 +9,8 @@ const JOURNAL_PATH: String = "res://tests/fixtures/replay_random_duel.journal.js
 const FINGERPRINT_PATH: String = "res://tests/fixtures/replay_random_duel.fingerprint.json"
 const DUEL_SEED: int = 11
 ## Graines choisies le 23 octobre 2026 (ruleset 0.42, décision de design 0208) : le duel finit par
-## la perte de PV du Hero de A, gagné par B. Les graines 47 et 48 donnaient la victoire de A une
-## fois le pouvoir du Hero retiré.
+## la perte de PV du Hero de A, gagné par B, issue qu'attendent les tests 209.2.2 de la fiche de
+## playtest. Les graines 47 et 48 donnaient la victoire de A une fois le pouvoir du Hero retiré.
 const AGENT_SEED_A: int = 55
 const AGENT_SEED_B: int = 56
 const TICK_MSEC: int = 1_500

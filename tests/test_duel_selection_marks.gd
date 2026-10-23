@@ -1,7 +1,6 @@
 extends GdUnitTestSuite
-## DuelSelection sans scène : marques « jouable » éteintes pendant une sélection
-## (décisions 0024, 0031 et 0032).
-## Voisine de test_duel_selection.gd.
+## DuelSelection sans scène : marques « jouable » éteintes pendant une sélection (décisions 0024,
+## 0031 et 0032). Voisine de test_duel_selection.gd.
 
 const UNIT: StringName = &"selection_unit"
 const UNIT_COST: int = 2  # SetupSamples.add_unit()
@@ -23,7 +22,6 @@ func before_test() -> void:
 	_catalog = Catalog.new()
 	SetupSamples.add_unit(_catalog, UNIT, 3)
 	_catalog.add_card(CardDefinition.from_dict(CatalogSamples.spell()))
-	_catalog.add_hero(HeroDefinition.from_dict(CatalogSamples.hero()))
 	_builder = DuelStateBuilder.new(DuelConfig.new(), _catalog)
 	_engine = DuelEngine.new(_catalog)
 	_selection = DuelSelection.new()
