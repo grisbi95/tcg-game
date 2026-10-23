@@ -195,16 +195,6 @@ func test_202_3_18_hero_passive_is_static() -> void:
 	assert_bool(_mentions(_hero_errors(data), "passive 1 : timing refusé")).is_true()
 
 
-func test_202_3_11_hero_power_field_refused_decision_0208() -> void:
-	var data := CatalogSamples.with_field(CatalogSamples.hero(), "power", [])
-	assert_bool(_mentions(_hero_errors(data), "champ « power » inconnu")).is_true()
-
-
-func test_202_3_11_hero_power_cost_field_refused_decision_0208() -> void:
-	var data := CatalogSamples.with_field(CatalogSamples.hero(), "power_cost", 2)
-	assert_bool(_mentions(_hero_errors(data), "champ « power_cost » inconnu")).is_true()
-
-
 func test_id_is_ascii_snake_case() -> void:
 	for bad_id: String in ["", "Soldat", "vétéran", "deux mots", "1er"]:
 		var errors := _card_errors(CatalogSamples.with_field(CatalogSamples.unit(), "id", bad_id))

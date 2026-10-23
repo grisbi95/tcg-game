@@ -1,6 +1,6 @@
 extends GdUnitTestSuite
 ## DuelSelection sans scène : marques « jouable » éteintes pendant une sélection
-## (décisions 0024, 0031 et 0032 ; le Hero n'a plus de pouvoir depuis l'édition 0.42).
+## (décisions 0024, 0031 et 0032).
 ## Voisine de test_duel_selection.gd.
 
 const UNIT: StringName = &"selection_unit"

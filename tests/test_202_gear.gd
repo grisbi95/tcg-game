@@ -2,8 +2,7 @@
 
 extends GdUnitTestSuite
 ## Gear (ruleset 0.42, section 202.2 ; 208.1.5 à 208.1.7 ; décision de design 0207 : l'annonce
-## d'un Gear est sans réponse, 208.7.6, donc résolue dans la même soumission ; décision de
-## design 0208 : le Hero n'a pas de pouvoir).
+## d'un Gear est sans réponse, 208.7.6, donc résolue dans la même soumission).
 
 const UNIT_ID: StringName = &"gear_unit"
 const BUILDING_ID: StringName = &"gear_building"

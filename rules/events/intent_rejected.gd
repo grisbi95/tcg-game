@@ -28,7 +28,6 @@ enum RejectReason {
 	NOT_DEPLOYABLE,  # 202.2.5, 202.2.7 : ni Unit ni Building
 	CELL_NOT_IN_DEPLOY_ZONE,  # 205.1.2, 205.1.3, 205.1.4
 	CELL_NOT_FREE,  # 205.1.2, 205.1.3, 205.3.3 : case visée occupée à l'annonce
-	NORMAL_ACTION_ALREADY_USED,  # plus produite depuis l'édition 0.39 (204.4.6 supprimée, 205.5.3)
 	PIECE_NOT_YOURS,  # 204.4.5 : pièce absente du plateau ou d'un autre joueur
 	NO_NORMAL_ACTION,  # 202.2.17 : un Building ne fait jamais d'action normale
 	CELL_NOT_ADJACENT,  # 205.2.5, 205.3.1
@@ -38,7 +37,6 @@ enum RejectReason {
 	ILLEGAL_TARGET,  # 207.5.6, 207.5.11 à 207.5.16 : cible qui ne remplit pas les conditions
 	NOT_A_SPELL,  # 208.1.3 : seule une carte Spell s'annonce comme Spell
 	NOT_A_GEAR,  # 208.1.5 : seule une carte Gear s'attache
-	HERO_POWER_ALREADY_USED,  # retiré en édition 0.42 (décision 0208)
 	WRONG_TRIGGER_ORDER,  # 208.4.6, 208.4.7 : l'ordre cite chaque effet attendu une fois, seul
 	NO_ESSENCE_PRODUCED,  # 203.6.3, 203.6.4 : produire de l'Essence incline ou recycle une Source
 	PIECE_ASLEEP,  # 205.5.3 : une pièce endormie ne fait pas d'action normale

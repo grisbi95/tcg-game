@@ -1,10 +1,10 @@
 class_name HeroCardView
 extends Control
 ## Carte Hero d'un joueur (202.3 ; décision 0032) : une CardView de 158×220 entourée du liseré
-## épais de la couleur fixe de son joueur, qui laisse voir sa teinte. Elle n'est pas cliquable :
-## le Hero n'a plus de pouvoir (décision 0208). Un texte long réduit sa taille de police dans la
-## CardView, qui garde ses 158×220. Les PV montrés sont les PV imprimés ; les PV en jeu sont sur
-## la pièce du plateau. Le survol est relayé pour l'aperçu.
+## épais de la couleur fixe de son joueur, qui laisse voir sa teinte. Elle n'est pas cliquable.
+## Un texte long réduit sa taille de police dans la CardView, qui garde ses 158×220. Les PV
+## montrés sont les PV imprimés ; les PV en jeu sont sur la pièce du plateau. Le survol est
+## relayé pour l'aperçu.
 
 signal hero_card_hovered
 signal hero_card_unhovered
