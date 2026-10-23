@@ -18,7 +18,7 @@ Complète le `CLAUDE.md` racine pour `tests/` ; commandes dans `CLAUDE.md` §7.
 
 | Outil | Usage |
 | --- | --- |
-| `DuelStateBuilder` | état construit à la main ; `cell("B2")` ; `add_to_deck/hand/discard`, `place_piece`, `push_*` qui simulent une annonce déjà faite ; `place_unit_in(state, …)` pour une pièce arrivée sur un état déjà démarré ; un builder sert une fois ; pièces et Heroes placés éveillés par défaut, `with_piece_awake(piece_id, false)` pour une pièce endormie (205.5) |
+| `DuelStateBuilder` | état construit à la main ; `cell("B2")` ; `add_to_deck/hand/discard`, `place_piece`, `push_*` qui simulent une annonce déjà faite (`push_deploy` et `push_normal_action` prennent l'étiquette `allows_response`, vraie par défaut ; fausse, le moteur résout l'entrée à sa prochaine soumission) ; `place_unit_in(state, …)` pour une pièce arrivée sur un état déjà démarré ; un builder sert une fois ; pièces et Heroes placés éveillés par défaut, `with_piece_awake(piece_id, false)` pour une pièce endormie (205.5) |
 | `TestCatalog` | cartes et decks de `docs/ruleset/70-playtest/decks-de-test.md` chargés depuis `data/cards/` et `data/decks/` (0037) |
 | `EventLog` | `describe(events)` → `["TurnEnded:A", "TurnStarted:B"]` ; `rejection_reason(events)` |
 | `SetupSamples` | catalogue en mémoire (dix Units, Hero d'essai) et `DuelSetup` valide pour `DuelEngine.start_new_duel` |
@@ -27,13 +27,13 @@ Complète le `CLAUDE.md` racine pour `tests/` ; commandes dans `CLAUDE.md` §7.
 | `ReplayFingerprint` | empreinte d'un duel rejoué : événements et état final par réflexion, SHA-256, `find_differences` |
 | `ReplayFixture` | duel de non-régression (décision 0022) : `play()`, `fingerprint_of(journal)`, fichiers de `tests/fixtures/` |
 | `ResponseWindowProbe` | fenêtre de réponse de `DuelHost` laissée ouverte longtemps sans geste (208.6.2, décision 0029) : ouverte à l'ouverture et après l'attente, événements ; `count_castable` pour les Réactions jouables |
-| `ResponseWindowSamples` | catalogues d'essai (Réaction sans effet, Héraut), carte ajoutée à la main d'un duel démarré, déploiement de A et mulligans passés par l'hôte, nombre d'intentions journalisées d'un hôte |
+| `ResponseWindowSamples` | catalogues d'essai (Réaction sans effet, Héraut), carte ajoutée à la main d'un duel démarré, Réaction annoncée par A (avec l'attaque, seul moyen d'ouvrir la fenêtre de B, 208.7), déploiement de A et mulligans passés par l'hôte, nombre d'intentions journalisées d'un hôte |
 | `CatalogSamples` | dictionnaires JSON minimaux et valides pour les tests du catalogue (0002, 0010) |
-| `DuelChecks` | contrôles partagés des suites qui passent par `DuelEngine` : écarts d'une soumission refusée (raison, état modifié), `pass_once`, `is_hero_placed`, `card_ids` |
+| `DuelChecks` | contrôles partagés des suites qui passent par `DuelEngine` : écarts d'une soumission refusée (raison, état modifié), `pass_once`, `pass_until_stack_empty` (entrée posée à la main, puis son combat en attente), `is_hero_placed`, `card_ids` |
 | `DuelOracle` | oracle des duels aléatoires (1.10) : recalcule depuis l'état, sans `validate()`, conditions du ruleset et invariants |
 | `HostDriver` | fait jouer un `DuelHost` sans scène (0020) : confirme l'affichage, avance `ManualClock`, appelle `tick()` |
 | `TriggerSamples` | catalogue en mémoire des suites d'effets déclenchés (207.3, 208.4, 210.3, 204.5.3) |
-| `HumanDuelDriver` | deux humains sur un `DuelHost` à `ManualClock`, sans scène (0020, 0021) : chaque intention est suivie de la confirmation d'affichage et du relais ; `end_turn`, `deploy`, `move`, `pass_priority`, `wait`, `record_sheet` ; sert au relevé de playtest (0042) |
+| `HumanDuelDriver` | deux humains sur un `DuelHost` à `ManualClock`, sans scène (0020, 0021) : chaque intention est suivie de la confirmation d'affichage et du relais ; `end_turn`, `deploy` (sans réponse), `move` (l'adversaire passe si c'est une attaque), `pass_priority`, `wait`, `record_sheet` ; sert au relevé de playtest (0042) |
 | `PlaytestScenarios` | duels de deux humains joués par `HumanDuelDriver` sur le catalogue d'essai (tours sans action, déploiement, économie, réponse, marche jusqu'au combat, Martyrs, petit deck), dont les tests du relevé lisent la fiche |
 | `ColumnSpy`, `PreviewSpy` | sous-classes sans scène de `DuelColumnView` et `HoverPreview`, jamais ajoutées à l'arbre, qui enregistrent leurs appels, pour `DuelCenterPresenter` et `DuelPreviewer` |
 

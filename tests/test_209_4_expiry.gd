@@ -83,10 +83,10 @@ func test_209_4_9_end_of_turn_effects_follow_the_expiry() -> void:
 	var labels := EventLog.describe(_engine.advance_clock(STEP_MSEC))
 	var expected: Array[String] = ["TimeExpired:A", "TurnEnded:A", "EffectTriggered:A"]
 	expected.append_array(EventLog.repeat("DecisionResolvedAutomatically:A", 2))
-	expected.append("StackEntryAdded:A")
-	assert_array(labels).contains_exactly(expected)
-	assert_int(_engine.get_state().active_player).is_equal(A)
-	assert_int(_engine.get_state().phase).is_equal(PHASE.TURN_END)
+	expected.append_array(["StackEntryAdded:A", "ForceModified:A", "StackEntryResolved:A"])
+	assert_array(labels.slice(0, expected.size())).contains_exactly(expected)
+	assert_int(_engine.get_state().active_player).is_equal(B)
+	assert_int(_engine.get_state().phase).is_equal(PHASE.MAIN)
 
 
 func test_209_4_10_response_time_expiry_passes() -> void:
@@ -163,11 +163,12 @@ func test_209_4_12_expiry_orders_triggers_as_they_were_triggered() -> void:
 	var expected: Array[String] = ["TimeExpired:A", "TriggersOrdered:A"]
 	for index: int in 2:
 		expected.append_array(["DecisionResolvedAutomatically:A", "StackEntryAdded:A"])
-	assert_array(EventLog.describe(events)).contains_exactly(expected)
-	var stack_ids: Array[int] = []
-	for entry: StackEntry in _engine.get_state().stack:
-		stack_ids.append(entry.stack_entry_id)
-	assert_array(stack_ids).contains_exactly([first_id, second_id])
+	assert_array(EventLog.describe(events).slice(0, expected.size())).contains_exactly(expected)
+	var added_ids: Array[int] = []
+	for event: DuelEvent in events:
+		if event is StackEntryAdded:
+			added_ids.append((event as StackEntryAdded).stack_entry_id)
+	assert_array(added_ids).contains_exactly([first_id, second_id])
 	assert_object(_engine.get_state().pending_decision).is_null()
 
 
@@ -180,7 +181,8 @@ func test_209_4_12_response_time_expiry_orders_the_other_players_triggers() -> v
 	var expired := events[0] as TimeExpired
 	assert_int(expired.kind).is_equal(KIND.RESPONSE)
 	assert_int(expired.player).is_equal(B)
-	assert_int(state.stack[0].stack_entry_id).is_equal(first_id)
+	var added := _first_event_of(events, StackEntryAdded)
+	assert_int((added as StackEntryAdded).stack_entry_id).is_equal(first_id)
 
 
 # --- Contrat de décision 0045 ---
@@ -217,3 +219,10 @@ func test_decision_0045_the_clock_never_makes_a_player_lose_the_game() -> void:
 	_engine.start_from_state(_builder.with_turn_time_remaining(A, STEP_MSEC).build())
 	_engine.advance_clock(TURN_MSEC * 2)
 	assert_int(_engine.get_state().result).is_equal(RESULT.NONE)
+
+
+func _first_event_of(events: Array[DuelEvent], event_class: GDScript) -> DuelEvent:
+	for event: DuelEvent in events:
+		if is_instance_of(event, event_class):
+			return event
+	return null

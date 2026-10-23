@@ -1,7 +1,7 @@
 # gdlint: disable=max-public-methods
 
 extends GdUnitTestSuite
-## Sommeil et réveil (ruleset 0.39, section 205.5 ; 204.1.18, 204.3.10, 204.3.11, 205.4.7 ;
+## Sommeil et réveil (ruleset 0.41, section 205.5 ; 204.1.18, 204.3.10, 204.3.11, 205.4.7 ;
 ## décision de design 0200 du ruleset). Le réveil au début d'un tour en cours de partie est
 ## vérifié sous 204.3.8, 204.3.10 et 204.3.11 dans test_204_turn.gd ; celui du premier tour, après
 ## la préparation (204.1.18), ici.
@@ -45,7 +45,6 @@ func test_205_5_1_unit_is_asleep_after_its_action_and_awake_after_its_wake() -> 
 	assert_bool(_engine.get_state().find_piece(unit_id).is_awake).is_true()
 	_engine.submit(TakeNormalAction.new(A, unit_id, DuelStateBuilder.cell("B3")))
 	assert_bool(_engine.get_state().find_piece(unit_id).is_awake).is_false()
-	_resolve_stack()
 	_end_turn(A)
 	_end_turn(B)
 	assert_bool(_engine.get_state().find_piece(unit_id).is_awake).is_true()
@@ -57,7 +56,6 @@ func test_205_5_2_hero_is_asleep_after_its_action_and_awake_after_its_wake() -> 
 	assert_bool(_engine.get_state().find_hero(A).is_awake).is_true()
 	_engine.submit(TakeNormalAction.new(A, hero_id, DuelStateBuilder.cell("C2")))
 	assert_bool(_engine.get_state().find_hero(A).is_awake).is_false()
-	_resolve_stack()
 	_end_turn(A)
 	_end_turn(B)
 	assert_bool(_engine.get_state().find_hero(A).is_awake).is_true()
@@ -83,7 +81,6 @@ func test_205_5_4_deployed_unit_arrives_asleep() -> void:
 	_start()
 	var cell := DuelStateBuilder.cell("B1")
 	_engine.submit(DeployCard.new(A, card_id, cell, EssencePayment.new(UNIT_COST)))
-	_resolve_stack()
 	var piece := _engine.get_state().piece_at(cell)
 	assert_int(piece.kind).is_equal(Piece.PieceKind.UNIT)
 	assert_bool(piece.is_awake).is_false()
@@ -125,7 +122,6 @@ func test_205_5_5_asleep_piece_stays_asleep_until_its_next_wake() -> void:
 	_start()
 	var cell := DuelStateBuilder.cell("B1")
 	_engine.submit(DeployCard.new(A, card_id, cell, EssencePayment.new(UNIT_COST)))
-	_resolve_stack()
 	var piece_id := _engine.get_state().piece_at(cell).piece_id
 	_end_turn(A)
 	assert_bool(_engine.get_state().find_piece(piece_id).is_awake).is_false()
@@ -175,7 +171,7 @@ func _end_turn(side: DuelState.PlayerSide) -> void:
 	_engine.submit(EndTurn.new(side))
 
 
-## Le joueur qui a la priorité passe : la pile se résout. Renvoie les événements décrits.
+## L'entrée construite à la main se résout, puis le combat en attente qu'elle fait naître
+## (205.6.4). Renvoie les événements décrits.
 func _resolve_stack() -> Array[String]:
-	var first := _engine.get_state().priority_player
-	return EventLog.describe(DuelChecks.pass_once(_engine, first))
+	return EventLog.describe(DuelChecks.pass_until_stack_empty(_engine))

@@ -11,6 +11,7 @@ const SENTENCES: Dictionary[StringName, String] = {
 	&"CardReturnedToDeck": "Le joueur %s remet une carte dans son deck.",
 	&"CardReturnedToHand": "Une carte revient dans la main du joueur %s.",
 	&"CardSetAside": "Le joueur %s écarte une carte.",
+	&"CombatPutOnHold": "Un combat du joueur %s est mis en attente.",
 	&"CombatResolved": "Un combat est résolu.",
 	&"DecisionRequested": "Le joueur %s doit faire un choix.",
 	&"DecisionResolvedAutomatically": "Le seul choix possible du joueur %s est fait pour lui.",

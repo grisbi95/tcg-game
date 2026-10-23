@@ -92,3 +92,8 @@ func test_decision_0045_clock_reading_key_changes_with_the_displayed_seconds() -
 	assert_str(ClockReading.new(response, 12_300, true).display_key()).is_not_equal(
 		first.display_key()
 	)
+
+
+func test_205_6_combat_put_on_hold_names_the_player() -> void:
+	var text := EventText.describe(CombatPutOnHold.new(A))
+	assert_str(text).is_equal("Un combat du joueur A est mis en attente.")

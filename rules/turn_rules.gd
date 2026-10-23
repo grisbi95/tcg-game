@@ -22,10 +22,12 @@ static func validate_end_turn(state: DuelState, intent: EndTurn) -> IntentReject
 	return IntentRejected.RejectReason.NONE
 
 
-## 204.4.7, 204.5.3 à 204.5.6 : termine le tour du joueur actif ; les effets déclenchés par la
-## fin du tour s'ajoutent à la pile, qui se résout comme toute autre (208.3.1).
+## 204.4.7, 204.5.3, 204.5.4, 204.5.6, 208.7.16 : termine le tour du joueur actif ; les effets
+## déclenchés par la fin du tour sont sans réponse, s'ajoutent à la pile et se résolvent aussitôt
+## (208.7.13).
 static func apply_end_turn(state: DuelState, intent: EndTurn, events: Array[DuelEvent]) -> void:
 	state.phase = DuelState.DuelPhase.TURN_END
+	state.triggers_allow_response = false
 	events.append(TurnEnded.new(intent.player))
 	TriggerRules.trigger_end_of_turn(state, events)
 
@@ -49,9 +51,9 @@ static func finish_end_of_turn(state: DuelState, events: Array[DuelEvent]) -> vo
 	start_turn(state, DuelState.opponent_of(state.active_player), events)
 
 
-## 204.3.8 (réveil, redressement, Source, pioche) puis 204.4.1 ; 208.4.11 : commence le tour de
-## `side`. Les effets qui attendaient la fin du début du tour s'ajoutent à la pile dès le début de
-## la phase principale, par DuelEngine.
+## 204.3.8 (réveil, redressement, Source, pioche) puis 204.4.1 ; 208.4.11, 208.7.15 : commence le
+## tour de `side`. Les effets sans réponse qui attendaient la fin du début du tour s'ajoutent à la
+## pile dès le début de la phase principale, par DuelEngine.
 static func start_turn(
 	state: DuelState, side: DuelState.PlayerSide, events: Array[DuelEvent]
 ) -> void:
@@ -59,6 +61,7 @@ static func start_turn(
 	state.turn_number += 1
 	state.active_player = side
 	state.priority_player = side
+	state.triggers_allow_response = false
 	_reset_turn_counters(state)
 	state.get_player(side).turn_time_remaining_msec = state.config.turn_time_msec  # 209.4.3
 	events.append(TurnStarted.new(side, state.turn_number))

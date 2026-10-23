@@ -1,6 +1,6 @@
 extends GdUnitTestSuite
 ## Effets déclenchés : Arrivée, Dernier souffle, appartenance, « une fois par tour » (ruleset
-## 0.33, sections 207.3, 210.3 ; 207.5.9 ; décisions 0004 et 0017).
+## 0.41, sections 207.3, 210.3 ; 207.5.9 ; décisions 0004 et 0017).
 ##
 ## Les déploiements et actions sont posés sur la pile par le builder, comme des annonces déjà
 ## faites ; les cartes viennent de TriggerSamples.
@@ -67,6 +67,7 @@ func test_210_3_1a_unit_entering_attacking_arrives() -> void:
 	var other_id := _place(B, TriggerSamples.SOLDIER, "D4")
 	_push_deploy(A, TriggerSamples.HERALD, "B1")
 	var labels := EventLog.describe(_pass_once(B))
+	labels.append_array(EventLog.describe(_pass_once(B)))
 	assert_bool(labels.has("PieceEnteredAttacking:A")).is_true()
 	assert_bool(labels.has("EffectTriggered:A")).is_true()
 	assert_array(_engine.get_state().stack[0].target_piece_ids).contains_exactly([other_id])
@@ -158,11 +159,15 @@ func test_207_3_5a_once_per_turn_trigger_already_used_adds_nothing() -> void:
 func test_207_3_6_once_per_turn_counts_at_addition() -> void:
 	_place(A, TriggerSamples.SOLDIER, "D1")
 	var beacon_id := _place_building(A, TriggerSamples.ONCE_BEACON, "B2")
-	_engine.start_from_state(_builder.build())
-	_engine.submit(EndTurn.new(A))
-	var state := _engine.get_state()
-	assert_int(state.stack.size()).is_equal(1)
+	var state := _builder.build()
 	var card_id := state.find_piece(beacon_id).card.card_instance_id
+	var events: Array[DuelEvent] = []
+	TriggerRules.trigger(
+		state, state.find_piece(beacon_id), EffectDefinition.TriggerEvent.END_OF_TURN, events
+	)
+	assert_array(state.once_per_turn_card_ids).is_empty()
+	TriggerRules.add_waiting_triggers(state, events)
+	assert_int(state.stack.size()).is_equal(1)
 	assert_array(state.once_per_turn_card_ids).contains_exactly([card_id])
 
 
@@ -180,17 +185,18 @@ func test_207_3_7_once_per_turn_count_is_kept_per_card() -> void:
 func test_207_3_8_once_per_turn_count_lasts_from_turn_start_to_turn_end() -> void:
 	_place(A, TriggerSamples.SOLDIER, "D1")
 	var beacon_id := _place_building(A, TriggerSamples.ONCE_BEACON, "B2")
-	_engine.start_from_state(_builder.build())
-	_engine.submit(EndTurn.new(A))
-	var state := _engine.get_state()
+	var state := _builder.with_phase(DuelState.DuelPhase.TURN_END).build()
 	var beacon := state.find_piece(beacon_id)
-	assert_int(state.phase).is_equal(DuelState.DuelPhase.TURN_END)
 	var events: Array[DuelEvent] = []
+	TriggerRules.trigger(state, beacon, EffectDefinition.TriggerEvent.END_OF_TURN, events)
+	TriggerRules.add_waiting_triggers(state, events)
+	events.clear()
 	TriggerRules.trigger(state, beacon, EffectDefinition.TriggerEvent.END_OF_TURN, events)
 	TriggerRules.add_waiting_triggers(state, events)
 	assert_array(EventLog.describe(events)).contains_exactly(
 		["EffectTriggered:A", "TriggerSkipped:A"]
 	)
+	_engine.start_from_state(state)
 	_pass_once(B)
 	assert_int(state.active_player).is_equal(B)
 	assert_array(state.once_per_turn_card_ids).is_empty()
@@ -201,7 +207,6 @@ func test_207_3_9_once_per_turn_count_resets_at_each_turn_start() -> void:
 	_place_building(A, TriggerSamples.ONCE_BEACON, "B2")
 	_engine.start_from_state(_builder.build())
 	_engine.submit(EndTurn.new(A))
-	_pass_once(B)
 	var state := _engine.get_state()
 	assert_int(state.active_player).is_equal(B)
 	assert_array(state.once_per_turn_card_ids).is_empty()
@@ -210,9 +215,12 @@ func test_207_3_9_once_per_turn_count_resets_at_each_turn_start() -> void:
 func test_207_3_10_count_follows_the_card_when_it_changes_zone() -> void:
 	_place(A, TriggerSamples.SOLDIER, "D1")
 	var beacon_id := _place_building(A, TriggerSamples.ONCE_BEACON, "B2")
-	_engine.start_from_state(_builder.build())
-	_engine.submit(EndTurn.new(A))
-	var state := _engine.get_state()
+	var state := _builder.build()
+	var events: Array[DuelEvent] = []
+	TriggerRules.trigger(
+		state, state.find_piece(beacon_id), EffectDefinition.TriggerEvent.END_OF_TURN, events
+	)
+	TriggerRules.add_waiting_triggers(state, events)
 	var beacon_card := state.find_piece(beacon_id).card
 	CombatRules.destroy_piece(state, state.find_piece(beacon_id), [] as Array[DuelEvent])
 	assert_array(DuelChecks.card_ids(state.get_player(A).discard)).contains(

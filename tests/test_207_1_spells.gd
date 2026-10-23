@@ -58,6 +58,19 @@ func test_208_1_3_spell_is_announced_on_the_stack() -> void:
 	assert_int(state.priority_player).is_equal(B)
 
 
+func test_201_3_8_announced_spell_is_on_the_stack_until_its_resolution() -> void:
+	var unit_id := _place(A, "B2")
+	var card_id := _builder.add_to_hand(A, BOOST_ID)
+	_start()
+	_engine.submit(_boost(A, card_id, unit_id))
+	var state := _engine.get_state()
+	assert_object(state.get_player(A).find_card_in_hand(card_id)).is_null()
+	assert_int(state.stack[0].card.card_instance_id).is_equal(card_id)
+	assert_array(state.get_player(A).discard).is_empty()
+	DuelChecks.pass_once(_engine, B)
+	assert_array(DuelChecks.card_ids(state.get_player(A).discard)).contains_exactly([card_id])
+
+
 func test_207_5_1a_spell_targets_chosen_at_announcement() -> void:
 	var unit_id := _place(A, "B2")
 	var card_id := _builder.add_to_hand(A, BOOST_ID)

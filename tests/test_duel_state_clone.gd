@@ -156,6 +156,7 @@ func _build_full_state() -> DuelState:
 	builder.with_pending_decision(_make_decision(spell_entry_id, unit_id))
 	var state := builder.build()
 	state.first_player_imposed = true
+	state.triggers_allow_response = false
 	for player: PlayerState in state.players:
 		player.announced_this_turn = true
 	state.waiting_triggers.append(_make_trigger(builder, token_id, spell_entry_id))
@@ -206,6 +207,7 @@ func _make_trigger(
 	entry.source_card_instance_id = entry.card.card_instance_id
 	entry.source_definition_id = UNIT_ID
 	entry.effect_index = 1
+	entry.allows_response = false
 	entry.target_cells.append(DuelStateBuilder.cell("C3"))
 	entry.target_piece_ids.append(source_piece_id)
 	entry.target_stack_entry_ids.append(target_entry_id)

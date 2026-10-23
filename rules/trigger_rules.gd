@@ -29,6 +29,24 @@ static func trigger(
 			_wait(state, piece, index, events)
 
 
+## 205.6.3, 205.6.5, 205.6.6, 208.7.14 : `combat` attend la fin de la résolution qui l'a fait
+## naître, comme un effet déclenché du joueur à qui appartient l'attaquant. Il reçoit un identifiant
+## d'entrée dès maintenant (décision 0017) et peut recevoir une réponse.
+static func wait_pending_combat(
+	state: DuelState, combat: StackEntry, events: Array[DuelEvent]
+) -> void:
+	combat.stack_entry_id = state.allocate_stack_entry_id()
+	combat.kind = StackEntry.StackEntryKind.PENDING_COMBAT
+	combat.allows_response = true
+	state.waiting_triggers.append(combat)
+	var held := CombatPutOnHold.new(
+		combat.owner, combat.stack_entry_id, combat.source_piece_id, combat.target_cells[0]
+	)
+	if combat.card != null:
+		held.card_instance_id = combat.card.card_instance_id
+	events.append(held)
+
+
 ## 204.5.3 : quand le joueur actif termine son tour, chaque pièce en jeu réagit à la fin du tour.
 static func trigger_end_of_turn(state: DuelState, events: Array[DuelEvent]) -> void:
 	for piece: Piece in state.pieces:
@@ -162,6 +180,7 @@ static func _wait(
 	entry.source_card_instance_id = piece.card.card_instance_id
 	entry.source_definition_id = piece.card.definition_id
 	entry.effect_index = effect_index
+	entry.allows_response = state.triggers_allow_response  # 208.7.8 à 208.7.11
 	state.waiting_triggers.append(entry)
 	events.append(EffectTriggered.new(entry.owner, entry.stack_entry_id, piece.piece_id))
 
@@ -203,6 +222,10 @@ static func _next_group(state: DuelState) -> Array[StackEntry]:
 # décompte la mention « une fois par tour ».
 static func _add_next(state: DuelState, events: Array[DuelEvent]) -> void:
 	var entry := state.triggers_to_add[0]
+	if entry.kind == StackEntry.StackEntryKind.PENDING_COMBAT:
+		state.triggers_to_add.pop_front()
+		StackRules.add_to_stack(state, entry, events)
+		return
 	if not _can_be_added(state, entry):
 		_skip(state.triggers_to_add, entry, events)
 		return
@@ -220,6 +243,8 @@ static func _add_next(state: DuelState, events: Array[DuelEvent]) -> void:
 
 # 207.3.5a, 207.3.7, 207.3.10 ; 207.5.9, 207.5.10
 static func _can_be_added(state: DuelState, entry: StackEntry) -> bool:
+	if entry.kind == StackEntry.StackEntryKind.PENDING_COMBAT:
+		return true
 	var effect := effect_of(state, entry)
 	if effect.once_per_turn and state.once_per_turn_card_ids.has(entry.source_card_instance_id):
 		return false

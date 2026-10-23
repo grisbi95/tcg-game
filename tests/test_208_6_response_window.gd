@@ -1,22 +1,22 @@
 # gdlint: disable=max-public-methods,max-file-lines
 
 extends GdUnitTestSuite
-## Fenêtre de réponse à l'écran, ouverte et fermée par DuelHost (ruleset 0.40, 208.6, 209.4.4g
-## et 209.4.10, décisions de design 0199 et 0205 ; décisions 0029, 0042 et 0045).
+## Fenêtre de réponse à l'écran, ouverte et fermée par DuelHost (ruleset 0.41, 208.6, 209.4.4g
+## et 209.4.10, décisions de design 0199, 0205 et 0207 ; décisions 0029, 0042, 0045 et 0046).
 ##
-## Sans scène : `ManualClock` tient lieu de temps réel. A déploie une Unit à son premier tour ;
-## B, qui peut alors répondre ou passer, n'a aucune Réaction dans le deck d'essai (208.6.6).
+## Sans scène : `ManualClock` tient lieu de temps réel. A annonce un Spell à son premier tour (seul
+## cas, avec l'attaque, qui laisse répondre, 208.7.1) ; B, qui peut alors répondre ou passer,
+## n'a aucune Réaction en main (208.6.6). Un déploiement n'ouvre aucune fenêtre (208.6.8, 208.7.3).
 
 const TURN_MSEC: int = 90_000  # 209.4.3
 const RESPONSE_MSEC: int = 30_000  # 209.4.6
-const UNIT_COST: int = 2  # CatalogSamples.unit()
 const AGENT_SEED: int = 3
 const SHORT_RESPONSE_MSEC: int = 1_500  # temps de réponse qui tombe pendant la fenêtre
 const HANDOVER_MSEC: int = 5_000  # temps passé à se passer l'appareil
 const PARTIAL_WAIT_MSEC: int = 500  # temps passé fenêtre ouverte avant un geste
 const LONG_WAIT_MSEC: int = 20_000  # sans geste, moins que le temps de réponse (30 s)
-const REACTION_ID: StringName = &"window_reaction"
-const REACTION_COST: int = 1  # CatalogSamples.spell()
+const REACTION_ID: StringName = ResponseWindowSamples.REACTION_ID
+const REACTION_COST: int = ResponseWindowSamples.REACTION_COST
 const HERALD_COST: int = 2  # CatalogSamples.unit()
 const SOURCE_TO_RECYCLE: int = 1  # Source inclinée par le déploiement de A, recyclée (203.6.4)
 
@@ -30,7 +30,7 @@ var _host: DuelHost
 
 
 func before_test() -> void:
-	_engine = DuelEngine.new(SetupSamples.catalog())
+	_engine = DuelEngine.new(ResponseWindowSamples.catalog_with_reaction(REACTION_ID))
 	_clock = ManualClock.new()
 	_host = DuelHost.new(_engine, _clock)
 
@@ -43,7 +43,7 @@ func test_208_6_1_window_opens_when_the_human_can_answer() -> void:
 
 func test_208_6_1_window_opens_once_the_device_is_handed_over() -> void:
 	_reach_first_turn_of_a()
-	_deploy_from_a()
+	_announce_from_a()
 	_host.confirm_events_played()
 	assert_int(_host.get_host_state()).is_equal(HOST.RELAY)
 	assert_bool(_host.is_response_window_open()).is_false()
@@ -117,8 +117,8 @@ func test_208_6_2_response_start_outside_a_window_is_not_journaled() -> void:
 	_host.begin_response()  # tour de A, pile vide : aucune fenêtre
 	assert_int(_host.get_host_state()).is_equal(HOST.AWAITING_HUMAN)
 	assert_bool(_host.is_response_window_open()).is_false()
-	_deploy_from_a()
-	entry_count += 1  # le déploiement lui-même
+	_announce_from_a()
+	entry_count += 1  # l'annonce elle-même
 	_host.begin_response()  # PLAYING_EVENTS
 	_host.confirm_events_played()
 	_host.begin_response()  # RELAY
@@ -230,14 +230,9 @@ func test_208_6_7_no_window_while_a_decision_is_pending() -> void:
 	DuelStateBuilder.place_unit_in(state, B, SetupSamples.deck()[0], "D4")
 	var herald := ResponseWindowSamples.add_to_hand(_engine.get_state(), A, TriggerSamples.HERALD)
 	assert_bool(ResponseWindowSamples.try_deploy(_host, _engine, herald, HERALD_COST)).is_true()
-	_host.confirm_events_played()
-	_host.confirm_relay()
-	assert_bool(_host.is_response_window_open()).is_true()
-	_host.submit_human(PassPriority.new(B))
 	assert_object(state.pending_decision).is_not_null()
 	assert_int(state.pending_decision.kind).is_equal(PendingDecision.DecisionKind.CHOOSE_TARGETS)
 	_host.confirm_events_played()
-	_host.confirm_relay()
 	assert_int(_host.get_awaited_player()).is_equal(A)
 	assert_int(_host.get_host_state()).is_equal(HOST.AWAITING_HUMAN)
 	assert_bool(_host.is_response_window_open()).is_false()
@@ -247,6 +242,19 @@ func test_208_6_7_no_window_while_a_decision_is_pending() -> void:
 	assert_int(ResponseWindowSamples.journaled_intent_count(_host)).is_equal(intent_count)
 	assert_int(_host.get_host_state()).is_equal(HOST.AWAITING_HUMAN)
 	assert_object(state.pending_decision).is_not_null()
+
+
+func test_208_6_8_no_window_after_a_deployment() -> void:
+	_reach_first_turn_of_a()
+	var deployed := false
+	for card: CardInstance in _engine.get_state().get_player(A).hand:
+		deployed = deployed or ResponseWindowSamples.try_deploy(_host, _engine, card, HERALD_COST)
+	assert_bool(deployed).is_true()
+	_host.confirm_events_played()
+	assert_int(_host.get_awaited_player()).is_equal(A)
+	assert_int(_host.get_host_state()).is_equal(HOST.AWAITING_HUMAN)
+	assert_bool(_host.is_response_window_open()).is_false()
+	assert_array(_engine.get_state().stack).is_empty()
 
 
 func test_209_2_5_concede_during_the_window() -> void:
@@ -281,7 +289,7 @@ func test_209_4_4g_response_time_runs_during_the_window() -> void:
 
 func test_209_4_4g_time_before_the_window_opened_is_ordinary_time() -> void:
 	_reach_first_turn_of_a()
-	_deploy_from_a()
+	_announce_from_a()
 	_host.confirm_events_played()
 	_clock.advance(HANDOVER_MSEC)
 	_host.confirm_relay()
@@ -322,7 +330,7 @@ func test_decision_0029_no_window_for_an_agent() -> void:
 	_host.confirm_events_played()
 	_host.tick()
 	_host.confirm_events_played()
-	_deploy_from_a()
+	_announce_from_a()
 	_host.confirm_events_played()
 	assert_int(_host.get_host_state()).is_equal(HOST.AWAITING_AI)
 	assert_bool(_host.is_response_window_open()).is_false()
@@ -336,7 +344,7 @@ func _last_journal_entry() -> DuelJournal.Entry:
 func _use_short_response_time(response_time_msec: int) -> void:
 	var config := DuelConfig.new()
 	config.response_time_msec = response_time_msec
-	_engine = DuelEngine.new(SetupSamples.catalog(), config)
+	_engine = DuelEngine.new(ResponseWindowSamples.catalog_with_reaction(REACTION_ID), config)
 	_host = DuelHost.new(_engine, _clock)
 
 
@@ -359,9 +367,9 @@ func _observe_window(give_reaction_to_b: bool) -> ResponseWindowProbe:
 	return probe
 
 
-# 208.2.4 : A déploie, B répond par une Réaction ; A, au tour duquel on joue, reçoit sa fenêtre.
+# 208.2.4 : A annonce un Spell, B répond par une Réaction ; A, au tour duquel on joue, reçoit sa
+# fenêtre.
 func _reach_window_of_a_on_reaction_of_b() -> void:
-	_restart_duel(ResponseWindowSamples.catalog_with_reaction(REACTION_ID))
 	_reach_answer_of_b()
 	var reaction := ResponseWindowSamples.add_to_hand(_engine.get_state(), B, REACTION_ID)
 	var cast := CastSpell.new(B, reaction.card_instance_id, EssencePayment.new(REACTION_COST))
@@ -387,19 +395,16 @@ func _reach_first_turn_of_a() -> void:
 	ResponseWindowSamples.accept_mulligans(_host)
 
 
-# 208.2.4 : A a annoncé un déploiement ; B a pris l'appareil et peut répondre ou passer.
+# 208.7.1, 208.2.4 : A a annoncé un Spell ; B a pris l'appareil et peut répondre ou passer.
 func _reach_answer_of_b() -> void:
 	_reach_first_turn_of_a()
-	_deploy_from_a()
+	_announce_from_a()
 	_host.confirm_events_played()
 	_host.confirm_relay()
 
 
-func _deploy_from_a() -> void:
-	for card: CardInstance in _engine.get_state().get_player(A).hand:
-		if ResponseWindowSamples.try_deploy(_host, _engine, card, UNIT_COST):
-			return
-	fail("aucun déploiement légal pour A")
+func _announce_from_a() -> void:
+	assert_bool(ResponseWindowSamples.announce_reaction(_host, _engine)).is_true()
 
 
 # Décision 0012 : A commence, pour des tests qui ne dépendent pas du tirage.

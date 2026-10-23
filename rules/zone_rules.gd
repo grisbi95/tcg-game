@@ -51,7 +51,7 @@ static func draw_card(
 	return DrawOutcome.DRAWN
 
 
-## 205.1.7 à 205.1.10, 202.2.24a, 202.2.24b, 201.3.6a : `card` revient dans la main de son
+## 205.1.7 à 205.1.10, 205.6.14, 202.2.24a, 202.2.24b, 201.3.6a : `card` revient dans la main de son
 ## joueur, ou dans sa défausse si la main est pleine ; l'Essence payée reste dépensée.
 static func return_card_to_hand(
 	state: DuelState, card: CardInstance, events: Array[DuelEvent]

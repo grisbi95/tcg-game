@@ -1,6 +1,7 @@
 class_name PieceEnteredAttacking
 extends PlayerEvent
-## 205.1.6 : une Unit du joueur entre en jeu en attaquant la pièce ennemie de sa case.
+## 205.1.6, 205.6.15 : à la résolution de son combat en attente, une Unit du joueur entre en jeu en
+## attaquant la pièce ennemie de sa case.
 
 var piece_id: int = DuelState.NO_ID
 var cell: Vector2i = BoardGeometry.NO_CELL

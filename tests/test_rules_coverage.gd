@@ -117,6 +117,13 @@ const RULES_WITHOUT_OWN_TEST: Dictionary[String, String] = {
 		"Vérifiée sous 209.2.6 et 201.1.3a (tests : test_209_2_6_conceding_player_loses, "
 		+ "test_201_1_3a_opponent_of_conceding_player_wins)."
 	),
+	"205.6.16":
+	(
+		"Sans test possible : aucun effet du vocabulaire d'EffectKind ne fait sortir de la pile "
+		+ "la carte d'un déploiement (Contrecarrer ne vise que les Spells, 207.6) ; le combat en "
+		+ "attente la porte jusqu'à sa résolution "
+		+ "(test_205_6_8_deploying_card_stays_on_the_stack_with_the_combat)."
+	),
 	"207.3.4a": TOKEN_HAS_NO_TRIGGERED_EFFECT,
 	"207.3.7a": TOKEN_HAS_NO_TRIGGERED_EFFECT,
 	"207.3.11": TOKEN_HAS_NO_TRIGGERED_EFFECT,

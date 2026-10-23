@@ -2,12 +2,12 @@
 
 extends GdUnitTestSuite
 ## DuelCenterPresenter sans scène : centre de la colonne, temps des joueurs et mention de la
-## fenêtre de réponse (ruleset 0.40 ; décisions 0021, 0029, 0032 et 0045). `ColumnSpy` tient lieu de
-## `DuelColumnView`.
+## fenêtre de réponse (ruleset 0.41 ; décisions 0021, 0029, 0032, 0045 et 0046). `ColumnSpy` tient
+## lieu de `DuelColumnView`.
 ##
 ## Deux montages : un état construit à la main pour le centre et les temps ; un duel mené par
-## `DuelHost` et `ManualClock` pour la fenêtre, qui lit l'hôte. Dans le second, A déploie une
-## Unit à son premier tour ; B, qui peut alors répondre ou passer, reçoit sa fenêtre (208.6.1).
+## `DuelHost` et `ManualClock` pour la fenêtre, qui lit l'hôte. Dans le second, A annonce un
+## Spell à son premier tour ; B, qui peut alors répondre ou passer, reçoit sa fenêtre (208.6.1).
 
 const LONG_WAIT_MSEC: int = 60_000  # fenêtre laissée ouverte longtemps (208.6.2)
 const HANDOVER_MSEC: int = 5_000  # temps passé à se passer l'appareil
@@ -17,7 +17,6 @@ const RESPONSE_B_MSEC: int = 20_000
 const RESPONSE_MSEC: int = 30_000  # 209.4.6 : temps de réponse complet
 const CLOCK_STEP_MSEC: int = 1_000
 const TURN_NUMBER: int = 3
-const UNIT_COST: int = 2  # CatalogSamples.unit()
 const UNIT: StringName = &"cp_unit"
 const UNIT_FORCE: int = 3  # Force imprimée de la Unit d'essai
 const SPELL: StringName = &"sample_spell"
@@ -119,6 +118,19 @@ func test_decision_0032_trigger_order_is_chosen_in_the_stack_with_numbered_ranks
 	assert_int(_spy.choice_lines[0].order_number).is_equal(NO_ORDER)
 	assert_int(_spy.choice_lines[1].order_number).is_equal(NO_ORDER)
 	assert_int(_spy.choice_lines[2].order_number).is_equal(1)
+
+
+func test_205_6_pending_combat_without_card_is_a_candidate_labeled_combat() -> void:
+	var combat_id := _add_waiting_combat(A)
+	var trigger_id := _add_waiting_trigger(A, UNIT)
+	var decision := _decision(PendingDecision.DecisionKind.ORDER_TRIGGERS)
+	decision.candidate_ids.assign([combat_id, trigger_id])
+	_builder.with_pending_decision(decision)
+	var shown := SelectionSnapshot.new()
+	shown.legal_stack_entry_ids.assign([combat_id, trigger_id])
+	_show_center(A, shown)
+	assert_int(_spy.choice_lines.size()).is_equal(2)
+	assert_str(_spy.choice_lines[0].label).is_equal("Combat")
 
 
 func test_decision_0032_target_choice_shows_the_stack_without_waiting_triggers() -> void:
@@ -246,7 +258,7 @@ func test_208_6_2_window_stays_the_same_after_a_long_wait() -> void:
 
 func test_208_6_1_no_window_while_events_are_played() -> void:
 	_reach_first_turn_of_a()
-	_deploy_from_a()
+	_announce_from_a()
 	assert_int(_host.get_host_state()).is_equal(HOST.PLAYING_EVENTS)
 	_show_center_of_duel(A)
 	assert_array(_spy.calls).contains_exactly(["show_stack", "hide_response"])
@@ -254,7 +266,7 @@ func test_208_6_1_no_window_while_events_are_played() -> void:
 
 func test_208_6_1_no_window_during_the_handover() -> void:
 	_reach_first_turn_of_a()
-	_deploy_from_a()
+	_announce_from_a()
 	_host.confirm_events_played()
 	assert_int(_host.get_host_state()).is_equal(HOST.RELAY)
 	_show_center_of_duel(A)
@@ -312,6 +324,16 @@ func _add_waiting_trigger(side: DuelState.PlayerSide, source: StringName) -> int
 	return entry.stack_entry_id
 
 
+func _add_waiting_combat(side: DuelState.PlayerSide) -> int:
+	var state := _builder.build()
+	var entry := StackEntry.new()
+	entry.kind = StackEntry.StackEntryKind.PENDING_COMBAT
+	entry.owner = side
+	entry.stack_entry_id = state.allocate_stack_entry_id()
+	state.waiting_triggers.append(entry)
+	return entry.stack_entry_id
+
+
 # Montage de duel mené : deux humains, A commence, présentateur câblé sur l'hôte.
 func _show_center_of_duel(viewer: DuelState.PlayerSide) -> void:
 	_presenter = DuelCenterPresenter.new()
@@ -327,25 +349,23 @@ func _reach_first_turn_of_a(config: DuelConfig = DuelConfig.new()) -> void:
 	ResponseWindowSamples.accept_mulligans(_host)
 
 
-# 208.2.4 : A a annoncé un déploiement ; B a pris l'appareil et peut répondre ou passer.
+# 208.7.1, 208.2.4 : A a annoncé un Spell ; B a pris l'appareil et peut répondre ou passer.
 func _reach_answer_of_b(config: DuelConfig) -> void:
 	_reach_first_turn_of_a(config)
-	_deploy_from_a()
+	_announce_from_a()
 	_host.confirm_events_played()
 	_host.confirm_relay()
 	assert_int(_host.get_host_state()).is_equal(HOST.AWAITING_HUMAN)
 
 
 func _start_duel(config: DuelConfig) -> void:
-	_engine = DuelEngine.new(SetupSamples.catalog(), config)
+	var catalog := ResponseWindowSamples.catalog_with_reaction(ResponseWindowSamples.REACTION_ID)
+	_engine = DuelEngine.new(catalog, config)
 	_host = DuelHost.new(_engine, _clock)
 	var setup := SetupSamples.setup()
 	setup.impose_first_player(A)
 	_host.start(setup)
 
 
-func _deploy_from_a() -> void:
-	for card: CardInstance in _engine.get_state().get_player(A).hand:
-		if ResponseWindowSamples.try_deploy(_host, _engine, card, UNIT_COST):
-			return
-	fail("aucun déploiement légal pour A")
+func _announce_from_a() -> void:
+	assert_bool(ResponseWindowSamples.announce_reaction(_host, _engine)).is_true()
