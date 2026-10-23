@@ -2,11 +2,18 @@ class_name SetupScreen
 extends Control
 ## Écran de préparation (décision 0036, point 3) : « Nouvelle partie », le numéro de la partie et
 ## le joueur qui commence, le deck et le Hero de chaque joueur, la graine (affichée, modifiable,
-## entier positif) et « Commencer ». Le parent donne les textes et reçoit la graine choisie ; aucune
-## règle ici.
+## entier positif) et « Commencer ». Décisions 0043 et 0050 : « Créer une partie à distance »
+## (le créateur joue A) ou « Rejoindre » par le code de la partie (B) ; le parent mène la connexion
+## et dit où elle en est. Le parent donne les textes et reçoit la graine choisie ; aucune règle ici.
 
 ## « Commencer » est pressé, avec la graine du champ.
 signal start_pressed(rng_seed: int)
+## « Créer une partie à distance » est pressé, avec la graine du champ.
+signal create_pressed(rng_seed: int)
+## « Rejoindre » est pressé, avec le code saisi.
+signal join_pressed(code: String)
+## « Annuler » est pressé pendant la connexion au relais.
+signal cancel_pressed
 
 const MAX_SEED_DIGITS: int = 18
 const TITLE_TEXT: String = "Nouvelle partie"
@@ -14,7 +21,14 @@ const GAME_FORMAT: String = "Partie %d ·"
 const FIRST_PLAYER_FORMAT: String = "%s commence"
 const PLAYER_LINE_FORMAT: String = "%s : %s · %s"
 const SEED_TEXT: String = "Graine"
-const START_TEXT: String = "Commencer"
+const START_TEXT: String = "Commencer sur cet appareil"
+const REMOTE_TITLE_TEXT: String = "À distance"
+const CREATE_TEXT: String = "Créer une partie à distance"
+const JOIN_TEXT: String = "Rejoindre"
+const CODE_PLACEHOLDER: String = "Code"
+const CANCEL_TEXT: String = "Annuler"
+## Longueur d'un code de partie du relais (`tools/relay/server.js`).
+const CODE_LENGTH: int = 4
 
 @onready var _table: ColorRect = %Table
 @onready var _panel: PanelContainer = %Panel
@@ -24,6 +38,12 @@ const START_TEXT: String = "Commencer"
 @onready var _seed_title_label: Label = %SeedTitleLabel
 @onready var _seed_edit: LineEdit = %SeedEdit
 @onready var _start_button: Button = %StartButton
+@onready var _remote_title_label: Label = %RemoteTitleLabel
+@onready var _create_button: Button = %CreateButton
+@onready var _code_edit: LineEdit = %CodeEdit
+@onready var _join_button: Button = %JoinButton
+@onready var _status_label: Label = %StatusLabel
+@onready var _cancel_button: Button = %CancelButton
 @onready var _player_labels: Dictionary[DuelState.PlayerSide, Label] = {
 	DuelState.PlayerSide.A: %PlayerLabelA,
 	DuelState.PlayerSide.B: %PlayerLabelB,
@@ -58,6 +78,7 @@ func _ready() -> void:
 	_seed_edit.text_changed.connect(_on_seed_text_changed)
 	_seed_edit.text_submitted.connect(_on_seed_submitted)
 	_start_button.pressed.connect(_on_start_pressed)
+	_setup_remote_controls()
 
 
 ## Montre la partie numéro `game_number`, que commence `first_player`, avec les `lines` de chaque
@@ -76,7 +97,22 @@ func show_preparation(
 		)
 		label.add_theme_color_override("font_color", DuelPalette.player_ink(line.side))
 	_seed_edit.text = str(rng_seed)
-	_start_button.disabled = false
+	show_idle()
+
+
+## Rien en cours : les choix sont ouverts ; `status` dit, s'il n'est pas vide, ce qui s'est passé
+## (connexion perdue, code inconnu).
+func show_idle(status: String = "") -> void:
+	_set_controls_enabled(true)
+	_cancel_button.visible = false
+	_show_status(status)
+
+
+## Connexion au relais en cours, ou attente de l'autre joueur : `status` le dit, « Annuler » arrête.
+func show_connecting(status: String) -> void:
+	_set_controls_enabled(false)
+	_cancel_button.visible = true
+	_show_status(status)
 
 
 static func _digits_only(text: String) -> String:
@@ -87,6 +123,36 @@ static func _digits_only(text: String) -> String:
 	return digits
 
 
+func _setup_remote_controls() -> void:
+	_remote_title_label.text = REMOTE_TITLE_TEXT
+	_remote_title_label.add_theme_color_override("font_color", DuelPalette.MUTED_COLOR)
+	_create_button.text = CREATE_TEXT
+	_join_button.text = JOIN_TEXT
+	_cancel_button.text = CANCEL_TEXT
+	_code_edit.placeholder_text = CODE_PLACEHOLDER
+	_code_edit.max_length = CODE_LENGTH
+	_status_label.add_theme_color_override("font_color", DuelPalette.INK_COLOR)
+	_create_button.pressed.connect(_on_create_pressed)
+	_join_button.pressed.connect(_on_join_pressed)
+	_code_edit.text_changed.connect(_on_code_text_changed)
+	_code_edit.text_submitted.connect(_on_code_submitted)
+	_cancel_button.pressed.connect(cancel_pressed.emit)
+
+
+func _set_controls_enabled(is_enabled: bool) -> void:
+	var has_seed := not _seed_edit.text.is_empty()
+	_start_button.disabled = not (is_enabled and has_seed)
+	_create_button.disabled = not (is_enabled and has_seed)
+	_join_button.disabled = not (is_enabled and _code_edit.text.length() == CODE_LENGTH)
+	_seed_edit.editable = is_enabled
+	_code_edit.editable = is_enabled
+
+
+func _show_status(status: String) -> void:
+	_status_label.text = status
+	_status_label.visible = not status.is_empty()
+
+
 func _on_seed_text_changed(new_text: String) -> void:
 	var digits := _digits_only(new_text)
 	if digits != new_text:
@@ -94,6 +160,7 @@ func _on_seed_text_changed(new_text: String) -> void:
 		_seed_edit.text = digits
 		_seed_edit.caret_column = maxi(caret, 0)
 	_start_button.disabled = digits.is_empty()
+	_create_button.disabled = digits.is_empty()
 
 
 func _on_seed_submitted(_text: String) -> void:
@@ -104,3 +171,27 @@ func _on_start_pressed() -> void:
 	if _start_button.disabled:
 		return
 	start_pressed.emit(_seed_edit.text.to_int())
+
+
+func _on_create_pressed() -> void:
+	if not _create_button.disabled:
+		create_pressed.emit(_seed_edit.text.to_int())
+
+
+# Le code se dicte en majuscules (relais) ; les minuscules saisies y sont ramenées.
+func _on_code_text_changed(new_text: String) -> void:
+	var upper := new_text.to_upper()
+	if upper != new_text:
+		var caret := _code_edit.caret_column
+		_code_edit.text = upper
+		_code_edit.caret_column = caret
+	_join_button.disabled = upper.length() != CODE_LENGTH
+
+
+func _on_code_submitted(_text: String) -> void:
+	_on_join_pressed()
+
+
+func _on_join_pressed() -> void:
+	if not _join_button.disabled:
+		join_pressed.emit(_code_edit.text)

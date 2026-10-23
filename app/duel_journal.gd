@@ -42,7 +42,7 @@ var entries: Array[Entry] = []
 
 ## Garde une copie de `duel_setup` : l'appelant peut ensuite le modifier sans changer le journal.
 func _init(duel_setup: DuelSetup = DuelSetup.new(), edition: String = "") -> void:
-	setup = _decode_setup(_encode_setup(duel_setup))
+	setup = decode_setup(encode_setup(duel_setup))
 	ruleset_edition = edition
 
 
@@ -70,6 +70,19 @@ func record_response_begun(player: DuelState.PlayerSide) -> void:
 	entry.kind = EntryKind.RESPONSE_BEGUN
 	entry.player = player
 	entries.append(entry)
+
+
+## Inscrit `entry` comme le ferait l'appel `record_*` de sa sorte, temps cumulés compris.
+func record(entry: Entry) -> void:
+	match entry.kind:
+		EntryKind.INTENT:
+			record_intent(entry.intent)
+		EntryKind.ELAPSED_TIME:
+			record_elapsed(entry.elapsed_msec)
+		EntryKind.RESPONSE_WINDOW_TIME:
+			record_response_window_elapsed(entry.player, entry.elapsed_msec)
+		EntryKind.RESPONSE_BEGUN:
+			record_response_begun(entry.player)
 
 
 ## Décision 0036 : durée du duel affichée en fin de partie, somme des temps écoulés.
@@ -120,11 +133,11 @@ static func replay_entry(engine: DuelEngine, entry: Entry) -> Array[DuelEvent]:
 func to_json() -> String:
 	var encoded_entries: Array[Dictionary] = []
 	for entry: Entry in entries:
-		encoded_entries.append(_encode_entry(entry))
+		encoded_entries.append(encode_entry(entry))
 	var data := {
 		"format_version": FORMAT_VERSION,
 		"ruleset_edition": ruleset_edition,
-		"setup": _encode_setup(setup),
+		"setup": encode_setup(setup),
 		"entries": encoded_entries,
 	}
 	return JSON.stringify(data, "\t")
@@ -142,54 +155,7 @@ static func find_errors(text: String) -> PackedStringArray:
 	return errors
 
 
-func _record_time(kind: EntryKind, player: DuelState.PlayerSide, elapsed_msec: int) -> void:
-	if elapsed_msec <= 0:
-		return
-	if not entries.is_empty():
-		var last_entry: Entry = entries.back()
-		if last_entry.kind == kind and last_entry.player == player:
-			last_entry.elapsed_msec += elapsed_msec
-			return
-	var entry := Entry.new()
-	entry.kind = kind
-	entry.player = player
-	entry.elapsed_msec = elapsed_msec
-	entries.append(entry)
-
-
-static func _parse(text: String, errors: PackedStringArray) -> DuelJournal:
-	var parsed: Variant = JSON.parse_string(text)
-	if not parsed is Dictionary:
-		errors.append("journal illisible : JSON attendu")
-		return null
-	var data: Dictionary = parsed
-	var version: Variant = data.get("format_version")
-	if not (JsonValues.is_number(version) and JsonValues.to_int(version) == FORMAT_VERSION):
-		errors.append("version du format %s, attendue %d" % [version, FORMAT_VERSION])
-		return null
-	var duel_setup := _decode_setup(data.get("setup"))
-	if duel_setup == null:
-		errors.append("préparation absente ou mal formée")
-		return null
-	var journal := DuelJournal.new(duel_setup, str(data.get("ruleset_edition")))
-	journal._decode_entries(data.get("entries"), errors)
-	return journal if errors.is_empty() else null
-
-
-func _decode_entries(encoded_entries: Variant, errors: PackedStringArray) -> void:
-	if not encoded_entries is Array:
-		errors.append("entrées absentes")
-		return
-	var items: Array = encoded_entries
-	for index: int in items.size():
-		var entry := _decode_entry(items[index])
-		if entry == null:
-			errors.append("entrée %d mal formée" % index)
-			return
-		entries.append(entry)
-
-
-static func _encode_entry(entry: Entry) -> Dictionary:
+static func encode_entry(entry: Entry) -> Dictionary:
 	match entry.kind:
 		EntryKind.INTENT:
 			return {"intent": IntentCodec.encode(entry.intent)}
@@ -200,8 +166,9 @@ static func _encode_entry(entry: Entry) -> Dictionary:
 	return {"elapsed_msec": entry.elapsed_msec}
 
 
-# null si l'entrée n'est d'aucune sorte connue ou si un champ manque ou est mal formé.
-static func _decode_entry(encoded: Variant) -> Entry:
+## Entrée décrite par `encoded`, ou null si elle n'est d'aucune sorte connue ou si un champ
+## manque ou est mal formé.
+static func decode_entry(encoded: Variant) -> Entry:
 	if not encoded is Dictionary:
 		return null
 	var data: Dictionary = encoded
@@ -222,34 +189,8 @@ static func _decode_entry(encoded: Variant) -> Entry:
 	return entry if _read_elapsed(data.get("elapsed_msec"), entry) else null
 
 
-static func _decode_intent_entry(data: Dictionary, entry: Entry) -> Entry:
-	var intent_data: Variant = data.get("intent")
-	if not intent_data is Dictionary:
-		return null
-	var intent_fields: Dictionary = intent_data
-	entry.intent = IntentCodec.decode(intent_fields)
-	return entry if entry.intent != null else null
-
-
-static func _read_elapsed(elapsed: Variant, entry: Entry) -> bool:
-	if not (JsonValues.is_number(elapsed) and JsonValues.to_int(elapsed) > 0):
-		return false
-	entry.elapsed_msec = JsonValues.to_int(elapsed)
-	return true
-
-
-static func _read_player(data: Dictionary, entry: Entry) -> bool:
-	var side: Variant = data.get("player")
-	if not (
-		JsonValues.is_number(side) and DuelState.PlayerSide.values().has(JsonValues.to_int(side))
-	):
-		return false
-	entry.player = JsonValues.to_int(side) as DuelState.PlayerSide
-	return true
-
-
-# La graine s'écrit en texte : un nombre JSON n'est exact que jusqu'à 2^53.
-static func _encode_setup(duel_setup: DuelSetup) -> Dictionary:
+## La graine s'écrit en texte : un nombre JSON n'est exact que jusqu'à 2^53.
+static func encode_setup(duel_setup: DuelSetup) -> Dictionary:
 	return {
 		"deck_a": Array(duel_setup.deck_a),
 		"deck_b": Array(duel_setup.deck_b),
@@ -261,8 +202,9 @@ static func _encode_setup(duel_setup: DuelSetup) -> Dictionary:
 	}
 
 
-# null si la préparation ou l'un de ses champs manque ou est mal formé.
-static func _decode_setup(encoded: Variant) -> DuelSetup:
+## Préparation décrite par `encoded`, ou null si elle ou l'un de ses champs manque ou est mal
+## formé.
+static func decode_setup(encoded: Variant) -> DuelSetup:
 	if not encoded is Dictionary:
 		return null
 	var data: Dictionary = encoded
@@ -290,6 +232,79 @@ static func _decode_setup(encoded: Variant) -> DuelSetup:
 	if is_imposed:
 		duel_setup.impose_first_player(JsonValues.to_int(side) as DuelState.PlayerSide)
 	return duel_setup
+
+
+func _record_time(kind: EntryKind, player: DuelState.PlayerSide, elapsed_msec: int) -> void:
+	if elapsed_msec <= 0:
+		return
+	if not entries.is_empty():
+		var last_entry: Entry = entries.back()
+		if last_entry.kind == kind and last_entry.player == player:
+			last_entry.elapsed_msec += elapsed_msec
+			return
+	var entry := Entry.new()
+	entry.kind = kind
+	entry.player = player
+	entry.elapsed_msec = elapsed_msec
+	entries.append(entry)
+
+
+static func _parse(text: String, errors: PackedStringArray) -> DuelJournal:
+	var parsed: Variant = JSON.parse_string(text)
+	if not parsed is Dictionary:
+		errors.append("journal illisible : JSON attendu")
+		return null
+	var data: Dictionary = parsed
+	var version: Variant = data.get("format_version")
+	if not (JsonValues.is_number(version) and JsonValues.to_int(version) == FORMAT_VERSION):
+		errors.append("version du format %s, attendue %d" % [version, FORMAT_VERSION])
+		return null
+	var duel_setup := decode_setup(data.get("setup"))
+	if duel_setup == null:
+		errors.append("préparation absente ou mal formée")
+		return null
+	var journal := DuelJournal.new(duel_setup, str(data.get("ruleset_edition")))
+	journal._decode_entries(data.get("entries"), errors)
+	return journal if errors.is_empty() else null
+
+
+func _decode_entries(encoded_entries: Variant, errors: PackedStringArray) -> void:
+	if not encoded_entries is Array:
+		errors.append("entrées absentes")
+		return
+	var items: Array = encoded_entries
+	for index: int in items.size():
+		var entry := decode_entry(items[index])
+		if entry == null:
+			errors.append("entrée %d mal formée" % index)
+			return
+		entries.append(entry)
+
+
+static func _decode_intent_entry(data: Dictionary, entry: Entry) -> Entry:
+	var intent_data: Variant = data.get("intent")
+	if not intent_data is Dictionary:
+		return null
+	var intent_fields: Dictionary = intent_data
+	entry.intent = IntentCodec.decode(intent_fields)
+	return entry if entry.intent != null else null
+
+
+static func _read_elapsed(elapsed: Variant, entry: Entry) -> bool:
+	if not (JsonValues.is_number(elapsed) and JsonValues.to_int(elapsed) > 0):
+		return false
+	entry.elapsed_msec = JsonValues.to_int(elapsed)
+	return true
+
+
+static func _read_player(data: Dictionary, entry: Entry) -> bool:
+	var side: Variant = data.get("player")
+	if not (
+		JsonValues.is_number(side) and DuelState.PlayerSide.values().has(JsonValues.to_int(side))
+	):
+		return false
+	entry.player = JsonValues.to_int(side) as DuelState.PlayerSide
+	return true
 
 
 static func _read_card_ids(encoded: Variant, card_ids: Array[StringName]) -> bool:

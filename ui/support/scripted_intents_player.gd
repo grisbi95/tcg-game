@@ -1,21 +1,21 @@
 class_name ScriptedIntentsPlayer
 extends RefCounted
 ## Outil de développement (essais de `_try/`, `DuelScenarios`) : soumet des intentions scriptées
-## une à une, chacune quand l'hôte attend son joueur. Une intention d'un autre joueur que celui
+## une à une, chacune quand la session attend son joueur. Une intention d'un autre joueur que celui
 ## de l'écran, ou refusée par `DuelEngine.validate()`, arrête toute la suite. Aucune règle ici.
 
 ## L'intention suivante est valide : le parent la soumet comme un geste du joueur.
 signal intent_chosen(intent: DuelIntent)
 
 var _engine: DuelEngine
-var _host: DuelHost
+var _session: DuelSession
 var _intents: Array[DuelIntent] = []
 
 
-## `engine` valide chaque intention ; `host` dit quel joueur tient l'écran.
-func setup(engine: DuelEngine, host: DuelHost) -> void:
-	_engine = engine
-	_host = host
+## `session` valide chaque intention par son moteur et dit quel joueur tient l'écran.
+func setup(session: DuelSession) -> void:
+	_engine = session.get_engine()
+	_session = session
 
 
 ## Ajoute `intents` à la suite.
@@ -33,7 +33,7 @@ func submit_next() -> void:
 	if _intents.is_empty():
 		return
 	var intent: DuelIntent = _intents.pop_front()
-	if intent.player != _host.get_screen_player():
+	if intent.player != _session.get_viewer():
 		push_error("ScriptedIntentsPlayer : intention d'un autre joueur que celui de l'écran")
 		_intents.clear()
 		return

@@ -122,6 +122,16 @@ func is_response_window_open() -> bool:
 	return _is_response_window_open
 
 
+## Moteur mené par l'hôte, pour les vues et la session (décision 0050).
+func get_engine() -> DuelEngine:
+	return _engine
+
+
+## Horloge du temps réel de l'hôte (décision 0021), que suit aussi l'envoi du journal à distance.
+func get_clock() -> MonotonicClock:
+	return _clock
+
+
 func get_host_state() -> HostState:
 	return _host_state
 

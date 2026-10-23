@@ -35,6 +35,7 @@ Complète le `CLAUDE.md` racine pour `tests/` ; commandes dans `CLAUDE.md` §7.
 | `TriggerSamples` | catalogue en mémoire des suites d'effets déclenchés (207.3, 208.4, 210.3, 204.5.3) |
 | `HumanDuelDriver` | deux humains sur un `DuelHost` à `ManualClock`, sans scène (0020, 0021) : chaque intention est suivie de la confirmation d'affichage et du relais ; `end_turn`, `deploy` (sans réponse), `move` (l'adversaire passe si c'est une attaque), `pass_priority`, `wait`, `record_sheet` ; sert au relevé de playtest (0042) |
 | `PlaytestScenarios` | duels de deux humains joués par `HumanDuelDriver` sur le catalogue d'essai (tours sans action, déploiement, économie, réponse, marche jusqu'au combat, Martyrs, petit deck), dont les tests du relevé lisent la fiche |
+| `LoopbackConnection` | deux `RelayConnection` appariées sans réseau (0049, 0050) : messages relus en JSON, fermer l'une ferme l'autre comme un départ ; sert à `test_remote_session.gd` |
 | `ColumnSpy`, `PreviewSpy` | sous-classes sans scène de `DuelColumnView` et `HoverPreview`, jamais ajoutées à l'arbre, qui enregistrent leurs appels, pour `DuelCenterPresenter` et `DuelPreviewer` |
 
 ## Motifs
