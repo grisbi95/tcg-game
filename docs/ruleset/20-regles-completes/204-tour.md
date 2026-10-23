@@ -86,7 +86,7 @@ Aucun Invariant.
 
 **204.3.5** [ACTÉ] Une Source reçue au début du tour vient de la réserve de son joueur (décision 0028).
 
-**204.3.6** [PROVISOIRE] Au début de son tour, un joueur pioche 2 cartes (décision 0031 ; à mesurer en playtest : taille de main moyenne par tour, Essence inutilisée, tour où le deck se vide).
+**204.3.6** [PROVISOIRE] Au début de son tour, un joueur pioche 1 carte (décisions 0031 et 0208 ; à mesurer en playtest : taille de main moyenne par tour, Essence inutilisée, tour où le deck se vide).
 
 **204.3.7** [ACTÉ] Le premier joueur pioche à son premier tour (décision 0032).
 

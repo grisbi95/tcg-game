@@ -1,5 +1,7 @@
 # 0031 · Pioche de 2 cartes par tour
 
+Remplacée en partie par 0208 (nombre de cartes piochées à chaque tour).
+
 > Décision consignée le 15 octobre 2026. Statut : ACTÉ. Une décision ne se modifie jamais ; pour revenir dessus, une nouvelle décision la remplace et cette ligne reçoit « Remplacée par NNNN ».
 
 ## Contexte
