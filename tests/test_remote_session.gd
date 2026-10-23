@@ -7,6 +7,7 @@ const DUEL_SEED: int = 5
 const EDITION: String = "0.43"
 const TICK_MSEC: int = 100
 const UNKNOWN_CARD_ID: int = 999_999
+const OTHER_EDITION: String = "0.42"
 ## Assez d'images pour que tout message parte et revienne.
 const SETTLE_TICKS: int = 4
 
@@ -105,21 +106,75 @@ func test_decision_0050_departure_of_a_player_disconnects_the_other() -> void:
 	assert_str(_host_session.get_disconnection()).is_equal(LoopbackConnection.PEER_LEFT_TEXT)
 
 
-func test_decision_0049_different_editions_disconnect_both_screens() -> void:
+func test_decision_0049_different_editions_disconnect_without_starting_the_second_screen() -> void:
 	var connections := LoopbackConnection.pair()
 	var setup := TestCatalog.setup(DUEL_SEED)
 	var host := DuelHost.new(DuelEngine.new(_catalog, _config), _clock)
 	var host_session := RemoteHostSession.new(host, setup, connections[0], EDITION)
 	var guest_session := RemoteGuestSession.new(
-		DuelEngine.new(_catalog, _config), connections[1], "0.42"
+		DuelEngine.new(_catalog, _config), connections[1], OTHER_EDITION
 	)
 	host_session.start()
-	guest_session.poll_until_ready()
-	guest_session.start()
+	assert_bool(guest_session.poll_until_ready()).is_false()
+	assert_int(guest_session.get_session_state()).is_equal(SESSION.DISCONNECTED)
+	assert_object(guest_session.get_engine().get_state()).is_null()
 	host_session.tick()
 	assert_int(host_session.get_session_state()).is_equal(SESSION.DISCONNECTED)
-	guest_session.tick()
-	assert_int(guest_session.get_session_state()).is_equal(SESSION.DISCONNECTED)
+
+
+func test_decision_0050_host_leaving_after_the_end_keeps_the_end_on_the_second_screen() -> void:
+	_start_both()
+	_guest_session.concede()
+	_tick_host()
+	assert_int(_host_session.get_session_state()).is_equal(SESSION.ENDED)
+	_host_session.close()
+	var events := _guest_session.tick()
+	assert_bool(events.is_empty()).is_false()
+	assert_int(_guest_session.get_session_state()).is_equal(SESSION.PLAYING_EVENTS)
+	_play(events, _guest_session)
+	assert_int(_guest_session.get_session_state()).is_equal(SESSION.ENDED)
+
+
+func test_decision_0050_second_screen_leaving_after_the_end_keeps_the_end_on_the_host() -> void:
+	_start_both()
+	var events := _host_session.concede()
+	_guest_session.close()
+	_clock.advance(TICK_MSEC)
+	_host_session.tick()
+	assert_int(_host_session.get_session_state()).is_equal(SESSION.PLAYING_EVENTS)
+	_play(events, _host_session)
+	assert_int(_host_session.get_session_state()).is_equal(SESSION.ENDED)
+
+
+func test_209_2_5_concede_behind_a_waiting_intent_is_not_held_back() -> void:
+	_start_both()
+	_guest_session.submit(EndTurn.new(B))
+	_guest_session.concede()
+	_tick_host()
+	assert_int(_host_session.get_session_state()).is_equal(SESSION.ENDED)
+
+
+# 208.6.2, décision 0042 : la réponse commencée chez B attend que la fenêtre de l'hôte s'ouvre.
+func test_208_6_2_remote_response_begun_waits_for_the_window_of_the_host() -> void:
+	var catalog := ResponseWindowSamples.catalog_with_reaction(ResponseWindowSamples.REACTION_ID)
+	var connections := LoopbackConnection.pair()
+	var setup := SetupSamples.setup()
+	setup.impose_first_player(A)
+	var engine := DuelEngine.new(catalog, _config)
+	var host := DuelHost.new(engine, _clock)
+	var host_session := RemoteHostSession.new(host, setup, connections[0], EDITION)
+	var guest_session := RemoteGuestSession.new(
+		DuelEngine.new(catalog, _config), connections[1], EDITION
+	)
+	_play(host_session.start(), host_session)
+	ResponseWindowSamples.accept_mulligans(host)
+	assert_bool(ResponseWindowSamples.announce_reaction(host, engine)).is_true()
+	guest_session.begin_response()
+	host_session.tick()
+	assert_int(host.get_journal().response_begun_count(B)).is_equal(0)
+	host_session.confirm_events_played()
+	host_session.tick()
+	assert_int(host.get_journal().response_begun_count(B)).is_equal(1)
 
 
 # Les deux écrans au mulligan, premiers événements affichés.

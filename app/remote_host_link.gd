@@ -12,8 +12,9 @@ var _host: DuelHost
 var _remote_side: DuelState.PlayerSide
 var _edition: String
 var _outgoing: Array[RemoteMessage] = []
-## Intentions reçues, soumises dans l'ordre quand l'hôte attend le joueur distant.
-var _received_intents: Array[DuelIntent] = []
+## Intentions et réponses commencées reçues, appliquées dans l'ordre quand l'hôte attend le
+## joueur distant.
+var _received: Array[RemoteMessage] = []
 var _has_sent_setup: bool = false
 var _sent_entry_count: int = 0
 ## Temps de la dernière entrée envoyée, tel qu'envoyé : le journal cumule les temps consécutifs.
@@ -34,29 +35,26 @@ func receive(message: RemoteMessage) -> void:
 	match message.kind:
 		RemoteMessage.Kind.HELLO:
 			_incompatibility = message.find_incompatibility(_edition)
-		RemoteMessage.Kind.INTENT:
-			_received_intents.append(message.intent)
-		RemoteMessage.Kind.RESPONSE_BEGUN:
-			if _host.get_screen_player() == _remote_side:
-				_host.begin_response()
+		RemoteMessage.Kind.INTENT, RemoteMessage.Kind.RESPONSE_BEGUN:
+			_received.append(message)
 
 
-## À chaque image, après `DuelHost.tick()` : abandon reçu (209.2.5, à tout moment), puis
-## intentions reçues quand l'hôte attend le joueur distant, jusqu'à la première acceptée.
-## Renvoie un seul lot d'événements, à afficher par la scène de l'hôte, ou rien : un refus part
-## au second écran et ne s'affiche pas ici.
+## À chaque image, après `DuelHost.tick()` : abandon reçu, où qu'il soit dans la file (209.2.5,
+## à tout moment), sinon, quand l'hôte attend le joueur distant, réponses commencées et
+## intentions reçues dans l'ordre, jusqu'à la première intention acceptée. Renvoie un seul lot
+## d'événements, à afficher par la scène de l'hôte, ou rien : un refus part au second écran et ne
+## s'affiche pas ici.
 func submit_received() -> Array[DuelEvent]:
-	while not _received_intents.is_empty():
-		var intent: DuelIntent = _received_intents.front()
-		var events: Array[DuelEvent] = []
-		if intent is Concede:
-			_received_intents.pop_front()
-			events = _host.concede(_remote_side)
-		elif _is_remote_player_awaited():
-			_received_intents.pop_front()
-			events = _submit(intent)
-		else:
-			break
+	var concede_index := _received.find_custom(_is_concede)
+	if concede_index != -1:
+		_received.clear()
+		return _host.concede(_remote_side)
+	while not _received.is_empty() and _is_remote_player_awaited():
+		var message: RemoteMessage = _received.pop_front()
+		if message.kind == RemoteMessage.Kind.RESPONSE_BEGUN:
+			_host.begin_response()
+			continue
+		var events := _submit(message.intent)
 		if not events.is_empty():
 			return events
 	return []
@@ -84,10 +82,15 @@ func _is_remote_player_awaited() -> bool:
 	)
 
 
-# Une intention d'un autre joueur que le joueur distant est ignorée, comme par `submit_human()` ;
-# un refus n'est renvoyé qu'au second écran.
+static func _is_concede(message: RemoteMessage) -> bool:
+	return message.kind == RemoteMessage.Kind.INTENT and message.intent is Concede
+
+
+# Un refus, comme une intention d'un autre joueur que le joueur distant, n'est renvoyé qu'au
+# second écran, qui attend la réponse à son intention.
 func _submit(intent: DuelIntent) -> Array[DuelEvent]:
 	if intent.player != _remote_side:
+		_outgoing.append(RemoteMessage.rejected(IntentRejected.RejectReason.PLAYER_NOT_AWAITED))
 		return []
 	var events := _host.submit_human(intent)
 	if events.size() == 1 and events[0] is IntentRejected:

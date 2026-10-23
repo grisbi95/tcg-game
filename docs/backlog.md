@@ -11,14 +11,15 @@ Priorité : **haute** = écart au ruleset ou défaut visible en partie ; **moyen
 | `CombatRules`, `EffectRules` et `TriggerRules` forment le dernier groupe de modules qui s'appellent en boucle : la destruction (`CombatRules.destroy_piece`) termine les effets de la pièce (`EffectRules.end_effects_on_piece`) et déclenche ses effets (`TriggerRules.trigger`), dont la résolution passe par `EffectRules.resolve_effect`, qui peut détruire. Remède ouvert, à trancher par une décision. | 206.3.2, 206.3.2a, 207.4.7a | basse | J4 |
 | Si `max_recycles_per_turn` devient borné, le paiement préparé pendant le tour adverse l'ignore (203.4.2 PROVISOIRE : illimité aujourd'hui). | 203.4.2 | moyenne | si 203.4.2 est borné |
 | Une carte qui porte « une fois par tour » et plusieurs effets déclenchés est refusée par le catalogue. | 207.3.5, 207.3.7 | moyenne | J4 (`50-cartes/`) |
-| `ActiveEffect.effect_kind` est une `StringName` alors que l'enum `EffectKind` existe. | 0010 | basse | J2 |
-| Le test de 209.2.3 part d'un Hero déjà à 0 PV au lieu de l'y amener. | 209.2.3 | basse | J2 |
-| Rien ne garantit que la suite tire la décision `OrderTriggers` (ordre des déclencheurs). | 0017 | basse | J2 |
+| `ActiveEffect.effect_kind` est une `StringName` alors que l'enum `EffectKind` existe. | 0010 | basse | J4 |
+| Le test de 209.2.3 part d'un Hero déjà à 0 PV au lieu de l'y amener. | 209.2.3 | basse | J4 |
+| Rien ne garantit que la suite tire la décision `OrderTriggers` (ordre des déclencheurs). | 0017 | basse | J4 |
 | `RandomLegalAgent` épuise ses Sources en quelques centaines de pas ; depuis la fin de la défaite au temps (0045), rien ne borne plus un duel aléatoire où les deux agents agissent : `test_random_duels.gd` à revoir à l'étape 2.7. | 0019, 0045 | moyenne | J4 |
 | Depuis la pioche de 1 carte par tour (0.43), deux `RandomLegalAgent` peuvent garder la main pleine sans vider leur deck : la pioche est bloquée par la limite de main, la fatigue n'arrive pas et le duel ne finit pas. `test_duel_host.gd` (0020) passe par une graine choisie à l'essai (2 ; la 3 ne finit pas en 5000 pas) : critère de fin à revoir. | 204.3.6, 201.3.4, 0020 | moyenne | J4 |
 | `RandomLegalAgent` ne remplit jamais sa réserve d'Essence (il paie à l'annonce) : la réserve n'est couverte que par ses tests dédiés. | 203.6.5, 0026 | moyenne | J4 |
-| Les conventions de l'étape 1.3 (zones, Essence, tour) ne sont écrites que dans le code. | `rules/CLAUDE.md` | basse | J2 |
+| Les conventions de l'étape 1.3 (zones, Essence, tour) ne sont écrites que dans le code. | `rules/CLAUDE.md` | basse | J4 |
 | `DuelConfig.tie_destroys_both` ne connaît que l'option A de la décision de design 0053 ; `find_errors()` refuse l'option B, premier correctif nommé par 0053. | 206.3.6, 0053 | moyenne | avant J3 |
+| La fixture de rejeu (`tests/fixtures/replay_random_duel`) a été régénérée trois fois pendant J2 (ruleset 0.39, 0.41, 0.43) : à chaque changement de règle l'empreinte repart de zéro et ne détecte plus une régression du moteur. Remède : conserver en fixture le journal d'une vraie partie de playtest (J3), rejoué comme la fixture aléatoire, et noter dans le rapport de `/sync-rule` l'écart attendu avant de régénérer. | 0022, 0047, retro J2 | basse | J3 |
 
 ## Hôte et vue
 
@@ -37,3 +38,7 @@ Priorité : **haute** = écart au ruleset ou défaut visible en partie ; **moyen
 | Le thème garde les variations `CountdownBar` et `CountdownLabel` de l'ancien décompte de la fenêtre de réponse (retiré en ruleset 0.38), contrôlées par `test_duel_theme.gd` ; à retirer par l'éditeur avec leurs tests. | 0199 (ruleset), 0029 | basse | J3 |
 | Duel à distance : une intention du second écran en file chez l'hôte (`RemoteHostLink`) y reste si le tour ou la fenêtre de réponse passe à l'expiration entre-temps ; elle serait soumise la prochaine fois que B est attendu. Remède : l'intention porte l'état qu'a vu le second écran, l'hôte refuse une intention périmée. | 209.4.9, 209.4.10, 0049 | moyenne | avant J3 |
 | Les tests du relais (`tools/relay/`, `npm test`) ne tournent pas dans la CI. | 0049 | basse | J3 |
+| `RelayConnection` code les messages de contrôle du relais (`create`, `join`, `created`, `paired`, `peer_left`, `error`) en chaînes brutes ; un `enum` converti par `find_key`, comme `RemoteMessage.Kind`, serait plus sûr. | 0049, `code-guidelines.md` §6 | basse | J3 |
+| L'enchaînement de connexion au relais (créer, rejoindre, appariement, attente de la préparation, erreurs, `LobbyStep`) vit dans `MainScreen` sans test ; à extraire dans un objet de `app/` testé avec `LoopbackConnection`. | 0050 | moyenne | avant J3 |
+| Le retournement du plateau et des zones pour B (`BoardView._build`, `ScreenSides`) n'a pas de test ; l'ordre des cases pourrait se lire dans une fonction statique. | 0050 | basse | J3 |
+| Après un déploiement, le navigateur garde jusqu'à 10 minutes l'ancien `index.pck` de GitHub Pages : un joueur peut charger une ancienne version (relais local, édition différente). Remède : nom ou paramètre de version sur les fichiers de l'export. | 0005, 0049 | moyenne | avant J3 |

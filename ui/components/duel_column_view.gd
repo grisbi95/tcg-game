@@ -74,8 +74,8 @@ func setup(
 	bottom_side: DuelState.PlayerSide = DuelState.PlayerSide.A
 ) -> void:
 	if bottom_side != DuelState.PlayerSide.A:
-		_swap_sides(_clocks)
-		_swap_sides(_concede_buttons)
+		ScreenSides.swap(_clocks)
+		ScreenSides.swap(_concede_buttons)
 	for side: DuelState.PlayerSide in _clocks:
 		_clocks[side].setup(
 			side, PlayerNames.display_name(side), turn_duration_msec, response_duration_msec
@@ -163,12 +163,6 @@ func show_concede(side: DuelState.PlayerSide) -> void:
 func hide_concede() -> void:
 	for button: Button in _concede_buttons.values():
 		button.visible = false
-
-
-static func _swap_sides(nodes: Dictionary) -> void:
-	var node_a: Variant = nodes[DuelState.PlayerSide.A]
-	nodes[DuelState.PlayerSide.A] = nodes[DuelState.PlayerSide.B]
-	nodes[DuelState.PlayerSide.B] = node_a
 
 
 func _set_actor(text: String, side: DuelState.PlayerSide) -> void:

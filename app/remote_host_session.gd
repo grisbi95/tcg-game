@@ -96,9 +96,11 @@ func _send_outgoing() -> void:
 		_connection.send(message)
 
 
-# Après la fin du duel, le départ de l'autre joueur ne change plus rien à cet écran.
+# Après la fin du duel, même pas encore affichée, le départ de l'autre joueur ne change plus rien
+# à cet écran : panneau de fin et fiche restent (décision 0050).
 func _check_connection() -> void:
-	if get_session_state() == SessionState.ENDED:
+	var state := _engine.get_state()
+	if state != null and state.is_ended():
 		return
 	var reason := _link.get_incompatibility()
 	if reason.is_empty() and _connection.get_status() == RelayConnection.Status.CLOSED:

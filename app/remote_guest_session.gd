@@ -153,7 +153,7 @@ func _answers_pending_intent(message: RemoteMessage) -> bool:
 
 
 func _begin_batch(events: Array[DuelEvent]) -> void:
-	if events.is_empty():
+	if events.is_empty() or _session_state == SessionState.DISCONNECTED:
 		return
 	_unplayed_batch_count += 1
 	_set_session_state(SessionState.PLAYING_EVENTS)
@@ -168,9 +168,11 @@ func _next_state() -> SessionState:
 	return SessionState.AWAITING_OTHER
 
 
-# Après la fin du duel, le départ de l'hôte ne change plus rien à cet écran.
+# Après la fin du duel, même pas encore affichée, le départ de l'hôte ne change plus rien à cet
+# écran : panneau de fin et fiche restent (décision 0050).
 func _check_connection() -> void:
-	if _session_state == SessionState.ENDED or _session_state == SessionState.DISCONNECTED:
+	var state := _link.get_engine().get_state()
+	if _session_state == SessionState.DISCONNECTED or (state != null and state.is_ended()):
 		return
 	var reason := _link.get_incompatibility()
 	if reason.is_empty() and _connection.get_status() == RelayConnection.Status.CLOSED:

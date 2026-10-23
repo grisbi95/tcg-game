@@ -68,10 +68,6 @@ func get_journal() -> DuelJournal:
 	return _host.get_journal()
 
 
-func get_host() -> DuelHost:
-	return _host
-
-
 # Le relais (RELAY) est passager : l'hôte le quitte dès que la session le confirme.
 func _session_state_of(host_state: DuelHost.HostState) -> SessionState:
 	match host_state:

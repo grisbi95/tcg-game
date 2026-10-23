@@ -178,6 +178,7 @@ func _on_paired() -> void:
 		_enter_lobby(LobbyStep.AWAITING_SETUP, AWAITING_HOST_TEXT)
 		return
 	var connection := _connection
+	_connection = null
 	_lobby_step = LobbyStep.NONE
 	var duel_setup := _checked_setup(_remote_seed)
 	if duel_setup == null:
@@ -188,15 +189,19 @@ func _on_paired() -> void:
 	_open_duel_screen().start_session(session, _catalog)
 
 
+# Une incompatibilité arrive avec la préparation : elle passe avant le démarrage.
 func _advance_guest_session() -> void:
-	if _guest_session.poll_until_ready():
-		var session := _guest_session
-		_lobby_step = LobbyStep.NONE
-		_open_duel_screen().start_session(session, _catalog)
-	elif _guest_session.get_session_state() == DuelSession.SessionState.DISCONNECTED:
+	var is_ready := _guest_session.poll_until_ready()
+	if _guest_session.get_session_state() == DuelSession.SessionState.DISCONNECTED:
 		var reason := _guest_session.get_disconnection()
 		_leave_lobby()
 		_setup_screen().show_idle(DISCONNECTED_FORMAT % reason)
+	elif is_ready:
+		var session := _guest_session
+		_guest_session = null
+		_connection = null
+		_lobby_step = LobbyStep.NONE
+		_open_duel_screen().start_session(session, _catalog)
 
 
 func _on_connection_lost(reason: String) -> void:
