@@ -2,11 +2,11 @@ class_name PieceView
 extends Control
 ## Pièce sur le plateau (décision 0027) : mini-carte carrée qui remplit sa case, teintée par son
 ## type et liserée de la couleur fixe de son joueur ; nom, Force actuelle (losange) ou PV du Hero
-## (cœur), icône du type, bandeau et mots-clés, aucun coût. Un Gear attaché dépasse d'une bande en
-## haut. Un clic passe à la case (cell_pressed, décision 0030) ; survol, surlignage et choix se
-## marquent par des anneaux autour de la mini-carte (DuelMarks), sans cacher le liseré du joueur.
-## Les valeurs viennent du parent, qui lit la Force actuelle par `DuelEngine.current_force` : rien
-## n'est calculé ici.
+## (cœur), illustration ou icône du type (décision 0051), bandeau et mots-clés, aucun coût. Un Gear
+## attaché dépasse d'une bande en haut. Un clic passe à la case (cell_pressed, décision 0030) ;
+## survol, surlignage et choix se marquent par des anneaux autour de la mini-carte (DuelMarks), sans
+## cacher le liseré du joueur. Les valeurs viennent du parent, qui lit la Force actuelle par
+## `DuelEngine.current_force` : rien n'est calculé ici.
 
 signal piece_hovered(piece_id: int)
 signal piece_unhovered(piece_id: int)
@@ -42,6 +42,7 @@ var _marks := ControlMarks.new(self, CELL_MARGIN)
 @onready var _stat_badge: Control = %StatBadge
 @onready var _stat_label: Label = %StatLabel
 @onready var _art: PanelContainer = %Art
+@onready var _art_image: TextureRect = %ArtImage
 @onready var _art_icon: Control = %ArtIcon
 @onready var _band_icon: Control = %BandIcon
 @onready var _type_label: Label = %TypeLabel
@@ -65,6 +66,7 @@ func _draw() -> void:
 ## Unit ou Building d'une carte (202.1) ; sa Force suit par `show_force`.
 func show_card_piece(piece_id: int, definition: CardDefinition, side: DuelState.PlayerSide) -> void:
 	_show(piece_id, side, DuelPalette.tint_of(definition.card_type), definition.card_name)
+	DuelAssets.show_card_art(_art_image, _art_icon, definition.id)
 	_type_label.text = CardText.type_name(definition.card_type)
 	_show_keywords(CardText.keywords_line(definition))
 
@@ -75,6 +77,7 @@ func show_token(
 	piece_id: int, card_type: CardDefinition.CardType, side: DuelState.PlayerSide
 ) -> void:
 	_show(piece_id, side, DuelPalette.tint_of(card_type), CardText.TOKEN_NAME)
+	DuelAssets.show_no_art(_art_image, _art_icon)
 	_type_label.text = CardText.token_type_name(card_type)
 	_show_keywords("")
 
@@ -82,6 +85,7 @@ func show_token(
 ## Hero (202.3) ; ses PV suivent par `show_health`.
 func show_hero(piece_id: int, hero: HeroDefinition, side: DuelState.PlayerSide) -> void:
 	_show(piece_id, side, DuelPalette.Tint.HERO, hero.hero_name)
+	DuelAssets.show_card_art(_art_image, _art_icon, hero.id)
 	_type_label.text = CardText.HERO_TYPE_NAME
 	_show_keywords("")
 

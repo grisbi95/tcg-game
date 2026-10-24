@@ -1,5 +1,5 @@
 extends GdUnitTestSuite
-## Duel à distance sans réseau (ruleset 0.43 ; décisions 0001, 0022, 0043 et 0049) : messages
+## Duel à distance sans réseau (ruleset 0.44 ; décisions 0001, 0022, 0043 et 0049) : messages
 ## écrits puis relus en JSON comme par le relais, journal de l'hôte rejoué par le second écran,
 ## intentions du joueur distant soumises par l'hôte.
 
@@ -9,7 +9,7 @@ const AGENT_SEED_B: int = 32
 const HOST_TICKS: int = 400
 const TICK_MSEC: int = 700
 const SHORT_WAIT_MSEC: int = 40
-const EDITION: String = "0.43"
+const EDITION: String = "0.44"
 const UNKNOWN_CARD_ID: int = 999_999
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A

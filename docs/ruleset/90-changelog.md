@@ -426,3 +426,10 @@
 - Décision 0031 marquée d'une ligne en tête (remplacée en partie : nombre de cartes piochées à chaque tour).
 - Décision associée : [0209](40-decisions/0209-pioche-de-1-carte-par-tour.md). Numéro 0208 réservé à la décision de l'édition 0.42.
 - [README.md](README.md) : édition courante passée à 0.43.
+
+## 0.44 · 24 octobre 2026 · majeure · état endormi ou éveillé public
+
+- L'état endormi ou éveillé de chaque Unit et de chaque Hero est visible des deux joueurs. Identifiant ajouté : 201.4.11 ([201-concepts.md](20-regles-completes/201-concepts.md)). Identifiants 205.5.1 et 205.5.2 inchangés.
+- Q-104 tranchée, option A, et descendue dans Tranchées. Aucun terme ajouté ni modifié au glossaire.
+- Décision associée : [0210](40-decisions/0210-etat-endormi-ou-eveille-public.md).
+- [README.md](README.md) : édition courante passée à 0.44.

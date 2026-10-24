@@ -1,10 +1,10 @@
 extends GdUnitTestSuite
-## Sessions du duel à distance sans réseau (ruleset 0.43 ; décisions 0049 et 0050) : un hôte
+## Sessions du duel à distance sans réseau (ruleset 0.44 ; décisions 0049 et 0050) : un hôte
 ## (A, `RemoteHostSession`) et un second écran (B, `RemoteGuestSession`) reliés par
 ## `LoopbackConnection`, menés comme par leurs écrans de duel.
 
 const DUEL_SEED: int = 5
-const EDITION: String = "0.43"
+const EDITION: String = "0.44"
 const TICK_MSEC: int = 100
 const UNKNOWN_CARD_ID: int = 999_999
 const OTHER_EDITION: String = "0.42"

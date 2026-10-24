@@ -1,6 +1,6 @@
 # 0045 — Temps de tour et temps de réponse à la place de la pendule
 
-- Statut : acceptée
+- Statut : acceptée ; modifiée par 0053
 - Date : 2026-10-22
 - Décideur : créateur du projet
 - Périmètre : temps de jeu (ruleset 0.40, décision de design 0205 ; 209.4, 208.6, 209.2.10) ; `rules/` `DuelEngine`, `DuelConfig`, `app/` `DuelHost`, `ui/` `ClockView`, fiches de playtest

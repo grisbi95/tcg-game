@@ -92,6 +92,8 @@
 
 **201.4.10** [ACTÉ] Le montant de la réserve d'Essence de chaque joueur est visible des deux joueurs (décision 0194 ; voir 201.4.4 et 203.6.1).
 
+**201.4.11** [ACTÉ] L'état endormi ou éveillé de chaque Unit et de chaque Hero est visible des deux joueurs (décision 0210 ; voir 205.5.1 et 205.5.2).
+
 ## 201.5 Appartenance
 
 **201.5.1** [ACTÉ] Une carte appartient au joueur dont le deck ou le Hero la fournit (décision 0022).

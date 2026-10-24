@@ -1,6 +1,6 @@
 # 0050 — Session de duel commune et orientation du joueur qui rejoint
 
-- Statut : acceptée
+- Statut : acceptée ; modifiée par 0053
 - Date : 2026-10-23
 - Décideur : créateur du projet
 - Périmètre : écran de duel et préparation pour le duel à distance, étape 2.8 (`app/`, `ui/`) ; complète 0043 et 0049 ; touche 0020 (DuelHost), 0036 (préparation, scène principale) et 0030 (joueur A en bas)

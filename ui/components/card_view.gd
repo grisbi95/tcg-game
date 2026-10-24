@@ -1,12 +1,12 @@
 class_name CardView
 extends PanelContainer
 ## Carte de la main ou de l'aperçu (décision 0027) : coût (goutte), nom et Force (losange, ou PV du
-## Hero sur un cœur) en haut ; l'illustration, remplacée par l'icône du type tant qu'il n'y en a
-## pas ; bandeau de type et vitesse d'un Spell ; texte, mots-clés en étiquettes. Toute la carte
-## prend la teinte de son type ; ses marques de survol, de surlignage et de choix sont des anneaux
-## (DuelMarks). Le dos d'une carte est une CardBackView. La carte garde toujours sa taille : un
-## texte trop long pour la place restante est mis à une taille de police plus petite, de cette
-## carte seulement, jusqu'à un minimum, puis coupé.
+## Hero sur un cœur) en haut ; l'illustration (décision 0051 : `assets/cards/art/<id>.webp`),
+## remplacée par l'icône du type tant qu'il n'y en a pas ; bandeau de type et vitesse d'un Spell ;
+## texte, mots-clés en étiquettes. Toute la carte prend la teinte de son type ; ses marques de
+## survol, de surlignage et de choix sont des anneaux (DuelMarks). Le dos d'une carte est une
+## CardBackView. La carte garde toujours sa taille : un texte trop long pour la place restante est
+## mis à une taille de police plus petite, de cette carte seulement, jusqu'à un minimum, puis coupé.
 
 signal card_pressed(card_instance_id: int)
 signal card_hovered(card_instance_id: int)
@@ -31,6 +31,7 @@ var _scaler := CardScaler.new()
 @onready var _stat_badge: Control = %StatBadge
 @onready var _stat_label: Label = %StatLabel
 @onready var _art: PanelContainer = %Art
+@onready var _art_image: TextureRect = %ArtImage
 @onready var _art_icon: Control = %ArtIcon
 @onready var _band: HBoxContainer = %Band
 @onready var _band_icon: Control = %BandIcon
@@ -64,6 +65,7 @@ func _gui_input(event: InputEvent) -> void:
 func show_card(card_instance_id: int, definition: CardDefinition) -> void:
 	_card_instance_id = card_instance_id
 	_show_face(DuelPalette.tint_of(definition.card_type), definition.card_name)
+	DuelAssets.show_card_art(_art_image, _art_icon, definition.id)
 	_cost_badge.visible = true
 	_cost_label.text = str(definition.cost)
 	if definition.force != CardDefinition.NO_FORCE:
@@ -79,6 +81,7 @@ func show_card(card_instance_id: int, definition: CardDefinition) -> void:
 func show_hero(hero: HeroDefinition) -> void:
 	_card_instance_id = DuelState.NO_ID
 	_show_face(DuelPalette.Tint.HERO, hero.hero_name)
+	DuelAssets.show_card_art(_art_image, _art_icon, hero.id)
 	_cost_badge.visible = false
 	_show_health(hero.health)
 	_type_label.text = CardText.HERO_TYPE_NAME
@@ -90,6 +93,7 @@ func show_hero(hero: HeroDefinition) -> void:
 func show_token(card_type: CardDefinition.CardType, force: int) -> void:
 	_card_instance_id = DuelState.NO_ID
 	_show_face(DuelPalette.tint_of(card_type), CardText.TOKEN_NAME)
+	DuelAssets.show_no_art(_art_image, _art_icon)
 	_cost_badge.visible = false
 	_show_force(force)
 	_type_label.text = CardText.token_type_name(card_type)

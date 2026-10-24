@@ -5,7 +5,8 @@ extends RefCounted
 ## nets à toute taille. Un composant les dessine dans le signal `draw` d'un Control vide.
 ## Les formes pleines (`Badge`) portent un chiffre : un Label posé sur la forme (`fit_label`).
 
-## Ajouter à la fin, sans réordonner.
+## Ajouter à la fin, sans réordonner. Les noms, en minuscules, sont aussi ceux des fichiers de
+## `assets/icons/` (`asset_name`) : renommer une valeur renomme son fichier.
 enum Icon {
 	UNIT,
 	BUILDING,
@@ -107,10 +108,15 @@ static var _badge_text_centers: Dictionary[Badge, Vector2] = {
 }
 
 
-## Dessine `icon` de couleur `color` dans le carré centré sur `rect`, sur le canevas `canvas`.
+## Dessine `icon` de couleur `color` dans le carré centré sur `rect`, sur le canevas `canvas` :
+## le SVG de `assets/icons/` à son nom s'il existe (décision 0051), sinon le tracé de la grille.
 static func draw(canvas: CanvasItem, icon: Icon, rect: Rect2, color: Color) -> void:
 	var side := minf(rect.size.x, rect.size.y)
 	var origin := rect.position + (rect.size - Vector2(side, side)) / 2.0
+	var texture := DuelAssets.icon(asset_name(icon))
+	if texture != null:
+		canvas.draw_texture_rect(texture, Rect2(origin, Vector2(side, side)), false, color)
+		return
 	var ratio := side / GRID_SIZE
 	var width := maxf(STROKE_WIDTH * ratio, 1.0)
 	for stroke: PackedVector2Array in _strokes[icon]:
@@ -118,6 +124,11 @@ static func draw(canvas: CanvasItem, icon: Icon, rect: Rect2, color: Color) -> v
 		for point: Vector2 in stroke:
 			points.append(origin + point * ratio)
 		canvas.draw_polyline(points, color, width, true)
+
+
+## Nom du fichier de `icon` dans `assets/icons/`, sans extension : `unit`, `heart`, `source`…
+static func asset_name(icon: Icon) -> String:
+	return str(Icon.find_key(icon)).to_lower()
 
 
 ## Dessine la forme `badge` dans le carré centré sur `rect`, remplie et contournée aux couleurs de
