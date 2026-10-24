@@ -15,6 +15,8 @@ enum Icon {
 	HERO,
 	HEART,
 	SOURCE,
+	CONCEDE,
+	ESSENCE,
 }
 
 ## Formes pleines d'un chiffre : goutte du coût, losange de la Force, cœur des PV. Ajouter à la fin.
@@ -80,6 +82,12 @@ const SPELL_PATH: Array[float] = [
 ]
 const GEAR_HANDLE_PATH: Array[float] = [4.0, 20.0, 13.0, 11.0]
 const GEAR_BLADE_PATH: Array[float] = [15.0, 4.0, 20.0, 9.0, 17.0, 12.0, 12.0, 7.0, 15.0, 4.0]
+## Drapeau : une hampe et une bannière à bord échancré.
+const CONCEDE_POLE_PATH: Array[float] = [6.0, 3.0, 6.0, 21.0]
+const CONCEDE_FLAG_PATH: Array[float] = [6.0, 4.5, 19.0, 4.5, 15.5, 9.0, 19.0, 13.5, 6.0, 13.5]
+## Essence : une gemme taillée, sa ceinture en travers.
+const ESSENCE_GEM_PATH: Array[float] = [12.0, 2.0, 20.0, 9.0, 12.0, 22.0, 4.0, 9.0, 12.0, 2.0]
+const ESSENCE_BELT_PATH: Array[float] = [4.0, 9.0, 20.0, 9.0]
 const HERO_PATH: Array[float] = [
 	3.0, 18.0, 5.0, 7.0, 10.0, 12.0, 12.0, 5.0, 14.0, 12.0, 19.0, 7.0, 21.0, 18.0, 3.0, 18.0
 ]
@@ -93,6 +101,8 @@ static var _strokes: Dictionary[Icon, Array] = {
 	Icon.HERO: [_path(HERO_PATH)],
 	Icon.HEART: [_heart_path(HEART_SCALE, HEART_OFFSET)],
 	Icon.SOURCE: _source_paths(),
+	Icon.CONCEDE: [_path(CONCEDE_POLE_PATH), _path(CONCEDE_FLAG_PATH)],
+	Icon.ESSENCE: [_path(ESSENCE_GEM_PATH), _path(ESSENCE_BELT_PATH)],
 }
 ## Polygones de chaque forme pleine, du fond au dessus, en coordonnées de la grille.
 static var _badge_shapes: Dictionary[Badge, Array] = {

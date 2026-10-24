@@ -81,6 +81,12 @@ static func tilted_sources_after_payment(player: PlayerState, payment: EssencePa
 	return player.sources_tilted + payment.incline_count - payment.recycle_count
 
 
+## 203.5.3 : Sources de la Fonte de `player` une fois `payment` appliqué (chaque Source recyclée
+## la rejoint). Pur.
+static func fonte_after_payment(player: PlayerState, payment: EssencePayment) -> int:
+	return player.sources_in_fonte + payment.recycle_count
+
+
 ## 204.5.7a, 203.1.3 : l'Essence que la réserve du joueur actif contient encore est perdue.
 static func lose_reserve(state: DuelState, events: Array[DuelEvent]) -> void:
 	var player := state.get_player(state.active_player)

@@ -1,7 +1,8 @@
 class_name DuelScreen
 extends Control
-## Écran de duel de l'étape 2.3 (décisions 0020, 0028 à 0032) : assemble les composants de
-## `ui/components/` aux cotes de 0030 (repère 1920×1080, marges de 16 px, joueur A en bas), les
+## Écran de duel de l'étape 2.3 (décisions 0020, 0028 à 0032, 0052) : assemble les composants de
+## `ui/components/` en quatre couches et en conteneurs (fiche `docs/fiches/ecran-de-duel.md`,
+## repère 1920×1080, marges de 16 px, joueur A en bas), sans placer aucune zone par code, les
 ## câble à `DuelSelection` et à une `DuelSession` (décision 0050 : même appareil, hôte ou second
 ## écran d'un duel à distance), et les recale sur `get_state()` après chaque lot
 ## d'événements joué par `EventPlayer`. Aucune règle ici : seul `DuelSelection` fait d'un geste une
@@ -10,10 +11,10 @@ extends Control
 ## Flux : geste → `DuelSelection` → `intent_chosen` → `DuelSession.submit` → événements →
 ## `EventPlayer` → `batch_played` → `confirm_events_played` → recalage. `InputShield` bloque les
 ## commandes pendant la lecture et quand le joueur de l'écran n'est pas attendu. `OverlayLayer`,
-## au-dessus du bouclier, porte la confirmation d'abandon et le panneau de fin (décision 0036).
-## Entre deux humains sur le même écran, le relais est confirmé aussitôt, sans rideau (décision
-## 0048). Le camp du joueur de l'écran est en bas : A, sauf pour le second écran d'un duel à
-## distance (décision 0050).
+## dans `ModalLayer` au-dessus du bouclier, porte la confirmation d'abandon et le panneau de fin
+## (décision 0036). Entre deux humains sur le même écran, le relais est confirmé aussitôt, sans
+## rideau (décision 0048). Le camp du joueur de l'écran est en bas : A, sauf pour le second écran
+## d'un duel à distance (décision 0050).
 
 ## Le panneau de fin demande une nouvelle partie : l'autre joueur commence, nouvelle graine.
 signal rematch_requested
@@ -41,29 +42,28 @@ var _final_events: Array[DuelEvent] = []
 @onready var _hand: HandView = %Hand
 @onready var _opponent_hand: OpponentHandView = %OpponentHand
 @onready var _column: DuelColumnView = %Column
+@onready var _column_letters: ColumnLettersView = %ColumnLetters
 @onready var _preview: HoverPreview = %Preview
+@onready var _tooltips: InfoTooltips = %Tooltips
 @onready var _input_shield: Control = %InputShield
 @onready var _event_player: EventPlayer = %EventPlayer
 @onready var _overlays: DuelOverlays = %OverlayLayer
-@onready var _right_column_a: VBoxContainer = %RightColumnA
-@onready var _right_column_b: VBoxContainer = %RightColumnB
 @onready var _sources: Dictionary[DuelState.PlayerSide, SourcesView] = {
-	DuelState.PlayerSide.A: %SourcesA,
-	DuelState.PlayerSide.B: %SourcesB,
+	DuelState.PlayerSide.A: %SourcesBottom,
+	DuelState.PlayerSide.B: %SourcesTop,
+}
+@onready var _timer_bars: Dictionary[DuelState.PlayerSide, TurnTimerBar] = {
+	DuelState.PlayerSide.A: %TimerBarBottom,
+	DuelState.PlayerSide.B: %TimerBarTop,
 }
 @onready var _deck_corners: Dictionary[DuelState.PlayerSide, DeckCornerView] = {
-	DuelState.PlayerSide.A: %DeckCornerA,
-	DuelState.PlayerSide.B: %DeckCornerB,
-}
-@onready var _hero_cards: Dictionary[DuelState.PlayerSide, HeroCardView] = {
-	DuelState.PlayerSide.A: %HeroCardA,
-	DuelState.PlayerSide.B: %HeroCardB,
+	DuelState.PlayerSide.A: %DeckCornerBottom,
+	DuelState.PlayerSide.B: %DeckCornerTop,
 }
 
 
 func _ready() -> void:
 	_table.color = DuelPalette.TABLE_COLOR
-	_place_zones()
 	_selection.intent_chosen.connect(_on_intent_chosen)
 	_selection.response_started.connect(_on_response_started)
 	_scripted.intent_chosen.connect(_on_intent_chosen)
@@ -95,16 +95,16 @@ func start_session(session: DuelSession, catalog: Catalog) -> void:
 	_catalog = catalog
 	_session = session
 	_engine = session.get_engine()
-	_previewer.setup(_preview, _engine)
+	_previewer.setup(_preview, _engine, _tooltips)
 	_zones.setup(_board, _engine, _previewer.show_piece, _previewer.hide_preview)
 	_scripted.setup(_session)
-	_center.setup(_column, _session)
+	_center.setup(_column, _timer_bars, _session)
 	_session.session_state_changed.connect(_on_session_state_changed)
 	var first_events := _session.start()
 	if _engine.get_state() == null:
 		push_error("DuelScreen : le duel n'a pas démarré")
 		return
-	_setup_views(_session.get_setup())
+	_setup_views()
 	_selection.setup(_engine, _session.get_viewer())
 	_selection.selection_changed.connect(_refresh_marks)
 	_refresh_zones()
@@ -137,47 +137,22 @@ func show_sheet_status(text: String) -> void:
 	_overlays.show_sheet_status(text)
 
 
-# Décision 0030 : chaque zone est ancrée au coin ou au bord le plus proche, pour suivre un écran
-# d'une autre proportion.
-func _place_zones() -> void:
-	DuelScreenLayout.pin(_board, Control.PRESET_CENTER_TOP, DuelScreenLayout.BOARD_POSITION)
-	DuelScreenLayout.pin(_column, Control.PRESET_CENTER_TOP, DuelScreenLayout.COLUMN_POSITION)
-	DuelScreenLayout.pin(_hand, Control.PRESET_CENTER_BOTTOM, DuelScreenLayout.HAND_BOTTOM_LEFT)
-	var hand_position := DuelScreenLayout.OPPONENT_HAND_POSITION
-	DuelScreenLayout.pin(_opponent_hand, Control.PRESET_CENTER_TOP, hand_position)
-	_opponent_hand.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	var sources_b := _sources[DuelState.PlayerSide.B]
-	DuelScreenLayout.pin(sources_b, Control.PRESET_TOP_LEFT, DuelScreenLayout.TOP_LEFT_CORNER)
-	var sources_a := _sources[DuelState.PlayerSide.A]
-	DuelScreenLayout.pin(sources_a, Control.PRESET_BOTTOM_LEFT, DuelScreenLayout.BOTTOM_LEFT_CORNER)
-	DuelScreenLayout.pin(
-		_right_column_b, Control.PRESET_TOP_RIGHT, DuelScreenLayout.TOP_RIGHT_CORNER
-	)
-	DuelScreenLayout.pin(
-		_right_column_a, Control.PRESET_BOTTOM_RIGHT, DuelScreenLayout.BOTTOM_RIGHT_CORNER
-	)
-	DuelScreenLayout.pin(_preview, Control.PRESET_CENTER, DuelScreenLayout.PREVIEW_CENTER)
-	_preview.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	_preview.grow_vertical = Control.GROW_DIRECTION_BOTH
-
-
-func _setup_views(duel_setup: DuelSetup) -> void:
+func _setup_views() -> void:
 	var config := _engine.get_state().config
 	var bottom_side := _session.get_bottom_side()
-	_column.setup(config.turn_time_msec, config.response_time_msec, bottom_side)
 	if bottom_side != DuelState.PlayerSide.A:
 		_board.show_from_side(bottom_side)
-		for zones: Dictionary in [_sources, _deck_corners, _hero_cards]:
+		_column_letters.show_from_side(bottom_side)
+		for zones: Dictionary in [_sources, _deck_corners, _timer_bars]:
 			ScreenSides.swap(zones)
 	for side: DuelState.PlayerSide in DuelState.SIDES:
-		_setup_player_zones(side, duel_setup, side == bottom_side)
+		_timer_bars[side].setup(side, config.turn_time_msec, config.response_time_msec)
+		_setup_player_zones(side, side == bottom_side)
 	_connect_previews()
 
 
 # Décision 0030 : le camp du bas a compteurs et libellé au-dessus ; celui du haut, en dessous.
-func _setup_player_zones(
-	side: DuelState.PlayerSide, duel_setup: DuelSetup, is_bottom: bool
-) -> void:
+func _setup_player_zones(side: DuelState.PlayerSide, is_bottom: bool) -> void:
 	var source_count := _engine.get_state().config.total_sources_per_player
 	var counter_placement := (
 		SourcesView.CounterPlacement.ABOVE if is_bottom else SourcesView.CounterPlacement.BELOW
@@ -187,8 +162,7 @@ func _setup_player_zones(
 	)
 	_sources[side].setup(side, counter_placement, source_count)
 	_deck_corners[side].setup(side, label_placement)
-	_hero_cards[side].setup(side, _catalog.get_hero(duel_setup.hero_of(side)))
-	_zones.add_player_zones(side, _sources[side], _deck_corners[side], _hero_cards[side])
+	_zones.add_player_zones(side, _sources[side], _deck_corners[side])
 
 
 func _connect_gestures() -> void:
@@ -210,8 +184,6 @@ func _connect_previews() -> void:
 	for side: DuelState.PlayerSide in DuelState.SIDES:
 		_deck_corners[side].discard_hovered.connect(_previewer.show_card)
 		_deck_corners[side].discard_unhovered.connect(_previewer.hide_preview)
-		_hero_cards[side].hero_card_hovered.connect(_previewer.show_hero.bind(side))
-		_hero_cards[side].hero_card_unhovered.connect(_previewer.hide_preview)
 
 
 func _connect_overlays() -> void:
@@ -264,7 +236,7 @@ func _on_response_started() -> void:
 # de réponse ouverte ou non (208.6.2) : aucune passe automatique ne ferme la confirmation.
 func _refresh_concede_button() -> void:
 	if _session.get_session_state() == DuelSession.SessionState.AWAITING_VIEWER:
-		_column.show_concede(_session.get_viewer())
+		_column.show_concede()
 	else:
 		_column.hide_concede()
 

@@ -159,6 +159,7 @@ func snapshot() -> SelectionSnapshot:
 	shown.draft_payment = _copy_draft()
 	shown.shown_upright_sources = _shown_upright_sources()
 	shown.shown_tilted_sources = _shown_tilted_sources()
+	shown.shown_fonte_sources = _engine.fonte_after_payment(_side, _draft_payment)
 	shown.can_pass = candidates.is_legal(PassPriority.new(_side))
 	shown.can_end_turn = candidates.is_legal(EndTurn.new(_side))
 	shown.can_confirm = _can_confirm(candidates)

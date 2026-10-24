@@ -1,17 +1,23 @@
 class_name StackView
 extends VBoxContainer
-## Pile (208 ; décision 0028) : une ligne par entrée, la dernière en haut, à la teinte de sa carte
-## et liserée de la couleur de son joueur. Une entrée se presse quand la sélection la propose
-## (cible d'un Contrecarrer, ordre des effets déclenchés), marquée d'un anneau jaune (DuelMarks) ;
-## son survol montre sa carte dans l'aperçu. Une entrée peut porter le rang que le joueur lui
-## a donné (décision 0032, ordre des effets déclenchés). L'écran ne la montre que non vide.
+## Pile (208 ; décisions 0028 et 0053) : une ligne par entrée, la dernière en haut, à la teinte
+## de sa carte et liserée de la couleur de son joueur. Une entrée se presse quand la sélection la
+## propose (cible d'un Contrecarrer, ordre des effets déclenchés), marquée d'un anneau jaune
+## (DuelMarks) ; son survol montre sa carte dans l'aperçu. Une entrée peut porter le rang que le
+## joueur lui a donné (décision 0032, ordre des effets déclenchés). La colonne de duel montre
+## « Pile vide » à sa place quand elle n'a aucune entrée.
 
 signal stack_entry_pressed(stack_entry_id: int)
 signal stack_entry_hovered(stack_entry_id: int)
 signal stack_entry_unhovered(stack_entry_id: int)
 
-const ICON_SIZE: float = 16.0
-const PADDING: float = 8.0
+## Entrée de 200 × 52 (fiche E19) : liseré de camp de 5 px, vignette 30 × 38 à la teinte du type,
+## nom en gras et ligne d'aide.
+const ENTRY_HEIGHT: float = 52.0
+const EDGE_WIDTH: float = 5.0
+const THUMBNAIL_SIZE := Vector2(30.0, 38.0)
+const THUMBNAIL_ICON_SIZE: float = 18.0
+const THUMBNAIL_RADIUS: int = 5
 ## Pastille du rang choisi pour un effet déclenché (208.4.6) : un cercle de 22 px à l'encre de la
 ## teinte, le chiffre à la couleur du fond de la teinte.
 const ORDER_BADGE_SIZE: float = 22.0
@@ -28,6 +34,8 @@ class StackLine:
 	var owner: DuelState.PlayerSide = DuelState.PlayerSide.A
 	## Rang choisi par le joueur pendant l'ordre des effets déclenchés ; NO_ORDER sans pastille.
 	var order_number: int = NO_ORDER
+	## Ligne d'aide sous le nom : le type et le camp, ou le coup.
+	var help: String = ""
 
 	func _init(
 		entry_id: int, entry_label: String, entry_tint: DuelPalette.Tint, side: DuelState.PlayerSide
@@ -42,6 +50,11 @@ class StackLine:
 		order_number = number
 		return self
 
+	## Écrit la ligne d'aide et rend la ligne.
+	func with_help(text: String) -> StackLine:
+		help = text
+		return self
+
 
 ## `lines` vont de la base au sommet de la pile ; `highlighted_ids` peuvent se presser.
 func show_entries(lines: Array[StackLine], highlighted_ids: Array[int]) -> void:
@@ -52,7 +65,12 @@ func show_entries(lines: Array[StackLine], highlighted_ids: Array[int]) -> void:
 
 
 func _make_entry(line: StackLine, is_highlighted: bool) -> PanelContainer:
-	var entry := _make_frame(line)
+	var entry := PanelContainer.new()
+	entry.custom_minimum_size.y = ENTRY_HEIGHT
+	var fill := DuelPalette.TINT_BACKGROUNDS[line.tint]
+	entry.add_theme_stylebox_override(
+		"panel", DuelPalette.fill_style(fill, DuelPalette.CORNER_RADIUS, 0.0)
+	)
 	entry.add_child(_make_row(line))
 	_connect_hover(entry, line.stack_entry_id)
 	if is_highlighted:
@@ -60,32 +78,60 @@ func _make_entry(line: StackLine, is_highlighted: bool) -> PanelContainer:
 	return entry
 
 
-func _make_frame(line: StackLine) -> PanelContainer:
-	var entry := PanelContainer.new()
-	var border := DuelPalette.player_color(line.owner)
-	entry.add_theme_stylebox_override(
-		"panel",
-		DuelPalette.tinted_style(line.tint, border, DuelPalette.PLAYER_BORDER_WIDTH, PADDING)
-	)
-	return entry
-
-
 func _make_row(line: StackLine) -> HBoxContainer:
 	var row := HBoxContainer.new()
-	row.theme_type_variation = &"CardRow"
+	row.theme_type_variation = &"StackRow"
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var ink := DuelPalette.TINT_INKS[line.tint]
-	row.add_child(_make_icon(line.tint, ink))
-	row.add_child(_make_label(line.label, ink))
+	row.add_child(_make_edge(DuelPalette.player_color(line.owner)))
+	row.add_child(_make_thumbnail(line.tint))
+	row.add_child(_make_texts(line, ink))
 	if line.order_number != NO_ORDER:
 		row.add_child(_make_order_badge(line.order_number, line.tint))
 	return row
+
+
+# Le liseré suit l'arrondi gauche de l'entrée.
+func _make_edge(color: Color) -> PanelContainer:
+	var edge := PanelContainer.new()
+	edge.custom_minimum_size.x = EDGE_WIDTH
+	edge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var style := DuelPalette.fill_style(color, DuelPalette.CORNER_RADIUS, 0.0)
+	style.corner_radius_top_right = 0
+	style.corner_radius_bottom_right = 0
+	edge.add_theme_stylebox_override("panel", style)
+	return edge
+
+
+func _make_thumbnail(tint: DuelPalette.Tint) -> Control:
+	var thumbnail := PanelContainer.new()
+	thumbnail.custom_minimum_size = THUMBNAIL_SIZE
+	thumbnail.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	thumbnail.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	thumbnail.add_theme_stylebox_override(
+		"panel", DuelPalette.fill_style(DuelPalette.TINT_INKS[tint], THUMBNAIL_RADIUS, 0.0)
+	)
+	thumbnail.add_child(_make_icon(tint, DuelPalette.TINT_BACKGROUNDS[tint]))
+	return thumbnail
+
+
+func _make_texts(line: StackLine, ink: Color) -> VBoxContainer:
+	var texts := VBoxContainer.new()
+	texts.theme_type_variation = &"StackTexts"
+	texts.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	texts.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	texts.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	texts.add_child(_make_label(line.label, ink, &"StackEntryLabel"))
+	if not line.help.is_empty():
+		texts.add_child(_make_label(line.help, ink, &"StackEntryHelpLabel"))
+	return texts
 
 
 func _make_order_badge(number: int, tint: DuelPalette.Tint) -> PanelContainer:
 	var badge := PanelContainer.new()
 	badge.custom_minimum_size = Vector2.ONE * ORDER_BADGE_SIZE
 	badge.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	badge.size_flags_horizontal = Control.SIZE_SHRINK_END
 	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	badge.add_theme_stylebox_override(
 		"panel", DuelPalette.fill_style(DuelPalette.TINT_INKS[tint], ORDER_BADGE_RADIUS, 0.0)
@@ -103,7 +149,8 @@ func _make_order_badge(number: int, tint: DuelPalette.Tint) -> PanelContainer:
 
 func _make_icon(tint: DuelPalette.Tint, ink: Color) -> Control:
 	var icon := Control.new()
-	icon.custom_minimum_size = Vector2.ONE * ICON_SIZE
+	icon.custom_minimum_size = Vector2.ONE * THUMBNAIL_ICON_SIZE
+	icon.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	DuelIcons.bind(
@@ -114,11 +161,12 @@ func _make_icon(tint: DuelPalette.Tint, ink: Color) -> Control:
 	return icon
 
 
-func _make_label(text: String, ink: Color) -> Label:
+func _make_label(text: String, ink: Color, look: StringName) -> Label:
 	var label := Label.new()
 	label.text = text
-	label.theme_type_variation = &"StackEntryLabel"
+	label.theme_type_variation = look
 	label.add_theme_color_override("font_color", ink)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	label.clip_text = true

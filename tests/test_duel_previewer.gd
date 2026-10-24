@@ -94,19 +94,6 @@ func test_decision_0030_unknown_card_shows_nothing() -> void:
 	assert_array(_spy.calls).is_empty()
 
 
-# --- Carte Hero (colonne de droite) ---
-
-
-func test_decision_0032_hovered_hero_card_shows_the_hero_of_that_side() -> void:
-	var previewer := _previewer_for(A)
-	previewer.show_hero(B)
-	assert_str(_spy.shown_hero.hero_name).is_equal(HERO_OF_B_NAME)
-	previewer.show_hero(A)
-	assert_str(_spy.shown_hero.hero_name).is_equal(HERO_OF_A_NAME)
-	assert_array(_spy.calls).contains_exactly(["show_hero", "show_hero"])
-	assert_object(_spy.shown_gear).is_null()
-
-
 # --- Pièces du plateau ---
 
 

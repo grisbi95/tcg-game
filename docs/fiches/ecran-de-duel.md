@@ -36,8 +36,8 @@ Ordre d'affichage du fond vers l'avant. Un `CanvasLayer` plus haut reçoit la so
 
 Les noms entre parenthèses sont les composants existants de `ui/components/`. Leur intérieur ne change pas à l'étape 2b.3, sauf ce que la fiche change : les repères A–E sortent de `BoardView` pour passer sous la barre du bas, et `DuelColumnView` et `SourcesView` changent selon §5.4 et §5.5.
 
-Cotes qui en découlent dans la colonne du milieu (x 424 à 1562, largeur 1138) :
-- horizontalement, `PlayRow` est alignée à droite : la colonne de duel garde x 1342 à 1562, et la grille va de x 615 à 1326 (repères 1–5 de x 591 à 611) ;
+Cotes qui en découlent dans la colonne du milieu (x 424 à 1564, largeur 1140 : 1920 − 2×16 − 394 − 326 − 2×14) :
+- horizontalement, `PlayRow` est alignée à droite : la colonne de duel garde x 1342 à 1562, et la grille va de x 615 à 1326 (repères 1–5 de x 591 à 611) ; `ColumnReserve` (222 px, dont 2 de marge à droite) garde la place de la colonne dans `PlayRow`, et la colonne est ancrée au carré du plateau par `ColumnAnchor`, pour suivre la grille à toute proportion ;
 - verticalement : main adverse de y 16 à 86, barre du haut de 89 à 95, grille de 98 à 809, barre du bas de 812 à 818, lettres A–E de 821 à 841, main du bas de 844 à 1064 ;
 - les barres ont la largeur de la grille (711), sous la marge de 24 des repères.
 
@@ -57,13 +57,14 @@ DuelScreen (Control, plein écran, script duel_screen.gd)
 │     │     ├─ MiddleColumn (VBoxContainer, s'étend)
 │     │     │  ├─ OpponentHand (OpponentHandView, centrée)
 │     │     │  ├─ PlayRow (HBoxContainer, séparation 16, s'étend en hauteur, alignée à droite)
-│     │     │  │  ├─ BoardArea (VBoxContainer, séparation 3, largeur 735)
-│     │     │  │  │  ├─ TimeBarTop (TurnTimerBar, nouveau composant, marge gauche 24)
-│     │     │  │  │  ├─ BoardFrame (AspectRatioContainer 1:1, s'étend)
-│     │     │  │  │  │  └─ Board (BoardView : repères 1–5 à gauche, grille)
-│     │     │  │  │  ├─ TimeBarBottom (TurnTimerBar, marge gauche 24)
-│     │     │  │  │  └─ ColumnLetters (repères A–E, marge gauche 24, hauteur 20)
-│     │     │  │  └─ Column (DuelColumnView, largeur 220)
+│     │     │  │  ├─ BoardFrame (AspectRatioContainer 1:1, s'étend, aligné à droite)
+│     │     │  │  │  └─ BoardArea (MarginContainer, marge gauche 17 : rend le bloc carré)
+│     │     │  │  │     └─ BoardStack (VBoxContainer, séparation 3)
+│     │     │  │  │        ├─ TimeBarTopSlot (marge gauche 24) › TimerBarTop (TurnTimerBar)
+│     │     │  │  │        ├─ Board (BoardView : repères 1–5 à gauche, grille ; s'étend)
+│     │     │  │  │        ├─ TimeBarBottomSlot (marge gauche 24) › TimerBarBottom (TurnTimerBar)
+│     │     │  │  │        └─ ColumnLettersSlot (marge gauche 24) › ColumnLetters (ColumnLettersView, hauteur 20)
+│     │     │  │  └─ ColumnReserve (Control, 222 de large ; la colonne est dans BoardArea › ColumnAnchor)
 │     │     │  └─ Hand (HandView, centrée)
 │     │     └─ RightColumn (VBoxContainer, largeur 326)
 │     │        ├─ DeckCornerTop (DeckCornerView)
@@ -150,12 +151,12 @@ Choix du créateur (option A, « colonne rangée ») : trois parties fixes, de h
 2. **Pile** : la zone qui s'étend. La pile vide se montre par un cadre en pointillé « Pile vide ». Avec des entrées, c'est une liste dont la dernière arrivée est en haut, sous « ↑ résout en premier ».
 3. **Bouton** : ancré en bas, à la couleur du camp qui agit, avec une ligne d'aide sous son libellé.
 
-Arbre : `DuelColumnView` (PanelContainer) › `Column` (VBoxContainer) › `Header` (HBoxContainer), `StackArea` (PanelContainer qui s'étend, avec `EmptyLabel` et `StackScroll` › `StackView`), `BigButton`.
+Arbre : `DuelColumnView` (PanelContainer) › `Column` (VBoxContainer) › `Header` (VBoxContainer : `TitleRow` avec `TurnNumberLabel` et `ConcedeButton`, `ActorRow` avec la pastille et `TurnActorLabel`), `HeaderRule`, `StackArea` (PanelContainer qui s'étend, avec `EmptyLabel` et `StackScroll` › `StackView`), `BigButton`.
 
 | ID | Élément | Node | Taille | Place | Alpha | États | Asset attendu |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | E16 | Panneau de colonne | DuelColumnView (PanelContainer `ColumnPanel`) | 220×711, marges internes 10 | x 1342, y 98, à droite du plateau, de la hauteur de la grille | 1 | — | `ui/column_panel.png` 9-patch, marges 16 |
-| E17 | Barre de temps, une par camp | TurnTimerBar : `TextureProgressBar` (repli `ProgressBar`) et Label des secondes | largeur de la grille (711) × 6 ; secondes en police 15 au bout, à droite | au-dessus de la grille pour l'adversaire (y 89), au-dessous pour soi (y 812), 3 px de la grille | deux états seulement. **Active** (ce camp doit agir) : 1. **Inactive** (ce camp n'a pas à agir) : piste vide à 0,25, sans secondes. | active : se vide de 90 s (tour) ou de 30 s (réponse), à la couleur du camp, puis en orange `#f2a33a` sous 10 s, avec les secondes en gras (signal visuel seul, sans effet de règle, 0053). Le reste d'un tour en pause s'écrit au bout de la barre de ce camp, active ou inactive, en petit à 0,55 : « tour : 54 s » (Q8). Pendant le mulligan, aucun temps ne s'écoule (209.4.2d) : les deux barres sont inactives. | `ui/time_bar_fill.png` et `ui/time_bar_track.png`, 9-patch 711×6, marges 3, en blanc, teintés par code |
+| E17 | Barre de temps, une par camp | TurnTimerBar : `TextureProgressBar` (repli `ProgressBar`) et Label des secondes | largeur de la grille (711) × 6 ; zone de 96 px au bout, à droite, dans la largeur de la grille : barre de 615, secondes en police 13 (« 18 s »), puis « · tour 54 s » en police 11 | au-dessus de la grille pour l'adversaire (y 89), au-dessous pour soi (y 812), 3 px de la grille | deux états seulement. **Active** (ce camp doit agir) : 1. **Inactive** (ce camp n'a pas à agir) : piste vide à 0,25, sans secondes. | active : se vide de 90 s (tour) ou de 30 s (réponse), à la couleur du camp, puis en orange `#f2a33a` sous 10 s, avec les secondes en gras (signal visuel seul, sans effet de règle, 0053). Le reste d'un tour en pause s'écrit au bout de la barre de ce camp, active ou inactive, en petit à 0,55 : « · tour 54 s » (Q8). Pendant le mulligan, aucun temps ne s'écoule (209.4.2d) : les deux barres sont inactives. | `ui/time_bar_fill.png` et `ui/time_bar_track.png`, 9-patch 711×6, marges 3, en blanc, teintés par code |
 | E18 | En-tête | HBoxContainer : deux Labels (`TurnNumberLabel` : « Tour 4 » ou « Pile · 2 » ; `TurnActorLabel` : « À toi de jouer », « B peut répondre », « Mulligan : choisis les cartes à écarter ») avec une pastille de camp de 10 px, puis E20c à droite | 200×56, filet de 1 px dessous | haut de la colonne | 1 | — | police ; filet dessiné |
 | E19 | Pile | PanelContainer qui s'étend, avec ScrollContainer et StackView ; vide : Label « Pile vide » dans un cadre en pointillé | 200 × reste de la hauteur ; entrée 200×52, écart 6 | entre l'en-tête et le bouton | 1 | entrée : normal, survol (aperçu E21), ciblable (anneau jaune), choisie (deux anneaux verts) ; pastille d'ordre 22 px pour l'ordre des déclencheurs, comme aujourd'hui : seul le joueur qui choisit l'ordre voit ses déclencheurs en attente (208.4.6, 201.4.7) ; défilement au-delà de 10 entrées | `ui/stack_entry.png` 9-patch 200×52, marges 8 ; liseré de camp de 5 px à gauche, dessiné ; vignette de teinte du type 30×38 (illustration recadrée en 2b.6) ; cadre vide `ui/stack_empty.png` 9-patch |
 | E20 | Grand bouton : « Terminer le tour », « Passer », « Confirmer » | Button `BigButton`, avec une seconde ligne en police 11 (« Fin du tour 4 », « laisser résoudre », « garder ces cartes ») | 200×64, police 19 | ancré en bas de la colonne | 1 ; désactivé : gris à 0,55, avec un texte qui dit ce qu'on attend (« Tour de B », « En attente de B ») (Q6) | normal, survol (+12 % de clarté), enfoncé (−12 %), désactivé ; couleur du camp qui agit | `ui/button_big_{normal,hover,pressed,disabled}.png` 9-patch, 200×64, marges 16, en blanc et gris, teinté par code à la couleur du camp |
@@ -167,7 +168,7 @@ Arbre : `DuelColumnView` (PanelContainer) › `Column` (VBoxContainer) › `Head
 | ID | Élément | Node | Taille | Place | Alpha | États | Asset attendu |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | E21 | Aperçu au survol | HoverPreview (HBoxContainer), couche Informations | carte seule 348×484 (×2,2) ; carte et Gear 2 × 269×374 (×1,7) | place fixe, centre x 294, y 543 (colonne gauche) | 1 | — | reprend E11 en @2x |
-| E27 | Bulles d'information : mots-clés, effets, état (endormie…) | VBoxContainer de PanelContainers (titre en gras et texte), couche Informations, souris ignorée | 260 de large, hauteur selon le texte, écart 8, police 14 | à droite de l'aperçu, alignées sur son haut (x 478, y 301) ; avec un Gear, à droite de la paire (x 597). Elles passent par-dessus le bord gauche du plateau le temps du survol. | 1 ; ombre portée | apparaissent et disparaissent avec l'aperçu | `ui/tooltip_panel.png` 9-patch 260×80, marges 12 ; police (§6) |
+| E27 | Bulles d'information : mots-clés, effets, état (endormie…) | VBoxContainer de PanelContainers (titre en gras et texte), couche Informations, souris ignorée | 260 de large, hauteur selon le texte, écart 8, police 14 | à droite de l'aperçu, alignées sur son haut (x 478, y 301) ; avec un Gear, à droite de la paire (x 597, y 356) ; comme l'aperçu, elles suivent le centre vertical de l'écran. Elles passent par-dessus le bord gauche du plateau le temps du survol. | 1 ; ombre portée | apparaissent et disparaissent avec l'aperçu | `ui/tooltip_panel.png` 9-patch 260×80, marges 12 (en attendant, variation `InfoBubblePanel` du thème) ; police (§6) |
 | E22 | Coin deck et défausse | DeckCornerView (VBoxContainer) | 326×244 (libellé, puis deux emplacements 158×220, écart 10) | coin haut droit pour l'adversaire, bas droit pour soi | 1 | défausse : survol (aperçu) | dos `cards/frames/card_back.png` 158×220 (@2x 316×440) ; emplacement vide 9-patch |
 | ~~E23~~ | ~~Carte Hero~~ | supprimée (choix du créateur, 24 octobre 2026) : elle servait au pouvoir du Hero, retiré par la décision 0047. Le survol de la pièce Hero (E07) montre sa carte dans l'aperçu E21. `HeroCardView` sera retiré à l'étape 2b.3. | — | — | — | — | le cadre `cards/frames/card_hero.png` reste pour l'aperçu |
 
@@ -253,3 +254,6 @@ Une ligne par fichier, à ajouter à `assets/REGISTRE.md` le jour de sa livraiso
 - 2026-10-24 : version 1, validée par le créateur ; choix consignés par la décision 0053.
 - 2026-10-24 : corrections de la relecture de clôture. La grille passe en x 615 (`PlayRow` alignée à droite), les barres se placent entre la grille et les lettres A–E, et la main du bas en x 425. La barre de temps n'a que deux états, et l'alerte orange est gardée par le créateur comme signal visuel seul. Les règles citées sont 201.4.4 à 201.4.6 et 201.4.10 ; le nombre d'emplacements vient de `DuelConfig`. Sont précisés : le compteur hors de son tour, le mulligan, le duel sur un seul appareil et les déclencheurs en attente.
 - 2026-10-24 : Q-104 tranchée (ruleset 0.44, 201.4.11). Le gris d'une pièce endormie vaut pour les pièces des deux camps.
+- 2026-10-24 : étape 2b.3, barres de temps. `BoardArea` devient un bloc carré (marge gauche de 17 px) dans l'`AspectRatioContainer`, pour que barres et lettres suivent la grille ; la barre mesure 615 et une zone de 96 px porte les secondes (13) et le reste du tour (11), qui déborde de 6 px au-dessus et au-dessous de la barre (boîte du texte). `ColumnSlot` laisse 2 px à droite : la colonne du milieu mesure 1140, pas 1138.
+- 2026-10-24 : étape 2b.3, colonne de duel et Sources. `DuelColumnView` passe dans `BoardArea` sous `ColumnAnchor` (ancrée à droite du carré, haut +9, bas −32) : sa hauteur suit la grille à toute proportion (mesuré : y 98 à 809 en 1920×1080 et 1280×720, y 203 à 1064 en 1920×1440) ; `ColumnReserve` garde sa place dans `PlayRow`, `ColumnSlot` disparaît. L'en-tête est un `VBoxContainer` à deux rangées (le texte de l'acteur passe sous le bouton d'abandon et dispose des 200 px, sur deux lignes au plus, police 12). Le message de la fenêtre de réponse (208.6.1) reste, en petit, sous « ↑ résout en premier ». Les consignes de choix et du mulligan sont dans `TurnActorLabel`, le panneau de consigne disparaît.
+- 2026-10-24 : étape 2b.3, bulles d'information et pièce endormie. Les bulles (E27) suivent le centre vertical de l'écran comme l'aperçu, pour rester alignées sur son haut sur un écran plus haut que 1080 ; avec un Gear, y 356. Elles portent la variation `InfoBubblePanel` en attendant `tooltip_panel.png`. Le gris d'une pièce endormie touche l'illustration ou l'icône du type, rien d'autre.

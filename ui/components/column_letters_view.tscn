@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://ui/components/column_letters_view.gd" id="1_script"]
+
+[node name="ColumnLettersView" type="HBoxContainer"]
+mouse_filter = 2
+theme_type_variation = &"BoardLettersRow"
+script = ExtResource("1_script")

@@ -1,8 +1,9 @@
 extends Control
-## Essai de PieceView (décision 0027) : chaque pièce dans une case de 143 px. Hero de A et de B ;
+## Essai de PieceView (décision 0027) : chaque pièce dans une case de 139 px. Hero de A et de B ;
 ## Unit de Force imprimée, augmentée (avec un Gear) et diminuée ; Unit à mot-clé ; Building ;
-## jetons Unit et Building ; une pièce surlignée et une choisie. Survoler une pièce l'entoure d'un
-## anneau clair ; un clic passe à sa case.
+## jetons Unit et Building ; une pièce surlignée et une choisie ; des Units et un Hero endormis
+## des deux camps (illustration ou icône en gris), à côté d'éveillés ; un Building jamais gris.
+## Survoler une pièce l'entoure d'un anneau clair ; un clic passe à sa case.
 
 const CELL_SCENE: PackedScene = preload("res://ui/components/cell_view.tscn")
 const PIECE_SCENE: PackedScene = preload("res://ui/components/piece_view.tscn")
@@ -24,12 +25,14 @@ func _ready() -> void:
 	column.add_child(_row)
 	var hero := _catalog.get_hero(TrySamples.HERO_ID)
 	_add_hero(hero, A).show_health(DAMAGED_HEALTH)
-	_add_hero(hero, B).show_health(hero.health)
-	_add_card(&"soldat", A, 0)
+	var sleeping_hero := _add_hero(hero, B)
+	sleeping_hero.show_health(hero.health)
+	sleeping_hero.show_asleep(true)
+	_add_card(&"soldat", A, 0).show_asleep(true)
 	var armed := _add_card(&"soldat", A, 1)
 	armed.show_gear(_catalog.get_card(&"lame").card_name)
 	_add_card(&"heraut", B, -1)
-	_add_card(&"gardien", B, 0)
+	_add_card(&"gardien", B, 0).show_asleep(true)
 	_add_card(&"palissade", A, 0)
 	_row = HBoxContainer.new()
 	column.add_child(_row)

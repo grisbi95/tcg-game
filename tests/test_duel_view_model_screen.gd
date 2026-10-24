@@ -164,6 +164,36 @@ func test_decision_0032_other_player_sources_come_from_the_state() -> void:
 	assert_int(model.tilted_sources(B, shown)).is_equal(1)
 
 
+func test_201_4_4_sources_upright_and_tilted_of_both_players_come_from_the_state() -> void:
+	_builder.with_sources_in_play(A, 3, 2).with_sources_in_play(B, 4, 1)
+	var shown := SelectionSnapshot.new()
+	assert_int(_model(B).upright_sources(A, shown)).is_equal(3)
+	assert_int(_model(B).tilted_sources(A, shown)).is_equal(2)
+
+
+func test_201_4_5_reserve_count_of_both_players_is_visible_to_the_viewer() -> void:
+	_builder.with_sources_in_reserve(A, 3).with_sources_in_reserve(B, 5)
+	assert_int(_model(A).reserve_sources(A)).is_equal(3)
+	assert_int(_model(A).reserve_sources(B)).is_equal(5)
+	assert_int(_model(B).reserve_sources(A)).is_equal(3)
+
+
+func test_201_4_6_fonte_count_of_both_players_is_visible_to_the_viewer() -> void:
+	_builder.with_sources_in_fonte(A, 2).with_sources_in_fonte(B, 4)
+	var shown := SelectionSnapshot.new()
+	shown.shown_fonte_sources = 2
+	assert_int(_model(A).fonte_sources(A, shown)).is_equal(2)
+	assert_int(_model(A).fonte_sources(B, shown)).is_equal(4)
+
+
+func test_203_5_3_viewer_fonte_comes_from_the_snapshot_and_the_other_from_the_state() -> void:
+	_builder.with_sources_in_fonte(A, 2).with_sources_in_fonte(B, 4)
+	var shown := _drafting_snapshot(true, EssencePayment.new(1, 2))
+	shown.shown_fonte_sources = 4
+	assert_int(_model(A).fonte_sources(A, shown)).is_equal(4)
+	assert_int(_model(A).fonte_sources(B, shown)).is_equal(4)
+
+
 # --- Pile (201.4.7) ---
 
 
@@ -186,6 +216,11 @@ func test_201_4_7_lines_go_from_base_to_top_with_owner_and_tint() -> void:
 	assert_str(lines[1].label).is_equal(SPELL_NAME)
 	assert_int(lines[1].tint).is_equal(DuelPalette.Tint.SPELL)
 	assert_int(lines[1].owner).is_equal(B)
+
+
+func test_201_4_7_line_help_names_the_card_type_and_the_owner() -> void:
+	_builder.push_spell(_builder.make_card_instance(B, SPELL))
+	assert_str(_model(A).stack_lines()[0].help).is_equal("Spell · Joueur B")
 
 
 func test_201_4_7_lines_are_visible_whoever_holds_the_device() -> void:
@@ -286,6 +321,14 @@ func test_201_4_8_entry_definition_is_the_announced_card() -> void:
 
 func _model(viewer: DuelState.PlayerSide) -> DuelViewModel:
 	return DuelViewModel.new(_builder.build(), _catalog, viewer)
+
+
+func test_decision_0032_chooser_is_the_viewer_when_awaited_else_the_first_awaited() -> void:
+	var decision := _decision(PendingDecision.DecisionKind.CHOOSE_TARGETS)
+	decision.awaited_players.assign([A, B])
+	assert_int(_model(B).chooser_of(decision)).is_equal(B)
+	decision.awaited_players.assign([A])
+	assert_int(_model(B).chooser_of(decision)).is_equal(A)
 
 
 func _drafting_snapshot(is_drafting: bool, draft: EssencePayment) -> SelectionSnapshot:

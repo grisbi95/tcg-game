@@ -3,22 +3,6 @@
 [sub_resource type="FontVariation" id="FontVariation_bold"]
 variation_embolden = 0.6
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_column_hint"]
-content_margin_left = 8.0
-content_margin_top = 8.0
-content_margin_right = 8.0
-content_margin_bottom = 8.0
-bg_color = Color(0.12156863, 0.14117648, 0.16862746, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.22745098, 0.25490195, 0.29803923, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_column_panel"]
 content_margin_left = 10.0
 content_margin_top = 10.0
@@ -34,6 +18,11 @@ corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_column_rule"]
+content_margin_top = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.22745098, 0.25490195, 0.29803923, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_concede_hover"]
 content_margin_left = 4.0
@@ -94,13 +83,89 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_info_bubble"]
+content_margin_left = 12.0
+content_margin_top = 10.0
+content_margin_right = 12.0
+content_margin_bottom = 10.0
+bg_color = Color(0.9647059, 0.9529412, 0.9254902, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.7882353, 0.7607843, 0.6901961, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0, 0, 0.4)
+shadow_size = 6
+shadow_offset = Vector2(0, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_stack_area"]
+content_margin_left = 0.0
+content_margin_top = 6.0
+content_margin_right = 0.0
+content_margin_bottom = 6.0
+bg_color = Color(0.12156863, 0.14117648, 0.16862746, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_timer_track"]
+bg_color = Color(0.22745098, 0.25490195, 0.29803923, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_timer_fill_a"]
+bg_color = Color(0.18431373, 0.49803922, 0.84705883, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_timer_fill_alert"]
+bg_color = Color(0.9490196, 0.6392157, 0.22745098, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_timer_fill_b"]
+bg_color = Color(0.8235294, 0.22745098, 0.22745098, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
 [resource]
 default_font_size = 20
 BigButton/base_type = &"Button"
 BigButton/font_sizes/font_size = 20
 BigButton/fonts/font = SubResource("FontVariation_bold")
+BigButtonColumn/base_type = &"VBoxContainer"
+BigButtonColumn/constants/separation = 0
+BigButtonHelpLabel/base_type = &"Label"
+BigButtonHelpLabel/colors/font_color = Color(0.93333334, 0.9411765, 0.9529412, 1)
+BigButtonHelpLabel/font_sizes/font_size = 11
+BigButtonLabel/base_type = &"Label"
+BigButtonLabel/colors/font_color = Color(0.93333334, 0.9411765, 0.9529412, 1)
+BigButtonLabel/font_sizes/font_size = 19
+BigButtonLabel/fonts/font = SubResource("FontVariation_bold")
+BoardAreaMargin/base_type = &"MarginContainer"
+BoardAreaMargin/constants/margin_left = 17
+BoardAreaStack/base_type = &"VBoxContainer"
+BoardAreaStack/constants/separation = 3
 BoardCoordinateLabel/base_type = &"Label"
+BoardCoordinateLabel/colors/font_color = Color(0.6392157, 0.6627451, 0.7019608, 1)
 BoardCoordinateLabel/font_sizes/font_size = 13
+BoardIndent/base_type = &"MarginContainer"
+BoardIndent/constants/margin_left = 24
+BoardLettersRow/base_type = &"HBoxContainer"
+BoardLettersRow/constants/separation = 4
 CardBandLabel/base_type = &"Label"
 CardBandLabel/font_sizes/font_size = 12
 CardBandLabel/fonts/font = SubResource("FontVariation_bold")
@@ -118,21 +183,16 @@ CardPillLabel/font_sizes/font_size = 15
 CardPillLabel/fonts/font = SubResource("FontVariation_bold")
 CardRow/base_type = &"HBoxContainer"
 CardRow/constants/separation = 4
-ClockNameLabel/base_type = &"Label"
-ClockNameLabel/font_sizes/font_size = 14
-ClockTimeLabel/base_type = &"Label"
-ClockTimeLabel/font_sizes/font_size = 44
-ClockTimeLabel/fonts/font = SubResource("FontVariation_bold")
-ColumnHintLabel/base_type = &"Label"
-ColumnHintLabel/colors/font_color = Color(0.93333334, 0.9411765, 0.9529412, 1)
-ColumnHintLabel/font_sizes/font_size = 14
-ColumnHintPanel/base_type = &"PanelContainer"
-ColumnHintPanel/styles/panel = SubResource("StyleBoxFlat_column_hint")
+ColumnHeader/base_type = &"VBoxContainer"
+ColumnHeader/constants/separation = 0
 ColumnMutedLabel/base_type = &"Label"
 ColumnMutedLabel/colors/font_color = Color(0.6392157, 0.6627451, 0.7019608, 1)
 ColumnMutedLabel/font_sizes/font_size = 14
 ColumnPanel/base_type = &"PanelContainer"
 ColumnPanel/styles/panel = SubResource("StyleBoxFlat_column_panel")
+ColumnRule/base_type = &"HSeparator"
+ColumnRule/constants/separation = 1
+ColumnRule/styles/separator = SubResource("StyleBoxFlat_column_rule")
 ColumnStack/base_type = &"VBoxContainer"
 ColumnStack/constants/separation = 10
 ConcedeButton/base_type = &"Button"
@@ -161,8 +221,23 @@ DeckCornerRow/constants/separation = 10
 DeckCountLabel/base_type = &"Label"
 DeckCountLabel/font_sizes/font_size = 28
 DeckCountLabel/fonts/font = SubResource("FontVariation_bold")
+InfoBubblePanel/base_type = &"PanelContainer"
+InfoBubblePanel/styles/panel = SubResource("StyleBoxFlat_info_bubble")
+InfoBubbleTextLabel/base_type = &"Label"
+InfoBubbleTextLabel/colors/font_color = Color(0.10980392, 0.11372549, 0.1254902, 1)
+InfoBubbleTextLabel/font_sizes/font_size = 14
+InfoBubbleTexts/base_type = &"VBoxContainer"
+InfoBubbleTexts/constants/separation = 4
+InfoBubbleTitleLabel/base_type = &"Label"
+InfoBubbleTitleLabel/colors/font_color = Color(0.10980392, 0.11372549, 0.1254902, 1)
+InfoBubbleTitleLabel/font_sizes/font_size = 15
+InfoBubbleTitleLabel/fonts/font = SubResource("FontVariation_bold")
+InfoTooltipsBox/base_type = &"VBoxContainer"
+InfoTooltipsBox/constants/separation = 8
 InlineRow/base_type = &"HBoxContainer"
 InlineRow/constants/separation = 6
+MiddleColumnStack/base_type = &"VBoxContainer"
+MiddleColumnStack/constants/separation = 3
 ModalBodyLabel/base_type = &"Label"
 ModalBodyLabel/font_sizes/font_size = 22
 ModalButton/base_type = &"Button"
@@ -188,6 +263,17 @@ PiecePillLabel/font_sizes/font_size = 19
 PiecePillLabel/fonts/font = SubResource("FontVariation_bold")
 PileLabel/base_type = &"Label"
 PileLabel/font_sizes/font_size = 14
+PlayRowBox/base_type = &"HBoxContainer"
+PlayRowBox/constants/separation = 16
+ScreenColumns/base_type = &"HBoxContainer"
+ScreenColumns/constants/separation = 14
+ScreenMargins/base_type = &"MarginContainer"
+ScreenMargins/constants/margin_bottom = 16
+ScreenMargins/constants/margin_left = 16
+ScreenMargins/constants/margin_right = 16
+ScreenMargins/constants/margin_top = 16
+SideColumn/base_type = &"VBoxContainer"
+SideColumn/constants/separation = 0
 SmallButton/base_type = &"Button"
 SmallButton/font_sizes/font_size = 11
 SmallLabel/base_type = &"Label"
@@ -197,11 +283,47 @@ SourceGrid/constants/h_separation = 6
 SourceGrid/constants/v_separation = 8
 SourcesColumn/base_type = &"VBoxContainer"
 SourcesColumn/constants/separation = 10
+StackArea/base_type = &"PanelContainer"
+StackArea/styles/panel = SubResource("StyleBoxFlat_stack_area")
+StackCaptionLabel/base_type = &"Label"
+StackCaptionLabel/colors/font_color = Color(0.6392157, 0.6627451, 0.7019608, 1)
+StackCaptionLabel/font_sizes/font_size = 11
+StackEntryHelpLabel/base_type = &"Label"
+StackEntryHelpLabel/font_sizes/font_size = 11
 StackEntryLabel/base_type = &"Label"
 StackEntryLabel/font_sizes/font_size = 15
 StackEntryLabel/fonts/font = SubResource("FontVariation_bold")
+StackList/base_type = &"VBoxContainer"
+StackList/constants/separation = 6
+StackRow/base_type = &"HBoxContainer"
+StackRow/constants/separation = 6
+StackTexts/base_type = &"VBoxContainer"
+StackTexts/constants/separation = 0
+TimerBarA/base_type = &"ProgressBar"
+TimerBarA/styles/background = SubResource("StyleBoxFlat_timer_track")
+TimerBarA/styles/fill = SubResource("StyleBoxFlat_timer_fill_a")
+TimerBarAlert/base_type = &"ProgressBar"
+TimerBarAlert/styles/background = SubResource("StyleBoxFlat_timer_track")
+TimerBarAlert/styles/fill = SubResource("StyleBoxFlat_timer_fill_alert")
+TimerBarB/base_type = &"ProgressBar"
+TimerBarB/styles/background = SubResource("StyleBoxFlat_timer_track")
+TimerBarB/styles/fill = SubResource("StyleBoxFlat_timer_fill_b")
+TimerBarRow/base_type = &"HBoxContainer"
+TimerBarRow/constants/separation = 0
+TimerPausedLabel/base_type = &"Label"
+TimerPausedLabel/colors/font_color = Color(0.6392157, 0.6627451, 0.7019608, 1)
+TimerPausedLabel/font_sizes/font_size = 11
+TimerReadoutRow/base_type = &"HBoxContainer"
+TimerReadoutRow/constants/separation = 4
+TimerSecondsAlertLabel/base_type = &"Label"
+TimerSecondsAlertLabel/colors/font_color = Color(0.9490196, 0.6392157, 0.22745098, 1)
+TimerSecondsAlertLabel/font_sizes/font_size = 13
+TimerSecondsAlertLabel/fonts/font = SubResource("FontVariation_bold")
+TimerSecondsLabel/base_type = &"Label"
+TimerSecondsLabel/colors/font_color = Color(0.93333334, 0.9411765, 0.9529412, 1)
+TimerSecondsLabel/font_sizes/font_size = 13
 TurnActorLabel/base_type = &"Label"
-TurnActorLabel/font_sizes/font_size = 19
+TurnActorLabel/font_sizes/font_size = 12
 TurnActorLabel/fonts/font = SubResource("FontVariation_bold")
 TurnNumberLabel/base_type = &"Label"
 TurnNumberLabel/colors/font_color = Color(0.6392157, 0.6627451, 0.7019608, 1)

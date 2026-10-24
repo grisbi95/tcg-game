@@ -24,6 +24,8 @@ const NORMAL_ACTION_LABEL: String = "Action normale"
 const PENDING_COMBAT_LABEL: String = "Combat"
 const TRIGGERED_EFFECT_LABEL: String = "Effet déclenché"
 const TRIGGERED_EFFECT_FORMAT: String = "Effet : %s"
+const ACTION_HELP_KIND: String = "Action"
+const HELP_FORMAT: String = "%s · %s"
 const ORDER_INSTRUCTION: String = "Ordre des effets : clique-les dans l'ordre d'ajout à la pile"
 const TARGET_INSTRUCTION: String = "Choisis la cible de l'effet"
 const ENDED_TEXT: String = "Duel terminé"
@@ -78,6 +80,20 @@ static func piece_form_of(piece: Piece) -> PieceForm:
 	if piece.kind == Piece.PieceKind.HERO:
 		return PieceForm.HERO
 	return PieceForm.TOKEN if piece.is_token() else PieceForm.CARD
+
+
+## 201.4.11, 205.5.6 : une Unit ou un Hero endormi est montré endormi, aux deux joueurs ; un
+## Building n'est ni endormi ni éveillé.
+static func is_shown_asleep(piece: Piece) -> bool:
+	return piece.is_asleep()
+
+
+## Joueur dont le choix `decision` s'affiche : celui qui a l'appareil s'il est attendu, sinon le
+## premier joueur attendu.
+func chooser_of(decision: PendingDecision) -> DuelState.PlayerSide:
+	if decision.awaited_players.has(_viewer):
+		return _viewer
+	return decision.awaited_players[0]
 
 
 func get_viewer() -> DuelState.PlayerSide:
@@ -158,6 +174,19 @@ func tilted_sources(side: DuelState.PlayerSide, shown: SelectionSnapshot) -> int
 	return _state.get_player(side).sources_tilted
 
 
+## 201.4.5 : Sources de la réserve de `side`, visibles des deux joueurs.
+func reserve_sources(side: DuelState.PlayerSide) -> int:
+	return _state.get_player(side).sources_in_reserve
+
+
+## 201.4.6 : Sources de la Fonte de `side`, visibles des deux joueurs ; celles de `shown` pour le
+## joueur qui a l'appareil (paiement préparé compris, 203.5.3), sinon celles de l'état.
+func fonte_sources(side: DuelState.PlayerSide, shown: SelectionSnapshot) -> int:
+	if side == _viewer:
+		return shown.shown_fonte_sources
+	return _state.get_player(side).sources_in_fonte
+
+
 ## Définition du Hero de `side`, d'après sa pièce.
 func hero_definition(side: DuelState.PlayerSide) -> HeroDefinition:
 	return _catalog.get_hero(_state.find_hero(side).card.definition_id)
@@ -171,7 +200,7 @@ func piece_definition(piece: Piece) -> CardDefinition:
 
 
 ## Type de carte d'un jeton (202.4) : celui de sa pièce.
-func token_card_type(piece: Piece) -> CardDefinition.CardType:
+static func token_card_type(piece: Piece) -> CardDefinition.CardType:
 	return TOKEN_CARD_TYPES[piece.kind]
 
 
@@ -228,9 +257,26 @@ func _to_hand_card(card: CardInstance) -> HandView.HandCard:
 
 func _stack_line(entry: StackEntry) -> StackView.StackLine:
 	var definition := entry_definition(entry)
-	return StackView.StackLine.new(
+	var line := StackView.StackLine.new(
 		entry.stack_entry_id, _stack_label(entry, definition), _stack_tint(definition), entry.owner
 	)
+	return line.with_help(HELP_FORMAT % [_stack_help_kind(entry, definition), _owner_name(entry)])
+
+
+# Le type de la carte annoncée, ou le genre de l'entrée quand elle n'en a pas.
+func _stack_help_kind(entry: StackEntry, definition: CardDefinition) -> String:
+	match entry.kind:
+		StackEntry.StackEntryKind.NORMAL_ACTION:
+			return ACTION_HELP_KIND
+		StackEntry.StackEntryKind.PENDING_COMBAT:
+			return PENDING_COMBAT_LABEL
+		StackEntry.StackEntryKind.TRIGGERED_EFFECT:
+			return TRIGGERED_EFFECT_LABEL
+	return CardText.type_name(definition.card_type)
+
+
+func _owner_name(entry: StackEntry) -> String:
+	return PlayerNames.display_name(entry.owner)
 
 
 func _stack_label(entry: StackEntry, definition: CardDefinition) -> String:

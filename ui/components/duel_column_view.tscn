@@ -1,11 +1,10 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://ui/components/duel_column_view.gd" id="1_script"]
-[ext_resource type="PackedScene" path="res://ui/components/clock_view.tscn" id="2_clock"]
 [ext_resource type="PackedScene" path="res://ui/components/stack_view.tscn" id="3_stack"]
 
 [node name="DuelColumnView" type="PanelContainer"]
-custom_minimum_size = Vector2(220, 731)
+custom_minimum_size = Vector2(220, 0)
 theme_type_variation = &"ColumnPanel"
 script = ExtResource("1_script")
 
@@ -13,94 +12,140 @@ script = ExtResource("1_script")
 layout_mode = 2
 theme_type_variation = &"ColumnStack"
 
-[node name="TopClock" parent="Column" instance=ExtResource("2_clock")]
-unique_name_in_owner = true
+[node name="Header" type="VBoxContainer" parent="Column"]
+custom_minimum_size = Vector2(200, 56)
 layout_mode = 2
+theme_type_variation = &"ColumnHeader"
 
-[node name="TopConcedeButton" type="Button" parent="Column"]
-unique_name_in_owner = true
-visible = false
+[node name="TitleRow" type="HBoxContainer" parent="Column/Header"]
 layout_mode = 2
+theme_type_variation = &"InlineRow"
+
+[node name="TurnNumberLabel" type="Label" parent="Column/Header/TitleRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_type_variation = &"TurnNumberLabel"
+
+[node name="ConcedeButton" type="Button" parent="Column/Header/TitleRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(26, 26)
+layout_mode = 2
+size_flags_vertical = 4
 focus_mode = 0
 theme_type_variation = &"ConcedeButton"
-text = "Abandonner"
+tooltip_text = "Abandonner"
 
-[node name="Center" type="VBoxContainer" parent="Column"]
+[node name="ConcedeIcon" type="Control" parent="Column/Header/TitleRow/ConcedeButton"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ActorRow" type="HBoxContainer" parent="Column/Header"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"InlineRow"
+
+[node name="ActorDot" type="Control" parent="Column/Header/ActorRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(10, 20)
+layout_mode = 2
+size_flags_vertical = 0
+mouse_filter = 2
+
+[node name="TurnActorLabel" type="Label" parent="Column/Header/ActorRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"TurnActorLabel"
+autowrap_mode = 3
+text_overrun_behavior = 3
+max_lines_visible = 2
+
+[node name="HeaderRule" type="HSeparator" parent="Column"]
+layout_mode = 2
+theme_type_variation = &"ColumnRule"
+
+[node name="StackArea" type="PanelContainer" parent="Column"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-alignment = 1
-theme_type_variation = &"ColumnStack"
+theme_type_variation = &"StackArea"
 
-[node name="TurnNumberLabel" type="Label" parent="Column/Center"]
+[node name="EmptyLabel" type="Label" parent="Column/StackArea"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_type_variation = &"TurnNumberLabel"
+theme_type_variation = &"ColumnMutedLabel"
+text = "Pile vide"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StackBox" type="VBoxContainer" parent="Column/StackArea"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"CardColumn"
+
+[node name="StackCaption" type="Label" parent="Column/StackArea/StackBox"]
+layout_mode = 2
+theme_type_variation = &"StackCaptionLabel"
+text = "↑ résout en premier"
 horizontal_alignment = 1
 
-[node name="HintPanel" type="PanelContainer" parent="Column/Center"]
+[node name="ResponseLabel" type="Label" parent="Column/StackArea/StackBox"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_type_variation = &"ColumnHintPanel"
-
-[node name="HintLabel" type="Label" parent="Column/Center/HintPanel"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"ColumnHintLabel"
+theme_type_variation = &"StackCaptionLabel"
+text = "Réponds ou passe"
 horizontal_alignment = 1
-autowrap_mode = 3
 
-[node name="StackTitleLabel" type="Label" parent="Column/Center"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"TurnNumberLabel"
-
-[node name="StackScroll" type="ScrollContainer" parent="Column/Center"]
-unique_name_in_owner = true
+[node name="StackScroll" type="ScrollContainer" parent="Column/StackArea/StackBox"]
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="StackView" parent="Column/Center/StackScroll" instance=ExtResource("3_stack")]
+[node name="StackView" parent="Column/StackArea/StackBox/StackScroll" instance=ExtResource("3_stack")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ActorLabel" type="Label" parent="Column/Center"]
+[node name="BigButton" type="Button" parent="Column"]
 unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"TurnActorLabel"
-horizontal_alignment = 1
-autowrap_mode = 3
-
-[node name="BigButton" type="Button" parent="Column/Center"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 64)
+custom_minimum_size = Vector2(200, 64)
 layout_mode = 2
 focus_mode = 0
 theme_type_variation = &"BigButton"
 
-[node name="ResponseZone" type="VBoxContainer" parent="Column/Center"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 44)
-layout_mode = 2
+[node name="ButtonTexts" type="VBoxContainer" parent="Column/BigButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_type_variation = &"BigButtonColumn"
+alignment = 1
 
-[node name="ResponseLabel" type="Label" parent="Column/Center/ResponseZone"]
+[node name="ButtonTitle" type="Label" parent="Column/BigButton/ButtonTexts"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_type_variation = &"ColumnMutedLabel"
-text = "Réponds ou passe"
+mouse_filter = 2
+theme_type_variation = &"BigButtonLabel"
 horizontal_alignment = 1
-autowrap_mode = 3
 
-[node name="BottomConcedeButton" type="Button" parent="Column"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-focus_mode = 0
-theme_type_variation = &"ConcedeButton"
-text = "Abandonner"
-
-[node name="BottomClock" parent="Column" instance=ExtResource("2_clock")]
+[node name="ButtonHelp" type="Label" parent="Column/BigButton/ButtonTexts"]
 unique_name_in_owner = true
 layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"BigButtonHelpLabel"
+horizontal_alignment = 1

@@ -17,6 +17,7 @@ var ordered_entry_ids: Array[int] = []
 var draft_payment: EssencePayment = EssencePayment.new()
 var shown_upright_sources: int = 0
 var shown_tilted_sources: int = 0
+var shown_fonte_sources: int = 0
 var can_pass: bool = false
 var can_end_turn: bool = false
 var can_confirm: bool = false

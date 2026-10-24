@@ -1,11 +1,12 @@
 class_name SourcesView
 extends VBoxContainer
-## Sources d'un joueur (203 ; décisions 0023 et 0028) : dix emplacements en deux rangées de cinq,
-## vides en pointillé ; une Source inclinée est estompée, sans pivoter. Un clic sur une Source
-## redressée la presse ; au survol d'une Source inclinée, un bouton « Recycler +1 » la presse.
-## Compteurs lisibles : Essence (la réserve du joueur, publique, 203.6 ; ou son paiement préparé
-## pendant le tour adverse, décision 0032), Réserve et Fonte (203.5). Aucun « Annuler » : un coup
-## joué est définitif.
+## Sources d'un joueur (203 ; décisions 0023, 0028 et 0053, fiche E13 à E15) : un emplacement par
+## Source du joueur (203.5.7), en rangées de cinq, chacun dans l'un de quatre états, remplis dans
+## cet ordre : en jeu redressée, en jeu inclinée (estompée, sans pivoter, 201.4.4), en réserve
+## (contour pointillé, 201.4.5) et dans la Fonte (barrée d'une croix, estompée, 201.4.6). Un clic
+## sur une Source redressée la presse ; au survol d'une Source inclinée, un bouton « Recycler +1 »
+## la presse. Un seul compteur : l'Essence (la réserve du joueur, publique, 203.6 ; ou son paiement
+## préparé pendant le tour adverse, décision 0032). Aucun « Annuler » : un coup joué est définitif.
 
 signal source_pressed(is_tilted: bool)
 
@@ -13,7 +14,8 @@ signal source_pressed(is_tilted: bool)
 enum SlotState {
 	UPRIGHT,
 	TILTED,
-	EMPTY,
+	RESERVE,
+	FONTE,
 }
 
 ## Place des compteurs : au-dessus pour le bloc du bas, en dessous pour celui du haut (0030).
@@ -30,6 +32,7 @@ const SLOT_BORDER_WIDTH: int = 2
 const RECYCLE_TEXT: String = "Recycler +1"
 const RECYCLE_MARGIN: float = 4.0
 const RECYCLE_HEIGHT: float = 26.0
+const CROSS_MARGIN: float = 22.0
 const CHIP_PADDING: float = 6.0
 
 var _player: DuelState.PlayerSide = DuelState.PlayerSide.A
@@ -41,36 +44,39 @@ var _slots: Array[SourceSlot] = []
 @onready var _essence_icon: Control = %EssenceIcon
 @onready var _essence_label: Label = %EssenceLabel
 @onready var _essence_value: Label = %EssenceValue
-@onready var _reserve_chip: PanelContainer = %ReserveChip
-@onready var _reserve_value: Label = %ReserveValue
-@onready var _fonte_chip: PanelContainer = %FonteChip
-@onready var _fonte_value: Label = %FonteValue
 @onready var _slot_grid: GridContainer = %SlotGrid
 
 
 ## Un emplacement : son état et les nœuds qui l'affichent.
 class SourceSlot:
 	extends RefCounted
-	var state: SlotState = SlotState.EMPTY
+	var state: SlotState = SlotState.RESERVE
 	var panel: PanelContainer
 	var icon: Control
 	var recycle_button: Button
 
 
+## Bornes des états le long des emplacements : redressées, inclinées, réserve, puis Fonte.
+class SlotLimits:
+	extends RefCounted
+	var upright_end: int
+	var tilted_end: int
+	var fonte_start: int
+	var fonte_end: int
+
+	func _init(upright: int, tilted: int, in_reserve: int, in_fonte: int) -> void:
+		upright_end = upright
+		tilted_end = upright + tilted
+		fonte_start = tilted_end + in_reserve
+		fonte_end = fonte_start + in_fonte
+
+
 func _ready() -> void:
-	var counter := DuelPalette.framed_style(
-		DuelPalette.COUNTER_COLOR,
-		DuelPalette.COUNTER_LINE_COLOR,
-		DuelPalette.LINE_WIDTH,
-		CHIP_PADDING
-	)
 	DuelIcons.bind(
 		_essence_icon,
-		func() -> DuelIcons.Icon: return DuelIcons.Icon.SOURCE,
+		func() -> DuelIcons.Icon: return DuelIcons.Icon.ESSENCE,
 		func() -> Color: return DuelPalette.ESSENCE_COLOR
 	)
-	_reserve_chip.add_theme_stylebox_override("panel", counter)
-	_fonte_chip.add_theme_stylebox_override("panel", counter)
 	_essence_chip.add_theme_stylebox_override(
 		"panel",
 		DuelPalette.framed_style(
@@ -98,25 +104,16 @@ func setup(
 		_slots.append(slot)
 		_slot_grid.add_child(slot.panel)
 	show_essence(0)
-	show_sources(0, 0)
+	show_sources(0, 0, slot_count, 0)
 
 
-## Sources en jeu, `upright` redressées puis `tilted` inclinées ; les autres emplacements vides.
-func show_sources(upright: int, tilted: int) -> void:
+## Les emplacements dans l'ordre : `upright` Sources redressées, `tilted` inclinées, `in_reserve`
+## en réserve puis `in_fonte` dans la Fonte ; un emplacement au-delà de ce total reste en réserve.
+func show_sources(upright: int, tilted: int, in_reserve: int, in_fonte: int) -> void:
+	var limits := SlotLimits.new(upright, tilted, in_reserve, in_fonte)
 	for index: int in _slots.size():
-		var state := SlotState.EMPTY
-		if index < upright:
-			state = SlotState.UPRIGHT
-		elif index < upright + tilted:
-			state = SlotState.TILTED
-		_slots[index].state = state
+		_slots[index].state = _slot_state_at(index, limits)
 		_refresh_slot(index, false)
-
-
-## 203.5 : Sources pas encore en jeu (Réserve) et Sources recyclées (Fonte).
-func show_supply(sources_in_reserve: int, sources_in_fonte: int) -> void:
-	_reserve_value.text = str(sources_in_reserve)
-	_fonte_value.text = str(sources_in_fonte)
 
 
 ## `essence` montrée dans le bloc : la réserve du joueur (203.6), ou, pendant le tour adverse, le
@@ -130,6 +127,16 @@ func set_interactive(is_interactive: bool) -> void:
 	_is_interactive = is_interactive
 	for index: int in _slots.size():
 		_refresh_slot(index, false)
+
+
+func _slot_state_at(index: int, limits: SlotLimits) -> SlotState:
+	if index < limits.upright_end:
+		return SlotState.UPRIGHT
+	if index < limits.tilted_end:
+		return SlotState.TILTED
+	if index >= limits.fonte_start and index < limits.fonte_end:
+		return SlotState.FONTE
+	return SlotState.RESERVE
 
 
 func _make_slot(index: int) -> SourceSlot:
@@ -147,7 +154,7 @@ func _make_slot(index: int) -> SourceSlot:
 	panel.mouse_entered.connect(func() -> void: _refresh_slot(index, true))
 	panel.mouse_exited.connect(func() -> void: _refresh_slot(index, _is_pointer_inside(panel)))
 	panel.gui_input.connect(func(event: InputEvent) -> void: _on_slot_input(index, event))
-	panel.draw.connect(func() -> void: _draw_empty_outline(index))
+	panel.draw.connect(func() -> void: _draw_slot_marks(index))
 	return slot
 
 
@@ -204,7 +211,7 @@ func _on_slot_input(index: int, event: InputEvent) -> void:
 func _refresh_slot(index: int, is_hovered: bool) -> void:
 	var slot := _slots[index]
 	var is_lit := is_hovered and _is_interactive
-	slot.icon.visible = slot.state != SlotState.EMPTY
+	slot.icon.visible = slot.state == SlotState.UPRIGHT or slot.state == SlotState.TILTED
 	slot.recycle_button.visible = slot.state == SlotState.TILTED and is_lit
 	_apply_slot_style(slot.panel, slot.state, is_lit)
 	slot.panel.queue_redraw()
@@ -222,8 +229,13 @@ func _apply_slot_style(slot: PanelContainer, state: SlotState, is_lit: bool) -> 
 			slot.add_theme_stylebox_override(
 				"panel", _slot_style(DuelPalette.PANEL_COLOR, DuelPalette.SOURCE_TILTED_LINE_COLOR)
 			)
-		SlotState.EMPTY:
+		SlotState.RESERVE:
 			slot.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
+		SlotState.FONTE:
+			slot.modulate.a = DuelPalette.DIMMED_ALPHA
+			slot.add_theme_stylebox_override(
+				"panel", _slot_style(DuelPalette.PANEL_COLOR, DuelPalette.CELL_LINE_COLOR)
+			)
 
 
 func _slot_style(background: Color, border: Color) -> StyleBoxFlat:
@@ -232,10 +244,24 @@ func _slot_style(background: Color, border: Color) -> StyleBoxFlat:
 	return style
 
 
-func _draw_empty_outline(index: int) -> void:
+func _draw_slot_marks(index: int) -> void:
 	var slot := _slots[index]
-	if slot.state == SlotState.EMPTY:
-		DashedOutline.draw(slot.panel, slot.panel.size)
+	match slot.state:
+		SlotState.RESERVE:
+			DashedOutline.draw(slot.panel, slot.panel.size)
+		SlotState.FONTE:
+			_draw_cross(slot.panel)
+
+
+func _draw_cross(canvas: Control) -> void:
+	var corner := Vector2.ONE * CROSS_MARGIN
+	var far := canvas.size - corner
+	canvas.draw_line(corner, far, DuelPalette.MUTED_COLOR, DuelPalette.BORDER_WIDTH, true)
+	var other_start := Vector2(far.x, corner.y)
+	var other_end := Vector2(corner.x, far.y)
+	canvas.draw_line(
+		other_start, other_end, DuelPalette.MUTED_COLOR, DuelPalette.BORDER_WIDTH, true
+	)
 
 
 func _player_border() -> Color:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="Script" path="res://ui/duel_screen.gd" id="1_script"]
 [ext_resource type="Theme" path="res://ui/theme/duel_theme.tres" id="2_theme"]
@@ -7,9 +7,11 @@
 [ext_resource type="PackedScene" path="res://ui/components/opponent_hand_view.tscn" id="5_opponent_hand"]
 [ext_resource type="PackedScene" path="res://ui/components/sources_view.tscn" id="6_sources"]
 [ext_resource type="PackedScene" path="res://ui/components/deck_corner_view.tscn" id="7_deck_corner"]
-[ext_resource type="PackedScene" path="res://ui/components/hero_card_view.tscn" id="8_hero_card"]
 [ext_resource type="PackedScene" path="res://ui/components/duel_column_view.tscn" id="9_column"]
 [ext_resource type="PackedScene" path="res://ui/components/hover_preview.tscn" id="10_preview"]
+[ext_resource type="PackedScene" path="res://ui/components/turn_timer_bar.tscn" id="13_timer_bar"]
+[ext_resource type="PackedScene" path="res://ui/components/column_letters_view.tscn" id="14_letters"]
+[ext_resource type="PackedScene" path="res://ui/components/info_tooltips.tscn" id="15_tooltips"]
 [ext_resource type="Script" path="res://ui/event_player.gd" id="11_event_player"]
 [ext_resource type="PackedScene" path="res://ui/duel_overlays.tscn" id="12_overlays"]
 
@@ -20,10 +22,22 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("2_theme")
+mouse_filter = 2
 script = ExtResource("1_script")
 
-[node name="Table" type="ColorRect" parent="."]
+[node name="BackgroundLayer" type="CanvasLayer" parent="."]
+
+[node name="Background" type="Control" parent="BackgroundLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("2_theme")
+
+[node name="Table" type="ColorRect" parent="BackgroundLayer/Background"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -33,63 +47,165 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="OpponentHand" parent="." instance=ExtResource("5_opponent_hand")]
-unique_name_in_owner = true
-layout_mode = 1
+[node name="PlayLayer" type="CanvasLayer" parent="."]
+layer = 1
 
-[node name="SourcesB" parent="." instance=ExtResource("6_sources")]
-unique_name_in_owner = true
-layout_mode = 1
+[node name="PlayRoot" type="Control" parent="PlayLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("2_theme")
 
-[node name="SourcesA" parent="." instance=ExtResource("6_sources")]
-unique_name_in_owner = true
+[node name="Margins" type="MarginContainer" parent="PlayLayer/PlayRoot"]
 layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 1
+grow_vertical = 1
+mouse_filter = 2
+theme_type_variation = &"ScreenMargins"
 
-[node name="Board" parent="." instance=ExtResource("3_board")]
-unique_name_in_owner = true
-layout_mode = 1
+[node name="Columns" type="HBoxContainer" parent="PlayLayer/PlayRoot/Margins"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"ScreenColumns"
 
-[node name="Column" parent="." instance=ExtResource("9_column")]
-unique_name_in_owner = true
-layout_mode = 1
+[node name="LeftColumn" type="VBoxContainer" parent="PlayLayer/PlayRoot/Margins/Columns"]
+custom_minimum_size = Vector2(394, 0)
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"SideColumn"
 
-[node name="Hand" parent="." instance=ExtResource("4_hand")]
-unique_name_in_owner = true
-layout_mode = 1
-
-[node name="RightColumnB" type="VBoxContainer" parent="."]
-unique_name_in_owner = true
-layout_mode = 1
-theme_type_variation = &"ColumnStack"
-
-[node name="DeckCornerB" parent="RightColumnB" instance=ExtResource("7_deck_corner")]
+[node name="SourcesTop" parent="PlayLayer/PlayRoot/Margins/Columns/LeftColumn" instance=ExtResource("6_sources")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="HeroCardB" parent="RightColumnB" instance=ExtResource("8_hero_card")]
+[node name="LeftSpacer" type="Control" parent="PlayLayer/PlayRoot/Margins/Columns/LeftColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="SourcesBottom" parent="PlayLayer/PlayRoot/Margins/Columns/LeftColumn" instance=ExtResource("6_sources")]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 0
 
-[node name="RightColumnA" type="VBoxContainer" parent="."]
+[node name="MiddleColumn" type="VBoxContainer" parent="PlayLayer/PlayRoot/Margins/Columns"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_type_variation = &"MiddleColumnStack"
+
+[node name="OpponentHand" parent="PlayLayer/PlayRoot/Margins/Columns/MiddleColumn" instance=ExtResource("5_opponent_hand")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="PlayRow" type="HBoxContainer" parent="PlayLayer/PlayRoot/Margins/Columns/MiddleColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+theme_type_variation = &"PlayRowBox"
+alignment = 2
+
+[node name="BoardFrame" type="AspectRatioContainer" parent="PlayLayer/PlayRoot/Margins/Columns/MiddleColumn/PlayRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+alignment_horizontal = 2
+
+[node name="BoardArea" type="MarginContainer" parent="PlayLayer/PlayRoot/Margins/Columns/MiddleColumn/PlayRow/BoardFrame"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"BoardAreaMargin"
+
+[node name="BoardStack" type="VBoxContainer" parent="PlayLayer/PlayRoot/Margins/Columns/MiddleColumn/PlayRow/BoardFrame/BoardArea"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"BoardAreaStack"
+
+[node name="TimeBarTopSlot" type="MarginContainer" parent="PlayLayer/PlayRoot/Margins/Columns/MiddleColumn/PlayRow/BoardFrame/BoardArea/BoardStack"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"BoardIndent"
+
+[node name="TimerBarTop" parent="PlayLayer/PlayRoot/Margins/Columns/MiddleColumn/PlayRow/BoardFrame/BoardArea/BoardStack/TimeBarTopSlot" instance=ExtResource("13_timer_bar")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Board" parent="PlayLayer/PlayRoot/Margins/Columns/MiddleColumn/PlayRow/BoardFrame/BoardArea/BoardStack" instance=ExtResource("3_board")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TimeBarBottomSlot" type="MarginContainer" parent="PlayLayer/PlayRoot/Margins/Columns/MiddleColumn/PlayRow/BoardFrame/BoardArea/BoardStack"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"BoardIndent"
+
+[node name="TimerBarBottom" parent="PlayLayer/PlayRoot/Margins/Columns/MiddleColumn/PlayRow/BoardFrame/BoardArea/BoardStack/TimeBarBottomSlot" instance=ExtResource("13_timer_bar")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ColumnLettersSlot" type="MarginContainer" parent="PlayLayer/PlayRoot/Margins/Columns/MiddleColumn/PlayRow/BoardFrame/BoardArea/BoardStack"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"BoardIndent"
+
+[node name="ColumnLetters" parent="PlayLayer/PlayRoot/Margins/Columns/MiddleColumn/PlayRow/BoardFrame/BoardArea/BoardStack/ColumnLettersSlot" instance=ExtResource("14_letters")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ColumnAnchor" type="Control" parent="PlayLayer/PlayRoot/Margins/Columns/MiddleColumn/PlayRow/BoardFrame/BoardArea"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Column" parent="PlayLayer/PlayRoot/Margins/Columns/MiddleColumn/PlayRow/BoardFrame/BoardArea/ColumnAnchor" instance=ExtResource("9_column")]
 unique_name_in_owner = true
 layout_mode = 1
-theme_type_variation = &"ColumnStack"
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 9.0
+offset_right = 236.0
+offset_bottom = -32.0
+grow_horizontal = 0
 
-[node name="HeroCardA" parent="RightColumnA" instance=ExtResource("8_hero_card")]
+[node name="ColumnReserve" type="Control" parent="PlayLayer/PlayRoot/Margins/Columns/MiddleColumn/PlayRow"]
+custom_minimum_size = Vector2(222, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Hand" parent="PlayLayer/PlayRoot/Margins/Columns/MiddleColumn" instance=ExtResource("4_hand")]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 0
 
-[node name="DeckCornerA" parent="RightColumnA" instance=ExtResource("7_deck_corner")]
+[node name="RightColumn" type="VBoxContainer" parent="PlayLayer/PlayRoot/Margins/Columns"]
+custom_minimum_size = Vector2(326, 0)
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"SideColumn"
+
+[node name="DeckCornerTop" parent="PlayLayer/PlayRoot/Margins/Columns/RightColumn" instance=ExtResource("7_deck_corner")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Preview" parent="." instance=ExtResource("10_preview")]
-unique_name_in_owner = true
-layout_mode = 1
+[node name="RightSpacer" type="Control" parent="PlayLayer/PlayRoot/Margins/Columns/RightColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
 
-[node name="InputShield" type="Control" parent="."]
+[node name="DeckCornerBottom" parent="PlayLayer/PlayRoot/Margins/Columns/RightColumn" instance=ExtResource("7_deck_corner")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="InputShield" type="Control" parent="PlayLayer/PlayRoot"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -98,9 +214,51 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="OverlayLayer" parent="." instance=ExtResource("12_overlays")]
+[node name="ModalLayer" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="OverlayLayer" parent="ModalLayer" instance=ExtResource("12_overlays")]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 15
+theme = ExtResource("2_theme")
+
+[node name="InfoLayer" type="CanvasLayer" parent="."]
+layer = 3
+
+[node name="InfoRoot" type="Control" parent="InfoLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("2_theme")
+
+[node name="Preview" parent="InfoLayer/InfoRoot" instance=ExtResource("10_preview")]
 unique_name_in_owner = true
 layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 294.0
+offset_top = 3.0
+offset_right = 294.0
+offset_bottom = 3.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Tooltips" parent="InfoLayer/InfoRoot" instance=ExtResource("15_tooltips")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 478.0
+offset_top = -239.0
+offset_right = 478.0
+offset_bottom = -239.0
 
 [node name="EventPlayer" type="Node" parent="."]
 unique_name_in_owner = true

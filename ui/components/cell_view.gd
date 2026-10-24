@@ -1,13 +1,13 @@
 class_name CellView
 extends PanelContainer
-## Case du plateau (201.2 ; décision 0028 : 143 px, coordonnées écrites hors du plateau) : la pièce
-## qui l'occupe, et un surlignage quand la sélection la propose : bordure jaune, et un point au
-## centre d'une case libre, pour ne pas dépendre de la seule couleur. Fond plus clair au survol. Sa
-## notation reste en infobulle.
+## Case du plateau (201.2 ; décision 0028, fiche de l'écran : 139 px, coordonnées écrites hors du
+## plateau) : la pièce qui l'occupe, et un surlignage quand la sélection la propose : bordure
+## jaune, et un point au centre d'une case libre, pour ne pas dépendre de la seule couleur. Fond
+## plus clair au survol. Sa notation reste en infobulle.
 
 signal cell_pressed(cell: Vector2i)
 
-## Décision 0028 : une case de 143 px, la pièce au centre à `PieceView.CELL_MARGIN` du bord.
+## Décision 0028 : une case de 139 px, la pièce au centre à `PieceView.CELL_MARGIN` du bord.
 const CELL_SIZE := PieceView.PIECE_SIZE + Vector2.ONE * PieceView.CELL_MARGIN * 2.0
 const LINE_WIDTH: int = 1
 const HIGHLIGHT_WIDTH: int = 4
