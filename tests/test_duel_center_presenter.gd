@@ -3,7 +3,7 @@
 extends GdUnitTestSuite
 ## DuelCenterPresenter sans scène : centre de la colonne, temps des joueurs et mention de la
 ## fenêtre de réponse (ruleset 0.41 ; décisions 0021, 0029, 0032, 0045 et 0046). `ColumnSpy` tient
-## lieu de `DuelColumnView`.
+## lieu de `DuelColumnView`, `TimerBarSpy` de `TurnTimerBar`.
 ##
 ## Deux montages : un état construit à la main pour le centre et les temps ; un duel mené par
 ## `DuelHost` et `ManualClock` pour la fenêtre, qui lit l'hôte. Dans le second, A annonce un
@@ -36,6 +36,7 @@ const HOST := DuelHost.HostState
 var _catalog: Catalog
 var _builder: DuelStateBuilder
 var _spy: ColumnSpy
+var _bars: Dictionary[DuelState.PlayerSide, TurnTimerBar] = {}
 var _presenter: DuelCenterPresenter
 var _engine: DuelEngine
 var _clock: ManualClock
@@ -49,6 +50,8 @@ func before_test() -> void:
 	_catalog.add_hero(HeroDefinition.from_dict(CatalogSamples.hero()))
 	_builder = DuelStateBuilder.new(DuelConfig.new(), _catalog)
 	_spy = auto_free(ColumnSpy.new())
+	for side: DuelState.PlayerSide in DuelState.SIDES:
+		_bars[side] = auto_free(TimerBarSpy.new())
 	_clock = ManualClock.new()
 
 
@@ -144,6 +147,7 @@ func test_decision_0032_target_choice_shows_the_stack_without_waiting_triggers()
 	_show_center(A, shown)
 	assert_array(_spy.calls).contains_exactly(["show_choice"])
 	assert_str(_spy.choice_instruction).is_equal(TARGET_INSTRUCTION)
+	assert_int(_spy.choice_chooser).is_equal(A)
 	assert_int(_spy.choice_lines.size()).is_equal(1)
 	assert_int(_spy.choice_lines[0].stack_entry_id).is_equal(spell_id)
 	assert_array(_spy.choice_highlighted_ids).contains_exactly([spell_id])
@@ -172,14 +176,15 @@ func test_209_4_7_active_player_sees_turn_time_and_the_other_one_response_time()
 	_builder.with_active_player(A)
 	_use_built_state()
 	_presenter.refresh_clocks()
-	assert_array(_spy.calls).contains_exactly(["show_clock", "show_clock"])
-	assert_int(_spy.clocks[A].kind).is_equal(DuelState.ClockKind.TURN)
-	assert_int(_spy.clocks[A].remaining_msec).is_equal(CLOCK_A_MSEC)
-	assert_bool(_spy.clocks[A].is_running).is_true()
-	assert_int(_spy.clocks[B].kind).is_equal(DuelState.ClockKind.RESPONSE)
+	assert_int(_readings_count(A)).is_equal(1)
+	assert_int(_readings_count(B)).is_equal(1)
+	assert_int(_reading(A).kind).is_equal(DuelState.ClockKind.TURN)
+	assert_int(_reading(A).remaining_msec).is_equal(CLOCK_A_MSEC)
+	assert_bool(_reading(A).is_running).is_true()
+	assert_int(_reading(B).kind).is_equal(DuelState.ClockKind.RESPONSE)
 	# 209.4.6 : B, qui n'est pas attendu, recevra un temps de réponse complet.
-	assert_int(_spy.clocks[B].remaining_msec).is_equal(RESPONSE_MSEC)
-	assert_bool(_spy.clocks[B].is_running).is_false()
+	assert_int(_reading(B).remaining_msec).is_equal(RESPONSE_MSEC)
+	assert_bool(_reading(B).is_running).is_false()
 
 
 func test_209_4_4_response_time_runs_for_the_player_who_may_answer() -> void:
@@ -188,9 +193,9 @@ func test_209_4_4_response_time_runs_for_the_player_who_may_answer() -> void:
 	_builder.with_response_time_remaining(B, RESPONSE_B_MSEC)
 	_use_built_state()
 	_presenter.refresh_clocks()
-	assert_bool(_spy.clocks[B].is_running).is_true()
-	assert_int(_spy.clocks[B].remaining_msec).is_equal(RESPONSE_B_MSEC)
-	assert_bool(_spy.clocks[A].is_running).is_false()
+	assert_bool(_reading(B).is_running).is_true()
+	assert_int(_reading(B).remaining_msec).is_equal(RESPONSE_B_MSEC)
+	assert_bool(_reading(A).is_running).is_false()
 
 
 func test_209_4_8a_active_player_keeps_the_paused_turn_time_while_the_stack_is_not_empty() -> void:
@@ -199,24 +204,24 @@ func test_209_4_8a_active_player_keeps_the_paused_turn_time_while_the_stack_is_n
 	_builder.with_active_player(A).with_priority_player(B)
 	_use_built_state()
 	_presenter.refresh_clocks()
-	assert_bool(_spy.clocks[A].has_paused_turn()).is_true()
-	assert_int(_spy.clocks[A].paused_turn_msec).is_equal(CLOCK_A_MSEC)
-	assert_bool(_spy.clocks[B].has_paused_turn()).is_false()
+	assert_bool(_reading(A).has_paused_turn()).is_true()
+	assert_int(_reading(A).paused_turn_msec).is_equal(CLOCK_A_MSEC)
+	assert_bool(_reading(B).has_paused_turn()).is_false()
 
 
 func test_209_4_8a_no_turn_time_is_paused_with_an_empty_stack() -> void:
 	_builder.with_active_player(A)
 	_use_built_state()
 	_presenter.refresh_clocks()
-	assert_bool(_spy.clocks[A].has_paused_turn()).is_false()
+	assert_bool(_reading(A).has_paused_turn()).is_false()
 
 
 func test_209_4_2d_no_time_runs_during_the_mulligan() -> void:
 	_builder.with_pending_decision(_decision(PendingDecision.DecisionKind.MULLIGAN))
 	_use_built_state()
 	_presenter.refresh_clocks()
-	assert_bool(_spy.clocks[A].is_running).is_false()
-	assert_bool(_spy.clocks[B].is_running).is_false()
+	assert_bool(_reading(A).is_running).is_false()
+	assert_bool(_reading(B).is_running).is_false()
 
 
 func test_decision_0021_clocks_are_read_again_at_each_frame() -> void:
@@ -225,8 +230,17 @@ func test_decision_0021_clocks_are_read_again_at_each_frame() -> void:
 	_presenter.refresh_clocks()
 	_engine.advance_clock(CLOCK_STEP_MSEC)
 	_presenter.refresh_clocks()
-	assert_int(_spy.count_calls("show_clock")).is_equal(4)
-	assert_int(_spy.clocks[A].remaining_msec).is_equal(CLOCK_A_MSEC - CLOCK_STEP_MSEC)
+	assert_int(_readings_count(A)).is_equal(2)
+	assert_int(_readings_count(B)).is_equal(2)
+	assert_int(_reading(A).remaining_msec).is_equal(CLOCK_A_MSEC - CLOCK_STEP_MSEC)
+
+
+func _reading(side: DuelState.PlayerSide) -> ClockReading:
+	return (_bars[side] as TimerBarSpy).last_reading()
+
+
+func _readings_count(side: DuelState.PlayerSide) -> int:
+	return (_bars[side] as TimerBarSpy).readings.size()
 
 
 # --- Fenêtre de réponse (208.6, décision 0029) ---
@@ -294,7 +308,7 @@ func _use_built_state() -> void:
 	_engine.start_from_state(_builder.build())
 	_host = DuelHost.new(_engine, _clock)
 	_presenter = DuelCenterPresenter.new()
-	_presenter.setup(_spy, HostedDuelSession.new(_host, SetupSamples.setup()))
+	_presenter.setup(_spy, _bars, HostedDuelSession.new(_host, SetupSamples.setup()))
 
 
 func _show_center(viewer: DuelState.PlayerSide, shown: SelectionSnapshot) -> void:
@@ -337,7 +351,7 @@ func _add_waiting_combat(side: DuelState.PlayerSide) -> int:
 # Montage de duel mené : deux humains, A commence, présentateur câblé sur l'hôte.
 func _show_center_of_duel(viewer: DuelState.PlayerSide) -> void:
 	_presenter = DuelCenterPresenter.new()
-	_presenter.setup(_spy, HostedDuelSession.new(_host, SetupSamples.setup()))
+	_presenter.setup(_spy, _bars, HostedDuelSession.new(_host, SetupSamples.setup()))
 	var model := DuelViewModel.new(_engine.get_state(), _engine.get_state().catalog, viewer)
 	_presenter.show_center(model, _shown())
 

@@ -1,10 +1,11 @@
 class_name DuelColumnView
 extends PanelContainer
-## Colonne de duel (décisions 0028, 0030 et 0032) : temps de B en haut, de A en bas, et au centre
-## un seul grand bouton qui change selon le moment. Le parent choisit l'état du centre
-## (`show_turn`, `show_stack`, `show_mulligan`, `show_choice`, `show_ended`) et ce que montre le
-## temps de chaque joueur ; la colonne ne calcule rien et n'a aucune règle. Un petit bouton
-## « Abandonner » (décision 0036) se pose près du temps du joueur qui a l'appareil.
+## Colonne de duel (décisions 0030, 0032 et 0053, fiche E16 à E20c), trois parties fixes de haut en
+## bas : l'en-tête (le tour ou la taille de la pile, le joueur qui doit agir, l'abandon), la pile
+## qui s'étend (« Pile vide » en pointillé quand elle n'a aucune entrée), et le grand bouton, ancré
+## en bas, qui reste en place grisé quand il ne sert pas. Le parent choisit l'état du centre
+## (`show_turn`, `show_stack`, `show_mulligan`, `show_choice`, `show_ended`) ; la colonne ne calcule
+## rien et n'a aucune règle. Les temps sont dans `TurnTimerBar`, au bord du plateau.
 
 signal end_turn_pressed
 signal pass_pressed
@@ -28,77 +29,100 @@ enum CenterState {
 enum ResponseDisplay { NONE, OPEN }
 
 const END_TURN_TEXT: String = "Terminer le tour"
+const END_TURN_HELP_FORMAT: String = "Fin du tour %d"
 const PASS_TEXT: String = "Passer"
+const PASS_HELP: String = "laisser résoudre"
 const CONFIRM_TEXT: String = "Confirmer"
+const CONFIRM_HELP: String = "garder ces cartes"
 const MULLIGAN_HINT: String = "Mulligan : choisis les cartes à écarter"
+const TURN_FORMAT: String = "Tour %d"
+const STACK_FORMAT: String = "Pile · %d"
+const MULLIGAN_TITLE: String = "Mulligan"
+const CHOICE_TITLE: String = "Choix"
+const ENDED_TITLE: String = "Fin du duel"
+const YOUR_TURN_TEXT: String = "À toi de jouer"
+const OTHER_TURN_FORMAT: String = "%s joue"
+const YOUR_ANSWER_TEXT: String = "À toi de répondre"
+const OTHER_ANSWER_FORMAT: String = "%s peut répondre"
+const OTHER_TURN_BUTTON_FORMAT: String = "Tour de %s"
+const OTHER_ANSWER_BUTTON_FORMAT: String = "Réponse de %s"
+const WAITING_FORMAT: String = "En attente de %s"
+const CHOICE_BUTTON_TEXT: String = "Choix en cours"
+const CHOICE_BUTTON_HELP: String = "choisis sur le plateau"
+const ENDED_BUTTON_TEXT: String = "Duel terminé"
+const NO_HELP: String = ""
+const DOT_SIZE: float = 10.0
+const DOT_LINE_HEIGHT: float = 20.0
 
 var _center_state: CenterState = CenterState.TURN
 var _has_stack: bool = false
 var _response_display: ResponseDisplay = ResponseDisplay.NONE
-var _clock_keys: Dictionary[DuelState.PlayerSide, String] = {}
+var _viewer: DuelState.PlayerSide = DuelState.PlayerSide.A
+var _dot_color: Color = DuelPalette.NEUTRAL_COLOR
 
-@onready var _clocks: Dictionary[DuelState.PlayerSide, ClockView] = {
-	DuelState.PlayerSide.A: %BottomClock,
-	DuelState.PlayerSide.B: %TopClock,
-}
-@onready var _concede_buttons: Dictionary[DuelState.PlayerSide, Button] = {
-	DuelState.PlayerSide.A: %BottomConcedeButton,
-	DuelState.PlayerSide.B: %TopConcedeButton,
-}
 @onready var _turn_number_label: Label = %TurnNumberLabel
-@onready var _hint_panel: PanelContainer = %HintPanel
-@onready var _hint_label: Label = %HintLabel
-@onready var _stack_title_label: Label = %StackTitleLabel
-@onready var _stack_scroll: ScrollContainer = %StackScroll
-@onready var _stack_view: StackView = %StackView
-@onready var _actor_label: Label = %ActorLabel
-@onready var _big_button: Button = %BigButton
+@onready var _concede_button: Button = %ConcedeButton
+@onready var _concede_icon: Control = %ConcedeIcon
+@onready var _actor_dot: Control = %ActorDot
+@onready var _actor_label: Label = %TurnActorLabel
+@onready var _stack_area: PanelContainer = %StackArea
+@onready var _empty_label: Label = %EmptyLabel
+@onready var _stack_box: VBoxContainer = %StackBox
 @onready var _response_label: Label = %ResponseLabel
+@onready var _stack_view: StackView = %StackView
+@onready var _big_button: Button = %BigButton
+@onready var _button_title: Label = %ButtonTitle
+@onready var _button_help: Label = %ButtonHelp
+
+
+## « À toi de jouer » quand c'est à `viewer` (le joueur qui a l'appareil) d'agir, sinon qui joue.
+static func turn_actor_text(actor: DuelState.PlayerSide, viewer: DuelState.PlayerSide) -> String:
+	if actor == viewer:
+		return YOUR_TURN_TEXT
+	return OTHER_TURN_FORMAT % PlayerNames.letter(actor)
+
+
+## « À toi de répondre » quand `responder` est `viewer`, sinon qui peut répondre (208.6.1).
+static func responder_text(responder: DuelState.PlayerSide, viewer: DuelState.PlayerSide) -> String:
+	if responder == viewer:
+		return YOUR_ANSWER_TEXT
+	return OTHER_ANSWER_FORMAT % PlayerNames.letter(responder)
 
 
 func _ready() -> void:
 	_big_button.pressed.connect(_on_big_button_pressed)
-	for button: Button in _concede_buttons.values():
-		button.pressed.connect(concede_pressed.emit)
+	_concede_button.pressed.connect(concede_pressed.emit)
+	_concede_button.mouse_entered.connect(_concede_icon.queue_redraw)
+	_concede_button.mouse_exited.connect(_concede_icon.queue_redraw)
+	DuelIcons.bind(
+		_concede_icon,
+		func() -> DuelIcons.Icon: return DuelIcons.Icon.CONCEDE,
+		func() -> Color: return _concede_ink()
+	)
+	_actor_dot.draw.connect(_draw_dot)
+	_stack_area.draw.connect(_draw_empty_frame)
 	_stack_view.stack_entry_pressed.connect(stack_entry_pressed.emit)
 	_stack_view.stack_entry_hovered.connect(stack_entry_hovered.emit)
 	_stack_view.stack_entry_unhovered.connect(stack_entry_unhovered.emit)
 	_refresh_center()
 
 
-## Temps des joueurs : un temps de tour part de `turn_duration_msec`, un temps de réponse de
-## `response_duration_msec` (209.4.3) ; le temps de `bottom_side` est en bas (décision 0050).
-func setup(
-	turn_duration_msec: int,
-	response_duration_msec: int,
-	bottom_side: DuelState.PlayerSide = DuelState.PlayerSide.A
-) -> void:
-	if bottom_side != DuelState.PlayerSide.A:
-		ScreenSides.swap(_clocks)
-		ScreenSides.swap(_concede_buttons)
-	for side: DuelState.PlayerSide in _clocks:
-		_clocks[side].setup(
-			side, PlayerNames.display_name(side), turn_duration_msec, response_duration_msec
-		)
-	_clock_keys.clear()
-
-
-## Temps de `side` tel que `reading` le décrit (209.4.4). Peut être appelée à chaque image : le
-## temps ne se redessine que si son affichage change.
-func show_clock(side: DuelState.PlayerSide, reading: ClockReading) -> void:
-	var key := reading.display_key()
-	if _clock_keys.get(side, "") == key:
-		return
-	_clock_keys[side] = key
-	_clocks[side].show_clock(reading)
+## Le joueur qui a l'appareil : la colonne lui parle (« À toi de jouer ») et dit à qui elle
+## attend quand ce n'est pas lui. À poser avant chaque `show_*`.
+func set_viewer(viewer: DuelState.PlayerSide) -> void:
+	_viewer = viewer
 
 
 ## Pile vide : « Tour N », qui joue, et « Terminer le tour » si `can_end_turn`.
 func show_turn(turn_number: int, actor: DuelState.PlayerSide, can_end_turn: bool) -> void:
 	_center_state = CenterState.TURN
-	_turn_number_label.text = "Tour %d" % turn_number
-	_set_actor("Au joueur %s" % PlayerNames.letter(actor), actor)
-	_set_button(END_TURN_TEXT, actor, can_end_turn)
+	_show_stack_lines([], [])
+	_turn_number_label.text = TURN_FORMAT % turn_number
+	_set_actor(turn_actor_text(actor, _viewer), actor)
+	if can_end_turn or actor == _viewer:
+		_set_button(END_TURN_TEXT, END_TURN_HELP_FORMAT % turn_number, actor, can_end_turn)
+	else:
+		_set_waiting_button(OTHER_TURN_BUTTON_FORMAT, actor)
 	_refresh_center()
 
 
@@ -112,34 +136,52 @@ func show_stack(
 ) -> void:
 	_center_state = CenterState.STACK
 	_show_stack_lines(lines, highlighted_ids)
-	_set_actor("%s peut répondre" % PlayerNames.display_name(responder), responder)
-	_set_button(PASS_TEXT, responder, can_pass)
+	_turn_number_label.text = STACK_FORMAT % lines.size()
+	_set_actor(responder_text(responder, _viewer), responder)
+	if can_pass or responder == _viewer:
+		_set_button(PASS_TEXT, PASS_HELP, responder, can_pass)
+	else:
+		_set_waiting_button(OTHER_ANSWER_BUTTON_FORMAT, responder)
 	_refresh_center()
 
 
 ## Mulligan (204.2) de `player` : la consigne et « Confirmer », actif si `can_confirm`.
 func show_mulligan(player: DuelState.PlayerSide, can_confirm: bool) -> void:
 	_center_state = CenterState.MULLIGAN
-	_hint_label.text = MULLIGAN_HINT
-	_set_button(CONFIRM_TEXT, player, can_confirm)
+	_show_stack_lines([], [])
+	_turn_number_label.text = MULLIGAN_TITLE
+	_set_actor(MULLIGAN_HINT, player)
+	_set_button(CONFIRM_TEXT, CONFIRM_HELP, player, can_confirm)
 	_refresh_center()
 
 
-## Choix demandé par le moteur : la `instruction`, sans bouton ; si l'ordre des effets se choisit
-## dans la pile, ses `lines` restent affichées et `highlighted_ids` se pressent.
+## Choix demandé par le moteur à `chooser` : la `instruction`, un bouton grisé ; si l'ordre des
+## effets se choisit dans la pile, ses `lines` restent affichées et `highlighted_ids` se pressent.
 func show_choice(
-	instruction: String, lines: Array[StackView.StackLine] = [], highlighted_ids: Array[int] = []
+	instruction: String,
+	chooser: DuelState.PlayerSide,
+	lines: Array[StackView.StackLine] = [],
+	highlighted_ids: Array[int] = []
 ) -> void:
 	_center_state = CenterState.CHOICE
-	_hint_label.text = instruction
 	_show_stack_lines(lines, highlighted_ids)
+	_turn_number_label.text = CHOICE_TITLE if lines.is_empty() else STACK_FORMAT % lines.size()
+	_set_actor(instruction, chooser)
+	var help := CHOICE_BUTTON_HELP
+	if chooser != _viewer:
+		help = WAITING_FORMAT % PlayerNames.letter(chooser)
+	_set_button(CHOICE_BUTTON_TEXT, help, chooser, false)
 	_refresh_center()
 
 
 ## Fin de partie : une ligne de résultat (le relais et l'écran de fin viennent à l'étape 2.4).
 func show_ended(result_text: String) -> void:
 	_center_state = CenterState.ENDED
-	_hint_label.text = result_text
+	_show_stack_lines([], [])
+	_turn_number_label.text = ENDED_TITLE
+	_set_actor(result_text, _viewer)
+	_actor_dot.visible = false
+	_set_button(ENDED_BUTTON_TEXT, NO_HELP, _viewer, false)
 	_refresh_center()
 
 
@@ -154,31 +196,40 @@ func hide_response() -> void:
 	_set_response_display(ResponseDisplay.NONE)
 
 
-## Montre « Abandonner » près du temps de `side` seulement ; l'autre est caché.
-func show_concede(side: DuelState.PlayerSide) -> void:
-	for button_side: DuelState.PlayerSide in _concede_buttons:
-		_concede_buttons[button_side].visible = button_side == side
+## Montre le bouton « Abandonner », pour le joueur de l'écran (décision 0036).
+func show_concede() -> void:
+	_concede_button.visible = true
 
 
 func hide_concede() -> void:
-	for button: Button in _concede_buttons.values():
-		button.visible = false
+	_concede_button.visible = false
 
 
 func _set_actor(text: String, side: DuelState.PlayerSide) -> void:
 	_actor_label.text = text
 	_actor_label.add_theme_color_override("font_color", DuelPalette.player_ink(side))
+	_dot_color = DuelPalette.player_color(side)
+	_actor_dot.visible = true
+	_actor_dot.queue_redraw()
 
 
-func _set_button(text: String, side: DuelState.PlayerSide, is_enabled: bool) -> void:
-	_big_button.text = text
+func _set_button(title: String, help: String, side: DuelState.PlayerSide, is_enabled: bool) -> void:
+	_button_title.text = title
+	_button_help.text = help
+	_button_help.visible = not help.is_empty()
 	_big_button.disabled = not is_enabled
+	_big_button.modulate.a = 1.0 if is_enabled else DuelPalette.DIMMED_ALPHA
 	DuelPalette.apply_player_button(_big_button, side)
+
+
+# Q6 : le bouton reste en place, grisé, et dit ce qu'on attend.
+func _set_waiting_button(title_format: String, side: DuelState.PlayerSide) -> void:
+	var letter := PlayerNames.letter(side)
+	_set_button(title_format % letter, WAITING_FORMAT % letter, side, false)
 
 
 func _show_stack_lines(lines: Array[StackView.StackLine], highlighted_ids: Array[int]) -> void:
 	_has_stack = not lines.is_empty()
-	_stack_title_label.text = "Pile · %d" % lines.size()
 	_stack_view.show_entries(lines, highlighted_ids)
 
 
@@ -190,36 +241,26 @@ func _set_response_display(response_display: ResponseDisplay) -> void:
 
 
 func _refresh_center() -> void:
-	var shown: Array[Control] = []
-	match _center_state:
-		CenterState.TURN:
-			shown = [_turn_number_label, _actor_label, _big_button]
-		CenterState.STACK:
-			shown = [_stack_title_label, _stack_scroll, _actor_label, _big_button]
-			if _response_display == ResponseDisplay.OPEN:
-				shown.append(_response_label)
-		CenterState.MULLIGAN:
-			shown = [_hint_panel, _big_button]
-		CenterState.CHOICE:
-			shown = [_hint_panel]
-			if _has_stack:
-				shown.append_array([_stack_title_label, _stack_scroll])
-		CenterState.ENDED:
-			shown = [_hint_panel]
-	for node: Control in _center_nodes():
-		node.visible = shown.has(node)
+	_empty_label.visible = not _has_stack
+	_stack_box.visible = _has_stack
+	_response_label.visible = (
+		_center_state == CenterState.STACK and _response_display == ResponseDisplay.OPEN
+	)
+	_stack_area.queue_redraw()
 
 
-func _center_nodes() -> Array[Control]:
-	return [
-		_turn_number_label,
-		_hint_panel,
-		_stack_title_label,
-		_stack_scroll,
-		_actor_label,
-		_big_button,
-		_response_label,
-	]
+func _concede_ink() -> Color:
+	return DuelPalette.INK_COLOR if _concede_button.is_hovered() else DuelPalette.MUTED_COLOR
+
+
+func _draw_dot() -> void:
+	var radius := DOT_SIZE / 2.0
+	_actor_dot.draw_circle(Vector2(radius, DOT_LINE_HEIGHT / 2.0), radius, _dot_color)
+
+
+func _draw_empty_frame() -> void:
+	if not _has_stack:
+		DashedOutline.draw(_stack_area, _stack_area.size)
 
 
 func _on_big_button_pressed() -> void:

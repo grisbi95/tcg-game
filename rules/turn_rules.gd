@@ -102,7 +102,7 @@ static func _awaken_pieces(
 ) -> void:
 	var awakened_ids: Array[int] = []
 	for piece: Piece in state.pieces:
-		if piece.owner == side and piece.kind != Piece.PieceKind.BUILDING and not piece.is_awake:
+		if piece.owner == side and piece.is_asleep():
 			piece.is_awake = true
 			awakened_ids.append(piece.piece_id)
 	if awakened_ids.is_empty():

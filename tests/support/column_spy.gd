@@ -3,7 +3,7 @@ extends DuelColumnView
 ## Colonne d'essai : enregistre ce qu'on lui demande de montrer, sans scène ni arbre (le script
 ## n'est jamais prêt, ses `@onready` restent vides). Sert aux suites de `DuelCenterPresenter`.
 
-## Noms des appels reçus, dans l'ordre (`show_turn`, `show_stack`, `show_clock`…).
+## Noms des appels reçus, dans l'ordre (`show_turn`, `show_stack`…).
 var calls: Array[String] = []
 var turn_number: int = 0
 var turn_actor: DuelState.PlayerSide = DuelState.PlayerSide.A
@@ -15,19 +15,14 @@ var stack_can_pass: bool = false
 var mulligan_player: DuelState.PlayerSide = DuelState.PlayerSide.A
 var mulligan_can_confirm: bool = false
 var choice_instruction: String = ""
+var choice_chooser: DuelState.PlayerSide = DuelState.PlayerSide.A
 var choice_lines: Array[StackView.StackLine] = []
 var choice_highlighted_ids: Array[int] = []
 var ended_text: String = ""
-var clocks: Dictionary[DuelState.PlayerSide, ClockReading] = {}
 
 
 func count_calls(call_name: String) -> int:
 	return calls.count(call_name)
-
-
-func show_clock(side: DuelState.PlayerSide, reading: ClockReading) -> void:
-	calls.append("show_clock")
-	clocks[side] = reading
 
 
 func show_turn(turn: int, actor: DuelState.PlayerSide, can_end_turn: bool) -> void:
@@ -57,10 +52,14 @@ func show_mulligan(player: DuelState.PlayerSide, can_confirm: bool) -> void:
 
 
 func show_choice(
-	instruction: String, lines: Array[StackView.StackLine] = [], highlighted_ids: Array[int] = []
+	instruction: String,
+	chooser: DuelState.PlayerSide,
+	lines: Array[StackView.StackLine] = [],
+	highlighted_ids: Array[int] = []
 ) -> void:
 	calls.append("show_choice")
 	choice_instruction = instruction
+	choice_chooser = chooser
 	choice_lines = lines
 	choice_highlighted_ids = highlighted_ids
 

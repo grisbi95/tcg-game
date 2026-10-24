@@ -11,9 +11,9 @@ extends Control
 signal piece_hovered(piece_id: int)
 signal piece_unhovered(piece_id: int)
 
-## Décision 0028 : la pièce mesure 129 px ; sa case l'entoure d'une marge où se tracent les
-## anneaux de marque.
-const PIECE_SIZE := Vector2(129, 129)
+## Décision 0028, fiche de l'écran de duel : la pièce mesure 125 px ; sa case de 139 px l'entoure
+## d'une marge où se tracent les anneaux de marque.
+const PIECE_SIZE := Vector2(125, 125)
 const CELL_MARGIN: float = 7.0
 ## Bande visible du Gear attaché, au-dessus de la mini-carte.
 const GEAR_PEEK_HEIGHT: float = 23.0
@@ -27,12 +27,14 @@ const GEAR_PADDING: float = 4.0
 const ART_RADIUS: int = 5
 const CHIP_RADIUS: int = 4
 const CHIP_PADDING: float = 2.0
+const GRAYSCALE_SHADER: Shader = preload("res://ui/theme/grayscale.gdshader")
 
 var _piece_id: int = DuelState.NO_ID
 var _tint: DuelPalette.Tint = DuelPalette.Tint.UNIT
 var _owner_color: Color = DuelPalette.NEUTRAL_COLOR
 var _stat: StatBadgeBinding
 var _marks := ControlMarks.new(self, CELL_MARGIN)
+var _grayscale_material := ShaderMaterial.new()
 
 @onready var _gear_panel: PanelContainer = %GearPanel
 @onready var _gear_icon: Control = %GearIcon
@@ -51,6 +53,7 @@ var _marks := ControlMarks.new(self, CELL_MARGIN)
 
 
 func _ready() -> void:
+	_grayscale_material.shader = GRAYSCALE_SHADER
 	_marks.hover_changed.connect(_on_hover_changed)
 	_stat = StatBadgeBinding.new(_stat_badge, _stat_label)
 	_bind_icons()
@@ -109,6 +112,14 @@ func show_gear(gear_name: String) -> void:
 	_gear_panel.visible = has_gear
 	_gear_label.text = gear_name
 	_mini_card.offset_top = GEAR_PEEK_HEIGHT if has_gear else 0.0
+
+
+## 201.4.11 : une pièce endormie montre son illustration (ou l'icône du type) en gris ; liseré,
+## pastilles, nom et bandeau restent en couleur. Un Building n'est jamais montré endormi.
+func show_asleep(is_asleep: bool) -> void:
+	var art_material: ShaderMaterial = _grayscale_material if is_asleep else null
+	_art_image.material = art_material
+	_art_icon.material = art_material
 
 
 func set_marks(is_highlighted: bool, is_selected: bool) -> void:

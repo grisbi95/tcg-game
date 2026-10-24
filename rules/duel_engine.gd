@@ -123,6 +123,14 @@ func tilted_sources_after_payment(side: DuelState.PlayerSide, payment: EssencePa
 	return EssenceRules.tilted_sources_after_payment(_state.get_player(side), payment)
 
 
+## 203.5.3 : Sources de la Fonte de `side` une fois `payment` appliqué, pour la vue ; 0 avant le
+## premier duel. Pur.
+func fonte_after_payment(side: DuelState.PlayerSide, payment: EssencePayment) -> int:
+	if _state == null:
+		return 0
+	return EssenceRules.fonte_after_payment(_state.get_player(side), payment)
+
+
 ## 202.2.22, 207.5.1a, 205.1.5 : la carte `card_id` s'annonce avec une cible (Spell, Gear)
 ## plutôt qu'avec une case ; faux avant le premier duel ou si aucune main ne la contient, seule
 ## zone d'où la vue annonce. Pur.

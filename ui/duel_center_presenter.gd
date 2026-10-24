@@ -1,19 +1,26 @@
 class_name DuelCenterPresenter
 extends RefCounted
-## Centre et temps de la colonne de duel (décisions 0021, 0029, 0032 et 0045) : choisit ce que la
-## colonne montre d'après l'état du moteur, et relit à chaque image les temps, qui avancent au
-## temps réel sans événement. Aucune règle ici.
+## Centre de la colonne de duel et barres de temps (décisions 0021, 0029, 0032, 0045 et 0053) :
+## choisit ce que la colonne montre d'après l'état du moteur, et relit à chaque image les temps,
+## qui avancent au temps réel sans événement. Aucune règle ici.
 
 var _column: DuelColumnView
+var _timer_bars: Dictionary[DuelState.PlayerSide, TurnTimerBar] = {}
 var _engine: DuelEngine
 var _session: DuelSession
 var _center_state: DuelColumnView.CenterState = DuelColumnView.CenterState.TURN
 
 
-## `column` est la colonne pilotée ; `session` donne l'état, le temps réel et la fenêtre de
-## réponse (décision 0050).
-func setup(column: DuelColumnView, session: DuelSession) -> void:
+## `column` est la colonne pilotée ; `timer_bars` range par joueur les barres de temps (le parent
+## échange les entrées pour le second écran, décision 0050) ; `session` donne l'état, le temps
+## réel et la fenêtre de réponse.
+func setup(
+	column: DuelColumnView,
+	timer_bars: Dictionary[DuelState.PlayerSide, TurnTimerBar],
+	session: DuelSession
+) -> void:
 	_column = column
+	_timer_bars = timer_bars
 	_engine = session.get_engine()
 	_session = session
 
@@ -22,6 +29,7 @@ func setup(column: DuelColumnView, session: DuelSession) -> void:
 func show_center(model: DuelViewModel, shown: SelectionSnapshot) -> void:
 	var state := _engine.get_state()
 	_center_state = DuelViewModel.center_state_of(state)
+	_column.set_viewer(model.get_viewer())
 	match _center_state:
 		DuelColumnView.CenterState.TURN:
 			_column.show_turn(state.turn_number, state.active_player, shown.can_end_turn)
@@ -39,8 +47,8 @@ func show_center(model: DuelViewModel, shown: SelectionSnapshot) -> void:
 			_column.show_ended(DuelViewModel.result_text(state.result))
 
 
-## Décision 0021 : les temps sont relus à chaque image sans événement ; la colonne ne redessine un
-## temps que si son affichage change. Chaque joueur voit le temps qui compte pour lui
+## Décision 0021 : les temps sont relus à chaque image sans événement ; une barre ne se redessine
+## que si son affichage change. Chaque joueur voit le temps qui compte pour lui
 ## (`clock_kind`), et le joueur actif garde son temps de tour en pause tant que la pile n'est pas
 ## vide (209.4.8a).
 func refresh_clocks() -> void:
@@ -52,8 +60,8 @@ func refresh_clocks() -> void:
 		var paused_msec := ClockReading.NO_PAUSED_TURN
 		if _engine.is_turn_time_paused(side):
 			paused_msec = state.get_player(side).turn_time_remaining_msec
-		_column.show_clock(
-			side, ClockReading.new(kind, remaining_msec, running_owners.has(side), paused_msec)
+		_timer_bars[side].show_reading(
+			ClockReading.new(kind, remaining_msec, running_owners.has(side), paused_msec)
 		)
 
 
@@ -80,4 +88,4 @@ func _show_choice(model: DuelViewModel, shown: SelectionSnapshot) -> void:
 		ordered_candidate_ids.assign(decision.candidate_ids)
 	var lines := model.stack_lines(ordered_candidate_ids, shown.ordered_entry_ids)
 	var instruction := DuelViewModel.choice_instruction(decision.kind)
-	_column.show_choice(instruction, lines, shown.legal_stack_entry_ids)
+	_column.show_choice(instruction, model.chooser_of(decision), lines, shown.legal_stack_entry_ids)

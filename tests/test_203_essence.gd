@@ -278,6 +278,29 @@ func test_203_2_1_engine_query_reads_sources_after_payment() -> void:
 	assert_int(engine.tilted_sources_after_payment(A, payment)).is_equal(2)
 
 
+func test_203_5_3_fonte_after_payment_counts_recycled_sources() -> void:
+	var state := _with_sources(2, 3, 5)
+	state.get_player(A).sources_in_fonte = 4
+	var player := state.get_player(A)
+	var payment := EssencePayment.new(1, 2)
+	var snapshot := state.clone()
+	var fonte := EssenceRules.fonte_after_payment(player, payment)
+	assert_int(fonte).is_equal(6)
+	assert_int(EssenceRules.fonte_after_payment(player, EssencePayment.new(2, 0))).is_equal(4)
+	assert_array(DeepCompare.find_clone_defects(snapshot, state)).is_empty()
+	EssenceRules.apply_payment(state, A, payment, _events)
+	assert_int(player.sources_in_fonte).is_equal(fonte)
+
+
+func test_203_5_3_engine_query_reads_fonte_after_payment() -> void:
+	var engine := DuelEngine.new(SetupSamples.catalog())
+	assert_int(engine.fonte_after_payment(A, EssencePayment.new(0, 1))).is_equal(0)
+	var state := _with_sources(2, 3, 5)
+	state.get_player(A).sources_in_fonte = 4
+	engine.start_from_state(state)
+	assert_int(engine.fonte_after_payment(A, EssencePayment.new(1, 2))).is_equal(6)
+
+
 func _with_sources(upright: int, tilted: int, in_reserve: int) -> DuelState:
 	_builder.with_sources_in_play(A, upright, tilted).with_sources_in_reserve(A, in_reserve)
 	return _builder.build()

@@ -1,7 +1,7 @@
 class_name DuelZonesPresenter
 extends RefCounted
 ## Recalage des zones de l'écran de duel sur l'état du moteur (décisions 0030 et 0032) : pièces du
-## plateau, deck et Écart, Sources et cartes Hero. Reçoit à chaque appel le `DuelViewModel` du
+## plateau, deck et Écart, Sources. Reçoit à chaque appel le `DuelViewModel` du
 ## joueur qui a l'appareil ; aucune règle ici.
 
 const PIECE_SCENE: PackedScene = preload("res://ui/components/piece_view.tscn")
@@ -13,7 +13,6 @@ var _on_piece_unhovered: Callable
 var _piece_views: Dictionary[int, PieceView] = {}
 var _sources: Dictionary[DuelState.PlayerSide, SourcesView] = {}
 var _deck_corners: Dictionary[DuelState.PlayerSide, DeckCornerView] = {}
-var _hero_cards: Dictionary[DuelState.PlayerSide, HeroCardView] = {}
 
 
 ## `board` reçoit les pièces ; `engine` donne l'état et la Force actuelle ; le survol d'une pièce
@@ -29,14 +28,10 @@ func setup(
 
 ## Les vues d'un joueur, à donner pour A et pour B.
 func add_player_zones(
-	side: DuelState.PlayerSide,
-	sources: SourcesView,
-	deck_corner: DeckCornerView,
-	hero_card: HeroCardView
+	side: DuelState.PlayerSide, sources: SourcesView, deck_corner: DeckCornerView
 ) -> void:
 	_sources[side] = sources
 	_deck_corners[side] = deck_corner
-	_hero_cards[side] = hero_card
 
 
 ## Marques des pièces : légales à choisir, et choisie.
@@ -77,9 +72,12 @@ func refresh_piles(model: DuelViewModel) -> void:
 func refresh_sources(model: DuelViewModel, shown: SelectionSnapshot) -> void:
 	for side: DuelState.PlayerSide in DuelState.SIDES:
 		var view := _sources[side]
-		var player := _engine.get_state().get_player(side)
-		view.show_sources(model.upright_sources(side, shown), model.tilted_sources(side, shown))
-		view.show_supply(player.sources_in_reserve, player.sources_in_fonte)
+		view.show_sources(
+			model.upright_sources(side, shown),
+			model.tilted_sources(side, shown),
+			model.reserve_sources(side),
+			model.fonte_sources(side, shown)
+		)
 		view.show_essence(model.essence_shown(side, shown))
 		view.set_interactive(side == model.get_viewer())
 
@@ -88,6 +86,7 @@ func refresh_sources(model: DuelViewModel, shown: SelectionSnapshot) -> void:
 func _fill_piece(piece_view: PieceView, piece: Piece, model: DuelViewModel) -> void:
 	var gear := model.gear_definition(piece)
 	piece_view.show_gear("" if gear == null else gear.card_name)
+	piece_view.show_asleep(DuelViewModel.is_shown_asleep(piece))
 	var force := _engine.current_force(piece.piece_id)
 	match DuelViewModel.piece_form_of(piece):
 		DuelViewModel.PieceForm.HERO:
@@ -95,7 +94,7 @@ func _fill_piece(piece_view: PieceView, piece: Piece, model: DuelViewModel) -> v
 			piece_view.show_hero(piece.piece_id, hero, piece.owner)
 			piece_view.show_health(piece.health)
 		DuelViewModel.PieceForm.TOKEN:
-			var card_type := model.token_card_type(piece)
+			var card_type := DuelViewModel.token_card_type(piece)
 			piece_view.show_token(piece.piece_id, card_type, piece.owner)
 			piece_view.show_force(force, piece.token_force)
 		DuelViewModel.PieceForm.CARD:
