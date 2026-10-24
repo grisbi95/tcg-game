@@ -1,6 +1,6 @@
 # 0030 — Disposition de l'écran de partie : zones et comportements
 
-- Statut : acceptée ; complétée par 0032 ; modifiée par 0035 ; modifiée par 0047 ; complétée par 0050
+- Statut : acceptée ; complétée par 0032 ; modifiée par 0035 ; modifiée par 0047 ; complétée par 0050 ; modifiée par 0052 ; modifiée par 0053
 - Date : 2026-10-18
 - Décideur : créateur du projet
 - Périmètre : écran de duel (`ui/`, étape 2.3)

@@ -1,6 +1,6 @@
 # 0035 — Ajustements de l'écran assemblé
 
-- Statut : acceptée
+- Statut : acceptée ; modifiée par 0052 ; modifiée par 0053
 - Date : 2026-10-20
 - Décideur : créateur du projet
 - Périmètre : écran de duel (`ui/duel_screen.tscn`, étape 2.3)
