@@ -73,6 +73,11 @@ const RULES_WITHOUT_OWN_TEST: Dictionary[String, String] = {
 		+ "un champ de l'état (test_203_6_3_inclining_a_source_adds_to_the_reserve) ; la vue "
 		+ "l'affiche pour les deux joueurs (étape 2.3)."
 	),
+	"201.4.11":
+	(
+		"Règle de vue : l'état expose l'état endormi ou éveillé de chaque pièce "
+		+ "(Piece.is_awake, décision 0044) ; la vue le montre aux deux joueurs (décision 0053)."
+	),
 	"202.2.23":
 	(
 		"Vérifiée sous 202.2.14 et 202.2.24 (tests : test_202_2_14_gear_only_on_own_unit, "
