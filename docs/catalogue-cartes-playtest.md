@@ -39,14 +39,14 @@ Les premières suggestions de 36 cartes / 3 Heroes et de 42 cartes / 3 couleurs 
 
 ### Les quatre couleurs
 
-Les noms et directions retenus comme base du playtest sont :
+Les noms et directions initialement retenus comme base du playtest étaient :
 
 - **Rouge — Conquête** : attaque, pression et progression vers le Hero adverse.
 - **Vert — Résilience** : défense, protection, Rempart et maintien des positions.
 - **Violet — Subversion** : déplacement, repositionnement et manipulation des positions.
 - **Bleu — Anticipation** : pioche, sélection de cartes, manipulation de Force et réponses.
 
-Ces directions ne fixent pas encore des exclusivités mécaniques. Les tableaux de spécialités, de rareté d'accès à un effet, de forces et de faiblesses présentés par l'assistant restent des propositions de design. Les premières associations « Bleu–Mobilité », « Vert–Développement/Puissance » et « Violet–Ruse/Perturbation » ne sont pas les intitulés retenus pour ces quatre catalogues.
+**Réouverture du 25 octobre 2026 :** le cadre des quatre couleurs est conservé, mais leurs fonctions et ces intitulés restent des hypothèses révisables. La répartition des effets entre couleurs est différée jusqu'à l'exploration des façons de jouer, des synergies et des premiers prototypes. Ces directions ne fixent pas d'exclusivités mécaniques. Les tableaux de spécialités, de rareté d'accès à un effet, de forces et de faiblesses présentés par l'assistant restent des propositions de design. Les premières associations « Bleu–Mobilité », « Vert–Développement/Puissance » et « Violet–Ruse/Perturbation » ne sont pas les intitulés retenus pour ces quatre catalogues.
 
 ### Système de Hero et choix des couleurs
 
@@ -73,6 +73,17 @@ Le [chapitre 202](ruleset/20-regles-completes/202-cartes.md) impose un Hero par 
 Son texte porte un **passif**, qui est un **effet statique** (202.3.11 et 202.3.18). La décision [0208 — Le Hero n'a pas de pouvoir](ruleset/40-decisions/0208-le-hero-n-a-pas-de-pouvoir.md), intégrée à l'édition 0.42, supprime le pouvoir actif. Les exemples antérieurs de Heroes avec un pouvoir dans la conversation sont donc périmés sur ce point.
 
 Les noms, passifs précis et valeurs des quatre nouveaux Heroes ne sont pas validés. Un passif présenté comme déclenchant une récompense après une attaque ou une destruction ne doit pas être adopté sans vérifier sa compatibilité avec 202.3.18. Le **Capitaine**, ses **15 PV** et son aura de **+1 Force aux Units alliées adjacentes** appartiennent au [deck de test existant](ruleset/70-playtest/decks-de-test.md) ; ils ne fixent pas automatiquement les caractéristiques des futurs Heroes colorés.
+
+### Méthode de création du catalogue retenue le 25 octobre 2026
+
+1. Définir les façons de jouer à explorer, sans attribution de couleur.
+2. Construire des synergies concrètes : comment elles aident à gagner et quelles réponses elles laissent à l'adversaire.
+3. Créer un petit groupe de cartes prototypes pour éprouver ces synergies, en vérifiant les textes contre le ruleset et en identifiant les arbitrages nécessaires.
+4. Faire des parties pour observer les différences entre stratégies, leur intérêt, leur lisibilité et les réponses disponibles.
+5. Définir les fonctions des quatre couleurs à partir des synergies prometteuses : forces, limites et intérêt des associations.
+6. Compléter le catalogue, répartir les cartes et les neutres, puis concevoir les passifs des Heroes autour des identités retenues.
+
+Les variantes sélectionnées sont une réserve d'idées : il n'est pas nécessaire de toutes les utiliser. Le cadre de quatre couleurs, le système de Hero retenu et le format de travail de 48 cartes restent consignés ; aucune nouvelle répartition ni taille de prototype n'est validée. Le ruleset officiel reste prioritaire.
 
 ## 3. Verbes examinés et sélections explicites
 
@@ -271,6 +282,19 @@ Les quinze verbes de la liste initiale ont été examinés. Treize ont des orien
 
 Repousser, Attirer, Replier et Téléporter ont aussi été évoqués comme pistes autour du déplacement. Leurs noms ne constituent pas une liste supplémentaire de verbes validés. Les priorités 1, 2 et 3 assignées par l'assistant à la liste initiale restent des recommandations.
 
+### Façons de jouer proposées — sélection en attente
+
+Six expériences sont proposées pour la prochaine discussion, sans attribution de couleur et sans validation de cartes :
+
+- **Percée offensive** : concentrer ses moyens pour ouvrir un passage et menacer rapidement le Hero adverse.
+- **Occupation large** : répartir plusieurs Units sur le plateau pour créer plusieurs menaces et exploiter un passage moins défendu.
+- **Formation resserrée** : faire coopérer des pièces proches, tenir une position puis avancer ensemble.
+- **Désorganisation** : déplacer, permuter, endormir ou renvoyer des pièces pour casser la formation adverse et créer une ouverture.
+- **Pertes rentabilisées** : accepter certaines destructions ou défausses pour obtenir un avantage et maintenir la pression, sans produire d'Essence.
+- **Préparation d'un tour décisif** : consulter, piocher et conserver des cartes complémentaires pour préparer une séquence tactique menaçant le Hero.
+
+Les effets précis, réponses adverses et moyens d'atteindre le Hero doivent être éprouvés. Ces pistes ne sont ni des identités de couleurs ni des archétypes déjà validés.
+
 ### Autres propositions non finalisées
 
 - **Répartition par type** : 4 Units, 3 Spells, 1 Building et 1 Gear par couleur ; pour les neutres, 7 Units, 2 Spells, 2 Buildings et 1 Gear. Proposition de structure, sans validation explicite distincte.
@@ -333,10 +357,18 @@ Le 25 octobre 2026, après la présentation des cinq variantes, le créateur ré
 
 Ce refus écarte la production d'Essence par effet de carte du catalogue, pour un motif d'équilibrage. Il ne remet pas en cause la production officielle par les Sources.
 
+### Validation de la méthode de création et réouverture des fonctions des couleurs
+
+Le 25 octobre 2026, le créateur demande si le pipeline proposé convient, car il ne sait pas si les fonctions actuelles des couleurs seront conservées. Après la proposition de travailler dans l'ordre expériences de jeu, synergies, prototypes, parties, fonctions des couleurs puis catalogue et Heroes, il répond :
+
+> « Go »
+
+Cet accord valide la méthode et le démarrage de l'exploration des expériences de jeu. Il ne valide pas encore les expériences proposées ensuite, une nouvelle fonction de couleur ou des cartes.
+
 ### État conservé et prochaine discussion
 
 - Le fichier est ajouté seul sur la branche dédiée `codex/catalogue-cartes-playtest`, issue du commit initial `e6edfb56b8ef2cfbfda7720603a03b3b38b56030`.
 - Les règles officielles, leur changelog, les decks de test existants et les fichiers du jeu restent inchangés.
 - Le [premier playtest symétrique existant](ruleset/70-playtest/decks-de-test.md) est distinct de ce catalogue expérimental ; sa présence ne valide pas les nouvelles cartes.
-- L'examen de la liste initiale des quinze verbes est terminé. Prévenir est mis de côté pour le moment ; Produire est écarté. Le prochain sujet de conception reste à choisir.
+- L'examen de la liste initiale des quinze verbes est terminé. Prévenir est mis de côté pour le moment ; Produire est écarté. La discussion en cours porte sur le choix des expériences de jeu à explorer, avant la répartition par couleur.
 - Toute mise à jour du suivi devra distinguer le choix exact du créateur, sa source, les propositions restantes et les vérifications de règles. La formalisation de la restriction de couleurs dans le ruleset relève d'un travail ultérieur autorisé séparément.
