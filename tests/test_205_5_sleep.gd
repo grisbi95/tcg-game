@@ -117,6 +117,42 @@ func test_205_5_4b_unit_entering_attacking_arrives_asleep() -> void:
 	assert_bool(piece.is_awake).is_false()
 
 
+func test_205_5_4_arrived_unit_is_asleep() -> void:
+	var unit_id := _builder.place_piece(
+		A, Piece.PieceKind.UNIT, DuelStateBuilder.cell("B2"), UNIT_ID
+	)
+	_builder.with_piece_awake(unit_id, false)
+	_start()
+	assert_bool(_engine.get_state().find_piece(unit_id).is_asleep()).is_true()
+
+
+func test_205_5_1_awake_unit_and_hero_are_not_asleep() -> void:
+	var unit_id := _builder.place_piece(
+		A, Piece.PieceKind.UNIT, DuelStateBuilder.cell("B2"), UNIT_ID
+	)
+	_start()
+	assert_bool(_engine.get_state().find_piece(unit_id).is_asleep()).is_false()
+	assert_bool(_engine.get_state().find_hero(A).is_asleep()).is_false()
+
+
+func test_205_5_2_asleep_hero_is_asleep() -> void:
+	_start()
+	var hero := _engine.get_state().find_hero(A)
+	hero.is_awake = false
+	assert_bool(hero.is_asleep()).is_true()
+
+
+func test_205_5_6_building_is_never_asleep() -> void:
+	var building_id := _builder.place_piece(
+		A, Piece.PieceKind.BUILDING, DuelStateBuilder.cell("B2"), BUILDING_ID
+	)
+	_start()
+	var building := _engine.get_state().find_piece(building_id)
+	assert_bool(building.is_asleep()).is_false()
+	building.is_awake = true
+	assert_bool(building.is_asleep()).is_false()
+
+
 func test_205_5_5_asleep_piece_stays_asleep_until_its_next_wake() -> void:
 	var card_id := _builder.add_to_hand(A, UNIT_ID)
 	_start()

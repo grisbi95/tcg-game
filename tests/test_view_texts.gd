@@ -63,18 +63,19 @@ func test_decision_0025_keywords_line_names_each_keyword_with_its_value() -> voi
 	assert_str(CardText.keywords_line(unit)).is_equal("Assaut 2 · Avant-poste")
 
 
-func test_decision_0025_clock_shows_minutes_and_started_seconds() -> void:
-	assert_str(ClockView.format_time(545_000)).is_equal("09:05")
-	assert_str(ClockView.format_time(600_000)).is_equal("10:00")
-	assert_str(ClockView.format_time(1)).is_equal("00:01")
-	assert_str(ClockView.format_time(-5)).is_equal("00:00")
+func test_decision_0053_timer_bar_shows_started_seconds() -> void:
+	assert_str(TurnTimerBar.seconds_text(18_000)).is_equal("18 s")
+	assert_str(TurnTimerBar.seconds_text(17_001)).is_equal("18 s")
+	assert_str(TurnTimerBar.seconds_text(90_000)).is_equal("90 s")
+	assert_str(TurnTimerBar.seconds_text(1)).is_equal("1 s")
+	assert_str(TurnTimerBar.seconds_text(-5)).is_equal("0 s")
 
 
 func test_decision_0045_clock_alerts_under_ten_seconds() -> void:
-	assert_bool(ClockView.is_alert(9_000)).is_true()
-	assert_bool(ClockView.is_alert(9_001)).is_false()
-	assert_bool(ClockView.is_alert(0)).is_true()
-	assert_bool(ClockView.is_alert(30_000)).is_false()
+	assert_bool(TurnTimerBar.is_alert(9_000)).is_true()
+	assert_bool(TurnTimerBar.is_alert(9_001)).is_false()
+	assert_bool(TurnTimerBar.is_alert(0)).is_true()
+	assert_bool(TurnTimerBar.is_alert(30_000)).is_false()
 
 
 func test_decision_0045_clock_reading_key_changes_with_the_displayed_seconds() -> void:
@@ -94,3 +95,13 @@ func test_decision_0045_clock_reading_key_changes_with_the_displayed_seconds() -
 func test_205_6_combat_put_on_hold_names_the_player() -> void:
 	var text := EventText.describe(CombatPutOnHold.new(A))
 	assert_str(text).is_equal("Un combat du joueur A est mis en attente.")
+
+
+func test_decision_0053_header_speaks_to_the_viewer_on_their_turn() -> void:
+	assert_str(DuelColumnView.turn_actor_text(A, A)).is_equal("À toi de jouer")
+	assert_str(DuelColumnView.responder_text(B, B)).is_equal("À toi de répondre")
+
+
+func test_decision_0053_header_names_the_other_player() -> void:
+	assert_str(DuelColumnView.turn_actor_text(B, A)).is_equal("B joue")
+	assert_str(DuelColumnView.responder_text(B, A)).is_equal("B peut répondre")

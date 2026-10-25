@@ -3,5 +3,5 @@
 [ext_resource type="Script" path="res://ui/components/stack_view.gd" id="1_script"]
 
 [node name="StackView" type="VBoxContainer"]
-theme_type_variation = &"CardColumn"
+theme_type_variation = &"StackList"
 script = ExtResource("1_script")

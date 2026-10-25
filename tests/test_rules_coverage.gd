@@ -52,31 +52,11 @@ const RULES_WITHOUT_OWN_TEST: Dictionary[String, String] = {
 		+ "test_201_5_3_destroyed_cards_stay_with_their_owner, "
 		+ "test_202_2_12_replaced_gear_goes_to_discard)."
 	),
-	"201.4.4":
-	(
-		"Règle de vue : l'état expose Sources redressées et inclinées "
-		+ "(PlayerState.sources_upright, sources_tilted)."
-	),
-	"201.4.5":
-	(
-		"Règle de vue : l'état expose le nombre de Sources de la réserve "
-		+ "(PlayerState.sources_in_reserve)."
-	),
-	"201.4.6":
-	(
-		"Règle de vue : l'état expose le nombre de Sources de la Fonte "
-		+ "(PlayerState.sources_in_fonte)."
-	),
 	"201.4.10":
 	(
 		"Information publique : le moteur est omniscient (201.4) et la réserve d'Essence est "
 		+ "un champ de l'état (test_203_6_3_inclining_a_source_adds_to_the_reserve) ; la vue "
 		+ "l'affiche pour les deux joueurs (étape 2.3)."
-	),
-	"201.4.11":
-	(
-		"Règle de vue : l'état expose l'état endormi ou éveillé de chaque pièce "
-		+ "(Piece.is_awake, décision 0044) ; la vue le montre aux deux joueurs (décision 0053)."
 	),
 	"202.2.23":
 	(

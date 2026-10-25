@@ -9,6 +9,25 @@ const KEYWORD_NAMES: Dictionary[CardDefinition.Keyword, String] = {
 	CardDefinition.Keyword.ASSAULT: "Assaut",  # 210.4.1
 	CardDefinition.Keyword.RAMPART: "Rempart",  # 210.4.2
 }
+## 210.2.1, 210.2.1a : la rangée centrale n'est jamais permise.
+# gdlint: ignore=max-line-length
+const OUTPOST_REMINDER: String = "Tu peux déployer une Unit sur une case libre adjacente à ce Building, hors de la rangée centrale."
+## 210.3.1
+const ARRIVAL_REMINDER: String = "Son effet se déclenche quand la pièce arrive sur le plateau."
+## 210.3.2
+const LAST_BREATH_REMINDER: String = "Son effet se déclenche quand la pièce est détruite."
+## Rappels des mots-clés pour les bulles d'information ; `{X}` est remplacé par la valeur.
+const KEYWORD_REMINDERS: Dictionary[CardDefinition.Keyword, String] = {
+	CardDefinition.Keyword.OUTPOST: OUTPOST_REMINDER,
+	CardDefinition.Keyword.ARRIVAL: ARRIVAL_REMINDER,
+	CardDefinition.Keyword.LAST_BREATH: LAST_BREATH_REMINDER,
+	CardDefinition.Keyword.ASSAULT: "+{X} Force quand la pièce attaque.",  # 210.4.1
+	CardDefinition.Keyword.RAMPART: "+{X} Force quand la pièce défend.",  # 210.4.2
+}
+const VALUE_PLACEHOLDER: String = "{X}"
+const ASLEEP_NAME: String = "Endormie"
+## 205.5.3, 205.5.5
+const ASLEEP_REMINDER: String = "Ne peut pas faire d'action normale avant son prochain réveil."
 const TYPE_NAMES: Dictionary[CardDefinition.CardType, String] = {
 	CardDefinition.CardType.UNIT: "Unit",
 	CardDefinition.CardType.BUILDING: "Building",
@@ -71,6 +90,11 @@ static func hero_body_bbcode(hero: HeroDefinition) -> String:
 static func keyword_label(keyword: CardDefinition.Keyword, value: int) -> String:
 	var name := KEYWORD_NAMES[keyword]
 	return name if value == CardDefinition.NO_KEYWORD_VALUE else "%s %d" % [name, value]
+
+
+## Rappel de règle d'un mot-clé de valeur `value`, pour sa bulle d'information.
+static func keyword_reminder(keyword: CardDefinition.Keyword, value: int) -> String:
+	return KEYWORD_REMINDERS[keyword].replace(VALUE_PLACEHOLDER, str(value))
 
 
 ## Étiquette sombre, la même pour tous les mots-clés (décision 0027).

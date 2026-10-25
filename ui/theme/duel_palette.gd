@@ -24,9 +24,7 @@ enum ButtonState {
 const PLAYER_A_COLOR := Color("2f7fd8")
 ## Décision 0027 : le rouge ne sert qu'au joueur B.
 const PLAYER_B_COLOR := Color("d23a3a")
-## Fond et texte aux couleurs du joueur : temps des joueurs, Sources.
-const PLAYER_A_SOFT := Color("2a3a52")
-const PLAYER_B_SOFT := Color("4a2a2e")
+## Texte aux couleurs du joueur : temps des joueurs, Sources.
 const PLAYER_A_INK := Color("9cc6f2")
 const PLAYER_B_INK := Color("f2b8b8")
 const NEUTRAL_COLOR := Color("5a5f6b")
@@ -42,13 +40,13 @@ const SELECTED_COLOR := Color("4ecb71")
 const MARK_HOVER_COLOR := Color(1.0, 1.0, 1.0, 0.6)
 const ESSENCE_COLOR := Color("ffd66b")
 const ESSENCE_BACKGROUND := Color("3a3420")
-const COUNTER_COLOR := Color("2a2f37")
-const COUNTER_LINE_COLOR := Color("4a525e")
 const SOURCE_COLOR := Color("3b424e")
 const SOURCE_HOVER_COLOR := Color("46505e")
 const SOURCE_TILTED_LINE_COLOR := Color("6b7380")
 const BAR_TRACK_COLOR := Color("3a414c")
-## Panneau de consigne de la colonne de duel.
+## Barre de temps sous `TurnTimerBar.ALERT_SECONDS` secondes : signal visuel seul (décision 0053).
+const ALERT_COLOR := Color("f2a33a")
+## Fond sombre de la zone de pile (`StackArea`) et du survol de `ConcedeButton`.
 const HINT_COLOR := Color("1f242b")
 ## Voile sombre posé sur le jeu figé : fin de partie, confirmation d'abandon.
 const SCRIM_COLOR := Color(0.06, 0.07, 0.09, 0.72)
@@ -99,6 +97,10 @@ const HEALTH_INK_COLOR := Color("4a0f26")
 ## Décision 0027 : une seule couleur sombre pour tous les mots-clés.
 const KEYWORD_BACKGROUND := Color("24252a")
 const KEYWORD_INK := Color("ffffff")
+## Bulles d'information (E27) : fond clair de carte, liseré, ombre portée ; encre `CARD_TEXT_COLOR`.
+const BUBBLE_BACKGROUND := Color("f6f3ec")
+const BUBBLE_BORDER_COLOR := Color("c9c2b0")
+const BUBBLE_SHADOW_COLOR := Color(0.0, 0.0, 0.0, 0.4)
 const CARD_BACK_COLOR := Color("343b46")
 const CARD_BACK_STRIPE_COLOR := Color("2c323b")
 const CELL_HOVER_COLOR := Color("333a44")
@@ -130,10 +132,6 @@ const MODAL_MARGIN: float = 32.0
 
 static func player_color(side: DuelState.PlayerSide) -> Color:
 	return PLAYER_A_COLOR if side == DuelState.PlayerSide.A else PLAYER_B_COLOR
-
-
-static func player_soft(side: DuelState.PlayerSide) -> Color:
-	return PLAYER_A_SOFT if side == DuelState.PlayerSide.A else PLAYER_B_SOFT
 
 
 static func player_ink(side: DuelState.PlayerSide) -> Color:
@@ -202,7 +200,8 @@ static func tinted_style(
 	return framed_style(TINT_BACKGROUNDS[tint], border, border_width, margin)
 
 
-## Fond d'un grand bouton aux couleurs fixes de `side` (décision 0032) dans l'état `state`.
+## Fond d'un grand bouton aux couleurs fixes de `side` (décision 0032) dans l'état `state` ; grisé
+## quand il est désactivé (décision 0053, point 11).
 static func player_button_style(side: DuelState.PlayerSide, state: ButtonState) -> StyleBoxFlat:
 	var color := player_color(side)
 	match state:
@@ -211,7 +210,7 @@ static func player_button_style(side: DuelState.PlayerSide, state: ButtonState) 
 		ButtonState.PRESSED:
 			color = color.darkened(BUTTON_PRESSED_DARKEN)
 		ButtonState.DISABLED:
-			color = player_soft(side)
+			color = NEUTRAL_COLOR
 	return fill_style(color, CORNER_RADIUS, CONTENT_MARGIN)
 
 

@@ -29,6 +29,12 @@ var is_awake: bool = false
 var attached_gear: CardInstance
 
 
+# 205.5.1, 205.5.2, 205.5.4, 205.5.6 : un Unit ou un Hero non éveillé dort ; un Building n'est
+# ni endormi ni éveillé. Pur.
+func is_asleep() -> bool:
+	return kind != PieceKind.BUILDING and not is_awake
+
+
 func is_token() -> bool:
 	return card == null
 

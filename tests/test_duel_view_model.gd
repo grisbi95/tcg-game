@@ -179,10 +179,10 @@ func test_202_4_1_token_card_type_follows_its_piece_kind() -> void:
 	)
 	var state := _builder.build()
 	var model := _model(A)
-	assert_int(model.token_card_type(state.find_piece(unit_token))).is_equal(
+	assert_int(DuelViewModel.token_card_type(state.find_piece(unit_token))).is_equal(
 		CardDefinition.CardType.UNIT
 	)
-	assert_int(model.token_card_type(state.find_piece(building_token))).is_equal(
+	assert_int(DuelViewModel.token_card_type(state.find_piece(building_token))).is_equal(
 		CardDefinition.CardType.BUILDING
 	)
 

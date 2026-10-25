@@ -14,13 +14,24 @@ func _ready() -> void:
 	var stack: StackView = STACK_SCENE.instantiate()
 	column.add_child(stack)
 	var lines: Array[StackView.StackLine] = [
-		StackView.StackLine.new(1, "Soldat", DuelPalette.Tint.UNIT, DuelState.PlayerSide.A),
-		StackView.StackLine.new(2, "Frappe", DuelPalette.Tint.SPELL, DuelState.PlayerSide.B),
+		(
+			StackView
+			. StackLine
+			. new(1, "Soldat", DuelPalette.Tint.UNIT, DuelState.PlayerSide.A)
+			. with_help("Unit · Joueur A")
+		),
+		(
+			StackView
+			. StackLine
+			. new(2, "Frappe", DuelPalette.Tint.SPELL, DuelState.PlayerSide.B)
+			. with_help("Spell · Joueur B")
+		),
 		(
 			StackView
 			. StackLine
 			. new(3, "Contre", DuelPalette.Tint.SPELL, DuelState.PlayerSide.A)
 			. with_order(1)
+			. with_help("Spell · Joueur A")
 		),
 	]
 	var highlighted_ids: Array[int] = [2]

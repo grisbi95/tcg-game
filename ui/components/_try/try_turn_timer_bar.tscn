@@ -1,9 +1,9 @@
 [gd_scene load_steps=3 format=3]
 
-[ext_resource type="Script" path="res://ui/components/_try/try_hero_card_view.gd" id="1_script"]
+[ext_resource type="Script" path="res://ui/components/_try/try_turn_timer_bar.gd" id="1_script"]
 [ext_resource type="Theme" path="res://ui/theme/duel_theme.tres" id="2_theme"]
 
-[node name="TryHeroCardView" type="Control"]
+[node name="TryTurnTimerBar" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
