@@ -76,7 +76,7 @@ Les noms, passifs précis et valeurs des quatre nouveaux Heroes ne sont pas vali
 
 ## 3. Verbes examinés et sélections explicites
 
-Ordre du travail dans la conversation : Déplacer, Renforcer et Affaiblir ensemble, Détruire, Créer, Piocher, Consulter, Contrecarrer, Réveiller, Endormir, Défausser, puis Renvoyer, Permuter et Prévenir dans la conversation de continuation. Prévenir a été examiné puis mis de côté provisoirement.
+Ordre du travail dans la conversation : Déplacer, Renforcer et Affaiblir ensemble, Détruire, Créer, Piocher, Consulter, Contrecarrer, Réveiller, Endormir, Défausser, puis Renvoyer, Permuter, Prévenir et Produire dans la conversation de continuation. Prévenir a été mis de côté provisoirement ; Produire a été écarté pour des raisons d'équilibrage.
 
 Les intitulés ci-dessous reprennent les sélections du créateur. Ils ne valent pas création de nouveaux mots-clés officiels : ceux-ci restent les cinq du [chapitre 210](ruleset/20-regles-completes/210-mots-cles.md), Avant-poste, Arrivée, Dernier souffle, Assaut X et Rempart X.
 
@@ -253,15 +253,21 @@ Les six pistes présentées — prévention simple, conditionnelle, déclenchée
 
 Ce report est provisoire, sans rejet définitif. Il ne modifie pas le ruleset et n'introduit aucun mécanisme de prévention.
 
+### 15 — Produire : écarté du catalogue
+
+**Décision du créateur : pas de création d'Essence par effet de carte, jugée trop forte pour le jeu. Aucune variante retenue.**
+
+Les cinq pistes proposées — production simple, conditionnelle, déclenchée, avec contrepartie et territoriale — sont écartées du catalogue. La recommandation de les explorer avec des gains modestes n'est pas retenue.
+
+Cette décision concerne les effets de cartes envisagés dans cette discussion. Le fonctionnement officiel de la production d'Essence par les Sources reste inchangé (chapitre 203). Ce suivi n'ajoute ni règle officielle ni mécanisme économique de remplacement.
+
 ## 4. Propositions en attente
 
 Le renvoi à l'Arrivée reste non sélectionné. La permutation alliée–ennemie reste en attente ; les cinq autres variantes de Permuter sont retenues en section 3.
 
-### Verbes candidats encore à examiner
+### Bilan de la liste initiale des verbes
 
-Dans la sélection initiale de quinze verbes, les suivants n'ont pas encore reçu d'examen individuel suivi d'une validation :
-
-- **15 — Produire** : produire de l'Essence par effet ; proposition à examiner.
+Les quinze verbes de la liste initiale ont été examinés. Treize ont des orientations ou variantes retenues ; Prévenir est mis de côté pour le moment et Produire est écarté. La sélection des variantes ne finalise pas les textes de cartes ni les arbitrages de règles encore nécessaires.
 
 Repousser, Attirer, Replier et Téléporter ont aussi été évoqués comme pistes autour du déplacement. Leurs noms ne constituent pas une liste supplémentaire de verbes validés. Les priorités 1, 2 et 3 assignées par l'assistant à la liste initiale restent des recommandations.
 
@@ -319,10 +325,18 @@ Le 25 octobre 2026, après la présentation des six pistes, le créateur répond
 
 Cette instruction écarte provisoirement le verbe et toutes ses variantes du catalogue en cours ; la recommandation précédente de l'assistant n'est pas retenue.
 
+### Refus de Produire dans la continuation
+
+Le 25 octobre 2026, après la présentation des cinq variantes, le créateur répond :
+
+> « Pas de création d’essence trop fort pour le jeu »
+
+Ce refus écarte la production d'Essence par effet de carte du catalogue, pour un motif d'équilibrage. Il ne remet pas en cause la production officielle par les Sources.
+
 ### État conservé et prochaine discussion
 
 - Le fichier est ajouté seul sur la branche dédiée `codex/catalogue-cartes-playtest`, issue du commit initial `e6edfb56b8ef2cfbfda7720603a03b3b38b56030`.
 - Les règles officielles, leur changelog, les decks de test existants et les fichiers du jeu restent inchangés.
 - Le [premier playtest symétrique existant](ruleset/70-playtest/decks-de-test.md) est distinct de ce catalogue expérimental ; sa présence ne valide pas les nouvelles cartes.
-- La prochaine discussion porte sur **Produire**. Prévenir est mis de côté pour le moment.
+- L'examen de la liste initiale des quinze verbes est terminé. Prévenir est mis de côté pour le moment ; Produire est écarté. Le prochain sujet de conception reste à choisir.
 - Toute mise à jour du suivi devra distinguer le choix exact du créateur, sa source, les propositions restantes et les vérifications de règles. La formalisation de la restriction de couleurs dans le ruleset relève d'un travail ultérieur autorisé séparément.
