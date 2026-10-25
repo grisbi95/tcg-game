@@ -309,7 +309,7 @@ Restent à choisir pour chaque direction : la manière de progresser vers la vic
 
 ### Étude des mécanismes — recommandations de l'assistant du 25 octobre 2026
 
-**Statut : propositions à prototyper, non encore validées par le créateur.** Étude fondée sur le ruleset 0.44, notamment les chapitres 202, 205, 206, 207, 208 et 210. Aucun test de partie n'a été réalisé pour ces propositions ; leur intérêt et leur équilibre restent des hypothèses.
+**Statut : pistes recommandées, suivies d'un accord pour poursuivre la conception (« Très bien continuons »). Les textes et valeurs restent à examiner.** Étude fondée sur le ruleset 0.44, notamment les chapitres 202, 205, 206, 207, 208 et 210. Aucun test de partie n'a été réalisé pour ces propositions ; leur intérêt et leur équilibre restent des hypothèses.
 
 Le créateur demande : « Je te laisse examiner les mécanismes fun qui pourrait intégrer le jeu ». Cette délégation autorise l'examen et les recommandations, pas la transformation des exemples en règles ou cartes approuvées.
 
@@ -332,6 +332,84 @@ Le critère de sélection est un choix tactique visible : choisir un moment, une
 **Limites communes.** Une mention « une fois par tour » est suivie par carte, sur chaque tour de joueur, et ne se réinitialise pas par un renvoi suivi d'un redéploiement (207.3.5–10a). Plusieurs exemplaires peuvent néanmoins multiplier les récompenses : vérifier leur cumul au prototype. Le Hero ne porte qu'un passif statique ; les moteurs déclenchés proposés appartiennent à des cartes du deck, pas à un nouveau pouvoir de Hero. Les effets à durée utilisent les durées officielles ; aucune durée « jusqu'à la fin du combat » n'est introduite. Aucune production d'Essence, prévention, résurrection, nouvelle fenêtre de réponse ou condition de victoire n'est proposée.
 
 **Ordre conseillé des essais.** Commencer par formation et jetons pour établir la valeur des cases et la fragilité des soutiens ; éprouver ensuite percée et contrôle face à ce plateau ; ajouter enfin pioche-défausse et synergies de Spells. La recommandation couvre les six directions sans en faire six couleurs. Les coûts, Forces, quantités, textes définitifs, attribution aux couleurs et modalités exactes de test restent à décider. Le catalogue et le moteur du jeu ne sont pas modifiés par cette étude.
+
+### Premier groupe de prototypes — formation et jetons, version 0.1
+
+**Statut : propositions de cartes, non encore validées, non implémentées et non testées en partie.** Le 25 octobre 2026, « Très bien continuons » autorise la poursuite de la conception après l'étude. Le premier groupe ci-dessous explore formation et jetons comme proposé ; cet accord ne valide pas par anticipation les noms, coûts, Forces ou textes.
+
+Objectif : vérifier qu'une formation devient intéressante en se développant, reste capable d'avancer et laisse à l'adversaire des moyens de la défaire. Quatre nouvelles références suffisent à explorer soutien, occupation, remplacement d'une perte et repositionnement. Les cartes n'ont pas encore de couleur attribuée ; cela ne signifie pas qu'elles sont neutres dans le futur catalogue.
+
+**Repères de valeurs.** Dans le deck de test existant, Recrue coûte 1 pour Force 2, Soldat 2 pour Force 3, Vétéran 3 pour Force 4 ; Levée coûte 2 et crée un jeton Unit de Force 2 sur la première rangée ; Martyr coûte 3 pour Force 3 avec Dernier souffle ; Renfort coûte 1 et donne +2 Force jusqu'à la fin du tour. Ces repères figurent dans [les decks de test](ruleset/70-playtest/decks-de-test.md) et ont été recoupés avec `data/cards/test_deck.json` sur main. Ils ne prouvent pas l'équilibre des propositions.
+
+#### FJ-01 — Porte-enseigne
+
+- Type : Unit.
+- Coût proposé : **3 Essence**.
+- Force proposée : **2**.
+- Texte proposé : **« Les autres Units alliées adjacentes au Porte-enseigne ont +1 Force. »**
+
+Rôle : soutien mobile d'une formation ; il renforce aussi bien des Units issues de cartes que des jetons. Il est moins fort seul qu'un Vétéran du même coût. L'adjacence est orthogonale, jamais diagonale. Le bonus est une aura, sans accumulation permanente ni activation, appliquée selon 206.5 et 207.2. Il ne se donne pas lui-même de bonus.
+
+Risque à tester : plusieurs Porte-enseignes peuvent se renforcer entre eux et leurs auras s'additionnent ; le passif du Capitaine peut également s'ajouter. Ne pas introduire implicitement une règle de non-cumul. Frappe, les combats et les déplacements adverses sont des réponses à étudier selon la Force et la position réelles du soutien.
+
+#### FJ-02 — Rassemblement
+
+- Type : Spell, vitesse **Action**.
+- Coût proposé : **3 Essence**.
+- Texte proposé : **« Choisissez deux cases libres ciblées distinctes parmi les deux rangées les plus proches de vous. Créez un jeton Unit de Force 1 sur chacune de ces cases. »**
+
+Rôle : deux corps faibles pour préparer une formation, occuper deux voies ou accepter un échange. La seconde rangée donne une souplesse de placement supérieure à Levée, mais chaque jeton est plus faible et le coût total est plus élevé. Cette portée est une proposition de texte de création, pas une nouvelle règle de déploiement.
+
+Les jetons arrivent endormis, sans effet ni mot-clé provenant de leur création. Le Porte-enseigne peut ensuite les affecter par son aura, conformément à 202.4.5a. Les deux cibles sont explicitement distinctes pour ce texte, sans arbitrer le cas général Q-098. Deux cases légales sont nécessaires à l'annonce (207.5.10) ; à la résolution, seul le jeton dont la case est restée valide est créé si l'autre cible est devenue invalide (202.4.12b–c et 207.5.3–4).
+
+Risque à tester : nombre de pièces obtenu pour une seule carte, cumul des auras et encombrement du plateau. Ne pas augmenter simultanément Force, portée et nombre de jetons pendant un ajustement.
+
+#### FJ-03 — Compagnon tenace
+
+- Type : Unit.
+- Coût proposé : **3 Essence**.
+- Force proposée : **3**.
+- Texte proposé : **« Dernier souffle : créez un jeton Unit de Force 1 sur une case libre ciblée de votre première rangée. »**
+
+Rôle : accepter un échange tout en préparant un remplacement en retrait. Le jeton n'apparaît pas automatiquement sur la case du Compagnon ; la première rangée constitue une limite explicite et permet d'éviter une mémoire de l'ancienne position.
+
+Le choix de case se fait à l'ajout du déclencheur à la pile ; l'effet peut ne pas s'ajouter s'il n'existe aucune cible légale, et la création peut échouer si la case n'est plus libre à la résolution. Un effet déclenché pendant une résolution attend sa fin (208.4). Le jeton est endormi et n'hérite ni du nom, ni du texte, ni du Dernier souffle du Compagnon. Il n'existe donc pas de chaîne de remplacements portée par ce seul texte.
+
+Risque à tester : avantage matériel face à Martyr ou Vétéran et temps nécessaire pour ramener le jeton vers la formation. Il ne s'agit ni de prévention ni de résurrection.
+
+#### FJ-04 — Pas de côté
+
+- Type : Spell, vitesse **Action**.
+- Coût proposé : **1 Essence**.
+- Texte proposé : **« Déplacez une Unit alliée ciblée sur une case libre ciblée adjacente à cette Unit. »**
+
+Rôle : déplacer un soutien ou un bénéficiaire pour former une nouvelle adjacence, libérer un passage ou quitter une zone dangereuse. Le texte est limité aux Units et aux cases libres ; il n'autorise pas de combat sur une case occupée.
+
+La pièce et la case sont choisies à l'annonce ; liberté et adjacence font partie des conditions à vérifier à la résolution (207.5). Ce Spell ne contient aucun effet Réveiller ou Endormir ; une Unit endormie n'est pas exclue de ses cibles par le texte. Ce déplacement par effet ne reçoit pas implicitement les coûts ou les changements d'état d'une action normale. La version initiale est Action ; passer à Réaction changerait fortement les possibilités d'intervention pendant un combat et doit constituer un essai distinct.
+
+Risque à tester : intérêt réel d'une carte et d'une Essence pour ce repositionnement, possibilité de déplacer une Unit déjà endormie et de conserver l'action normale d'une Unit éveillée.
+
+#### Lecture tactique et vérification sur papier
+
+Exemple sans Hero adjacent ni autre modificateur : Porte-enseigne en C3, jetons de Force imprimée 1 en B3 et D3. Chaque jeton a Force 2 grâce à l'aura. Ces pièces sont supposées déjà installées ; Rassemblement ne les crée pas directement sur la rangée centrale.
+
+- Face à un défenseur de Force 2, un jeton sans soutien perd ; avec le soutien, il atteint l'égalité et les deux pièces sont détruites selon la règle provisoire 206.3.6.
+- Renfort fait passer ce jeton soutenu à Force 4 jusqu'à la fin du tour. Si les conditions restent identiques et sans réponse adverse, il bat un défenseur de Force 2.
+- La comparaison et les auras suivent 206.5.2–3 avant l'entrée de l'attaquant sur la case du défenseur ; on ne retire pas rétroactivement le bonus parce qu'il avance après le combat.
+- Si le soutien a quitté le plateau avant ce combat et qu'aucun autre modificateur n'intervient, le jeton revient à Force 1. Les auras additionnelles changent naturellement ces chiffres.
+
+Cette vérification illustre les seuils de Force ; elle n'est pas un résultat de simulation ou de playtest.
+
+#### Essais proposés et points de décision
+
+1. Isoler d'abord Porte-enseigne avec des Units simples et Levée, déjà disponibles dans le deck de référence, pour voir si les déplacements de formation ont un intérêt.
+2. Comparer ensuite Rassemblement à Levée, sans changer les autres variables : deux corps faibles et une portée plus large compensent-ils le coût supplémentaire ?
+3. Ajouter Compagnon tenace puis Pas de côté séparément pour observer leurs effets sur les pertes, le rythme et les ouvertures.
+4. Examiner le cumul de deux puis trois Porte-enseignes, notamment avec l'aura du Capitaine ; les limites du nombre d'exemplaires restent celles du ruleset.
+
+À relever : positions et déplacements réellement choisis, combats dont l'issue change grâce au soutien, tours passés à camper près du Hero, cases bloquées par ses propres jetons, durée de survie du soutien et possibilité de revenir après sa perte. La formation doit être utile à l'offensive ; un simple renforcement du campement défensif ne suffirait pas à valider l'objectif.
+
+Cette série de propositions n'est pas un deck complet et ne modifie pas le premier playtest officiel. Une composition de decks et un protocole de comparaison restent à préparer après revue des cartes. Aucun coût, texte ou résultat n'est présenté comme équilibré ou définitivement adopté.
 
 ### Autres propositions non finalisées
 
@@ -416,5 +494,5 @@ Ce message retient six directions de conception. Les explications et mécanismes
 - Le fichier est ajouté seul sur la branche dédiée `codex/catalogue-cartes-playtest`, issue du commit initial `e6edfb56b8ef2cfbfda7720603a03b3b38b56030`.
 - Les règles officielles, leur changelog, les decks de test existants et les fichiers du jeu restent inchangés.
 - Le [premier playtest symétrique existant](ruleset/70-playtest/decks-de-test.md) est distinct de ce catalogue expérimental ; sa présence ne valide pas les nouvelles cartes.
-- L'examen de la liste initiale des quinze verbes est terminé. Prévenir est mis de côté pour le moment ; Produire est écarté. Les six directions de jeu sont choisies. Une étude propose six mécanismes à prototyper et une alternative de snowball territorial. Ces recommandations restent à sélectionner avant les prototypes et la répartition par couleur.
+- L'examen de la liste initiale des quinze verbes est terminé. Prévenir est mis de côté pour le moment ; Produire est écarté. Les six directions de jeu sont choisies. Une étude propose six mécanismes à prototyper et une alternative de snowball territorial. L'accord pour poursuivre a conduit à quatre propositions de cartes formation/jetons (FJ-01 à FJ-04), à revoir avant leur test et la répartition par couleur.
 - Toute mise à jour du suivi devra distinguer le choix exact du créateur, sa source, les propositions restantes et les vérifications de règles. La formalisation de la restriction de couleurs dans le ruleset relève d'un travail ultérieur autorisé séparément.
