@@ -76,7 +76,7 @@ Les noms, passifs précis et valeurs des quatre nouveaux Heroes ne sont pas vali
 
 ## 3. Verbes examinés et sélections explicites
 
-Ordre du travail dans la conversation : Déplacer, Renforcer et Affaiblir ensemble, Détruire, Créer, Piocher, Consulter, Contrecarrer, Réveiller, Endormir, Défausser, puis Renvoyer et Permuter dans la conversation de continuation.
+Ordre du travail dans la conversation : Déplacer, Renforcer et Affaiblir ensemble, Détruire, Créer, Piocher, Consulter, Contrecarrer, Réveiller, Endormir, Défausser, puis Renvoyer, Permuter et Prévenir dans la conversation de continuation. Prévenir a été examiné puis mis de côté provisoirement.
 
 Les intitulés ci-dessous reprennent les sélections du créateur. Ils ne valent pas création de nouveaux mots-clés officiels : ceux-ci restent les cinq du [chapitre 210](ruleset/20-regles-completes/210-mots-cles.md), Avant-poste, Arrivée, Dernier souffle, Assaut X et Rempart X.
 
@@ -245,6 +245,14 @@ Le ruleset officiel reste prioritaire. La sélection ne valide pas les exemples 
 
 Repères : aucune case ne contient plus d'une pièce (Invariant 201.0.1), aucune carte ne change de joueur (201.5.3), et les cibles relèvent de 207.5. La procédure exacte d'une permutation, notamment lorsqu'une cible devient invalide, reste à formaliser avant une carte jouable ; aucun comportement nouveau n'est acté implicitement par ce suivi.
 
+### 14 — Prévenir : mis de côté pour le moment
+
+**Décision du créateur : ne pas utiliser ce verbe pour le moment. Aucune variante retenue.**
+
+Les six pistes présentées — prévention simple, conditionnelle, déclenchée, avec contrepartie, territoriale et par substitution — ne sont pas intégrées au périmètre actuel du catalogue. Elles sont conservées ici uniquement comme trace de la discussion, et non comme variantes à développer.
+
+Ce report est provisoire, sans rejet définitif. Il ne modifie pas le ruleset et n'introduit aucun mécanisme de prévention.
+
 ## 4. Propositions en attente
 
 Le renvoi à l'Arrivée reste non sélectionné. La permutation alliée–ennemie reste en attente ; les cinq autres variantes de Permuter sont retenues en section 3.
@@ -253,7 +261,6 @@ Le renvoi à l'Arrivée reste non sélectionné. La permutation alliée–ennemi
 
 Dans la sélection initiale de quinze verbes, les suivants n'ont pas encore reçu d'examen individuel suivi d'une validation :
 
-- **14 — Prévenir** : empêcher une destruction ; proposition à examiner.
 - **15 — Produire** : produire de l'Essence par effet ; proposition à examiner.
 
 Repousser, Attirer, Replier et Téléporter ont aussi été évoqués comme pistes autour du déplacement. Leurs noms ne constituent pas une liste supplémentaire de verbes validés. Les priorités 1, 2 et 3 assignées par l'assistant à la liste initiale restent des recommandations.
@@ -304,10 +311,18 @@ Le 25 octobre 2026, après la présentation de six variantes et la recommandatio
 
 Cet accord est consigné comme validation de cette recommandation : permutation simple, conditionnelle, déclenchée, avec contrepartie et territoriale. Il ne constitue pas une validation des six variantes ni de leurs exemples détaillés.
 
+### Report de Prévenir dans la continuation
+
+Le 25 octobre 2026, après la présentation des six pistes, le créateur répond :
+
+> « Je n’aime pas ce verbe ne l’utilisons pas pour le moment »
+
+Cette instruction écarte provisoirement le verbe et toutes ses variantes du catalogue en cours ; la recommandation précédente de l'assistant n'est pas retenue.
+
 ### État conservé et prochaine discussion
 
 - Le fichier est ajouté seul sur la branche dédiée `codex/catalogue-cartes-playtest`, issue du commit initial `e6edfb56b8ef2cfbfda7720603a03b3b38b56030`.
 - Les règles officielles, leur changelog, les decks de test existants et les fichiers du jeu restent inchangés.
 - Le [premier playtest symétrique existant](ruleset/70-playtest/decks-de-test.md) est distinct de ce catalogue expérimental ; sa présence ne valide pas les nouvelles cartes.
-- La prochaine discussion porte sur **Prévenir**, puis sur Produire.
+- La prochaine discussion porte sur **Produire**. Prévenir est mis de côté pour le moment.
 - Toute mise à jour du suivi devra distinguer le choix exact du créateur, sa source, les propositions restantes et les vérifications de règles. La formalisation de la restriction de couleurs dans le ruleset relève d'un travail ultérieur autorisé séparément.
