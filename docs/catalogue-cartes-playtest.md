@@ -1,8 +1,10 @@
 # Catalogue de cartes de playtest — suivi des décisions
 
-> Journal de conception arrêté au **24 octobre 2026**. Source : conversation [« Catalogue cartes playtest »](https://chatgpt.com/c/6adb1614-aacc-83eb-a890-d8e3c5293c81), échanges des 23 et 24 octobre 2026.
+> Journal de conception mis à jour au **25 octobre 2026**. Source : conversation [« Catalogue cartes playtest »](https://chatgpt.com/c/6adb1614-aacc-83eb-a890-d8e3c5293c81), échanges des 23 et 24 octobre 2026.
 >
-> Référence officielle consultée : **ruleset 0.43**, sur `main` au commit [`e6edfb56b8ef2cfbfda7720603a03b3b38b56030`](https://github.com/grisbi95/tcg-game/commit/e6edfb56b8ef2cfbfda7720603a03b3b38b56030).
+> Référence officielle initiale : **ruleset 0.43**, sur `main` au commit [`e6edfb56b8ef2cfbfda7720603a03b3b38b56030`](https://github.com/grisbi95/tcg-game/commit/e6edfb56b8ef2cfbfda7720603a03b3b38b56030).
+>
+> Vérification du 25 octobre 2026 : **ruleset 0.44**, sur `main` au commit [`a120d8f83fe333a121a726e960a37de096bbe9b4`](https://github.com/grisbi95/tcg-game/commit/a120d8f83fe333a121a726e960a37de096bbe9b4). Cette édition ajoute le caractère public de l'état endormi ou éveillé (201.4.11). La branche conserve sa base initiale ; aucun changement de `main` n'y est fusionné.
 >
 > Ce fichier conserve les choix de conception et les sujets ouverts. Il ne modifie aucune règle, ne constitue pas le catalogue officiel et ne valide aucune implémentation. Il est volontairement placé hors de `docs/ruleset/`.
 
@@ -74,7 +76,7 @@ Les noms, passifs précis et valeurs des quatre nouveaux Heroes ne sont pas vali
 
 ## 3. Verbes examinés et sélections explicites
 
-Ordre du travail dans la conversation : Déplacer, Renforcer et Affaiblir ensemble, Détruire, Créer, Piocher, Consulter, Contrecarrer, Réveiller, Endormir, Défausser.
+Ordre du travail dans la conversation : Déplacer, Renforcer et Affaiblir ensemble, Détruire, Créer, Piocher, Consulter, Contrecarrer, Réveiller, Endormir, Défausser, puis Renvoyer dans la conversation de continuation.
 
 Les intitulés ci-dessous reprennent les sélections du créateur. Ils ne valent pas création de nouveaux mots-clés officiels : ceux-ci restent les cinq du [chapitre 210](ruleset/20-regles-completes/210-mots-cles.md), Avant-poste, Arrivée, Dernier souffle, Assaut X et Rempart X.
 
@@ -199,22 +201,21 @@ La défausse adverse n'a pas été sélectionnée. La défausse aléatoire et le
 
 Le sens de travail proposé est le passage de cartes de la main à la défausse, distinct de Détruire et d'un envoi depuis le deck. Les modalités de choix, le joueur qui choisit, les conditions et l'ordre « piocher puis défausser » ou inverse restent à spécifier carte par carte. La règle 207.5.13 interdit de cibler une carte de la main ; un effet qui atteint un joueur le fait en ciblant son Hero (207.5.12).
 
-## 4. Propositions en attente
+### 12 — Renvoyer
 
-### 12 — Renvoyer : aucune variante validée
+**Variantes explicitement retenues dans la conversation de continuation :**
 
-Le dernier choix confirmé porte sur Défausser. L'assistant a ensuite présenté Renvoyer, puis le créateur a demandé la consignation GitHub **avant de traiter le renvoi**. Il n'existe donc pas de sélection validée pour ce verbe.
+- Renvoi simple.
+- Renvoi conditionnel.
+- Renvoi déclenché.
+- Renvoi avec contrepartie.
+- Renvoi territorial.
 
-Sens proposé : retirer une carte du plateau pour la remettre dans la main de son propriétaire. Les six variantes de la « Bibliothèque des verbes v1.1 » restent toutes **en attente** :
+Le créateur rappelle : **« Le ruleset officiel reste prioritaire. »**
 
-- **Renvoi simple** : renvoyer une Unit alliée ciblée en main.
-- **Renvoi conditionnel** : renvoyer une Unit qui remplit une condition, par exemple un seuil de Force.
-- **Renvoi déclenché** : effectuer un renvoi en réponse à un événement.
-- **Renvoi avec contrepartie** : associer le renvoi à une défausse ou à une autre contrepartie à préciser.
-- **Renvoi territorial** : conditionner le renvoi à la position sur le plateau.
-- **Renvoi à l'Arrivée** : renvoyer une autre Unit alliée à l'arrivée d'une pièce.
+Sens de travail proposé : retirer une carte du plateau pour la remettre dans la main de son propriétaire. Le **renvoi à l'Arrivée** n'a pas été sélectionné à ce stade ; cela ne constitue pas un rejet définitif.
 
-L'assistant recommande les cinq premières et suggère de reporter le renvoi à l'Arrivée. **Cette recommandation n'est pas une décision du créateur.** La limitation initiale aux Units, la répartition Violet / Vert / Bleu / Rouge, les exemples « Gardien du refuge » et « Retrait stratégique » et leurs valeurs restent également des propositions.
+La sélection porte sur les familles de variantes. Les cibles alliées ou ennemies, la restriction aux Units non jetons, les seuils de Force, les rangées, les déclencheurs, les limitations par tour et les contreparties précises restent à définir. Les exemples « Gardien du refuge » et « Retrait stratégique », leurs valeurs et la répartition entre couleurs ne sont pas validés.
 
 La relecture du ruleset fournit déjà les repères suivants, sans qu'il soit nécessaire de créer des règles parallèles :
 
@@ -226,13 +227,17 @@ La relecture du ruleset fournit déjà les repères suivants, sans qu'il soit n�
 - **Action ou combat en attente** : la pile et les fenêtres de réponse restent régies par 208 ; une action normale ou son combat en attente n'a pas lieu si l'Unit a quitté le plateau à sa résolution (205.4.3 et 205.6.10). Aucune nouvelle fenêtre de réponse n'est créée ici.
 - **Main pleine** : la règle générale laisse une carte qui ne peut entrer en main dans sa zone d'origine (201.3.5 et 201.3.6). L'exception qui envoie à la défausse vise précisément les retours des déploiements et du Gear cités par 201.3.6a. Elle ne doit pas être étendue implicitement à un futur effet de renvoi depuis le plateau. Le texte concret devra être vérifié contre ces règles avant validation.
 
-Restent à décider : les variantes retenues, les cibles autorisées, les conditions de position, les contreparties, les formulations exactes et les éventuels cas que les règles actuelles ne couvrent pas.
+Restent à décider : les cibles autorisées, les conditions de position, les contreparties, les formulations exactes et les éventuels cas que les règles actuelles ne couvrent pas.
+
+## 4. Propositions en attente
+
+Le renvoi à l'Arrivée reste non sélectionné. Aucune variante de Permuter n'est encore validée.
 
 ### Verbes candidats encore à examiner
 
 Dans la sélection initiale de quinze verbes, les suivants n'ont pas encore reçu d'examen individuel suivi d'une validation :
 
-- **13 — Permuter** : échanger les positions de deux Units ; annoncé après Renvoyer.
+- **13 — Permuter** : échanger les positions de deux Units ; prochaine discussion demandée après la sélection de Renvoyer. Le sens précis et les variantes restent proposés.
 - **14 — Prévenir** : empêcher une destruction ; proposition à examiner.
 - **15 — Produire** : produire de l'Essence par effet ; proposition à examiner.
 
@@ -268,10 +273,18 @@ Les listes de la section 3 transcrivent ces messages, et non les recommandations
 
 L'historique a été consulté depuis le premier message jusqu'à la demande de consignation : la lecture initiale limitée aux cinq derniers échanges a été complétée dans la conversation affichée dans Chrome.
 
+### Validation de Renvoyer dans la continuation
+
+Message explicite du créateur, consigné le 25 octobre 2026 :
+
+> « Pour Renvoyer, je retiens : renvoi simple, conditionnel, déclenché, avec contrepartie et territorial. Le ruleset officiel reste prioritaire. Mets à jour le suivi sur la branche, puis continuons avec Permuter. »
+
+Cette validation complète l'historique source ; elle remplace le statut antérieur « aucune variante validée » pour Renvoyer.
+
 ### État conservé et prochaine discussion
 
-- Le fichier est ajouté seul sur la branche dédiée `codex/catalogue-cartes-playtest`, issue du commit de référence ci-dessus.
+- Le fichier est ajouté seul sur la branche dédiée `codex/catalogue-cartes-playtest`, issue du commit initial `e6edfb56b8ef2cfbfda7720603a03b3b38b56030`.
 - Les règles officielles, leur changelog, les decks de test existants et les fichiers du jeu restent inchangés.
 - Le [premier playtest symétrique existant](ruleset/70-playtest/decks-de-test.md) est distinct de ce catalogue expérimental ; sa présence ne valide pas les nouvelles cartes.
-- La prochaine discussion porte sur la sélection des variantes de **Renvoyer**, puis sur Permuter, Prévenir et Produire.
+- La prochaine discussion porte sur **Permuter**, puis sur Prévenir et Produire.
 - Toute mise à jour du suivi devra distinguer le choix exact du créateur, sa source, les propositions restantes et les vérifications de règles. La formalisation de la restriction de couleurs dans le ruleset relève d'un travail ultérieur autorisé séparément.
