@@ -335,7 +335,7 @@ Le critère de sélection est un choix tactique visible : choisir un moment, une
 
 ### Premier groupe de prototypes — formation et jetons, version 0.1
 
-**Statut : propositions de cartes, non encore validées, non implémentées et non testées en partie.** Le 25 octobre 2026, « Très bien continuons » autorise la poursuite de la conception après l'étude. Le premier groupe ci-dessous explore formation et jetons comme proposé ; cet accord ne valide pas par anticipation les noms, coûts, Forces ou textes.
+**Statut : base de prototype acceptée pour un premier essai après le « Go » du créateur le 25 octobre 2026 ; valeurs ajustables, cartes non implémentées et non testées en partie.** Le précédent « Très bien continuons » autorisait leur conception ; le « Go » suivant leur présentation permet de préparer l'essai de FJ-01 à FJ-04. Il ne constitue ni une validation définitive de l'équilibrage ni une modification du ruleset.
 
 Objectif : vérifier qu'une formation devient intéressante en se développant, reste capable d'avancer et laisse à l'adversaire des moyens de la défaire. Quatre nouvelles références suffisent à explorer soutien, occupation, remplacement d'une perte et repositionnement. Les cartes n'ont pas encore de couleur attribuée ; cela ne signifie pas qu'elles sont neutres dans le futur catalogue.
 
@@ -409,7 +409,99 @@ Cette vérification illustre les seuils de Force ; elle n'est pas un résultat d
 
 À relever : positions et déplacements réellement choisis, combats dont l'issue change grâce au soutien, tours passés à camper près du Hero, cases bloquées par ses propres jetons, durée de survie du soutien et possibilité de revenir après sa perte. La formation doit être utile à l'offensive ; un simple renforcement du campement défensif ne suffirait pas à valider l'objectif.
 
-Cette série de propositions n'est pas un deck complet et ne modifie pas le premier playtest officiel. Une composition de decks et un protocole de comparaison restent à préparer après revue des cartes. Aucun coût, texte ou résultat n'est présenté comme équilibré ou définitivement adopté.
+Les quatre cartes ne forment pas à elles seules un deck complet ; la composition expérimentale et le protocole proposés ci-dessous les intègrent à une base de comparaison. Le premier playtest officiel reste inchangé. Aucun coût, texte ou résultat n'est présenté comme équilibré ou définitivement adopté.
+
+### Premier essai formation et jetons — listes et protocole proposés
+
+**État : préparation documentaire terminée ; aucune partie jouée, aucun résultat d'équilibrage.** Les prototypes ne sont pas intégrés au logiciel. Les listes ci-dessous sont utilisables pour un essai manuel avec représentations provisoires des nouvelles cartes ; elles ne sont pas des fichiers de deck importables dans le moteur actuel. Le protocole et les compositions sont proposés après l'accord pour continuer.
+
+#### Deck de référence — 30 cartes
+
+Reprise de `data/decks/deck_de_test.json` sur main, édition 0.44. Hero hors deck : **Capitaine**, 15 PV, passif « Les Units alliées adjacentes au Hero ont +1 Force. »
+
+- 2 × **Recrue**.
+- 3 × **Soldat**.
+- 3 × **Vétéran**.
+- 2 × **Champion**.
+- 2 × **Colosse**.
+- 2 × **Pillard**.
+- 2 × **Gardien**.
+- 1 × **Héraut**.
+- 1 × **Martyr**.
+- 1 × **Palissade**.
+- 1 × **Bastion**.
+- 2 × **Campement**.
+- 2 × **Renfort**.
+- 2 × **Frappe**.
+- 1 × **Contre**.
+- 1 × **Levée**.
+- 2 × **Lame**.
+
+#### Deck formation et jetons — 30 cartes
+
+Même Hero et mêmes règles. Les couleurs restent non attribuées pour cette expérience ; aucune règle de construction bicolore supplémentaire n'est appliquée.
+
+- 2 × **Recrue**.
+- 3 × **Soldat**.
+- 1 × **Vétéran**.
+- 2 × **Champion**.
+- 2 × **Colosse**.
+- 2 × **Pillard**.
+- 2 × **Gardien**.
+- 1 × **Palissade**.
+- 1 × **Bastion**.
+- 2 × **Renfort**.
+- 2 × **Frappe**.
+- 1 × **Contre**.
+- 1 × **Levée**.
+- 2 × **Porte-enseigne**.
+- 2 × **Rassemblement**.
+- 2 × **Compagnon tenace**.
+- 2 × **Pas de côté**.
+
+Les huit substitutions sont : 2 Vétérans deviennent 2 Porte-enseignes ; 2 Campements deviennent 2 Rassemblements ; Héraut et Martyr deviennent les 2 Compagnons tenaces ; 2 Lames deviennent 2 Pas de côté. Recrue, Soldat, les grosses Units, Pillard, Gardien, Renfort, Frappe, Contre et Levée sont conservés dans leurs quantités initiales.
+
+**Contrôles de liste effectués.** Chaque deck contient 30 cartes et au plus 3 exemplaires d'une même référence. Les deux courbes sont identiques : 6 cartes à coût 1, 10 à coût 2, 10 à coût 3, 2 à coût 4 et 2 à coût 5. Le deck expérimental a 18 Units, 2 Buildings et 10 Spells ; la référence a 18 Units, 4 Buildings, 6 Spells et 2 Gear. La comparaison examine donc un ensemble de huit substitutions, pas l'effet causal isolé d'une seule carte. Les contrôles de nombre, exemplaires, références et coûts ont été calculés à partir des données du dépôt et des quatre propositions ; ils ne sont pas des tests du moteur.
+
+#### Vérifications manuelles avant les parties
+
+- **Aura et échange.** Sans autre modificateur, Porte-enseigne en C3, jeton Unit de Force imprimée 1 en B3, Recrue ennemie de Force 2 en B4. Les Heroes restent éloignés. Le jeton soutenu atteint 2 ; s'il attaque et qu'aucune Réaction ne change l'état, l'égalité détruit les deux pièces. Sans le soutien au moment de la comparaison, le jeton de Force 1 perd seul. Vérifier l'aura avant l'entrée sur la case du défenseur, selon 206.5.
+- **Cumul avec le Hero.** Capitaine allié en C1, Porte-enseignes alliés en C2 et D2, sans autre modificateur : celui de C2 atteint Force 4 (base 2, +1 du Hero, +1 de l'autre soutien), celui de D2 atteint Force 3. Frappe, qui exige Force 3 ou moins, ne peut initialement viser que celui de D2. Les auras se recalculent si la formation change. Cette situation explore le cumul réellement permis, sans règle de non-cumul ajoutée.
+- **Création et place disponible.** Rassemblement exige deux cases libres légales distinctes lors de son annonce. Avec une seule case libre parmi les deux premières rangées, il ne peut pas être annoncé. Les jetons créés sont endormis. Avec Compagnon tenace, une première rangée encore pleine au moment d'ajouter Dernier souffle ne fournit aucune cible légale : aucun jeton n'est créé.
+- **Repositionnement.** Pendant sa phase principale, pile vide, Pas de côté peut viser une Unit alliée endormie et une case libre adjacente. Si les cibles restent valides, elle change de case et reste endormie. Une case occupée ou non adjacente n'est pas une destination légale. Le Spell reste de vitesse Action.
+
+Ces positions sont des exercices de compréhension préparés, pas des situations observées ni des parties depuis la préparation normale. Toute ambiguïté réelle constatée doit être relevée pour le ruleset, sans arbitrage implicite.
+
+#### Quatre parties exploratoires
+
+Utiliser deux joueurs A et B, avec les decks et valeurs de cette version inchangés pendant la série. Pour maîtriser l'ordre de départ, l'essai propose une alternance de premier joueur comme le protocole de test existant (décision 0158) ; cette modalité expérimentale ne remplace pas la règle générale de désignation du premier joueur.
+
+1. A joue formation/jetons et commence ; B joue référence.
+2. A joue formation/jetons ; B joue référence et commence.
+3. A joue référence et commence ; B joue formation/jetons.
+4. A joue référence ; B joue formation/jetons et commence.
+
+Chaque joueur utilise ainsi chaque deck une fois en commençant et une fois en second. Préparation, mélange, mulligan, pioche et autres règles sont conservés ; pas de main arrangée pendant ces parties. Quatre parties servent à détecter des problèmes et des choix intéressants, sans établir un taux de victoire fiable.
+
+#### Relevé de chaque partie
+
+Noter : numéro de partie, joueurs et decks, premier joueur, vainqueur, tour de fin et cause de fin. Pour chaque prototype, relever les exemplaires vus et joués, puis un fait concret :
+
+- **Porte-enseigne** : un combat dont il a changé l'issue ; une décision d'avancer ou de rester près du Hero ; la réponse adverse à la formation.
+- **Rassemblement** : jetons effectivement créés ; jetons devenus utiles ; blocages dus aux cases ou impossibilité de jouer la carte.
+- **Compagnon tenace** : destruction et création effective ; utilité ultérieure du jeton ou absence de case disponible.
+- **Pas de côté** : déplacement qui change une possibilité d'attaque, de soutien ou de défense ; carte conservée faute d'usage utile.
+
+À la fin, chaque joueur donne un moment où il a eu un choix intéressant, un moment où il s'est senti bloqué, et la carte qu'il changerait en premier avec la raison. Noter également si l'adversaire disposait d'une réponse au soutien et s'il a pu l'utiliser. Ne pas interpréter l'absence d'une carte dans les mains comme la preuve de sa faiblesse.
+
+#### Décider de l'itération suivante
+
+- Si la formation crée des choix d'avancée et reste perturbable, poursuivre les tests sans modifier immédiatement les chiffres.
+- Si elle reste systématiquement près du Hero, examiner d'abord les positions et l'aura du Capitaine dans les relevés. Ne pas augmenter automatiquement les bonus.
+- Si Rassemblement est trop fort ou trop faible, modifier un seul paramètre à la fois : coût, Force, nombre ou portée, puis refaire une comparaison.
+- Si le résultat reste difficile à expliquer, reprendre les variantes isolées décrites précédemment : soutien seul, puis ajout d'une seule famille de cartes. Le deck complet ne permet pas d'imputer un problème à une carte sans examen.
+- Les changements de texte, de coût et de Force restent à décider à partir des observations. Aucun résultat fictif n'est rempli.
+
 
 ### Autres propositions non finalisées
 
@@ -417,7 +509,7 @@ Cette série de propositions n'est pas un deck complet et ne modifie pas le prem
 - **Moteurs de synergie** : attaques / destructions pour le Rouge ; formations / survie pour le Vert ; déplacements / changements de position pour le Violet ; préparation de main / Spells et réactions pour le Bleu. Pistes de travail, sans répartition définitive des effets entre couleurs.
 - **Prototype intermédiaire de 16 cartes** : quatre par couleur avant l'extension à 48 ; méthode suggérée, pas un remplacement du format retenu.
 - **Déclencheurs et conditions** : familles, événements exacts, limitations et interactions à définir après les verbes. Les études de Riftbound servent d'inspiration, sans importer ses règles, mots-clés ou chiffres.
-- **Cartes et Heroes nommés dans les exemples** : coûts, Forces, PV, textes, noms et listes finales non validés. Les exemples illustrent les variantes ; ils ne constituent pas des fiches de cartes approuvées.
+- **Cartes et Heroes nommés dans les exemples** : les exemples antérieurs restent non validés. FJ-01 à FJ-04 font exception comme base acceptée pour un premier essai, avec valeurs ajustables ; les listes proposées ci-dessus et les caractéristiques finales ne sont pas approuvées par anticipation.
 - **Contreparties** : distinguer une instruction résolue d'un coût supplémentaire. L'Essence reste la seule ressource qui paie un coût (Invariant 203.0.1) et les coûts d'annonce se paient à l'annonce (203.3.2). Les variantes « avec contrepartie » ne valident pas implicitement un nouveau système de coûts de sacrifice, de défausse ou d'endormissement.
 - **Mots-clés supplémentaires, marqueurs et effets persistants complexes** : aucune liste nouvelle n'est validée par les sélections de verbes.
 
@@ -489,10 +581,14 @@ Le 25 octobre 2026, le créateur précise :
 
 Ce message retient six directions de conception. Les explications et mécanismes proposés ensuite par l'assistant restent à discuter ; ils ne sont pas validés par anticipation.
 
+### Accord pour le premier essai
+
+Le 25 octobre 2026, après la présentation de Porte-enseigne, Rassemblement, Compagnon tenace et Pas de côté, le créateur répond « Go ». Ce choix est consigné comme accord pour utiliser ces quatre propositions comme base du premier essai, sans figer leur équilibrage. Les compositions et le protocole préparés ensuite restent des propositions de l'assistant.
+
 ### État conservé et prochaine discussion
 
 - Le fichier est ajouté seul sur la branche dédiée `codex/catalogue-cartes-playtest`, issue du commit initial `e6edfb56b8ef2cfbfda7720603a03b3b38b56030`.
 - Les règles officielles, leur changelog, les decks de test existants et les fichiers du jeu restent inchangés.
 - Le [premier playtest symétrique existant](ruleset/70-playtest/decks-de-test.md) est distinct de ce catalogue expérimental ; sa présence ne valide pas les nouvelles cartes.
-- L'examen de la liste initiale des quinze verbes est terminé. Prévenir est mis de côté pour le moment ; Produire est écarté. Les six directions de jeu sont choisies. Une étude propose six mécanismes à prototyper et une alternative de snowball territorial. L'accord pour poursuivre a conduit à quatre propositions de cartes formation/jetons (FJ-01 à FJ-04), à revoir avant leur test et la répartition par couleur.
+- L'examen de la liste initiale des quinze verbes est terminé. Prévenir est mis de côté pour le moment ; Produire est écarté. Les six directions de jeu sont choisies. Une étude propose six mécanismes à prototyper et une alternative de snowball territorial. L'accord pour poursuivre a conduit à quatre propositions de cartes formation/jetons (FJ-01 à FJ-04), acceptées comme base d'essai après le « Go » du créateur. Deux listes de 30 cartes et un protocole exploratoire sont préparés ; les parties restent à réaliser avant toute conclusion d'équilibrage ou répartition par couleur.
 - Toute mise à jour du suivi devra distinguer le choix exact du créateur, sa source, les propositions restantes et les vérifications de règles. La formalisation de la restriction de couleurs dans le ruleset relève d'un travail ultérieur autorisé séparément.
