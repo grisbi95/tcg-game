@@ -85,6 +85,23 @@ Les noms, passifs précis et valeurs des quatre nouveaux Heroes ne sont pas vali
 
 Les variantes sélectionnées sont une réserve d'idées : il n'est pas nécessaire de toutes les utiliser. Le cadre de quatre couleurs, le système de Hero retenu et le format de travail de 48 cartes restent consignés ; aucune nouvelle répartition ni taille de prototype n'est validée. Le ruleset officiel reste prioritaire.
 
+### Directions de jeu demandées le 25 octobre 2026
+
+Le créateur demande les six directions suivantes, sans attribution de couleur :
+
+- **Agressive**.
+- **Contrôle**.
+- **Snowball au fil de la partie**.
+- **Invocation de jetons**.
+- **Pioche et défausse**.
+- **Spells et Réactions**.
+
+Ces directions constituent les intentions à explorer pour le catalogue. Elles ne fixent pas six decks distincts : leurs combinaisons, leurs effets précis, leurs faiblesses et leurs moyens d'atteindre le Hero restent à concevoir. Les fonctions des quatre couleurs restent ouvertes.
+
+Le sens concret du snowball reste à préciser : progression de la présence sur le plateau, avantages de cartes accumulés ou autre mécanisme compatible avec les variantes retenues. Cette intention ne valide ni création d'Essence, ni bonus permanents de Force, ni nouvelle condition de victoire. Produire reste écarté et Prévenir reste mis de côté.
+
+La direction « pioche et défausse » ne valide pas la défausse adverse ni le jeu depuis la défausse, précédemment non retenus. « Spells et Réactions » n'ajoute aucune fenêtre de réponse aux règles officielles. Les caractéristiques des jetons restent soumises au ruleset.
+
 ## 3. Verbes examinés et sélections explicites
 
 Ordre du travail dans la conversation : Déplacer, Renforcer et Affaiblir ensemble, Détruire, Créer, Piocher, Consulter, Contrecarrer, Réveiller, Endormir, Défausser, puis Renvoyer, Permuter, Prévenir et Produire dans la conversation de continuation. Prévenir a été mis de côté provisoirement ; Produire a été écarté pour des raisons d'équilibrage.
@@ -282,18 +299,13 @@ Les quinze verbes de la liste initiale ont été examinés. Treize ont des orien
 
 Repousser, Attirer, Replier et Téléporter ont aussi été évoqués comme pistes autour du déplacement. Leurs noms ne constituent pas une liste supplémentaire de verbes validés. Les priorités 1, 2 et 3 assignées par l'assistant à la liste initiale restent des recommandations.
 
-### Façons de jouer proposées — sélection en attente
+### Premières expériences proposées par l'assistant — historique
 
-Six expériences sont proposées pour la prochaine discussion, sans attribution de couleur et sans validation de cartes :
+Les six premières propositions étaient : percée offensive, occupation large, formation resserrée, désorganisation, pertes rentabilisées et préparation d'un tour décisif. Elles n'ont pas été validées comme liste. Le créateur a formulé ses propres six directions, consignées en section 2, qui guident désormais l'exploration. Certains éléments de ces propositions peuvent servir d'exemples ultérieurs, sans acquérir de statut validé.
 
-- **Percée offensive** : concentrer ses moyens pour ouvrir un passage et menacer rapidement le Hero adverse.
-- **Occupation large** : répartir plusieurs Units sur le plateau pour créer plusieurs menaces et exploiter un passage moins défendu.
-- **Formation resserrée** : faire coopérer des pièces proches, tenir une position puis avancer ensemble.
-- **Désorganisation** : déplacer, permuter, endormir ou renvoyer des pièces pour casser la formation adverse et créer une ouverture.
-- **Pertes rentabilisées** : accepter certaines destructions ou défausses pour obtenir un avantage et maintenir la pression, sans produire d'Essence.
-- **Préparation d'un tour décisif** : consulter, piocher et conserver des cartes complémentaires pour préparer une séquence tactique menaçant le Hero.
+### Conception des directions retenues — en attente
 
-Les effets précis, réponses adverses et moyens d'atteindre le Hero doivent être éprouvés. Ces pistes ne sont ni des identités de couleurs ni des archétypes déjà validés.
+Restent à choisir pour chaque direction : la manière de progresser vers la victoire, les synergies de cartes, les réponses laissées à l'adversaire, les faiblesses et les interactions avec les autres directions. Le mécanisme concret de snowball doit notamment être précisé avant de concevoir ses cartes.
 
 ### Autres propositions non finalisées
 
@@ -365,10 +377,18 @@ Le 25 octobre 2026, le créateur demande si le pipeline proposé convient, car i
 
 Cet accord valide la méthode et le démarrage de l'exploration des expériences de jeu. Il ne valide pas encore les expériences proposées ensuite, une nouvelle fonction de couleur ou des cartes.
 
+### Choix des directions de jeu par le créateur
+
+Le 25 octobre 2026, le créateur précise :
+
+> « Je souhaite ces différentes vision de jeu une agressive, une plus control, une qui souhaite snowball dans la partie, une qui joue sur l’invocation de jeton, joueur avec la pioche la défausse, jouer sur les spells et réaction »
+
+Ce message retient six directions de conception. Les explications et mécanismes proposés ensuite par l'assistant restent à discuter ; ils ne sont pas validés par anticipation.
+
 ### État conservé et prochaine discussion
 
 - Le fichier est ajouté seul sur la branche dédiée `codex/catalogue-cartes-playtest`, issue du commit initial `e6edfb56b8ef2cfbfda7720603a03b3b38b56030`.
 - Les règles officielles, leur changelog, les decks de test existants et les fichiers du jeu restent inchangés.
 - Le [premier playtest symétrique existant](ruleset/70-playtest/decks-de-test.md) est distinct de ce catalogue expérimental ; sa présence ne valide pas les nouvelles cartes.
-- L'examen de la liste initiale des quinze verbes est terminé. Prévenir est mis de côté pour le moment ; Produire est écarté. La discussion en cours porte sur le choix des expériences de jeu à explorer, avant la répartition par couleur.
+- L'examen de la liste initiale des quinze verbes est terminé. Prévenir est mis de côté pour le moment ; Produire est écarté. Les six directions de jeu sont choisies. La discussion en cours porte sur leurs synergies concrètes, notamment le sens du snowball, avant les prototypes et la répartition par couleur.
 - Toute mise à jour du suivi devra distinguer le choix exact du créateur, sa source, les propositions restantes et les vérifications de règles. La formalisation de la restriction de couleurs dans le ruleset relève d'un travail ultérieur autorisé séparément.
