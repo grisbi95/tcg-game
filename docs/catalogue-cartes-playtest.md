@@ -76,7 +76,7 @@ Les noms, passifs précis et valeurs des quatre nouveaux Heroes ne sont pas vali
 
 ## 3. Verbes examinés et sélections explicites
 
-Ordre du travail dans la conversation : Déplacer, Renforcer et Affaiblir ensemble, Détruire, Créer, Piocher, Consulter, Contrecarrer, Réveiller, Endormir, Défausser, puis Renvoyer dans la conversation de continuation.
+Ordre du travail dans la conversation : Déplacer, Renforcer et Affaiblir ensemble, Détruire, Créer, Piocher, Consulter, Contrecarrer, Réveiller, Endormir, Défausser, puis Renvoyer et Permuter dans la conversation de continuation.
 
 Les intitulés ci-dessous reprennent les sélections du créateur. Ils ne valent pas création de nouveaux mots-clés officiels : ceux-ci restent les cinq du [chapitre 210](ruleset/20-regles-completes/210-mots-cles.md), Avant-poste, Arrivée, Dernier souffle, Assaut X et Rempart X.
 
@@ -229,15 +229,30 @@ La relecture du ruleset fournit déjà les repères suivants, sans qu'il soit n�
 
 Restent à décider : les cibles autorisées, les conditions de position, les contreparties, les formulations exactes et les éventuels cas que les règles actuelles ne couvrent pas.
 
+### 13 — Permuter
+
+**Variantes retenues par accord du créateur avec la recommandation des cinq premières :**
+
+- Permutation simple.
+- Permutation conditionnelle.
+- Permutation déclenchée.
+- Permutation avec contrepartie.
+- Permutation territoriale.
+
+Principe de travail proposé : échanger les positions de deux Units alliées sur le plateau. La **permutation alliée–ennemie** reste en attente d'une expérimentation distincte ; elle n'est pas retenue à ce stade, sans rejet définitif.
+
+Le ruleset officiel reste prioritaire. La sélection ne valide pas les exemples de cartes, les conditions précises de Force ou d'état, les déclencheurs, les contreparties, les rangées ou colonnes autorisées, ni les limitations par tour. Une contrepartie ne devient pas automatiquement un coût d'annonce.
+
+Repères : aucune case ne contient plus d'une pièce (Invariant 201.0.1), aucune carte ne change de joueur (201.5.3), et les cibles relèvent de 207.5. La procédure exacte d'une permutation, notamment lorsqu'une cible devient invalide, reste à formaliser avant une carte jouable ; aucun comportement nouveau n'est acté implicitement par ce suivi.
+
 ## 4. Propositions en attente
 
-Le renvoi à l'Arrivée reste non sélectionné. Aucune variante de Permuter n'est encore validée.
+Le renvoi à l'Arrivée reste non sélectionné. La permutation alliée–ennemie reste en attente ; les cinq autres variantes de Permuter sont retenues en section 3.
 
 ### Verbes candidats encore à examiner
 
 Dans la sélection initiale de quinze verbes, les suivants n'ont pas encore reçu d'examen individuel suivi d'une validation :
 
-- **13 — Permuter** : échanger les positions de deux Units ; prochaine discussion demandée après la sélection de Renvoyer. Le sens précis et les variantes restent proposés.
 - **14 — Prévenir** : empêcher une destruction ; proposition à examiner.
 - **15 — Produire** : produire de l'Essence par effet ; proposition à examiner.
 
@@ -281,10 +296,18 @@ Message explicite du créateur, consigné le 25 octobre 2026 :
 
 Cette validation complète l'historique source ; elle remplace le statut antérieur « aucune variante validée » pour Renvoyer.
 
+### Validation de Permuter dans la continuation
+
+Le 25 octobre 2026, après la présentation de six variantes et la recommandation de retenir les cinq premières tout en gardant la permutation alliée–ennemie pour une expérimentation distincte, le créateur répond :
+
+> « Parfait ça me va »
+
+Cet accord est consigné comme validation de cette recommandation : permutation simple, conditionnelle, déclenchée, avec contrepartie et territoriale. Il ne constitue pas une validation des six variantes ni de leurs exemples détaillés.
+
 ### État conservé et prochaine discussion
 
 - Le fichier est ajouté seul sur la branche dédiée `codex/catalogue-cartes-playtest`, issue du commit initial `e6edfb56b8ef2cfbfda7720603a03b3b38b56030`.
 - Les règles officielles, leur changelog, les decks de test existants et les fichiers du jeu restent inchangés.
 - Le [premier playtest symétrique existant](ruleset/70-playtest/decks-de-test.md) est distinct de ce catalogue expérimental ; sa présence ne valide pas les nouvelles cartes.
-- La prochaine discussion porte sur **Permuter**, puis sur Prévenir et Produire.
+- La prochaine discussion porte sur **Prévenir**, puis sur Produire.
 - Toute mise à jour du suivi devra distinguer le choix exact du créateur, sa source, les propositions restantes et les vérifications de règles. La formalisation de la restriction de couleurs dans le ruleset relève d'un travail ultérieur autorisé séparément.
