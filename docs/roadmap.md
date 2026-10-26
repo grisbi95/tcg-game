@@ -2,7 +2,7 @@
 
 > **Rôle** : plan unique du projet : périmètre, jalons, étapes et état. Les règles font foi dans [ruleset/](ruleset/README.md) ; l'architecture dans [decisions/](decisions/).
 
-**État actuel (24 octobre 2026)** : jalons J0 à J2 terminés (décisions 0038 à 0050, rétrospective dans [retros/J2.md](retros/J2.md)) ; une partie complète entre deux ordinateurs reste à jouer au début de J3 ; Q-110 du ruleset non tranchée. Jalon J2b « Habillage alpha » (0052) : 2b.1, 2b.2 et ruleset 0.44 (201.4.11) fusionnés (PR 44). Étape 2b.3 close, pas encore commitée : écran de duel en quatre couches et conteneurs selon la [fiche](fiches/ecran-de-duel.md), barres de temps (`TurnTimerBar`), colonne rangée, Sources à quatre états, bulles d'information, pièce endormie en gris (dette « avant J3 » réglée) ; requêtes moteur `Piece.is_asleep` et `fonte_after_payment` ; 1101 tests verts. Reste à voir à l'écran par le créateur : le second écran (B en bas), l'aperçu avec un Gear, un rendu exact en 1280×720. Prochaine action : étape 2b.4, direction artistique (une branche distante `docs/direction-artistique` existe, à examiner d'abord) ; puis les dettes « avant J3 » du [backlog.md](backlog.md) et le premier playtest J3. Ruleset 0.45 à 0.52 (26 octobre 2026, décisions 0211 à 0241, chapitres 211 à 217 : série J3 de 24 parties à quatre decks, Q-141 et Q-142 à trancher avant elle ; Ordre du Hero, passif facultatif, Défausser, coût X, Échanger, Hero sur tout le plateau, premier playtest avec le catalogue de `ruleset/50-cartes/`) consignés sans le code (dette au backlog) ; le J3 attend le catalogue, étapes à décider. Questions de règles dans [ruleset/02-questions-ouvertes.md](ruleset/02-questions-ouvertes.md).
+**État actuel (26 octobre 2026)** : jalons J0 à J2 terminés (décisions 0038 à 0050, rétrospective dans [retros/J2.md](retros/J2.md)) ; une partie complète entre deux ordinateurs reste à jouer au début de J3 ; Q-110 du ruleset non tranchée. Jalon J2b « Habillage alpha » (0052) : 2b.1, 2b.2 et ruleset 0.44 (201.4.11) fusionnés (PR 44). Étape 2b.3 close, pas encore commitée : écran de duel en quatre couches et conteneurs selon la [fiche](fiches/ecran-de-duel.md), barres de temps (`TurnTimerBar`), colonne rangée, Sources à quatre états, bulles d'information, pièce endormie en gris (dette « avant J3 » réglée) ; requêtes moteur `Piece.is_asleep` et `fonte_after_payment` ; 1101 tests verts. Reste à voir à l'écran par le créateur : le second écran (B en bas), l'aperçu avec un Gear, un rendu exact en 1280×720. Ruleset 0.45 à 0.52 (26 octobre 2026, décisions 0211 à 0241, chapitres 211 à 217 : Ordre du Hero, passif facultatif, Défausser, coût X, Échanger, Hero sur tout le plateau, catalogue de `ruleset/50-cartes/`, série J3 de 24 parties à quatre decks, Q-141 et Q-142 à trancher avant elle) consigné sans le code (dette au backlog) ; correction de cap (0054) : le jalon J2c « Catalogue de playtest » passe avant 2b.4. Prochaine action : étape c.1 de J2c, remise en accord du Hero sur tout le plateau (0223) et du déploiement (0225) ; la branche distante `docs/direction-artistique` attend 2b.4. Questions de règles dans [ruleset/02-questions-ouvertes.md](ruleset/02-questions-ouvertes.md).
 
 ## Périmètre
 
@@ -10,7 +10,7 @@
 | --- | --- |
 | Plateformes | Web d'abord (playtests), desktop pour développer. |
 | Mode de jeu V1 | Duel à deux joueurs humains : sur un même écran sans rideau de relais (0036, 0048), ou à distance entre deux navigateurs par un relais WebSocket, l'hôte dans le navigateur du créateur de la partie (0043) ; IA simple au J4. |
-| Catalogue | Les decks de test du ruleset (`ruleset/70-playtest/decks-de-test.md`), puis `50-cartes/` quand il existera. |
+| Catalogue | Le catalogue de playtest de `ruleset/50-cartes/` (décision de design 0224 ; 4 Heroes, 48 cartes, 4 decks) ; les decks de test (`ruleset/70-playtest/decks-de-test.md`) restent les decks de référence du moteur. |
 | Hors périmètre | Serveur de jeu autoritaire et mains cachées par l'architecture (0043), comptes, matchmaking, classement, collection, boutique, IA avancée, mobile. Décision après J3. |
 
 ## J0 — Amorçage
@@ -60,19 +60,34 @@ Sortir de l'aspect prototype avant le playtest J3, comme en studio (0052) : un c
 - [x] 2b.1 Cadre des assets (0051) : dossier, nommage, réglages d'import pour le Web, registre de provenance contrôlé par `test_assets.gd` ; illustrations et icônes cherchées par `DuelAssets`, repli sur le dessin actuel. **Sortie** : déposer une illustration au nom d'une carte la fait apparaître sans code ; la retirer rend l'icône.
 - [x] 2b.2 Fiche technique de l'écran de duel (0052, 0053) : inventaire exhaustif des éléments (table, plateau, cases, pièces, mains, Sources, deck et défausse, Heroes, pendules, pile, boutons, fenêtres, aperçu, marques), et pour chacun node Godot, couche, taille, place, transparence, ordre d'affichage, états et asset attendu ; maquette annotée `docs/maquettes/ecran-de-duel-gabarit.html`, fiche `docs/fiches/ecran-de-duel.md`. **Sortie** : fiche validée par le créateur.
 - [x] 2b.3 Gabarit en gris (0052, 0053) : écran de duel reconstruit en quatre couches (fond, jeu, fenêtres, informations) et en conteneurs selon la fiche version 1, `DuelScreenLayout` retiré. Changements de la fiche : compteur d'Essence seul et emplacements de Sources à quatre états, `HeroCardView` retiré, barres de temps à la place de `ClockView`, colonne de duel rangée, bulles d'information, illustration en gris des pièces endormies (dette « avant J3 »), mains centrées ; le reste du comportement est inchangé. **Sortie** : suites vertes, captures en 1920×1080 et 1280×720 conformes à la maquette annotée.
+Les étapes 2b.4 à 2b.8 viennent après J2c (0054).
+
 - [ ] 2b.4 Direction artistique : charte (couleurs, polices, formes), deux maquettes HTML, instructions de référence pour l'IA aux tailles de la fiche. **Sortie** : charte choisie par le créateur, décision consignée.
 - [ ] 2b.5 Habillage de l'écran de duel : table, plateau, cases, pièces (dont l'état endormi, dette « avant J3 »), barres de temps, pile, boutons, fenêtres, posés sans toucher aux scènes.
-- [ ] 2b.6 Cartes : cadres par type, dos, 18 illustrations, pastilles, icônes de type et de mots-clés.
+- [ ] 2b.6 Cartes : cadres par type, dos, illustrations du catalogue de `50-cartes/` (48 cartes et 4 Heroes, soit 52 au lieu de 18), pastilles, icônes de type et de mots-clés.
 - [ ] 2b.7 Écrans hors duel : accueil et préparation, « Créer / Rejoindre », fin de partie, abandon, mulligan, chargement Web.
 - [ ] 2b.8 Recette Web : poids et temps de chargement de l'export, rendu en 1920×1080 et 1280×720. **Sortie** : un duel complet habillé dans le navigateur.
 
+## J2c — Catalogue de playtest
+
+Remet le moteur en accord avec le ruleset 0.52 et y intègre le catalogue de `ruleset/50-cartes/`, avant l'habillage (0054) : J2c passe avant 2b.4. Chaque étape : règles lues, décision de code si système nouveau, tests nommés par identifiants, un nouveau `kind` = code et tests avant toute carte (0002, 0010). À réexaminer si J2c dépasse nettement 8 sessions.
+
+- [ ] c.1 Remise en accord : Hero sur tout le plateau (0223, 205.3.2 supprimée), pas de déploiement sur la case du Hero ennemi (0225) ; dette « haute » du backlog. **Sortie** : `CELL_OUTSIDE_HERO_ROWS`, `HERO_ROWS` de `DuelOracle` et leurs tests remplacés, suite verte.
+- [ ] c.2 Ordre et effets déclenchés du Hero (chapitre 211, 202.3.11, 202.3.19 à 202.3.22, 201.4.12) ; décision de code qui modifie 0047. **Sortie** : un Hero utilise son Ordre et son passif facultatif en duel, chaque règle citée par un test.
+- [ ] c.3 Effets de mouvement : déplacer (215), échanger (214), renvoyer dans la main (216). **Sortie** : les trois `kind` ont leurs tests par identifiants, suite verte.
+- [ ] c.4 Effets de cartes et de main : piocher, défausser (212), regarder le dessus du deck (217), réveiller. **Sortie** : les quatre `kind` ont leurs tests, avec décisions en attente pour les choix.
+- [ ] c.5 Coûts et déclencheurs : coût X et valeur X (213) ; déclencheurs « début du tour », « annonce d'un Spell », « défausse », « détruit son défenseur » (206.3.7) ; effet déclenché d'un Gear (207.3.12) ; dernière case (207.3.14) ; nouvelles portées statiques ; condition « si » lue à l'événement (204.3.12, 207.3.13). **Sortie** : chaque déclencheur et chaque portée testés, `test_rules_coverage.gd` vert sur les chapitres 211 à 217.
+- [ ] c.6 Cartes : 48 cartes, 4 Heroes et 4 decks en JSON (`/cards`), choix du deck à la préparation. **Sortie** : le catalogue passe `find_errors()` et un test par carte ; les quatre decks se choisissent dans l'écran de préparation.
+- [ ] c.7 Vue : utiliser l'Ordre, choisir X, choisir la carte à défausser, Observatoire. **Sortie** : un duel local joue chacune des quatre interactions à l'écran, vérifiées en lançant la scène.
+- [ ] c.8 Recette : duels aléatoires sur les 6 affrontements des 4 decks avec l'oracle, plan des 24 parties dans la fiche de relevé. **Sortie** : duels aléatoires sans violation de l'oracle, déterministes à graine fixe ; la fiche CSV porte le plan de série.
+
 ## J3 — Premier playtest
 
-- [ ] 20 parties selon `ruleset/70-playtest/protocole.md`, fiches automatiques, bilan contre le tableau des cibles et seuils, questions ouvertes du ruleset.
+- [ ] 24 parties selon le plan de série de `ruleset/70-playtest/protocole.md` (décisions de design 0229 à 0232), avec les 4 decks du catalogue ; cibles et seuils refixés et Q-141 et Q-142 tranchées avant la série ; fiches automatiques, bilan, questions ouvertes du ruleset.
 
 ## J4 — IA et catalogue
 
-- [ ] `GreedyAgent` (`clone()`, un coup, évaluation). Intégration de `50-cartes/`. Partie complète contre l'IA.
+- [ ] `GreedyAgent` (`clone()`, un coup, évaluation). Partie complète contre l'IA.
 
 ## Tenue du plan
 
