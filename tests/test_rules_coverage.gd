@@ -160,7 +160,6 @@ const RULES_AWAITING_IMPLEMENTATION: Dictionary[String, String] = {
 	"204.3.12": "c.5",
 	"204.3.12a": "c.5",
 	"204.4.8": "c.2",
-	"205.1.11": "c.1",
 	"206.3.7": "c.5",
 	"206.3.7a": "c.5",
 	"206.3.7b": "c.5",

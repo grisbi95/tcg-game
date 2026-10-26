@@ -245,11 +245,23 @@ func test_205_3_1_hero_moves_to_free_adjacent_cell() -> void:
 	assert_str(_cell_of(hero_id)).is_equal("C2")
 
 
-func test_205_3_2_hero_never_leaves_its_near_rows() -> void:
+func test_205_3_1_hero_moves_anywhere_on_the_board() -> void:
 	_start()
 	var hero := _engine.get_state().find_hero(A)
 	hero.cell = DuelStateBuilder.cell("C2")
-	_assert_rejected(_act(hero.piece_id, "C3"), REASON.CELL_OUTSIDE_HERO_ROWS)
+	var events := _engine.submit(_act(hero.piece_id, "C3"))
+	assert_array(EventLog.describe(events)).contains_exactly(
+		["NormalActionAnnounced:A", "StackEntryAdded:A", "PieceMoved:A", "StackEntryResolved:A"]
+	)
+	assert_str(_cell_of(hero.piece_id)).is_equal("C3")
+
+
+func test_205_3_1_hero_moves_into_enemy_first_row() -> void:
+	_start()
+	var hero := _engine.get_state().find_hero(A)
+	hero.cell = DuelStateBuilder.cell("B4")
+	_engine.submit(_act(hero.piece_id, "B5"))
+	assert_str(_cell_of(hero.piece_id)).is_equal("B5")
 
 
 func test_205_3_3_hero_target_must_be_free_at_announcement() -> void:

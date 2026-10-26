@@ -3,7 +3,7 @@ extends RefCounted
 ## Actions (205) : déploiement, action normale d'une Unit, déplacement du Hero, échecs.
 
 
-## 208.1.1, 208.1.8, 208.1.9, 205.1.2 à 205.1.4, 203.3.2 : raison du refus de `intent`, ou
+## 208.1.1, 208.1.8, 208.1.9, 205.1.2 à 205.1.4, 205.1.11, 203.3.2 : raison du refus de `intent`, ou
 ## NONE. L'attente est contrôlée par DuelEngine. Pur.
 static func validate_deploy(state: DuelState, intent: DeployCard) -> IntentRejected.RejectReason:
 	var reason := StackRules.validate_main_phase_with_empty_stack(state, intent.player)
@@ -17,6 +17,8 @@ static func validate_deploy(state: DuelState, intent: DeployCard) -> IntentRejec
 		return IntentRejected.RejectReason.NOT_DEPLOYABLE
 	if not _is_in_deploy_zone(state, definition, intent.player, intent.cell):
 		return IntentRejected.RejectReason.CELL_NOT_IN_DEPLOY_ZONE
+	if _is_enemy_hero_cell(state, definition, intent.player, intent.cell):
+		return IntentRejected.RejectReason.CELL_OCCUPIED_BY_ENEMY_HERO
 	if state.piece_at(intent.cell) != null:
 		return IntentRejected.RejectReason.CELL_NOT_FREE
 	return EssenceRules.validate_payment(state, intent.player, intent.payment, definition.cost)
@@ -75,7 +77,7 @@ static func validate_normal_action(
 	if not BoardGeometry.are_adjacent(piece.cell, intent.cell):
 		return IntentRejected.RejectReason.CELL_NOT_ADJACENT
 	if piece.kind == Piece.PieceKind.HERO:
-		return _validate_hero_target(state, piece, intent.cell)
+		return _validate_hero_target(state, intent.cell)
 	return _validate_unit_target(state, piece, intent.cell)
 
 
@@ -125,12 +127,8 @@ static func resolve_pending_combat(
 		_act_on_target_cell(state, entry, piece, events)
 
 
-# 205.3.2, 205.3.3 ; 202.3.10 : le Hero n'attaque jamais, sa case visée est libre.
-static func _validate_hero_target(
-	state: DuelState, hero: Piece, cell: Vector2i
-) -> IntentRejected.RejectReason:
-	if not BoardGeometry.is_in_near_rows(hero.owner, cell):
-		return IntentRejected.RejectReason.CELL_OUTSIDE_HERO_ROWS
+# 205.3.1, 205.3.3 ; 202.3.10 : le Hero n'attaque jamais, sa case visée est libre.
+static func _validate_hero_target(state: DuelState, cell: Vector2i) -> IntentRejected.RejectReason:
 	if state.piece_at(cell) != null:
 		return IntentRejected.RejectReason.CELL_NOT_FREE
 	return IntentRejected.RejectReason.NONE
@@ -144,6 +142,19 @@ static func _validate_unit_target(
 	if occupant != null and occupant.owner == unit.owner:
 		return IntentRejected.RejectReason.CELL_OCCUPIED_BY_ALLY
 	return IntentRejected.RejectReason.NONE
+
+
+# 205.1.11 : une Unit ne s'annonce pas sur la case du Hero ennemi ; un Building n'est pas concerné.
+static func _is_enemy_hero_cell(
+	state: DuelState, definition: CardDefinition, side: DuelState.PlayerSide, cell: Vector2i
+) -> bool:
+	var occupant := state.piece_at(cell)
+	return (
+		definition.card_type == CardDefinition.CardType.UNIT
+		and occupant != null
+		and occupant.kind == Piece.PieceKind.HERO
+		and occupant.owner != side
+	)
 
 
 # 202.2.2, 202.2.3, 202.2.5, 202.2.7 : seules les Units et les Buildings deviennent des pièces.
@@ -177,7 +188,8 @@ static func _deploy_on_free_cell(
 
 
 # 205.1.6, 206.1.1 : l'Unit entre en jeu sans case et attaque ; si elle gagne, elle prend la
-# case (206.3.3). Un Hero ennemi n'est jamais sur une case de déploiement d'Unit (205.3.2).
+# case (206.3.3). Libre de Hero ennemi à l'annonce (205.1.11), la case le reste jusqu'ici : le Hero
+# ne se déplace que par sa propre action normale, pile vide (205.3.1, 208.1.10, 208.1.11).
 # 210.3.1a : entrer en jeu, c'est arriver sur le plateau (glossaire, En jeu).
 static func _enter_attacking(
 	state: DuelState, card: CardInstance, defender: Piece, events: Array[DuelEvent]

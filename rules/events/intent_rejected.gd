@@ -32,7 +32,6 @@ enum RejectReason {
 	NO_NORMAL_ACTION,  # 202.2.17 : un Building ne fait jamais d'action normale
 	CELL_NOT_ADJACENT,  # 205.2.5, 205.3.1
 	CELL_OCCUPIED_BY_ALLY,  # 205.2.6
-	CELL_OUTSIDE_HERO_ROWS,  # 205.3.2
 	WRONG_TARGET_COUNT,  # 207.5.1, 207.5.8, 207.5.10 : cibles hors des bornes ou d'un genre non exigé
 	ILLEGAL_TARGET,  # 207.5.6, 207.5.11 à 207.5.16 : cible qui ne remplit pas les conditions
 	NOT_A_SPELL,  # 208.1.3 : seule une carte Spell s'annonce comme Spell
@@ -40,6 +39,7 @@ enum RejectReason {
 	WRONG_TRIGGER_ORDER,  # 208.4.6, 208.4.7 : l'ordre cite chaque effet attendu une fois, seul
 	NO_ESSENCE_PRODUCED,  # 203.6.3, 203.6.4 : produire de l'Essence incline ou recycle une Source
 	PIECE_ASLEEP,  # 205.5.3 : une pièce endormie ne fait pas d'action normale
+	CELL_OCCUPIED_BY_ENEMY_HERO,  # 205.1.11 : une Unit ne s'annonce pas sur la case du Hero ennemi
 }
 
 ## Intention refusée, telle que soumise ; null si le refus ne vient pas d'une intention.

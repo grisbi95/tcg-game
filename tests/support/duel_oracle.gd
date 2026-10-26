@@ -7,8 +7,6 @@ extends RefCounted
 const HAND_LIMIT: int = 7  # 201.3.4
 const TOTAL_SOURCES: int = 10  # 203.5.7
 const DECK_SIZE: int = 30  # 201.6.1
-const BOARD_ROWS: int = 5  # 201.0.2
-const HERO_ROWS: int = 2  # 205.3.2
 
 
 ## Écarts de `state` ; vide si l'état respecte toutes les conditions vérifiées.
@@ -68,19 +66,13 @@ static func _check_sources(
 		violations.append("203.5.7 : %s a un compte de Sources négatif" % side)
 
 
-# 201.0.1, 205.3.2, 205.5.6 : une pièce par case, sur le plateau ; le Hero reste dans ses deux
-# rangées, recalculées ici : A compte depuis la rangée 0, B depuis la dernière (201.2.5) ; un
-# Building n'est jamais éveillé.
+# 201.0.1, 205.5.6 : une pièce par case, sur le plateau ; un Building n'est jamais éveillé.
 static func _check_board(state: DuelState, violations: PackedStringArray) -> void:
 	var occupied: Dictionary[Vector2i, bool] = {}
 	for piece: Piece in state.pieces:
 		if not BoardGeometry.is_on_board(piece.cell) or occupied.has(piece.cell):
 			violations.append("201.0.1 : pièce %d sur la case %s" % [piece.piece_id, piece.cell])
 		occupied[piece.cell] = true
-		var own_first_row := 0 if piece.owner == DuelState.PlayerSide.A else BOARD_ROWS - 1
-		var is_hero := piece.kind == Piece.PieceKind.HERO
-		if is_hero and absi(piece.cell.y - own_first_row) >= HERO_ROWS:
-			violations.append("205.3.2 : Hero hors de ses deux rangées")
 		if piece.kind == Piece.PieceKind.BUILDING and piece.is_awake:
 			violations.append("205.5.6 : Building %d éveillé" % piece.piece_id)
 
