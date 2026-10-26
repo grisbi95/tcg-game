@@ -1,6 +1,6 @@
 # 0010 — Forme du catalogue : effets atomiques, cibles à champs fixes, mots-clés déclarés
 
-- Statut : acceptée ; modifiée par 0047
+- Statut : acceptée ; modifiée par 0047 ; modifiée par 0055
 - Date : 2026-10-16
 - Décideur : créateur du projet
 - Périmètre : schéma JSON de `data/cards/` et classes de `rules/catalog/` (précise la décision 0002)

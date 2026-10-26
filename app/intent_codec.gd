@@ -5,6 +5,7 @@ extends RefCounted
 
 const TYPE_KEY: String = "type"
 const INTENT_SCRIPTS: Dictionary[StringName, GDScript] = {
+	&"AnnounceOrder": preload("res://rules/intents/announce_order.gd"),
 	&"AttachGear": preload("res://rules/intents/attach_gear.gd"),
 	&"CastSpell": preload("res://rules/intents/cast_spell.gd"),
 	&"ChooseMulligan": preload("res://rules/intents/choose_mulligan.gd"),

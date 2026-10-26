@@ -37,6 +37,7 @@ const SENTENCES: Dictionary[StringName, String] = {
 	&"MulliganDecided": "Le joueur %s a décidé de son mulligan.",
 	&"NormalActionAnnounced": "Le joueur %s annonce une action normale.",
 	&"NormalActionFailed": "L'action normale du joueur %s échoue.",
+	&"OrderAnnounced": "Le joueur %s annonce un Ordre.",
 	&"PieceDeployed": "Une pièce du joueur %s est déployée.",
 	&"PieceDestroyed": "Une pièce du joueur %s est détruite.",
 	&"PieceEnteredAttacking": "Une pièce du joueur %s entre en attaquant.",

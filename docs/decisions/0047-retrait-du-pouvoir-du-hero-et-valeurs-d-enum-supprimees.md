@@ -1,6 +1,6 @@
 # 0047 — Retrait du pouvoir du Hero et valeurs d'enum non enregistrées supprimées
 
-- Statut : acceptée
+- Statut : acceptée ; modifiée par 0055
 - Date : 2026-10-23
 - Décideur : créateur du projet
 - Périmètre : retrait du pouvoir du Hero du code ; sort des valeurs d'enum devenues inutiles (`StackEntry`, `IntentRejected`)

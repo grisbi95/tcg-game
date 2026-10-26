@@ -289,6 +289,19 @@ func test_decision_0022_codec_round_trip_for_each_intent_class() -> void:
 		assert_array(Array(defects)).override_failure_message(message).is_empty()
 
 
+func test_decision_0055_codec_round_trips_an_order_announcement() -> void:
+	var intent := AnnounceOrder.new(B, 1, EssencePayment.new(2, 1))
+	intent.target_piece_ids.append(5)
+	intent.target_cells.append(Vector2i(2, 3))
+	intent.target_stack_entry_ids.append(7)
+	var decoded := IntentCodec.decode(IntentCodec.encode(intent))
+	assert_bool(decoded is AnnounceOrder).is_true()
+	assert_array(Array(DeepCompare.find_clone_defects(intent, decoded))).is_empty()
+	var order := decoded as AnnounceOrder
+	assert_int(order.order_index).is_equal(1)
+	assert_array(order.target_cells).contains_exactly([Vector2i(2, 3)])
+
+
 # Deux agents jouent au plus HOST_TICKS images par l'hôte ; `events` reçoit leurs événements.
 func _play_agents(engine: DuelEngine, events: Array[DuelEvent]) -> DuelJournal:
 	var clock := ManualClock.new()

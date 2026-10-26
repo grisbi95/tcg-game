@@ -1,9 +1,9 @@
 # gdlint: disable=max-public-methods
 
 extends GdUnitTestSuite
-## Catalogue : définitions de cartes et de Heroes (ruleset 0.28, décisions 0002 et 0010).
-## Un test nommé par identifiant vérifie une règle de 202.1, 202.2, 202.3 ou 207.1 ; les autres
-## vérifient le contrat du format JSON.
+## Catalogue : définitions de cartes et de Heroes (ruleset 0.52, décisions 0002, 0010 et 0055 ;
+## décision de design 0211 du ruleset pour l'Ordre). Un test nommé par identifiant vérifie une
+## règle de 202.1, 202.2, 202.3, 207.1 ou 211 ; les autres vérifient le contrat du format JSON.
 
 
 func _card_errors(data: Dictionary) -> PackedStringArray:
@@ -183,9 +183,83 @@ func test_202_3_9_hero_has_no_force() -> void:
 	assert_bool(_mentions(errors, "202.3.9")).is_true()
 
 
-func test_202_3_11_hero_has_a_passive() -> void:
-	var errors := _hero_errors(CatalogSamples.with_field(CatalogSamples.hero(), "passive", []))
-	assert_bool(_mentions(errors, "202.3.11")).is_true()
+func test_202_3_11_hero_passive_is_optional() -> void:
+	var passive_only := HeroDefinition.from_dict(CatalogSamples.hero())
+	assert_array(passive_only.passive).has_size(1)
+	var without_passive := OrderSamples.hero_data(OrderSamples.HERO, false)
+	assert_array(Array(_hero_errors(without_passive))).is_empty()
+	assert_array(HeroDefinition.from_dict(without_passive).passive).is_empty()
+
+
+func test_202_3_19_hero_text_may_carry_orders() -> void:
+	var hero := HeroDefinition.from_dict(OrderSamples.hero_data(OrderSamples.HERO, false))
+	assert_array(Array(hero.find_errors())).is_empty()
+	assert_array(hero.orders).has_size(OrderSamples.ORDER_COUNT)
+	assert_array(HeroDefinition.from_dict(CatalogSamples.hero()).orders).is_empty()
+
+
+func test_202_3_20_hero_text_may_carry_a_triggered_effect() -> void:
+	var data := OrderSamples.hero_data(OrderSamples.HERO, false)
+	var hero := HeroDefinition.from_dict(data)
+	assert_array(hero.triggered).has_size(1)
+	var untimed := CatalogSamples.with_field(
+		data, "triggered", [CatalogSamples.modify_force_resolve()]
+	)
+	assert_bool(_mentions(_hero_errors(untimed), "triggered 1 : timing refusé")).is_true()
+	var no_event := CatalogSamples.triggered("end_of_turn")
+	no_event.erase("trigger")
+	var unnamed := CatalogSamples.with_field(data, "triggered", [no_event])
+	assert_bool(_mentions(_hero_errors(unnamed), "207.3.1")).is_true()
+
+
+func test_202_3_21_hero_text_fixes_the_number_of_orders_and_triggered_effects() -> void:
+	var data := OrderSamples.hero_data(OrderSamples.HERO, false)
+	var orders: Array = data["orders"]
+	var hero := HeroDefinition.from_dict(data)
+	assert_int(hero.orders.size()).is_equal(orders.size())
+	assert_int(hero.triggered.size()).is_equal(1)
+	data["orders"] = [orders[0]]
+	assert_int(HeroDefinition.from_dict(data).orders.size()).is_equal(1)
+
+
+func test_202_3_22_hero_text_carries_at_least_one_ability() -> void:
+	var data := OrderSamples.hero_data(OrderSamples.HERO, false)
+	data["orders"] = []
+	data["triggered"] = []
+	assert_bool(_mentions(_hero_errors(data), "202.3.22")).is_true()
+	assert_bool(_mentions(_hero_errors(CatalogSamples.hero()), "202.3.22")).is_false()
+	data["triggered"] = [CatalogSamples.triggered("end_of_turn")]
+	assert_array(Array(_hero_errors(data))).is_empty()
+
+
+func test_211_1_2_order_carries_a_speed() -> void:
+	var data := OrderSamples.hero_data(OrderSamples.HERO, false)
+	var orders: Array = data["orders"]
+	var order: Dictionary = orders[0]
+	order.erase("speed")
+	assert_bool(_mentions(_hero_errors(data), "211.1.2")).is_true()
+	order["speed"] = "none"
+	assert_bool(_mentions(_hero_errors(data), "211.1.2")).is_true()
+	order["speed"] = "reaction"
+	assert_array(Array(_hero_errors(data))).is_empty()
+
+
+func test_211_1_3_order_cost_is_nil_by_default() -> void:
+	var order := HeroOrder.from_dict({"speed": "action", "effects": []})
+	assert_int(order.cost).is_equal(0)
+	assert_array(Array(order.find_errors())).is_empty()
+	var negative := HeroOrder.from_dict({"speed": "action", "cost": -1})
+	assert_bool(_mentions(negative.find_errors(), "« cost »")).is_true()
+
+
+func test_decision_0055_order_effects_resolve_like_a_spell() -> void:
+	var data := OrderSamples.hero_data(OrderSamples.HERO, false)
+	var orders: Array = data["orders"]
+	var order: Dictionary = orders[0]
+	order["effects"] = [CatalogSamples.modify_force_static()]
+	assert_bool(_mentions(_hero_errors(data), "timing refusé pour un Ordre")).is_true()
+	order["effects"] = [CatalogSamples.modify_force_resolve({"amount": 0})]
+	assert_bool(_mentions(_hero_errors(data), "order 1 : effet 1")).is_true()
 
 
 func test_202_3_18_hero_passive_is_static() -> void:

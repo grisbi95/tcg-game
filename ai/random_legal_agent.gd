@@ -15,6 +15,16 @@ class TargetVariant:
 	var cells: Array[Vector2i] = []
 	var stack_entry_ids: Array[int] = []
 
+	## Copie ces cibles dans les tableaux de l'intention.
+	func copy_into(
+		target_piece_ids: Array[int],
+		target_cells: Array[Vector2i],
+		target_stack_entry_ids: Array[int]
+	) -> void:
+		target_piece_ids.assign(piece_ids)
+		target_cells.assign(cells)
+		target_stack_entry_ids.assign(stack_entry_ids)
+
 
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
@@ -45,6 +55,7 @@ static func candidates(state: DuelState, side: DuelState.PlayerSide) -> Array[Du
 	var intents: Array[DuelIntent] = [PassPriority.new(side), EndTurn.new(side)]
 	intents.append_array(_hand_candidates(state, side))
 	intents.append_array(_normal_action_candidates(state, side))
+	intents.append_array(_order_candidates(state, side))
 	return intents
 
 
@@ -111,10 +122,21 @@ static func _spell_candidates(
 	var intents: Array[DuelIntent] = []
 	for variant: TargetVariant in _target_variants(state):
 		var cast := CastSpell.new(side, card.card_instance_id, payment)
-		cast.target_piece_ids.assign(variant.piece_ids)
-		cast.target_cells.assign(variant.cells)
-		cast.target_stack_entry_ids.assign(variant.stack_entry_ids)
+		variant.copy_into(cast.target_piece_ids, cast.target_cells, cast.target_stack_entry_ids)
 		intents.append(cast)
+	return intents
+
+
+static func _order_candidates(state: DuelState, side: DuelState.PlayerSide) -> Array[DuelIntent]:
+	var intents: Array[DuelIntent] = []
+	for index: int in OrderRules.order_count(state, side):
+		var payment := simple_payment(state, side, OrderRules.find_order(state, side, index).cost)
+		for variant: TargetVariant in _target_variants(state):
+			var order := AnnounceOrder.new(side, index, payment)
+			variant.copy_into(
+				order.target_piece_ids, order.target_cells, order.target_stack_entry_ids
+			)
+			intents.append(order)
 	return intents
 
 

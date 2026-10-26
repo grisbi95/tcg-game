@@ -124,6 +124,18 @@ func read_array(key: String) -> Array:
 	return array
 
 
+## Objets du tableau JSON de `key` ; une entrée qui n'est pas un objet est une erreur et est omise.
+func read_objects(key: String) -> Array[Dictionary]:
+	var objects: Array[Dictionary] = []
+	for entry: Variant in read_array(key):
+		if typeof(entry) != TYPE_DICTIONARY:
+			fail("« %s » : chaque entrée est un objet" % key)
+			continue
+		var object: Dictionary = entry
+		objects.append(object)
+	return objects
+
+
 ## Termine la lecture : ajoute un message par champ jamais lu, puis renvoie toutes les erreurs.
 func finish() -> PackedStringArray:
 	for key: String in _data:

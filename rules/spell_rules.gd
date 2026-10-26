@@ -14,13 +14,15 @@ static func validate_cast(state: DuelState, intent: CastSpell) -> IntentRejected
 	var definition := state.catalog.get_card(card.definition_id)
 	if definition.card_type != CardDefinition.CardType.SPELL:
 		return IntentRejected.RejectReason.NOT_A_SPELL
-	var reason := _validate_speed(state, intent.player, definition.speed)
+	var reason := StackRules.validate_speed(state, intent.player, definition.speed)
 	if reason != IntentRejected.RejectReason.NONE:
 		return reason
 	reason = EssenceRules.validate_payment(state, intent.player, intent.payment, definition.cost)
 	if reason != IntentRejected.RejectReason.NONE:
 		return reason
-	return _validate_effect_targets(state, _make_spell_entry(intent, card), definition)
+	return EffectRules.validate_announced_targets(
+		state, _make_spell_entry(intent, card), definition.effects
+	)
 
 
 ## 203.3.2, 203.3.2a, 201.3.8, 207.5.1a, 208.4.1, 208.7.1 : paie le coût ; la carte quitte la main
@@ -40,45 +42,11 @@ static func announce_spell(state: DuelState, intent: CastSpell, events: Array[Du
 ## pendant ses effets (209.2.2), la carte ne bouge plus.
 static func resolve_spell(state: DuelState, entry: StackEntry, events: Array[DuelEvent]) -> void:
 	var definition := state.catalog.get_card(entry.card.definition_id)
-	for effect: EffectDefinition in definition.effects:
-		if effect.timing == EffectDefinition.EffectTiming.RESOLVE:
-			EffectRules.resolve_effect(state, entry, effect, events)
-		if state.is_ended():
-			return
+	EffectRules.resolve_all(state, entry, definition.effects, events)
+	if state.is_ended():
+		return
 	state.get_player(entry.card.owner).discard.append(entry.card)
 	events.append(CardDiscarded.new(entry.card.owner, entry.card.card_instance_id))
-
-
-# 207.1.3, 207.1.4 : Action pendant sa phase principale, pile vide ; 207.1.5, 207.1.6, 208.2.3 :
-# Réaction aussi, et chaque fois qu'il peut répondre.
-static func _validate_speed(
-	state: DuelState, side: DuelState.PlayerSide, speed: CardDefinition.SpellSpeed
-) -> IntentRejected.RejectReason:
-	var responding := not state.stack.is_empty()
-	if responding and speed == CardDefinition.SpellSpeed.REACTION:
-		if side != state.priority_player:
-			return IntentRejected.RejectReason.NOT_YOUR_PRIORITY
-		return IntentRejected.RejectReason.NONE
-	if state.phase != DuelState.DuelPhase.MAIN:
-		return IntentRejected.RejectReason.WRONG_PHASE
-	if side != state.active_player:
-		return IntentRejected.RejectReason.NOT_YOUR_TURN
-	if responding:
-		return IntentRejected.RejectReason.STACK_NOT_EMPTY
-	return IntentRejected.RejectReason.NONE
-
-
-# 207.5.1a : chaque effet qui passe par la pile juge les cibles de son genre.
-static func _validate_effect_targets(
-	state: DuelState, entry: StackEntry, definition: CardDefinition
-) -> IntentRejected.RejectReason:
-	for effect: EffectDefinition in definition.effects:
-		if effect.target == null:
-			continue
-		var reason := EffectRules.validate_targets(state, entry, effect.target)
-		if reason != IntentRejected.RejectReason.NONE:
-			return reason
-	return EffectRules.validate_no_extra_targets(entry, definition.effects)
 
 
 # 207.5.1a : l'entrée porte les cibles choisies à l'annonce.
@@ -87,7 +55,6 @@ static func _make_spell_entry(intent: CastSpell, card: CardInstance) -> StackEnt
 	entry.kind = StackEntry.StackEntryKind.SPELL
 	entry.owner = intent.player
 	entry.card = card
-	entry.target_piece_ids.assign(intent.target_piece_ids)
-	entry.target_cells.assign(intent.target_cells)
-	entry.target_stack_entry_ids.assign(intent.target_stack_entry_ids)
-	return entry
+	return entry.with_targets(
+		intent.target_piece_ids, intent.target_cells, intent.target_stack_entry_ids
+	)

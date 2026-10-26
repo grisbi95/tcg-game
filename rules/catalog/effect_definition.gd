@@ -69,6 +69,19 @@ static func kind_id(effect_kind: EffectKind) -> StringName:
 	return StringName(str(EffectKind.find_key(effect_kind)).to_lower())
 
 
+## 207.3.5, 207.3.7 : la mention « une fois par tour » est portée par la carte et décomptée par
+## carte ; le ruleset ne dit rien d'une carte à plusieurs effets déclenchés, qui est refusée.
+## Message d'erreur sur les effets `effects` d'une carte ou d'un Hero, vide s'il n'y en a pas.
+static func once_per_turn_error(effects: Array[EffectDefinition]) -> String:
+	var triggered := effects.filter(
+		func(effect: EffectDefinition) -> bool: return effect.timing == EffectTiming.TRIGGERED
+	)
+	var marked := triggered.any(func(effect: EffectDefinition) -> bool: return effect.once_per_turn)
+	if marked and triggered.size() > 1:
+		return "207.3.5 : « une fois par tour » exige un seul effet déclenché sur la carte"
+	return ""
+
+
 ## Lit un effet depuis un objet JSON ; les erreurs de lecture vont dans `parse_errors`.
 static func from_dict(data: Dictionary) -> EffectDefinition:
 	var effect := EffectDefinition.new()

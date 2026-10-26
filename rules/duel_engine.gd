@@ -216,6 +216,8 @@ func _route_announcement_validation(intent: DuelIntent) -> IntentRejected.Reject
 		return ActionRules.validate_normal_action(_state, intent as TakeNormalAction)
 	if intent is CastSpell:
 		return SpellRules.validate_cast(_state, intent as CastSpell)
+	if intent is AnnounceOrder:
+		return OrderRules.validate_announce(_state, intent as AnnounceOrder)
 	return IntentRejected.RejectReason.UNKNOWN_INTENT
 
 
@@ -263,6 +265,8 @@ func _resolve_entry(entry: StackEntry, events: Array[DuelEvent]) -> void:
 			TriggerRules.resolve_triggered(_state, entry, events)
 		StackEntry.StackEntryKind.PENDING_COMBAT:
 			ActionRules.resolve_pending_combat(_state, entry, events)
+		StackEntry.StackEntryKind.ORDER:
+			OrderRules.resolve_order(_state, entry, events)
 
 
 # 209.4.9, 209.4.10, 209.4.11a, 209.4.12 : le temps de `side` est écoulé. Le tour se termine, le
@@ -326,3 +330,5 @@ func _apply(intent: DuelIntent, events: Array[DuelEvent]) -> void:
 		SpellRules.announce_spell(_state, intent as CastSpell, events)
 	elif intent is AttachGear:
 		CardRules.announce_gear(_state, intent as AttachGear, events)
+	elif intent is AnnounceOrder:
+		OrderRules.apply_announce(_state, intent as AnnounceOrder, events)
