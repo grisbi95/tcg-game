@@ -110,6 +110,33 @@ static func create_token_effect() -> Dictionary:
 	}
 
 
+## 214 : échange les cases de deux Units alliées ciblées.
+static func swap_cells_effect() -> Dictionary:
+	var target := ally_unit_target()
+	target["count_min"] = 2
+	target["count_max"] = 2
+	return {"kind": "swap_cells", "timing": "resolve", "target": target}
+
+
+## 215, décision 0056 : déplace une Unit ennemie ciblée sur une case libre ciblée adjacente.
+static func move_unit_effect() -> Dictionary:
+	var target := ally_unit_target()
+	target["side"] = "enemy"
+	return {
+		"kind": "move_unit",
+		"timing": "resolve",
+		"target": target,
+		"destination": {"what": "cell", "adjacent_to": "target_piece"},
+	}
+
+
+## 216 : renvoie dans la main une Unit ennemie ciblée.
+static func return_to_hand_effect() -> Dictionary:
+	var target := ally_unit_target()
+	target["side"] = "enemy"
+	return {"kind": "return_to_hand", "timing": "resolve", "target": target}
+
+
 ## Spell d'Action qui crée un jeton Unit sur une case ciblée.
 static func token_spell(id: StringName, cost: int) -> CardDefinition:
 	var data := with_field(spell(), "id", String(id))

@@ -25,6 +25,13 @@ enum CellRow {
 	OWN_FIRST,  # 205.1.3 : sa première rangée
 }
 
+## Filtre d'adjacence de la cible (décision 0056). Enum journalisable : ajouter à la fin.
+enum AdjacentTo {
+	NONE,
+	TARGET_PIECE,  # case adjacente à la pièce que cible le même effet (destination, 215.1.1)
+	OWN_HERO,  # pièce adjacente au Hero du joueur à qui appartient l'effet (205.2.5)
+}
+
 ## Valeur de `max_force` quand la Force de la cible n'est pas bornée.
 const NO_FORCE_LIMIT: int = -1
 const MIN_TARGET_COUNT: int = 1  # 207.5.10
@@ -35,6 +42,7 @@ var piece_kinds: Array[Piece.PieceKind] = []
 ## Borne haute de la Force actuelle de la cible (« de Force 3 ou moins »).
 var max_force: int = NO_FORCE_LIMIT
 var row: CellRow = CellRow.ANY
+var adjacent_to: AdjacentTo = AdjacentTo.NONE
 var count_min: int = MIN_TARGET_COUNT
 var count_max: int = MIN_TARGET_COUNT
 ## Erreurs de lecture du JSON, reprises par `find_errors()`.
@@ -55,6 +63,9 @@ static func from_dict(data: Dictionary) -> TargetSpec:
 	var row_value := reader.read_enum("row", CellRow)
 	if row_value != CatalogReader.NOT_SET:
 		spec.row = row_value as CellRow
+	var adjacent_value := reader.read_enum("adjacent_to", AdjacentTo)
+	if adjacent_value != CatalogReader.NOT_SET:
+		spec.adjacent_to = adjacent_value as AdjacentTo
 	spec._read_piece_kinds(reader)
 	spec.max_force = reader.read_int(
 		"max_force", CatalogReader.NON_NEGATIVE_MINIMUM, NO_FORCE_LIMIT
@@ -104,11 +115,15 @@ func _check_piece(errors: PackedStringArray) -> void:
 		errors.append("207.5.11 : max_force est au moins 0")
 	if max_force != NO_FORCE_LIMIT and piece_kinds.has(Piece.PieceKind.HERO):
 		errors.append("202.3.9 : un Hero n'a pas de Force, max_force l'exclut des genres")
+	if adjacent_to == AdjacentTo.TARGET_PIECE:
+		errors.append("215.1.1 : target_piece ne vaut que pour une case de destination")
 
 
 func _check_cell(errors: PackedStringArray) -> void:
 	if side != TargetSide.ANY or not piece_kinds.is_empty() or max_force != NO_FORCE_LIMIT:
 		errors.append("207.5.11 : une case n'a ni side, ni piece_kinds, ni max_force")
+	if adjacent_to == AdjacentTo.OWN_HERO:
+		errors.append("207.5.11 : own_hero ne vaut que pour une pièce")
 
 
 func _check_spell_on_stack(errors: PackedStringArray) -> void:
@@ -116,3 +131,5 @@ func _check_spell_on_stack(errors: PackedStringArray) -> void:
 		errors.append("207.5.14 : un Spell de la pile n'a ni side, ni piece_kinds, ni max_force")
 	if row != CellRow.ANY:
 		errors.append("207.5.14 : row ne vaut que pour une case")
+	if adjacent_to != AdjacentTo.NONE:
+		errors.append("207.5.14 : un Spell de la pile n'a pas de filtre d'adjacence")

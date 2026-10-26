@@ -71,7 +71,7 @@ static func _decision_candidates(state: DuelState, side: DuelState.PlayerSide) -
 				OrderTriggers.new(side, decision.candidate_ids), OrderTriggers.new(side, reversed)
 			]
 		PendingDecision.DecisionKind.CHOOSE_TARGETS:
-			return _choose_targets_candidates(decision, side)
+			return _choose_targets_candidates(state, decision, side)
 	return []
 
 
@@ -84,7 +84,7 @@ static func _mulligan_candidates(state: DuelState, side: DuelState.PlayerSide) -
 
 
 static func _choose_targets_candidates(
-	decision: PendingDecision, side: DuelState.PlayerSide
+	state: DuelState, decision: PendingDecision, side: DuelState.PlayerSide
 ) -> Array[DuelIntent]:
 	var intents: Array[DuelIntent] = []
 	for target_id: int in decision.candidate_ids:
@@ -97,7 +97,40 @@ static func _choose_targets_candidates(
 		var by_cell := ChooseTargets.new(side)
 		by_cell.target_cells.append(cell)
 		intents.append(by_cell)
+	intents.append_array(_two_target_choices(state, decision, side))
 	return intents
+
+
+# Décision 0056 : un effet à deux cibles (échange, ou pièce et case de destination) se répond en
+# une seule intention ; sans un tel effet en attente, ces choix ne valent rien et ne se fabriquent
+# pas. Le moteur juge les paires et les cases qui ne conviennent pas.
+static func _two_target_choices(
+	state: DuelState, decision: PendingDecision, side: DuelState.PlayerSide
+) -> Array[DuelIntent]:
+	var intents: Array[DuelIntent] = []
+	var effect := _awaited_effect(state, decision)
+	if effect == null:
+		return intents
+	for first_index: int in decision.candidate_ids.size():
+		if effect.target.count_max > 1:
+			for second_id: int in decision.candidate_ids.slice(first_index + 1):
+				var pair := ChooseTargets.new(side)
+				pair.target_piece_ids.assign([decision.candidate_ids[first_index], second_id])
+				intents.append(pair)
+		if effect.destination != null:
+			for cell: Vector2i in decision.candidate_cells:
+				var moved := ChooseTargets.new(side)
+				moved.target_piece_ids.append(decision.candidate_ids[first_index])
+				moved.target_cells.append(cell)
+				intents.append(moved)
+	return intents
+
+
+static func _awaited_effect(state: DuelState, decision: PendingDecision) -> EffectDefinition:
+	for entry: StackEntry in state.triggers_to_add:
+		if entry.stack_entry_id == decision.subject_stack_entry_id:
+			return TriggerRules.effect_of(state, entry)
+	return null
 
 
 static func _hand_candidates(state: DuelState, side: DuelState.PlayerSide) -> Array[DuelIntent]:
@@ -120,7 +153,8 @@ static func _spell_candidates(
 	state: DuelState, side: DuelState.PlayerSide, card: CardInstance, payment: EssencePayment
 ) -> Array[DuelIntent]:
 	var intents: Array[DuelIntent] = []
-	for variant: TargetVariant in _target_variants(state):
+	var definition := state.catalog.get_card(card.definition_id)
+	for variant: TargetVariant in _target_variants(state, definition.effects):
 		var cast := CastSpell.new(side, card.card_instance_id, payment)
 		variant.copy_into(cast.target_piece_ids, cast.target_cells, cast.target_stack_entry_ids)
 		intents.append(cast)
@@ -130,8 +164,9 @@ static func _spell_candidates(
 static func _order_candidates(state: DuelState, side: DuelState.PlayerSide) -> Array[DuelIntent]:
 	var intents: Array[DuelIntent] = []
 	for index: int in OrderRules.order_count(state, side):
-		var payment := simple_payment(state, side, OrderRules.find_order(state, side, index).cost)
-		for variant: TargetVariant in _target_variants(state):
+		var hero_order := OrderRules.find_order(state, side, index)
+		var payment := simple_payment(state, side, hero_order.cost)
+		for variant: TargetVariant in _target_variants(state, hero_order.effects):
 			var order := AnnounceOrder.new(side, index, payment)
 			variant.copy_into(
 				order.target_piece_ids, order.target_cells, order.target_stack_entry_ids
@@ -171,7 +206,9 @@ static func simple_payment(
 	return EssencePayment.new(inclined, to_produce - inclined)
 
 
-static func _target_variants(state: DuelState) -> Array[TargetVariant]:
+static func _target_variants(
+	state: DuelState, effects: Array[EffectDefinition]
+) -> Array[TargetVariant]:
 	var variants: Array[TargetVariant] = [TargetVariant.new()]
 	for piece: Piece in state.pieces:
 		var by_piece := TargetVariant.new()
@@ -185,4 +222,41 @@ static func _target_variants(state: DuelState) -> Array[TargetVariant]:
 		var by_entry := TargetVariant.new()
 		by_entry.stack_entry_ids.append(entry.stack_entry_id)
 		variants.append(by_entry)
+	variants.append_array(_two_target_variants(state, effects))
+	return variants
+
+
+# Décision 0056 : une paire de pièces pour un effet à deux cibles, une pièce et une case libre pour
+# un effet à destination ; sans eux, ces variantes ne valent rien et ne se fabriquent pas.
+static func _two_target_variants(
+	state: DuelState, effects: Array[EffectDefinition]
+) -> Array[TargetVariant]:
+	var variants: Array[TargetVariant] = []
+	for effect: EffectDefinition in effects:
+		if effect.destination != null:
+			variants.append_array(_piece_and_cell_variants(state))
+		elif effect.target != null and effect.target.count_max > 1:
+			variants.append_array(_piece_pair_variants(state))
+	return variants
+
+
+static func _piece_and_cell_variants(state: DuelState) -> Array[TargetVariant]:
+	var variants: Array[TargetVariant] = []
+	for piece: Piece in state.pieces:
+		for cell: Vector2i in BoardGeometry.all_cells():
+			if state.piece_at(cell) == null:
+				var moved := TargetVariant.new()
+				moved.piece_ids.append(piece.piece_id)
+				moved.cells.append(cell)
+				variants.append(moved)
+	return variants
+
+
+static func _piece_pair_variants(state: DuelState) -> Array[TargetVariant]:
+	var variants: Array[TargetVariant] = []
+	for first_index: int in state.pieces.size():
+		for second: Piece in state.pieces.slice(first_index + 1):
+			var pair := TargetVariant.new()
+			pair.piece_ids.assign([state.pieces[first_index].piece_id, second.piece_id])
+			variants.append(pair)
 	return variants

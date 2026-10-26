@@ -12,6 +12,9 @@ enum EffectKind {
 	DESTROY,  # cible pièce (206.3.1)
 	COUNTER_SPELL,  # cible Spell de la pile (207.6)
 	CREATE_TOKEN,  # token_piece_kind, token_force ; cible case (202.4)
+	SWAP_CELLS,  # 214 : cible deux Units alliées (count 2), distinctes
+	MOVE_UNIT,  # 215 : cible une Unit et, par `destination`, une case libre (décision 0056)
+	RETURN_TO_HAND,  # 216 : cible une Unit
 }
 
 ## Quand l'effet a lieu.
@@ -40,6 +43,10 @@ enum StaticScope {
 const NO_TOKEN_FORCE: int = -1
 ## `token_piece_kind` non renseigné : un jeton n'est jamais un Hero (202.4.8).
 const NO_TOKEN_KIND: Piece.PieceKind = Piece.PieceKind.HERO
+## 214.1.3 : un échange cible deux Units.
+const SWAP_TARGET_COUNT: int = 2
+## 215.1.1 : un déplacement cible une Unit et une case.
+const MOVE_TARGET_COUNT: int = 1
 const _MODIFY_FORCE_TIMINGS: Array[EffectTiming] = [
 	EffectTiming.RESOLVE, EffectTiming.STATIC, EffectTiming.TRIGGERED
 ]
@@ -53,6 +60,8 @@ var scope: StaticScope = StaticScope.NONE
 var once_per_turn: bool = false
 ## Null pour un effet statique, qui ne cible pas (207.2.1).
 var target: TargetSpec
+## 215.1.1, décision 0056 : case libre que cible MOVE_UNIT en plus de sa pièce ; null sinon.
+var destination: TargetSpec
 ## 207.4.2 : présente seulement pour un effet non statique qui modifie la Force.
 var has_duration: bool = false
 var duration: ActiveEffect.EffectDuration = ActiveEffect.EffectDuration.UNTIL_END_OF_TURN
@@ -111,6 +120,9 @@ func find_errors() -> PackedStringArray:
 	if target != null:
 		for message: String in target.find_errors():
 			errors.append("cible : " + message)
+	if destination != null:
+		for message: String in destination.find_errors():
+			errors.append("destination : " + message)
 	return errors
 
 
@@ -124,6 +136,8 @@ func _read_conditions(reader: CatalogReader) -> void:
 	once_per_turn = reader.read_bool("once_per_turn", false)
 	if reader.has("target"):
 		target = TargetSpec.from_dict(reader.read_object("target"))
+	if reader.has("destination"):
+		destination = TargetSpec.from_dict(reader.read_object("destination"))
 
 
 func _read_parameters(reader: CatalogReader) -> void:
@@ -194,6 +208,7 @@ func _check_parameters(errors: PackedStringArray) -> void:
 		errors.append("202.4.1 : token_piece_kind et token_force ne valent que pour CREATE_TOKEN")
 	_check_target_what(errors)
 	_check_hero_target(errors)
+	_check_movement(errors)
 
 
 func _check_target_what(errors: PackedStringArray) -> void:
@@ -214,8 +229,56 @@ func _check_hero_target(errors: PackedStringArray) -> void:
 		errors.append("202.3.9 : %s ne vise pas de Hero" % String(kind_id(kind)))
 
 
+# 214.1.3, 214.1.4, 215.1.1, 216.1.1, décision 0056 : les trois effets de mouvement ciblent des
+# Units ; l'échange en cible deux alliées ; le déplacement nomme sa case de destination.
+func _check_movement(errors: PackedStringArray) -> void:
+	var is_movement := (
+		kind in [EffectKind.SWAP_CELLS, EffectKind.MOVE_UNIT, EffectKind.RETURN_TO_HAND]
+	)
+	if destination != null and kind != EffectKind.MOVE_UNIT:
+		errors.append("215.1.1 : destination ne vaut que pour MOVE_UNIT")
+	if target != null and target.adjacent_to == TargetSpec.AdjacentTo.TARGET_PIECE:
+		errors.append("215.1.1 : target_piece ne vaut que pour la destination")
+	if not is_movement or target == null:
+		return
+	var rule := _target_rule()
+	if target.what == TargetSpec.TargetWhat.PIECE and target.piece_kinds != [Piece.PieceKind.UNIT]:
+		errors.append("%s : %s ne cible que des Units" % [rule, String(kind_id(kind))])
+	if kind == EffectKind.SWAP_CELLS:
+		_check_swap(errors)
+	if kind == EffectKind.MOVE_UNIT:
+		_check_move(errors)
+
+
+# 214.1.3, 214.1.4 : exactement deux Units alliées.
+func _check_swap(errors: PackedStringArray) -> void:
+	if target.side != TargetSpec.TargetSide.ALLY:
+		errors.append("214.1.3 : swap_cells ne cible que des Units alliées")
+	if target.count_min != SWAP_TARGET_COUNT or target.count_max != SWAP_TARGET_COUNT:
+		errors.append("214.1.4 : swap_cells cible exactement deux Units")
+
+
+# 215.1.1 : une Unit et une case libre.
+func _check_move(errors: PackedStringArray) -> void:
+	if target.count_min != MOVE_TARGET_COUNT or target.count_max != MOVE_TARGET_COUNT:
+		errors.append("215.1.1 : move_unit cible une seule Unit")
+	if destination == null:
+		errors.append("215.1.1 : move_unit nomme sa case de destination dans destination")
+		return
+	if destination.what != TargetSpec.TargetWhat.CELL:
+		errors.append("215.1.1 : la destination de move_unit est une case")
+	if destination.count_min != MOVE_TARGET_COUNT or destination.count_max != MOVE_TARGET_COUNT:
+		errors.append("215.1.1 : move_unit a une seule case de destination")
+
+
 func _target_rule() -> String:
 	match kind:
+		EffectKind.SWAP_CELLS:
+			return "214.1.4"
+		EffectKind.MOVE_UNIT:
+			return "215.1.1"
+		EffectKind.RETURN_TO_HAND:
+			return "216.1.1"
 		EffectKind.COUNTER_SPELL:
 			return "207.6.2"
 		EffectKind.CREATE_TOKEN:
