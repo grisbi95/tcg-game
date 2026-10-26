@@ -42,7 +42,7 @@
 | Défausse | Zone hors du plateau qui rassemble les cartes d'un joueur mises au rebut. | |
 | Défausser | Mettre une carte de sa main dans sa défausse, par un effet dont le texte le dit, le joueur choisissant la carte à la résolution sans qu'elle soit une cible ; voir 212.1.1, 212.1.3, 212.1.4 et 212.2.1. | |
 | Défenseur | Pièce attaquée, dans un combat ; voir 206.1.2. | |
-| Déplacement | Passage d'une pièce de sa case à une autre case, qu'un échange n'est pas ; voir 205.2.2, 205.3.1 et 214.2.5. | |
+| Déplacement | Passage d'une pièce de sa case à une autre case, qu'un échange n'est pas et que le déplacement d'une Unit par un effet est ; voir 205.2.2, 205.3.1, 214.2.5 et 215.1.2. | |
 | Déployer | Jouer une Unit ou un Building en le plaçant sur une case du plateau ; voir 205.1.1, 205.1.2, 205.1.3 et 205.1.11. | |
 | Dernier souffle | Mot-clé de déclencheur dont l'effet se déclenche quand la pièce qui le porte est détruite ; voir 210.3.2, 210.3.2a, 210.3.2b, 210.3.2c et 202.4.13a. | |
 | Détaché | Se dit d'un Gear qui n'est plus attaché à une pièce, parce qu'il a été remplacé ou que sa pièce a quitté le plateau ; voir 202.2.12, 202.2.13, 207.2.9a, 207.2.9b et 207.4.8. | |
@@ -110,8 +110,10 @@
 | Réaction (vitesse) | Vitesse d'un Spell ou d'un Ordre que son joueur peut annoncer pendant sa phase principale, quand la pile est vide, et aussi chaque fois qu'il peut répondre ; voir 207.1.2, 207.1.5, 207.1.6, 208.2.3, 211.2.6 et 211.2.7. | |
 | Recycler | Faire quitter le jeu à une Source inclinée ; voir 203.2.2, 203.2.3, 203.2.6 et 203.2.7. | |
 | Redresser | Faire passer une Source de l'état incliné à l'état redressé ; une Source dans cet état est dite redressée ; voir 203.2.1 et 204.1.17. | |
+| Regarder | Pour un joueur, voir la carte du dessus de son deck par un effet qui le dit, sans que son adversaire la voie ; voir 217.1.1, 217.1.4 et 217.1.5. | |
 | Règle du jeu | Règle numérotée des règles complètes, par opposition au texte d'une carte ; voir 200.2.1 et 200.3.1b. | |
 | Rempart | Mot-clé de combat à valeur X, qui donne à la pièce X de Force de plus quand elle défend ; voir 210.4.2, 210.4.2a, 210.4.2b et 210.4.2c. | |
+| Renvoyer | Faire quitter le plateau à une Unit pour que sa carte revienne dans la main de son joueur, ce qui n'est pas la détruire ; voir 216.1.1, 216.1.2, 216.1.3 et 216.2.1. | |
 | Répondre | Agir pendant le tour d'un autre joueur ou en réaction à une action ; voir 204.3.9, 208.2.3, 208.2.4, 208.4.5, 208.7.1, 208.7.2, 208.7.10 et 208.7.11. | |
 | Réserve | Emplacement propre à chaque joueur, qui contient ses Sources qui ne sont pas encore entrées en jeu, sans rapport avec la réserve d'Essence ; voir 203.5.1, 204.1.12 et 204.3.5. | |
 | Réserve d'Essence | Essence qu'un joueur a produite pendant son propre tour et n'a pas encore dépensée, perdue à la fin de ce tour ; voir 203.1.3, 203.6.1, 203.6.2, 203.6.3, 203.6.4, 203.6.5, 203.6.12, 201.4.10 et 204.5.7a. | |
@@ -120,6 +122,7 @@
 | Sans réponse | Se dit d'une entrée de la pile, annonce ou effet déclenché, à laquelle aucun joueur ne peut répondre et qui se résout aussitôt ; voir 208.7.3, 208.7.4, 208.7.5, 208.7.6, 208.7.8, 208.7.9, 208.7.12, 208.7.13, 208.7.15 et 208.7.16. | |
 | Source | Élément d'un joueur qui produit l'Essence ; voir 203.1.2. | |
 | Sous-règle | Règle dont l'identifiant ajoute une lettre à celui de la règle qu'elle précise ; voir 200.1.1. | |
+| Sous son deck | Position d'une carte placée après toutes les autres cartes du deck de son joueur, qu'elle quitte en dernier en piochant ; voir 217.1.3. | |
 | Spell | Type de carte de deck ; voir 202.2.5, 202.2.20, 202.2.21, 207.1.1, 207.1.7 et 207.1.7a. | |
 | Temps de réponse | Temps dont dispose un joueur pour chaque décision que les règles attendent de lui quand la pile n'est pas vide, ou quand il n'est pas le joueur actif ; voir 209.4.6, 209.4.7, 209.4.7a, 209.4.7b, 209.4.7c, 209.4.10 et 209.4.13. | |
 | Temps de tour | Temps dont dispose le joueur actif pour ses décisions pendant son tour quand la pile est vide, en pause tant que la pile n'est pas vide ; voir 209.4.3, 209.4.4, 209.4.4a, 209.4.4c, 209.4.4d, 209.4.4h, 209.4.8, 209.4.8a et 209.4.9. | |

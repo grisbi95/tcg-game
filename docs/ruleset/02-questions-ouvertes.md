@@ -90,36 +90,6 @@ Faut-il étendre aux Ordres 208.2.4a, 208.7.10 et 208.7.11, qui ne citent que l'
 - Option B : ne rien changer, les trois règles se lisent avec 208.2.4 et 208.7.8 ; compromis : une règle qui ne dit pas explicitement le cas de l'Ordre.
 Manque pour trancher : le choix éditorial du créateur.
 
-**Q-132 · Déplacer une Unit par un effet** · chapitres 205 et 207 · ouverte le 26 octobre 2026
-Que fait un effet de carte qui déplace une Unit ennemie sur une case libre ciblée (Glissement, Manipulateur du catalogue de playtest), alors que le glossaire ne définit le déplacement que par l'action normale (205.2.2, 205.3.1), que Q-125 a tranché qu'un échange n'est pas un déplacement (214.2.5) et qu'aucune règle ne dit si cette Unit s'endort, se réveille, arrive sur le plateau ou attaque ?
-- Option A : le déplacement par un effet suit le modèle de l'échange : il n'endort ni ne réveille, n'est pas une action normale et ne fait pas arriver l'Unit ; compromis : une règle de plus, et une Unit déplacée garde son état.
-- Option B : le déplacement par un effet endort l'Unit déplacée ; compromis : une règle de plus, et un effet de contrôle qui prive aussi l'Unit de son action.
-Manque pour trancher : le choix du créateur.
-
-**Q-133 · Renvoyer une pièce dans la main** · chapitres 201, 202 et 207 · ouverte le 26 octobre 2026
-Que fait un effet qui renvoie une Unit ennemie dans la main de son joueur (Passeur, Reflux du catalogue de playtest), alors que les règles ne décrivent ce passage que pour un déploiement ou un Gear qui ne s'attache pas (205.1.7, 205.1.10, 202.2.24a) et ne disent rien du jeton, du Gear attaché ni de Dernier souffle ?
-- Option A : la carte revient dans la main de son joueur, dans sa défausse si la main est pleine (comme 205.1.10) ; un jeton cesse d'exister (202.4.3) ; le Gear attaché va dans la défausse (202.2.13) ; Dernier souffle ne se déclenche pas ; compromis : une règle de plus, et un renvoi qui peut défausser la carte.
-- Option B : même règle, mais le renvoi n'a pas lieu si la main est pleine (200.4.1) ; compromis : un renvoi que la main de l'adversaire peut empêcher.
-Manque pour trancher : le choix du créateur.
-
-**Q-134 · Regarder le dessus du deck et le mettre dessous** · chapitres 201 et 207 · ouverte le 26 octobre 2026
-Que fait l'effet « regardez la carte du dessus de votre deck ; vous pouvez la mettre sous votre deck » (Observatoire du catalogue de playtest), alors que 201.4.1 dit que les cartes d'un deck sont face cachée et qu'aucune règle ne définit regarder une carte ni la placer sous le deck ?
-- Option A : seul le joueur regarde la carte, et un choix libre de la laisser ou de la placer sous son deck ; compromis : une exception à 201.4.1 pour un seul joueur.
-- Option B : la carte est montrée aux deux joueurs ; compromis : une information publique de plus, et un effet moins utile.
-Manque pour trancher : le choix du créateur.
-
-**Q-135 · Condition « si » d'un effet déclenché** · chapitres 204 et 207 · ouverte le 26 octobre 2026
-Quand se lit la condition « si vous avez une carte ou moins en main » de l'effet déclenché « Au début de votre tour » du Hero Pilleuse du catalogue de playtest, alors que 207.3.1 ne parle que de l'événement, que 208.4.10 et 208.4.11 font attendre l'effet jusqu'à la phase principale et que 204.3.6 fait piocher pendant le début du tour ?
-- Option A : à l'événement, c'est-à-dire pendant le début du tour, sans que les règles disent avant ou après la pioche de 204.3.6 ; compromis : une règle d'ordre à écrire à l'intérieur du début du tour.
-- Option B : à la résolution ; compromis : la condition lit la main après la pioche et après toute réponse, mais un effet déclenché peut s'ajouter à la pile sans que sa condition soit vraie.
-Manque pour trancher : le choix du créateur.
-
-**Q-136 · Effet déclenché porté par un Gear** · chapitres 202 et 207 · ouverte le 26 octobre 2026
-Un Gear peut-il porter un effet déclenché (Trophée, Grimoire du catalogue de playtest), alors que 207.2.8 et 207.2.9 ne règlent que l'effet statique d'un Gear, que 207.3.1 à 207.3.11 parlent de pièces et de cartes et qu'un Gear n'occupe aucune case (202.2.7) ?
-- Option A : oui, il se déclenche tant que le Gear est attaché, et appartient au joueur du Gear (207.3.4) ; compromis : une règle de plus sur le début et la fin de l'effet déclenché d'un Gear.
-- Option B : non ; compromis : Trophée et Grimoire sont à réécrire.
-Manque pour trancher : le choix du créateur.
-
 **Q-137 · Sens de « détruit son défenseur »** · chapitres 206 et 207 · ouverte le 26 octobre 2026
 Que veut dire « l'Unit qui porte ce Gear détruit son défenseur » (Trophée, Grimoire du catalogue de playtest), alors que 206.3.6 détruit l'attaquant et le défenseur à égalité de Force, que 206.4.3 ne détruit pas un Hero attaqué et que le catalogue de playtest écrit que l'attaquant gagne le combat, égalité et attaque d'un Hero exclues ?
 - Option A : une règle du chapitre 206 définit l'événement : le défenseur est détruit par le combat et l'attaquant ne l'est pas ; compromis : une règle de plus, l'égalité de 206.3.6 ne déclenche rien.
@@ -187,6 +157,19 @@ Dans quel ordre se jouent les 24 parties du plan de série, alors que le plan fi
 - Option A : l'ordre de lecture du plan ; compromis : les 4 parties d'un affrontement se jouent de suite, un affrontement par session au plus tôt.
 - Option B : un ordre différent fixé avant la série ; compromis : un second plan à écrire.
 Manque pour trancher : le nombre de parties jouables par session et le choix du créateur.
+
+**Q-143 · Expiration du temps pendant le choix de laisser la carte ou de la mettre sous son deck** · chapitres 209 et 217 · ouverte le 26 octobre 2026
+Que devient le choix de 217.1.2 et 217.1.3 quand le temps d'un joueur atteint 0 seconde pendant qu'il le fait (Observatoire du catalogue de playtest), alors que 209.4.4 et 209.4.7 font s'écouler le temps pour chaque décision que les règles attendent et qu'aucune règle d'expiration ne vise ce choix ?
+- Option A : la carte reste au dessus du deck ; compromis : un joueur qui hésite garde la carte, sans règle de tirage au sort.
+- Option B : la carte est mise sous le deck ; compromis : un joueur qui hésite perd la carte du dessus.
+- Option C : un tirage au sort entre les deux choix (209.4.13) ; compromis : une règle d'expiration de plus, au hasard.
+Manque pour trancher : le choix du créateur.
+
+**Q-144 · Place de l'événement « début du tour » par rapport au réveil, au redressement et à la Source reçue** · chapitre 204 · ouverte le 26 octobre 2026
+L'événement « début du tour » de 204.3.12 survient-il avant ou après le réveil (204.3.10, 204.3.11), le redressement (204.3.2) et la Source reçue (204.3.1), alors que 204.3.12 ne le place que par rapport à la pioche de 204.3.6 ?
+- Option A : avant toutes les étapes de 204.3.8 ; compromis : une condition « si » d'un effet du début du tour ne lit jamais l'état après le réveil, le redressement ou la Source reçue.
+- Option B : après le réveil, le redressement et la Source reçue, avant la pioche ; compromis : une condition lit les Sources redressées et les pièces réveillées de ce tour.
+Manque pour trancher : une carte du catalogue dont la condition « si » dépend d'un de ces états, et le choix du créateur.
 
 ## Tranchées
 
@@ -311,3 +294,8 @@ Manque pour trancher : le nombre de parties jouables par session et le choix du 
 | Q-129 · Attribution des decks aux joueurs · `70-playtest/protocole.md` · ouverte le 26 octobre 2026 · Comment les decks du catalogue de playtest sont-ils attribués aux joueurs A et B d'une partie ? Tranchée le 26 octobre 2026 : un plan de série fixé à l'avance, option A ; ordre de jeu des parties : voir Q-142. | [0230](40-decisions/0230-attribution-des-decks-aux-joueurs.md) ; voir Q-142 |
 | Q-130 · Alternance du premier joueur avec des decks asymétriques · `70-playtest/protocole.md` et 204.3.4 · ouverte le 26 octobre 2026 · L'alternance du premier joueur (décision 0158) est-elle maintenue avec des decks asymétriques ? Tranchée le 26 octobre 2026 : le plan de série fixe le premier joueur, chaque deck commençant 2 parties sur 4 dans chaque affrontement, option A. | [0231](40-decisions/0231-premier-joueur-fixe-par-le-plan-de-serie.md) |
 | Q-131 · Mesures du protocole avec des decks différents · `70-playtest/protocole.md` · ouverte le 26 octobre 2026 · Quelles mesures du tableau des cibles et seuils restent valables avec des decks différents ? Tranchée le 26 octobre 2026 : les cibles et seuils sont refixés par une décision avant la première série J3, option C, contre la recommandation ; les mesures à refixer : voir Q-141. | [0232](40-decisions/0232-cibles-et-seuils-refixes-avant-la-serie.md) ; voir Q-141 |
+| Q-132 · Déplacer une Unit par un effet · chapitres 205 et 207 · ouverte le 26 octobre 2026 · Que fait un effet de carte qui déplace une Unit ennemie sur une case libre ciblée ? Tranchée le 26 octobre 2026 : il n'endort ni ne réveille l'Unit, n'est pas une action normale, ne la fait pas arriver et n'est pas un combat, option A (chapitre 215). | [0233](40-decisions/0233-deplacer-une-unit-par-un-effet.md) |
+| Q-133 · Renvoyer une pièce dans la main · chapitres 201, 202 et 207 · ouverte le 26 octobre 2026 · Que fait un effet qui renvoie une Unit ennemie dans la main de son joueur ? Tranchée le 26 octobre 2026 : la carte revient dans la main, dans la défausse si la main est pleine ; le jeton cesse d'exister ; le Gear va dans la défausse ; Dernier souffle ne se déclenche pas, option A (chapitre 216). | [0234](40-decisions/0234-renvoyer-une-piece-dans-la-main.md) |
+| Q-134 · Regarder le dessus du deck et le mettre dessous · chapitres 201 et 207 · ouverte le 26 octobre 2026 · Que fait l'effet « regardez la carte du dessus de votre deck ; vous pouvez la mettre sous votre deck » ? Tranchée le 26 octobre 2026 : seul le joueur regarde la carte, choix libre, l'adversaire voit le choix, option A (chapitre 217 et 201.4.1a) ; expiration du temps : voir Q-143. | [0235](40-decisions/0235-regarder-le-dessus-du-deck.md) ; voir Q-143 |
+| Q-135 · Condition « si » d'un effet déclenché · chapitres 204 et 207 · ouverte le 26 octobre 2026 · Quand se lit la condition « si » d'un effet déclenché au début du tour ? Tranchée le 26 octobre 2026 : à l'événement, avant la pioche de 204.3.6, option A (204.3.12, 204.3.12a, 207.3.13) ; place de l'événement dans le début du tour : voir Q-144. | [0236](40-decisions/0236-condition-si-lue-a-l-evenement.md) ; voir Q-144 |
+| Q-136 · Effet déclenché porté par un Gear · chapitres 202 et 207 · ouverte le 26 octobre 2026 · Un Gear peut-il porter un effet déclenché ? Tranchée le 26 octobre 2026 : oui, tant qu'il est attaché à une Unit en jeu, option A (207.3.12). | [0237](40-decisions/0237-effet-declenche-porte-par-un-gear.md) |

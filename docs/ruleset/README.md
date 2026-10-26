@@ -1,6 +1,6 @@
 # Ruleset du TCG tactique
 
-> Dossier de conception des règles, intégré au dépôt du jeu `tcg-game`, dans `docs/ruleset/` (décision 0014 du projet). Édition courante : **0.50** (protocole du premier playtest : série de 24 parties entre les 4 decks du catalogue de playtest, plan de série, cibles et seuils à refixer, 26 octobre 2026). Historique dans [90-changelog.md](90-changelog.md).
+> Dossier de conception des règles, intégré au dépôt du jeu `tcg-game`, dans `docs/ruleset/` (décision 0014 du projet). Édition courante : **0.51** (déplacement par un effet, renvoi dans la main, regard sur le dessus du deck, condition « si » d'un effet déclenché, effet déclenché d'un Gear, 26 octobre 2026). Historique dans [90-changelog.md](90-changelog.md).
 
 ## Quel document pour quel lecteur
 
@@ -38,6 +38,9 @@
 | [212](20-regles-completes/212-defausser.md) | Défausser : nature de l'effet, défausse comme événement |
 | [213](20-regles-completes/213-valeur-x.md) | Valeur X : coût X, valeur X définie par un texte |
 | [214](20-regles-completes/214-echanger.md) | Échanger : échange des cases de deux Units alliées |
+| [215](20-regles-completes/215-deplacer-par-un-effet.md) | Déplacer une Unit par un effet : nature, conséquences |
+| [216](20-regles-completes/216-renvoyer-dans-la-main.md) | Renvoyer dans la main : carte, jeton, Gear, Dernier souffle |
+| [217](20-regles-completes/217-regarder-le-dessus-du-deck.md) | Regarder le dessus du deck : visibilité, choix, deck vide |
 
 ## Workflow d'une session de travail
 

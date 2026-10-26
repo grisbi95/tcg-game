@@ -84,6 +84,20 @@ Aucun Invariant.
 
 **207.3.11a** [ACTÉ] Un jeton qui a quitté le plateau compte encore comme une carte du joueur à qui il appartenait, pour un effet déclenché qu'il a déjà déclenché (décision 0150 ; voir 200.1.1, 202.4.3, 207.3.3 et 207.3.11).
 
+**207.3.12** [ACTÉ] Un Gear peut porter un effet déclenché (décision 0237 ; voir 202.2.6 et 207.3.1).
+
+**207.3.12a** [ACTÉ] L'effet déclenché d'un Gear se déclenche tant que le Gear est attaché à une Unit en jeu (décision 0237 ; voir 207.2.9 et 207.3.12).
+
+**207.3.12b** [ACTÉ] L'effet déclenché d'un Gear appartient au joueur à qui appartient le Gear (décision 0237 ; voir 207.3.4 et 207.3.12).
+
+**207.3.12c** [ACTÉ] Un effet déjà déclenché par un Gear a lieu même si le Gear a été détaché ou si l'Unit à laquelle il était attaché a quitté le plateau (décision 0237 ; voir 207.3.3, 207.2.9a et 207.2.9b).
+
+**207.3.13** [ACTÉ] La condition « si » placée dans le texte d'un effet déclenché se lit quand survient l'événement qui le déclenche (décision 0236 ; voir 207.3.1 et 204.3.12a).
+
+**207.3.13a** [ACTÉ] Un effet déclenché dont la condition « si » est fausse à cet événement ne se déclenche pas (décision 0236 ; voir 207.3.13).
+
+**207.3.13b** [ACTÉ] La condition « si » d'un effet déclenché ne se lit pas de nouveau à la résolution de cet effet (décision 0236 ; voir 207.3.13 et 208.3.2).
+
 ## 207.4 Durées
 
 **207.4.1** [ACTÉ] Le texte d'un effet peut porter une durée (décision 0092).

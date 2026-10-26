@@ -74,6 +74,8 @@
 
 **201.4.1** [ACTÉ] Les cartes d'un deck sont face cachée (décision 0012).
 
+**201.4.1a** [ACTÉ] Le joueur à qui appartient un deck voit la carte du dessus de ce deck quand un effet le fait regarder selon 217.1.1 (décision 0235 ; voir 200.1.1 et 217.1.5).
+
 **201.4.2** [ACTÉ] Seul le joueur qui tient une main en voit les cartes (décision 0012).
 
 **201.4.3** [ACTÉ] Les cartes d'une défausse sont visibles des deux joueurs (décision 0012).

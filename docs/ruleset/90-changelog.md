@@ -496,3 +496,15 @@
 - [protocole.md](70-playtest/protocole.md) : portée de la section Decks de test, tableau des décisions, section Série, section Plan de série (nouvelle), définitions Affrontement et Plan de série, introduction du tableau des cibles et seuils, section Points à trancher. Fiche de relevé, tableau des cibles et seuils et couverture des règles PROVISOIRE non modifiés.
 - Aucun identifiant de règle touché. Glossaire, livret [10-regles-de-base.md](10-regles-de-base.md) et chapitre 210 non modifiés.
 - [README.md](README.md) : édition courante passée à 0.50 ; ligne `70-playtest/` mise à jour.
+
+## 0.51 · 26 octobre 2026 · majeure · déplacement par un effet, renvoi dans la main, regard sur le dessus du deck, condition « si » d'un effet déclenché, effet déclenché d'un Gear
+
+- Déplacement d'une Unit par un effet : chapitre [215](20-regles-completes/215-deplacer-par-un-effet.md) créé. Identifiants ajoutés : 215.1.1, 215.1.2, 215.2.1, 215.2.2, 215.2.3, 215.2.4, 215.2.5, 215.2.6. Décision [0233](40-decisions/0233-deplacer-une-unit-par-un-effet.md). Q-132 tranchée, option A.
+- Renvoi dans la main : chapitre [216](20-regles-completes/216-renvoyer-dans-la-main.md) créé. Identifiants ajoutés : 216.1.1, 216.1.2, 216.1.2a, 216.1.3, 216.1.4, 216.2.1, 216.2.2. Décision [0234](40-decisions/0234-renvoyer-une-piece-dans-la-main.md). Q-133 tranchée, option A.
+- Regard sur le dessus du deck : chapitre [217](20-regles-completes/217-regarder-le-dessus-du-deck.md) créé. Identifiants ajoutés : 217.1.1, 217.1.2, 217.1.3, 217.1.4, 217.1.5, 217.1.6, 217.1.7, et 201.4.1a ([201-concepts.md](20-regles-completes/201-concepts.md)). 201.4.1 inchangée. Décision [0235](40-decisions/0235-regarder-le-dessus-du-deck.md). Q-134 tranchée, option A. Q-143 créée (expiration du temps pendant ce choix).
+- Condition « si » d'un effet déclenché lue à l'événement. Identifiants ajoutés : 204.3.12, 204.3.12a ([204-tour.md](20-regles-completes/204-tour.md)), 207.3.13, 207.3.13a, 207.3.13b ([207-effets.md](20-regles-completes/207-effets.md)). 204.3.6 et 204.3.8 inchangées. Décision [0236](40-decisions/0236-condition-si-lue-a-l-evenement.md). Q-135 tranchée, option A. Q-144 créée (place de l'événement « début du tour » par rapport aux autres étapes de 204.3.8).
+- Effet déclenché porté par un Gear. Identifiants ajoutés : 207.3.12, 207.3.12a, 207.3.12b, 207.3.12c ([207-effets.md](20-regles-completes/207-effets.md)). 207.2.8, 207.2.9 et 207.3.3 inchangées. Décision [0237](40-decisions/0237-effet-declenche-porte-par-un-gear.md). Q-136 tranchée, option A.
+- Glossaire : termes ajoutés : Regarder, Renvoyer, Sous son deck ; terme modifié : Déplacement (renvoi à 215.1.2). Chapitre 210 non modifié (aucun mot-clé touché).
+- [50-cartes/](50-cartes/README.md) : colonne « Questions ouvertes » mise à jour, textes inchangés : Passeur, Manipulateur, Glissement, Reflux, Pilleuse (aucune question), Observatoire (Q-143), Trophée et Grimoire (Q-137).
+- Livret [10-regles-de-base.md](10-regles-de-base.md) non modifié.
+- [README.md](README.md) : édition courante passée à 0.51 ; chapitres 215 à 217 ajoutés au tableau.
