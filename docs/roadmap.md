@@ -70,7 +70,7 @@ Les étapes 2b.4 à 2b.8 viennent après J2c (0054).
 
 ## J2c — Catalogue de playtest
 
-Remet le moteur en accord avec le ruleset 0.52 et y intègre le catalogue de `ruleset/50-cartes/`, avant l'habillage (0054) : J2c passe avant 2b.4. Chaque étape : règles lues, décision de code si système nouveau, tests nommés par identifiants, un nouveau `kind` = code et tests avant toute carte (0002, 0010). À réexaminer si J2c dépasse nettement 8 sessions.
+Remet le moteur en accord avec le ruleset 0.52 et y intègre le catalogue de `ruleset/50-cartes/`, avant l'habillage (0054) : J2c passe avant 2b.4. Les règles 0.45 à 0.52 non codées sont listées, par étape, dans `RULES_AWAITING_IMPLEMENTATION` de `tests/test_rules_coverage.gd` ; chaque étape retire les siennes. Chaque étape : règles lues, décision de code si système nouveau, tests nommés par identifiants, un nouveau `kind` = code et tests avant toute carte (0002, 0010). À réexaminer si J2c dépasse nettement 8 sessions.
 
 - [ ] c.1 Remise en accord : Hero sur tout le plateau (0223, 205.3.2 supprimée), pas de déploiement sur la case du Hero ennemi (0225) ; dette « haute » du backlog. **Sortie** : `CELL_OUTSIDE_HERO_ROWS`, `HERO_ROWS` de `DuelOracle` et leurs tests remplacés, suite verte.
 - [ ] c.2 Ordre et effets déclenchés du Hero (chapitre 211, 202.3.11, 202.3.19 à 202.3.22, 201.4.12) ; décision de code qui modifie 0047. **Sortie** : un Hero utilise son Ordre et son passif facultatif en duel, chaque règle citée par un test.

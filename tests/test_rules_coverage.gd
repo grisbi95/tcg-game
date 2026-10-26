@@ -2,7 +2,8 @@ extends GdUnitTestSuite
 ## Couverture du ruleset par les tests (ruleset 0.36, décision 0007 ; tests/CLAUDE.md).
 ##
 ## Chaque règle [ACTÉ] ou [PROVISOIRE] de docs/ruleset/20-regles-completes/ a un test à son nom
-## (`test_206_3_6_…`) ou une entrée justifiée de RULES_WITHOUT_OWN_TEST ; chaque raison de refus
+## (`test_206_3_6_…`), une entrée justifiée de RULES_WITHOUT_OWN_TEST ou, en attendant son étape du
+## jalon J2c, une entrée de RULES_AWAITING_IMPLEMENTATION (décision 0054) ; chaque raison de refus
 ## hors NONE est citée par un test.
 
 const RULES_DIRECTORY: String = "res://docs/ruleset/20-regles-completes"
@@ -144,6 +145,123 @@ const RULES_WITHOUT_OWN_TEST: Dictionary[String, String] = {
 	),
 }
 
+## Règles consignées par les éditions 0.45 à 0.52 du ruleset et pas encore codées, avec l'étape du
+## jalon J2c qui les code (décision 0054) : chaque étape retire ses lignes en écrivant leurs tests,
+## la liste est vide à la sortie de c.8.
+const RULES_AWAITING_IMPLEMENTATION: Dictionary[String, String] = {
+	"200.4.2a": "c.3",
+	"201.4.1a": "c.4",
+	"201.4.12": "c.2",
+	"201.5.4c": "c.2",
+	"202.3.19": "c.2",
+	"202.3.20": "c.2",
+	"202.3.21": "c.2",
+	"202.3.22": "c.2",
+	"204.3.12": "c.5",
+	"204.3.12a": "c.5",
+	"204.4.8": "c.2",
+	"205.1.11": "c.1",
+	"206.3.7": "c.5",
+	"206.3.7a": "c.5",
+	"206.3.7b": "c.5",
+	"207.3.12": "c.5",
+	"207.3.12a": "c.5",
+	"207.3.12b": "c.5",
+	"207.3.12c": "c.5",
+	"207.3.13": "c.5",
+	"207.3.13a": "c.5",
+	"207.3.13b": "c.5",
+	"207.3.14": "c.5",
+	"207.5.4a": "c.3",
+	"207.5.18": "c.5",
+	"208.1.12": "c.2",
+	"208.7.17": "c.2",
+	"209.4.4h": "c.5",
+	"209.4.7c": "c.4",
+	"209.4.11b": "c.5",
+	"209.4.13": "c.4",
+	"211.1.1": "c.2",
+	"211.1.2": "c.2",
+	"211.1.3": "c.2",
+	"211.1.4": "c.2",
+	"211.2.1": "c.2",
+	"211.2.2": "c.2",
+	"211.2.3": "c.2",
+	"211.2.4": "c.2",
+	"211.2.5": "c.2",
+	"211.2.6": "c.2",
+	"211.2.7": "c.2",
+	"211.2.8": "c.2",
+	"211.3.1": "c.2",
+	"211.3.2": "c.2",
+	"211.4.1": "c.2",
+	"211.4.2": "c.2",
+	"212.1.1": "c.4",
+	"212.1.2": "c.4",
+	"212.1.3": "c.4",
+	"212.1.4": "c.4",
+	"212.1.5": "c.4",
+	"212.1.6": "c.4",
+	"212.1.7": "c.4",
+	"212.2.1": "c.4",
+	"212.2.2": "c.4",
+	"212.2.2a": "c.4",
+	"212.2.2b": "c.4",
+	"212.2.2c": "c.4",
+	"212.2.2d": "c.4",
+	"212.2.3": "c.4",
+	"212.2.4": "c.4",
+	"212.2.5": "c.4",
+	"213.1.1": "c.5",
+	"213.1.2": "c.5",
+	"213.1.3": "c.5",
+	"213.1.4": "c.5",
+	"213.1.5": "c.5",
+	"213.1.6": "c.5",
+	"213.1.7": "c.5",
+	"213.1.8": "c.5",
+	"213.1.9": "c.5",
+	"213.1.10": "c.5",
+	"213.1.11": "c.5",
+	"213.1.12": "c.5",
+	"213.2.1": "c.5",
+	"213.2.2": "c.5",
+	"213.2.3": "c.5",
+	"213.2.4": "c.5",
+	"213.2.5": "c.5",
+	"214.1.1": "c.3",
+	"214.1.2": "c.3",
+	"214.1.3": "c.3",
+	"214.1.4": "c.3",
+	"214.2.1": "c.3",
+	"214.2.2": "c.3",
+	"214.2.3": "c.3",
+	"214.2.4": "c.3",
+	"214.2.5": "c.3",
+	"215.1.1": "c.3",
+	"215.1.2": "c.3",
+	"215.2.1": "c.3",
+	"215.2.2": "c.3",
+	"215.2.3": "c.3",
+	"215.2.4": "c.3",
+	"215.2.5": "c.3",
+	"215.2.6": "c.3",
+	"216.1.1": "c.3",
+	"216.1.2": "c.3",
+	"216.1.2a": "c.3",
+	"216.1.3": "c.3",
+	"216.1.4": "c.3",
+	"216.2.1": "c.3",
+	"216.2.2": "c.3",
+	"217.1.1": "c.4",
+	"217.1.2": "c.4",
+	"217.1.3": "c.4",
+	"217.1.4": "c.4",
+	"217.1.5": "c.4",
+	"217.1.6": "c.4",
+	"217.1.7": "c.4",
+}
+
 var _rule_ids: PackedStringArray
 var _test_names: PackedStringArray
 var _tests_text: String
@@ -162,7 +280,9 @@ func test_decision_0007_ruleset_rules_are_read() -> void:
 func test_decision_0007_every_rule_has_a_test_or_a_reason() -> void:
 	var missing := PackedStringArray()
 	for rule_id: String in _rule_ids:
-		if not _has_own_test(rule_id) and not RULES_WITHOUT_OWN_TEST.has(rule_id):
+		if _has_own_test(rule_id) or RULES_WITHOUT_OWN_TEST.has(rule_id):
+			continue
+		if not RULES_AWAITING_IMPLEMENTATION.has(rule_id):
 			missing.append(rule_id)
 	(
 		assert_array(Array(missing))
@@ -180,6 +300,21 @@ func test_decision_0007_justified_rules_exist_and_lack_own_test() -> void:
 		assert_array(Array(stale))
 		. override_failure_message(
 			"Entrées à retirer de RULES_WITHOUT_OWN_TEST : " + ", ".join(stale)
+		)
+		. is_empty()
+	)
+
+
+func test_decision_0054_awaiting_rules_exist_and_lack_own_test() -> void:
+	var stale := PackedStringArray()
+	for rule_id: String in RULES_AWAITING_IMPLEMENTATION:
+		var settled := _has_own_test(rule_id) or RULES_WITHOUT_OWN_TEST.has(rule_id)
+		if not _rule_ids.has(rule_id) or settled:
+			stale.append(rule_id)
+	(
+		assert_array(Array(stale))
+		. override_failure_message(
+			"Entrées à retirer de RULES_AWAITING_IMPLEMENTATION : " + ", ".join(stale)
 		)
 		. is_empty()
 	)
