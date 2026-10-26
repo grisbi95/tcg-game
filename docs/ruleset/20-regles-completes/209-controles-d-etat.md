@@ -78,6 +78,8 @@ Aucun Invariant.
 
 **209.4.4g** [ACTÉ] Le temps de réponse d'un joueur s'écoule pendant la fenêtre de réponse qu'on lui montre (décisions 0199 et 0205 ; voir 208.6.1 et 209.4.7).
 
+**209.4.4h** [ACTÉ] Le temps de tour du joueur actif s'écoule pour le choix de la valeur de X d'un Spell qu'il annonce quand la pile est vide (décision 0226 ; voir 209.4.4d et 213.1.9).
+
 **209.4.5** Supprimée en édition 0.40, voir décision 0205.
 
 **209.4.6** [PROVISOIRE] Le temps de réponse d'un joueur vaut 30 secondes pour chaque décision que les règles attendent de lui quand ce temps s'écoule (décision 0205 ; valeur : 30 secondes ; à mesurer en playtest : réponses passées par l'expiration du temps de réponse, durée moyenne d'une partie).
@@ -101,6 +103,8 @@ Aucun Invariant.
 **209.4.11** [ACTÉ] Quand le temps de tour ou le temps de réponse d'un joueur atteint 0 seconde pendant qu'il choisit les cibles d'une entrée de la pile qui lui appartient, l'annonce est abandonnée : rien n'est payé, rien ne s'ajoute à la pile et la carte reste où elle était (décision 0206 ; voir 207.5.1, 209.4.4d et 209.4.7).
 
 **209.4.11a** [ACTÉ] Quand le temps de tour ou le temps de réponse d'un joueur atteint 0 seconde pendant qu'il choisit les cibles d'un effet déclenché, cet effet ne s'ajoute pas à la pile (décision 0206 ; voir 209.4.11 et 207.3.2).
+
+**209.4.11b** [ACTÉ] Quand le temps de tour ou le temps de réponse d'un joueur atteint 0 seconde pendant qu'il choisit la valeur de X d'un Spell qu'il annonce, l'annonce est abandonnée : rien n'est payé, rien ne s'ajoute à la pile et la carte reste où elle était (décision 0226 ; voir 209.4.4h, 209.4.7, 209.4.11 et 213.1.9).
 
 **209.4.12** [ACTÉ] Quand le temps de tour ou le temps de réponse d'un joueur atteint 0 seconde pendant qu'il choisit l'ordre de ses effets déclenchés, ces effets s'ajoutent à la pile dans l'ordre où ils se sont déclenchés (décision 0206 ; voir 208.4.6, 208.4.7, 209.4.4c et 209.4.7b).
 

@@ -89,32 +89,6 @@ Faut-il étendre aux Ordres 208.2.4a, 208.7.10 et 208.7.11, qui ne citent que l'
 - Option B : ne rien changer, les trois règles se lisent avec 208.2.4 et 208.7.8 ; compromis : une règle qui ne dit pas explicitement le cas de l'Ordre.
 Manque pour trancher : le choix éditorial du créateur.
 
-**Q-124 · Expiration du temps pendant le choix de X** · chapitres 209 et 213 · ouverte le 26 octobre 2026
-Que devient l'annonce d'un Spell à coût X quand le temps de tour ou le temps de réponse de son joueur atteint 0 seconde pendant qu'il choisit X, alors que 213.1.9 place ce choix avant celui des cibles, que 209.4.11 ne vise que le choix des cibles et que 209.4.4d et 209.4.7 ne citent pas le choix de X ?
-- Option A : l'annonce est abandonnée, rien n'est payé, la carte reste où elle était, comme 209.4.11 ; compromis : 209.4.11 est étendue au choix de X.
-- Option B : X prend sa valeur minimale (213.1.4) et l'annonce se poursuit ; compromis : une valeur par défaut que le joueur n'a pas choisie.
-Manque pour trancher : le choix du créateur.
-
-**Q-125 · Échange de cases et mot « déplacement »** · chapitres 205 et 214 · ouverte le 26 octobre 2026
-Un échange des cases de deux pièces (214.1.1) est-il un déplacement, alors que le glossaire définit le déplacement comme le passage d'une pièce de sa case à une autre case, que 214.2.3 dit seulement que l'échange n'est pas une action normale et que 214.2.4 dit qu'il ne fait pas arriver la pièce ?
-- Option A : l'échange n'est pas un déplacement ; compromis : une règle de plus et une précision au glossaire, sans effet sur les cartes actuelles.
-- Option B : l'échange est un déplacement pour chaque effet qui lit un déplacement ; compromis : un futur effet « quand une pièce se déplace » se déclenche aussi sur un échange.
-Manque pour trancher : une première carte qui lit un déplacement.
-
-**Q-126 · Unit déployée en attaquant sur la case du Hero adverse** · chapitres 205 et 206 · ouverte le 26 octobre 2026
-Que se passe-t-il quand une Unit se déploie sur une case occupée par le Hero adverse, alors que 205.3.2 est supprimée (décision 0223), que le Hero adverse peut donc occuper une case de déploiement (205.1.2, 205.1.2a), que 205.1.6 fait entrer l'Unit en attaquant la pièce ennemie, que 206.4.5 dit que l'attaquant d'un Hero reste sur sa case et que cette Unit n'a pas de case avant le combat (voir aussi Q-100) ?
-- Option A : le déploiement sur une case occupée par le Hero adverse n'est pas permis ; compromis : une exception à 205.1.6, et un Hero qui bloque une case de déploiement.
-- Option B : le combat a lieu et 206.4.5 est complétée pour dire où se trouve l'Unit ; compromis : une règle de plus sur la position d'une Unit sans case.
-- Option C : la carte revient dans la main comme pour une pièce alliée (205.1.7) ; compromis : une exception à 205.1.6, et l'Essence payée est perdue (205.1.9).
-Manque pour trancher : le choix du créateur, avec Q-100.
-
-**Q-127 · Lieu du catalogue de playtest dans le ruleset** · `README.md`, `50-cartes/` et `70-playtest/` · ouverte le 26 octobre 2026
-Où vit le catalogue de playtest (4 Heroes, cartes de couleur et neutres, 4 decks de 30 cartes) dans le ruleset, alors que le README annonce `50-cartes/` « créé avec la première édition jouable » et que `decks-de-test.md` dit ne pas faire partie du catalogue `50-cartes/` ?
-- Option A : `50-cartes/` créé maintenant pour le catalogue de playtest ; compromis : le dossier existe avant la première édition jouable annoncée par le README.
-- Option B : un nouveau fichier dans `70-playtest/` ; compromis : un second lieu de cartes à côté de `50-cartes/`, à fusionner plus tard.
-- Option C : le catalogue reste hors ruleset jusqu'à la première édition jouable ; compromis : les cartes jouées au premier playtest ne sont pas dans le dossier qui fait foi.
-Manque pour trancher : la version du catalogue de playtest et le choix du créateur.
-
 **Q-128 · Affrontements et nombre de parties par série** · `70-playtest/protocole.md` · ouverte le 26 octobre 2026
 Quels affrontements et combien de parties compte une série avec quatre decks asymétriques, alors que la décision 0154 fixe 20 parties d'un deck miroir, 10 avec chaque joueur en premier ?
 - Option A : tous les affrontements entre deux decks distincts, un nombre de parties égal pour chacun ; compromis : une série plus longue, chaque affrontement mesuré avec peu de parties.
@@ -142,6 +116,60 @@ Quelles mesures du tableau des cibles et seuils restent valables quand les deux 
 - Option B : seules les mesures indépendantes du deck sont gardées (durée, tours, Essence, fatigue) ; compromis : les mesures liées au miroir (ressemblance, parties bloquées, victoires du premier joueur) sont suspendues.
 - Option C : les cibles et seuils sont refixés par une décision avant la série ; compromis : un travail de révision avant le J3.
 Manque pour trancher : Q-128 et le choix du créateur.
+
+**Q-132 · Déplacer une Unit par un effet** · chapitres 205 et 207 · ouverte le 26 octobre 2026
+Que fait un effet de carte qui déplace une Unit ennemie sur une case libre ciblée (Glissement, Manipulateur du catalogue de playtest), alors que le glossaire ne définit le déplacement que par l'action normale (205.2.2, 205.3.1), que Q-125 a tranché qu'un échange n'est pas un déplacement (214.2.5) et qu'aucune règle ne dit si cette Unit s'endort, se réveille, arrive sur le plateau ou attaque ?
+- Option A : le déplacement par un effet suit le modèle de l'échange : il n'endort ni ne réveille, n'est pas une action normale et ne fait pas arriver l'Unit ; compromis : une règle de plus, et une Unit déplacée garde son état.
+- Option B : le déplacement par un effet endort l'Unit déplacée ; compromis : une règle de plus, et un effet de contrôle qui prive aussi l'Unit de son action.
+Manque pour trancher : le choix du créateur.
+
+**Q-133 · Renvoyer une pièce dans la main** · chapitres 201, 202 et 207 · ouverte le 26 octobre 2026
+Que fait un effet qui renvoie une Unit ennemie dans la main de son joueur (Passeur, Reflux du catalogue de playtest), alors que les règles ne décrivent ce passage que pour un déploiement ou un Gear qui ne s'attache pas (205.1.7, 205.1.10, 202.2.24a) et ne disent rien du jeton, du Gear attaché ni de Dernier souffle ?
+- Option A : la carte revient dans la main de son joueur, dans sa défausse si la main est pleine (comme 205.1.10) ; un jeton cesse d'exister (202.4.3) ; le Gear attaché va dans la défausse (202.2.13) ; Dernier souffle ne se déclenche pas ; compromis : une règle de plus, et un renvoi qui peut défausser la carte.
+- Option B : même règle, mais le renvoi n'a pas lieu si la main est pleine (200.4.1) ; compromis : un renvoi que la main de l'adversaire peut empêcher.
+Manque pour trancher : le choix du créateur.
+
+**Q-134 · Regarder le dessus du deck et le mettre dessous** · chapitres 201 et 207 · ouverte le 26 octobre 2026
+Que fait l'effet « regardez la carte du dessus de votre deck ; vous pouvez la mettre sous votre deck » (Observatoire du catalogue de playtest), alors que 201.4.1 dit que les cartes d'un deck sont face cachée et qu'aucune règle ne définit regarder une carte ni la placer sous le deck ?
+- Option A : seul le joueur regarde la carte, et un choix libre de la laisser ou de la placer sous son deck ; compromis : une exception à 201.4.1 pour un seul joueur.
+- Option B : la carte est montrée aux deux joueurs ; compromis : une information publique de plus, et un effet moins utile.
+Manque pour trancher : le choix du créateur.
+
+**Q-135 · Condition « si » d'un effet déclenché** · chapitres 204 et 207 · ouverte le 26 octobre 2026
+Quand se lit la condition « si vous avez une carte ou moins en main » de l'effet déclenché « Au début de votre tour » du Hero Pilleuse du catalogue de playtest, alors que 207.3.1 ne parle que de l'événement, que 208.4.10 et 208.4.11 font attendre l'effet jusqu'à la phase principale et que 204.3.6 fait piocher pendant le début du tour ?
+- Option A : à l'événement, c'est-à-dire pendant le début du tour, sans que les règles disent avant ou après la pioche de 204.3.6 ; compromis : une règle d'ordre à écrire à l'intérieur du début du tour.
+- Option B : à la résolution ; compromis : la condition lit la main après la pioche et après toute réponse, mais un effet déclenché peut s'ajouter à la pile sans que sa condition soit vraie.
+Manque pour trancher : le choix du créateur.
+
+**Q-136 · Effet déclenché porté par un Gear** · chapitres 202 et 207 · ouverte le 26 octobre 2026
+Un Gear peut-il porter un effet déclenché (Trophée, Grimoire du catalogue de playtest), alors que 207.2.8 et 207.2.9 ne règlent que l'effet statique d'un Gear, que 207.3.1 à 207.3.11 parlent de pièces et de cartes et qu'un Gear n'occupe aucune case (202.2.7) ?
+- Option A : oui, il se déclenche tant que le Gear est attaché, et appartient au joueur du Gear (207.3.4) ; compromis : une règle de plus sur le début et la fin de l'effet déclenché d'un Gear.
+- Option B : non ; compromis : Trophée et Grimoire sont à réécrire.
+Manque pour trancher : le choix du créateur.
+
+**Q-137 · Sens de « détruit son défenseur »** · chapitres 206 et 207 · ouverte le 26 octobre 2026
+Que veut dire « l'Unit qui porte ce Gear détruit son défenseur » (Trophée, Grimoire du catalogue de playtest), alors que 206.3.6 détruit l'attaquant et le défenseur à égalité de Force, que 206.4.3 ne détruit pas un Hero attaqué et que le catalogue de playtest écrit que l'attaquant gagne le combat, égalité et attaque d'un Hero exclues ?
+- Option A : une règle du chapitre 206 définit l'événement : le défenseur est détruit par le combat et l'attaquant ne l'est pas ; compromis : une règle de plus, l'égalité de 206.3.6 ne déclenche rien.
+- Option B : lecture littérale : le défenseur est détruit par le combat, égalité comprise ; compromis : l'égalité déclenche l'effet, contre la décision écrite dans le catalogue.
+Manque pour trancher : le choix du créateur.
+
+**Q-138 · Case d'une pièce qui a quitté le plateau** · chapitres 207 et 210 · ouverte le 26 octobre 2026
+Où se lit « adjacente à la case de ce Building » dans le Dernier souffle de la Poudrière du catalogue de playtest, alors que 207.3.3 et 210.3.2b font avoir lieu l'effet après le départ de la pièce et qu'aucune règle ne dit quelle case garde une pièce qui a quitté le plateau ?
+- Option A : la dernière case que la pièce a occupée ; compromis : une règle de plus sur la mémoire de la case.
+- Option B : aucune case ; l'effet n'a pas de cible légale (207.5.9) ; compromis : un Dernier souffle qui ne sert à rien.
+Manque pour trancher : le choix du créateur.
+
+**Q-139 · Marque du ciblage dans le texte d'une carte** · chapitres 207 et 211 · ouverte le 26 octobre 2026
+À quoi voit-on qu'un texte de carte vise une cible, alors que 207.5.1 choisit les cibles d'un effet à l'ajout à la pile, que la plupart des textes du catalogue de playtest écrivent « ciblée », que l'Ordre du Chef de guerre dit « réveillez une Unit alliée adjacente au Hero » sans ce mot et que Rassemblement dit « Choisissez deux cases libres ciblées distinctes » ?
+- Option A : seul le mot « ciblée » désigne une cible ; compromis : l'Ordre du Chef de guerre n'a aucune cible, et une carte qui écrit « Choisissez » est à réécrire.
+- Option B : toute pièce ou case qu'un effet choisit est une cible, « ciblée » ou non ; compromis : une règle de plus, et « ciblée » devient redondant.
+Manque pour trancher : le choix du créateur.
+
+**Q-140 · Construction du deck selon la couleur et le Hero** · chapitre 201 et `50-cartes/` · ouverte le 26 octobre 2026
+Le deck d'un joueur est-il contraint par sa couleur ou par son Hero, alors que 201.6.3 dit que le Hero ne limite pas les cartes d'un deck et que le journal de conception du catalogue de playtest parle d'une couleur principale fixe et d'une seconde couleur libre ?
+- Option A : aucune contrainte, les quatre decks du catalogue de playtest sont des listes fixes et 201.6.3 reste ; compromis : rien n'empêche un deck sans lien avec la couleur de son Hero, hors du premier playtest.
+- Option B : une règle de construction par couleur est écrite au chapitre 201 ; compromis : une règle de plus, qui change 201.6.3.
+Manque pour trancher : le choix du créateur, avant tout deck libre.
 
 ## Tranchées
 
@@ -258,3 +286,7 @@ Manque pour trancher : Q-128 et le choix du créateur.
 | Q-122 · Ordre du choix de X et du choix des cibles · chapitres 207 et 213 · ouverte le 26 octobre 2026 · Le joueur choisit-il X avant les cibles du Spell ? Tranchée le 26 octobre 2026 : X d'abord, puis les cibles, option A (213.1.9 à 213.1.11) ; expiration du temps pendant le choix de X : voir Q-124. | [0221](40-decisions/0221-ordre-du-choix-de-x-et-des-cibles.md) ; voir Q-124 |
 | Q-123 · Force lue pour X quand l'entrée se résout pendant un combat · chapitres 206, 210 et 213 · ouverte le 26 octobre 2026 · Quelle Force d'Unit 213.2.3 lit-il pendant un combat ? Tranchée le 26 octobre 2026 : sans Assaut ni Rempart, option A (213.2.4 modifiée). | [0222](40-decisions/0222-force-lue-pour-x-sans-assaut-ni-rempart.md) |
 | Q-099 · Pouvoir du Hero à plusieurs cibles · chapitre 207 · ouverte le 21 octobre 2026 · Un pouvoir du Hero dont l'effet exige plusieurs cibles s'annonce-t-il même s'il n'existe pas le nombre minimal de cibles légales, 207.5.17 et 207.5.10 se contredisant ? Sans objet le 23 octobre 2026 : le Hero n'a plus de pouvoir, 207.5.17 et ses sous-règles sont supprimées. | [0208](40-decisions/0208-le-hero-n-a-pas-de-pouvoir.md) |
+| Q-126 · Unit déployée en attaquant sur la case du Hero adverse · chapitres 205 et 206 · ouverte le 26 octobre 2026 · Que se passe-t-il quand une Unit se déploie sur une case occupée par le Hero adverse ? Tranchée le 26 octobre 2026 : le déploiement sur une case occupée par le Hero ennemi n'est pas permis à l'annonce, option A (205.1.11). | [0225](40-decisions/0225-pas-de-deploiement-sur-la-case-du-hero-ennemi.md) |
+| Q-124 · Expiration du temps pendant le choix de X · chapitres 209 et 213 · ouverte le 26 octobre 2026 · Que devient l'annonce d'un Spell à coût X quand le temps d'un joueur atteint 0 seconde pendant qu'il choisit X ? Tranchée le 26 octobre 2026 : l'annonce est abandonnée, rien n'est payé, la carte reste où elle était, option A (209.4.4h et 209.4.11b). | [0226](40-decisions/0226-expiration-du-temps-pendant-le-choix-de-x.md) |
+| Q-125 · Échange de cases et mot « déplacement » · chapitres 205 et 214 · ouverte le 26 octobre 2026 · Un échange des cases de deux pièces est-il un déplacement ? Tranchée le 26 octobre 2026 : non, option A (214.2.5), contre la recommandation. | [0227](40-decisions/0227-un-echange-n-est-pas-un-deplacement.md) |
+| Q-127 · Lieu du catalogue de playtest dans le ruleset · `README.md`, `50-cartes/` et `70-playtest/` · ouverte le 26 octobre 2026 · Où vit le catalogue de playtest dans le ruleset ? Tranchée le 26 octobre 2026 : `50-cartes/` est créé maintenant et fait foi, option A. | [0228](40-decisions/0228-le-catalogue-de-playtest-vit-dans-50-cartes.md) |

@@ -25,3 +25,5 @@ Aucun Invariant.
 **214.2.3** [ACTÉ] Un échange n'est pas l'action normale des pièces échangées (décision 0217 ; voir 205.1.1 et 205.2.2).
 
 **214.2.4** [ACTÉ] Une pièce échangée n'arrive pas sur le plateau, et aucun effet d'Arrivée ne se déclenche pour elle (décision 0217 ; voir 210.3.1 et 210.3.1a).
+
+**214.2.5** [ACTÉ] Un échange n'est pas un déplacement (décision 0227 ; voir 214.2.3, 214.2.4 et 205.2.2).

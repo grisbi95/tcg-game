@@ -23,6 +23,7 @@
 | Building | Type de carte de deck, et pièce du plateau issue d'une carte de ce type ou jeton que désigne l'effet qui le crée ; voir 202.2.3, 202.4.8 et 202.4.11. | |
 | Carte | Élément de jeu qui se trouve dans une zone. | |
 | Case | Position du plateau. | |
+| Catalogue de playtest | Ensemble des Heroes, des cartes de couleur, des cartes neutres et des decks que décrit `50-cartes/` et que joue le premier playtest ; voir décisions 0224 et 0228. | |
 | Cible | Pièce du plateau, case ou Spell de la pile qu'un effet vise, choisie quand l'entrée de la pile qui porte cet effet s'y ajoute ; voir 202.2.23, 202.4.12, 207.5.1, 207.5.2, 207.5.3, 207.5.6, 207.5.11, 207.5.14 et 207.5.16. | |
 | Cible légale | Cible qui remplit, au moment où l'entrée s'ajoute à la pile, les conditions que la carte pose à ses cibles et celles de la section 207.5 ; voir 207.5.8, 207.5.9, 207.5.10 et 211.4.2. | |
 | Colonne | Alignement de cases du plateau qui s'étend d'un joueur à l'autre. | |
@@ -32,6 +33,7 @@
 | Condition de fin de partie | Condition, fixée par les règles du jeu, qui fait gagner, perdre ou finir la partie sur un nul ; voir 201.0.4, 201.1.2, 201.1.2a, 201.1.3a, 201.1.3d, 209.2.10 et 209.3.1. | |
 | Contrecarrer | Effet qui fait qu'un Spell qui se trouve sur la pile n'a pas lieu ; voir 207.6.1, 207.6.2, 207.6.4 et 207.6.5. | |
 | Contrôler | Relation d'un joueur avec chaque carte et chaque jeton qui lui appartiennent ; voir 201.5.2 et 201.5.2a. | |
+| Couleur | Famille de cartes de deck du catalogue de playtest, parmi rouge, vert, violet et bleu, que porte aussi chaque Hero du catalogue ; voir `50-cartes/` et décision 0228. | |
 | Coût | Valeur que porte toute carte de deck, ou que la carte Hero indique pour un Ordre ; voir 202.1.2, 211.1.3 et 213.1.1. | |
 | Coût X | Coût d'une carte Spell dont le joueur choisit la valeur à l'annonce et qu'il paie en Essence, distinct d'une valeur X définie par un texte ; voir 213.1.1, 213.1.3, 213.1.5, 213.1.6, 213.1.7, 213.1.9, 213.1.10, 213.1.11 et 213.1.12. | |
 | Début du tour | Première partie du tour, qui précède la phase principale ; voir 204.3.8, 204.4.1, 208.4.10 et 208.4.11. | |
@@ -40,15 +42,15 @@
 | Défausse | Zone hors du plateau qui rassemble les cartes d'un joueur mises au rebut. | |
 | Défausser | Mettre une carte de sa main dans sa défausse, par un effet dont le texte le dit, le joueur choisissant la carte à la résolution sans qu'elle soit une cible ; voir 212.1.1, 212.1.3, 212.1.4 et 212.2.1. | |
 | Défenseur | Pièce attaquée, dans un combat ; voir 206.1.2. | |
-| Déplacement | Passage d'une pièce de sa case à une autre case ; voir 205.2.2 et 205.3.1. | |
-| Déployer | Jouer une Unit ou un Building en le plaçant sur une case du plateau ; voir 205.1.1, 205.1.2 et 205.1.3. | |
+| Déplacement | Passage d'une pièce de sa case à une autre case, qu'un échange n'est pas ; voir 205.2.2, 205.3.1 et 214.2.5. | |
+| Déployer | Jouer une Unit ou un Building en le plaçant sur une case du plateau ; voir 205.1.1, 205.1.2, 205.1.3 et 205.1.11. | |
 | Dernier souffle | Mot-clé de déclencheur dont l'effet se déclenche quand la pièce qui le porte est détruite ; voir 210.3.2, 210.3.2a, 210.3.2b, 210.3.2c et 202.4.13a. | |
 | Détaché | Se dit d'un Gear qui n'est plus attaché à une pièce, parce qu'il a été remplacé ou que sa pièce a quitté le plateau ; voir 202.2.12, 202.2.13, 207.2.9a, 207.2.9b et 207.4.8. | |
 | Détruire | Envoyer une pièce dans la défausse du joueur à qui elle appartient ; pour un jeton, voir 202.4.3 ; voir 206.3.1, 206.3.2, 206.3.2a, 206.3.6 et 210.3.2. | |
 | Durée | Mention du texte d'un effet qui fixe jusqu'à quand il dure, parmi « jusqu'à la fin du tour » et « tant que la pièce est en jeu » ; voir 207.4.1, 207.4.2, 207.4.3, 207.4.7, 207.4.7a, 207.4.7b, 207.4.8 et 207.4.10. | |
 | Écart | Zone temporaire hors du plateau, propre à chaque joueur et face cachée, qui existe pendant le mulligan et accueille les cartes écartées ; voir 201.3.9, 201.3.10, 201.4.9, 204.2.10 et 204.2.11. | |
 | Écarter | Choisir, pendant son mulligan, une carte de sa main à remettre dans son deck, la carte allant alors dans l'Écart ; voir 204.2.4, 204.2.6, 204.2.8 et 204.2.10. | |
-| Échanger | Faire occuper à chacune de deux pièces la case de l'autre, en même temps ; voir 214.1.1, 214.1.2, 214.1.3, 214.2.1 et 200.4.2a. | |
+| Échanger | Faire occuper à chacune de deux pièces la case de l'autre, en même temps, sans que ce soit un déplacement ; voir 214.1.1, 214.1.2, 214.1.3, 214.2.1, 214.2.5 et 200.4.2a. | |
 | Échouer | Pour une action annoncée, ne pas avoir lieu à sa résolution ; voir 205.4.6. | |
 | Effet | Instruction du texte d'une carte qui change l'état de la partie ou les règles qui s'y appliquent. | |
 | Effet déclenché | Effet qui a lieu quand survient un événement indiqué par son texte ; voir 204.5.3, 207.3.1, 207.3.2, 207.3.3, 207.3.4, 207.3.4a, 207.3.5, 207.3.7a, 207.3.11, 207.3.11a, 208.3.2a, 208.4.2, 208.4.3, 208.4.4, 208.4.5, 208.4.6, 208.4.7, 208.4.8, 208.4.10, 208.4.11, 208.5.1a, 208.7.8, 208.7.9, 208.7.10, 208.7.11, 208.7.15, 208.7.16, 210.3.1b et 210.3.2a. | |
@@ -84,6 +86,7 @@
 | Modificateur | Bonus ou malus de la Force d'une pièce ; voir 206.2.3 et 206.5.1. | |
 | Mot-clé | Terme du texte d'une carte dont la règle est au chapitre 210, et qui peut porter une valeur numérique que la carte précise ; voir 202.4.13, 202.4.13a, 210.1.1, 210.1.2 et 210.1.3. | |
 | Mulligan | Remplacement, une seule fois, de cartes de sa main par des cartes de son deck ; voir 204.2.1, 204.2.4, 204.2.5 et 204.2.13. | |
+| Neutre | Se dit d'une carte de deck du catalogue de playtest qui n'appartient à aucune couleur ; voir `50-cartes/` et décision 0228. | |
 | Ordre | Effet que porte le texte de la carte Hero, que son joueur annonce quand ce Hero est éveillé et qui endort ce Hero, et dont la carte fixe la vitesse et le coût en Essence ; voir le chapitre 211, 202.3.19 et 208.1.12. | |
 | Partie | Affrontement qui oppose deux joueurs. | |
 | Partie nulle | Issue d'une partie qui s'arrête sans vainqueur ; voir 201.1.2a et 209.3.1. | |
@@ -119,7 +122,7 @@
 | Sous-règle | Règle dont l'identifiant ajoute une lettre à celui de la règle qu'elle précise ; voir 200.1.1. | |
 | Spell | Type de carte de deck ; voir 202.2.5, 202.2.20, 202.2.21, 207.1.1, 207.1.7 et 207.1.7a. | |
 | Temps de réponse | Temps dont dispose un joueur pour chaque décision que les règles attendent de lui quand la pile n'est pas vide, ou quand il n'est pas le joueur actif ; voir 209.4.6, 209.4.7, 209.4.7a, 209.4.7b, 209.4.7c, 209.4.10 et 209.4.13. | |
-| Temps de tour | Temps dont dispose le joueur actif pour ses décisions pendant son tour quand la pile est vide, en pause tant que la pile n'est pas vide ; voir 209.4.3, 209.4.4, 209.4.4a, 209.4.4c, 209.4.4d, 209.4.8, 209.4.8a et 209.4.9. | |
+| Temps de tour | Temps dont dispose le joueur actif pour ses décisions pendant son tour quand la pile est vide, en pause tant que la pile n'est pas vide ; voir 209.4.3, 209.4.4, 209.4.4a, 209.4.4c, 209.4.4d, 209.4.4h, 209.4.8, 209.4.8a et 209.4.9. | |
 | Temps écoulé | Retiré en édition 0.40 : le temps ne fait plus perdre la partie ; voir décision 0205. | |
 | Texte | Énoncé que porte une carte, qui peut être vide ; voir 202.1.4 et 202.3.8. | |
 | Tirage au sort | Choix qu'aucun joueur ne fait, où chaque possibilité a la même chance d'être retenue ; voir 209.4.13. | |
