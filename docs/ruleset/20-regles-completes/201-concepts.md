@@ -94,6 +94,8 @@
 
 **201.4.11** [ACTÉ] L'état endormi ou éveillé de chaque Unit et de chaque Hero est visible des deux joueurs (décision 0210 ; voir 205.5.1 et 205.5.2).
 
+**201.4.12** [ACTÉ] La carte Hero de chaque joueur et son texte sont visibles des deux joueurs pendant toute la partie (décision 0213 ; voir 201.4.11 et 202.3.4).
+
 ## 201.5 Appartenance
 
 **201.5.1** [ACTÉ] Une carte appartient au joueur dont le deck ou le Hero la fournit (décision 0022).

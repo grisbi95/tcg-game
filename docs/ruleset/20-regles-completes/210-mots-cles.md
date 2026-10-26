@@ -12,7 +12,7 @@ Aucun Invariant.
 
 **210.1.2** [ACTÉ] Le texte de règle d'un mot-clé à valeur est écrit une seule fois au chapitre 210, avec une valeur X (décision 0077 ; voir 210.1.1).
 
-**210.1.3** [ACTÉ] La carte qui porte un mot-clé à valeur fixe la valeur de X (décision 0077 ; voir 210.1.2).
+**210.1.3** [ACTÉ] La carte qui porte un mot-clé à valeur fixe la valeur de X (décision 0077 ; voir 210.1.2 et 213.2.1).
 
 ## 210.2 Mots-clés de permanents
 

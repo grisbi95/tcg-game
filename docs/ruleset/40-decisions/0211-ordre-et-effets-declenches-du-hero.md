@@ -2,6 +2,8 @@
 
 Remplace en partie 0208 (le passif n'est plus la seule capacité du texte de la carte Hero).
 
+Remplacée en partie par 0212 (le passif est facultatif ; « en plus du passif » retiré de 202.3.19 et 202.3.20).
+
 > Décision consignée le 26 octobre 2026. Statut : ACTÉ. Une décision ne se modifie jamais ; pour revenir dessus, une nouvelle décision la remplace et cette ligne reçoit « Remplacée par NNNN ».
 
 ## Contexte

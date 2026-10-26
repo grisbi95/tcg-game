@@ -443,3 +443,15 @@
 - Décision 0208 marquée d'une ligne en tête (remplacée en partie). Livret [10-regles-de-base.md](10-regles-de-base.md), [decks-de-test.md](70-playtest/decks-de-test.md) et [protocole.md](70-playtest/protocole.md) non modifiés : le Capitaine reste un Hero à passif seul.
 - Décision associée : [0211](40-decisions/0211-ordre-et-effets-declenches-du-hero.md). Mesures du playtest J3 consignées dans la décision : fréquence d'usage des Ordres, tours où le Hero reste éveillé pendant le tour adverse, PV perdus par un Hero avancé pour son Ordre.
 - [README.md](README.md) : édition courante passée à 0.45 ; ligne du chapitre 211 ajoutée.
+
+## 0.46 · 26 octobre 2026 · majeure · passif du Hero facultatif, texte du Hero public, Défausser, coût X, valeur X définie par un texte
+
+- Passif du Hero facultatif. Identifiants modifiés : 202.3.11 (« peut porter un passif »), 202.3.19 et 202.3.20 (« en plus du passif » retiré) ([202-cartes.md](20-regles-completes/202-cartes.md)). Décision [0212](40-decisions/0212-le-passif-du-hero-est-facultatif.md). Q-119 créée (capacité minimale du texte du Hero, « au moins une » non dit par le créateur).
+- Texte de la carte Hero public. Identifiant ajouté : 201.4.12 ([201-concepts.md](20-regles-completes/201-concepts.md)). Décision [0213](40-decisions/0213-le-texte-de-la-carte-hero-est-public.md). Q-118 tranchée, option A.
+- Défausser. Chapitre 212 créé ([212-defausser.md](20-regles-completes/212-defausser.md)) : 212.1.1 à 212.1.7, 212.2.1, 212.2.2, 212.2.2a à 212.2.2d, 212.2.3 à 212.2.5. Décision [0214](40-decisions/0214-defausser.md). Q-120 créée (expiration du temps pendant le choix de la carte à défausser).
+- Coût X et valeur X définie par un texte. Chapitre 213 créé ([213-valeur-x.md](20-regles-completes/213-valeur-x.md)) : 213.1.1 à 213.1.8, 213.2.1 à 213.2.5. Décisions [0215](40-decisions/0215-cout-variable-x.md) et [0216](40-decisions/0216-valeur-x-definie-par-un-texte.md). Q-121 (coût qui combine X et une partie fixe), Q-122 (ordre du choix de X et des cibles) et Q-123 (Force lue pour X pendant un combat) créées.
+- Identifiants dont seul le renvoi change, sans changement de sens : 202.1.2 (renvoi vers 213.1.1), 210.1.3 (renvoi vers 213.2.1). Identifiants inchangés : 202.3.18, 202.3.21, 203.0.1, 207.5.13, 206.2.3, 210.4.1, 210.4.2.
+- Glossaire : termes ajoutés : Défausser, Coût X, Valeur X définie par un texte ; terme modifié : Coût (renvoi vers 213.1.1).
+- Décisions 0018 et 0211 marquées d'une ligne en tête (remplacées en partie). Livret [10-regles-de-base.md](10-regles-de-base.md), [decks-de-test.md](70-playtest/decks-de-test.md) et [protocole.md](70-playtest/protocole.md) non modifiés.
+- Mesures du playtest J3 consignées dans les décisions : nombre de défausses par partie ; valeurs de X choisies et Sources recyclées pour payer un coût X.
+- [README.md](README.md) : édition courante passée à 0.46 ; lignes des chapitres 212 et 213 ajoutées.

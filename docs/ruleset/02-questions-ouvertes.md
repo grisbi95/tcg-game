@@ -89,11 +89,35 @@ Faut-il étendre aux Ordres 208.2.4a, 208.7.10 et 208.7.11, qui ne citent que l'
 - Option B : ne rien changer, les trois règles se lisent avec 208.2.4 et 208.7.8 ; compromis : une règle qui ne dit pas explicitement le cas de l'Ordre.
 Manque pour trancher : le choix éditorial du créateur.
 
-**Q-118 · Visibilité de la carte Hero et de son texte** · chapitre 201 · ouverte le 26 octobre 2026
-La carte Hero d'un joueur, son passif, son Ordre et ses effets déclenchés sont-ils visibles des deux joueurs dès le début de la partie, alors que 201.4 ne liste pas la carte Hero (202.3.4) parmi les informations publiques ou cachées et que 201.4.11 rend visible l'état endormi ou éveillé du Hero ?
-- Option A : la carte Hero est visible des deux joueurs pendant toute la partie ; compromis : aucun bluff sur le texte du Hero, seul le moment d'emploi de l'Ordre reste caché.
-- Option B : le texte de la carte Hero n'est visible de l'adversaire qu'à partir du moment où il se déclenche ou s'annonce ; compromis : une information cachée de plus et une règle de révélation à écrire.
+**Q-119 · Capacité minimale du texte de la carte Hero** · chapitre 202 · ouverte le 26 octobre 2026
+Le texte de la carte Hero doit-il porter au moins une capacité parmi passif, Ordre et effet déclenché, alors que 202.3.11, 202.3.19 et 202.3.20 rendent chacune facultative et que 202.3.8 dit seulement que la carte Hero porte un texte ?
+- Option A : au moins une capacité est obligatoire ; compromis : une règle de plus, qui écarte un Hero au texte vide.
+- Option B : aucune capacité n'est obligatoire ; compromis : un Hero sans capacité est légal, ce qui peut convenir à un Hero de test.
+Manque pour trancher : le choix du créateur, qui n'a pas dit « au moins une » dans la décision 0212.
+
+**Q-120 · Expiration du temps pendant le choix des cartes à défausser** · chapitres 209 et 212 · ouverte le 26 octobre 2026
+Que devient le choix d'une carte à défausser quand le temps de tour ou le temps de réponse de son joueur atteint 0 seconde pendant ce choix, alors que 212.1.3 le fait à la résolution, que 209.4.4c et 209.4.4d ne citent que l'ordre des effets déclenchés et le choix des cibles, et que 209.4.11 ne vise que le choix des cibles ?
+- Option A : le temps s'écoule pour ce choix et la carte est choisie par défaut, selon une règle à écrire ; compromis : une règle de choix par défaut, qui retire une décision au joueur.
+- Option B : aucun temps ne s'écoule pendant ce choix ; compromis : un joueur absent bloque la partie, comme Q-108.
 Manque pour trancher : le choix du créateur.
+
+**Q-121 · Coût qui combine X et une partie fixe** · chapitre 213 · ouverte le 26 octobre 2026
+Une carte peut-elle porter un coût composé d'une partie fixe et de X, alors que 213.1.5 ne fait payer que X Essence et que 213.1.6 fait valoir le coût sur la pile pour la valeur de X ?
+- Option A : non, un coût X est X seul ; compromis : aucune règle de plus, des cartes plus simples à lire.
+- Option B : oui, le joueur paie la partie fixe plus X, et le coût sur la pile vaut la somme ; compromis : 213.1.5 et 213.1.6 sont à réécrire, et la valeur de X reste à distinguer du coût.
+Manque pour trancher : le choix du créateur, qui a laissé ce cas ouvert dans la décision 0215.
+
+**Q-122 · Ordre du choix de X et du choix des cibles** · chapitres 207 et 213 · ouverte le 26 octobre 2026
+Le joueur choisit-il la valeur de X avant les cibles du Spell, alors que 213.1.3 et 207.5.1a placent les deux à l'annonce et que la condition d'une cible peut dépendre de X ?
+- Option A : X est choisi avant les cibles ; compromis : une règle d'ordre de plus, qui rend la condition de cible lisible à l'annonce.
+- Option B : les cibles sont choisies avant X, la condition de cible étant lue avec la valeur de X choisie ensuite ; compromis : une cible légale ne se détermine qu'une fois X choisi.
+Manque pour trancher : le choix du créateur.
+
+**Q-123 · Force lue pour X quand l'entrée se résout pendant un combat** · chapitres 206, 210 et 213 · ouverte le 26 octobre 2026
+Quelle Force d'Unit 213.2.3 lit-il quand l'entrée qui porte l'effet se résout alors qu'un combat est en cours, par exemple pour une Unit qui attaque ou défend et porte déjà Assaut X ou Rempart X, alors que 213.2.4 exclut Assaut et Rempart en dehors d'un combat et que 210.4.1b et 210.4.2b les lisent au moment du combat ?
+- Option A : la Force lue exclut toujours Assaut et Rempart tant que le combat n'est pas résolu ; compromis : une règle simple, qui laisse X sans lien avec la Force du combat.
+- Option B : la Force lue comprend Assaut ou Rempart de la pièce si elle attaque ou défend dans ce combat ; compromis : X peut croître avec un mot-clé déjà porté, l'ordre de jeu change la valeur.
+Manque pour trancher : le choix du créateur, qui a demandé de signaler ce cas sans le trancher dans la décision 0216.
 
 ## Tranchées
 
@@ -203,4 +227,5 @@ Manque pour trancher : le choix du créateur.
 | Q-114 · Action normale dont la case visée n'est plus adjacente pendant l'attente · chapitre 205 · ouverte le 23 octobre 2026 · Que devient le combat en attente d'une action normale si la case visée n'est plus adjacente à l'Unit à sa résolution ? Tranchée le 23 octobre 2026 : l'action normale échoue et l'Unit reste où elle est, comme 205.4.4 (205.6.17). | [0207](40-decisions/0207-reponse-limitee-aux-spells-et-aux-attaques.md) |
 | Q-115 · Scission du chapitre 208 · chapitre 208 · ouverte le 23 octobre 2026 · Faut-il scinder le chapitre 208, qui compte 61 identifiants suppressions comprises (CHARTE.md §4) ? Tranchée le 23 octobre 2026 : option B, le chapitre 208 n'est pas scindé, comme le chapitre 207 (décision 0116). | [0207](40-decisions/0207-reponse-limitee-aux-spells-et-aux-attaques.md), [0116](40-decisions/0116-pas-de-scission-du-chapitre-207.md) |
 | Q-104 · Visibilité de l'état endormi ou éveillé · chapitres 201 et 205 · ouverte le 22 octobre 2026 · L'état endormi ou éveillé d'une Unit ou d'un Hero (205.5.1 et 205.5.2) est-il visible des deux joueurs ? Tranchée le 24 octobre 2026 : oui, option A (201.4.11). | [0210](40-decisions/0210-etat-endormi-ou-eveille-public.md) |
+| Q-118 · Visibilité de la carte Hero et de son texte · chapitre 201 · ouverte le 26 octobre 2026 · La carte Hero d'un joueur, son passif, son Ordre et ses effets déclenchés sont-ils visibles des deux joueurs dès le début de la partie ? Tranchée le 26 octobre 2026 : oui, option A (201.4.12). | [0213](40-decisions/0213-le-texte-de-la-carte-hero-est-public.md) |
 | Q-099 · Pouvoir du Hero à plusieurs cibles · chapitre 207 · ouverte le 21 octobre 2026 · Un pouvoir du Hero dont l'effet exige plusieurs cibles s'annonce-t-il même s'il n'existe pas le nombre minimal de cibles légales, 207.5.17 et 207.5.10 se contredisant ? Sans objet le 23 octobre 2026 : le Hero n'a plus de pouvoir, 207.5.17 et ses sous-règles sont supprimées. | [0208](40-decisions/0208-le-hero-n-a-pas-de-pouvoir.md) |

@@ -32,11 +32,13 @@
 | Condition de fin de partie | Condition, fixée par les règles du jeu, qui fait gagner, perdre ou finir la partie sur un nul ; voir 201.0.4, 201.1.2, 201.1.2a, 201.1.3a, 201.1.3d, 209.2.10 et 209.3.1. | |
 | Contrecarrer | Effet qui fait qu'un Spell qui se trouve sur la pile n'a pas lieu ; voir 207.6.1, 207.6.2, 207.6.4 et 207.6.5. | |
 | Contrôler | Relation d'un joueur avec chaque carte et chaque jeton qui lui appartiennent ; voir 201.5.2 et 201.5.2a. | |
-| Coût | Valeur que porte toute carte de deck, ou que la carte Hero indique pour un Ordre ; voir 202.1.2 et 211.1.3. | |
+| Coût | Valeur que porte toute carte de deck, ou que la carte Hero indique pour un Ordre ; voir 202.1.2, 211.1.3 et 213.1.1. | |
+| Coût X | Coût d'une carte Spell dont le joueur choisit la valeur à l'annonce et qu'il paie en Essence, distinct d'une valeur X définie par un texte ; voir 213.1.1, 213.1.3, 213.1.5, 213.1.6 et 213.1.7. | |
 | Début du tour | Première partie du tour, qui précède la phase principale ; voir 204.3.8, 204.4.1, 208.4.10 et 208.4.11. | |
 | Deck | Zone hors du plateau qui forme l'ensemble de cartes face cachée d'un joueur ; voir 201.3.1 et 201.4.1. | |
 | Déclencher | Faire qu'un effet déclenché doive avoir lieu, pour un événement indiqué par le texte de cet effet ; voir 207.3.1, 208.4.2 et 208.4.4. | |
 | Défausse | Zone hors du plateau qui rassemble les cartes d'un joueur mises au rebut. | |
+| Défausser | Mettre une carte de sa main dans sa défausse, par un effet dont le texte le dit, le joueur choisissant la carte à la résolution sans qu'elle soit une cible ; voir 212.1.1, 212.1.3, 212.1.4 et 212.2.1. | |
 | Défenseur | Pièce attaquée, dans un combat ; voir 206.1.2. | |
 | Déplacement | Passage d'une pièce de sa case à une autre case ; voir 205.2.2 et 205.3.1. | |
 | Déployer | Jouer une Unit ou un Building en le plaçant sur une case du plateau ; voir 205.1.1, 205.1.2 et 205.1.3. | |
@@ -122,6 +124,7 @@
 | Tour | Période de la partie attribuée à un joueur ; voir le chapitre 204. | |
 | Type | Catégorie d'une carte de deck, parmi celles de 202.2.1 ; voir 202.1.3. | |
 | Unit | Type de carte de deck, et pièce du plateau issue d'une carte de ce type ou jeton que désigne l'effet qui le crée ; voir 202.2.2, 202.4.8 et 202.4.10. | |
+| Valeur X définie par un texte | Valeur X que le texte d'une carte définit par une valeur du jeu, lue une seule fois à la résolution de l'entrée qui porte l'effet, distincte du coût X ; voir 213.2.1, 213.2.2, 213.2.3 et 213.2.5. | |
 | Version du jeu sur écran | Mise en œuvre du jeu où un logiciel affiche la partie sur un écran ; voir 208.6.1, 209.4.4f et 209.4.4g. | |
 | Vide | Se dit de la pile quand aucune annonce ni aucun effet déclenché n'y attend d'être résolu ; voir 208.1.7, 208.5.1 et 208.5.1a. | |
 | Vitesse | Caractéristique que porte une carte Spell ou un Ordre, Action ou Réaction, qui fixe les moments où son joueur peut l'annoncer ; voir 207.1.1, 207.1.2 et 211.1.2. | |

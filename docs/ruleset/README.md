@@ -1,6 +1,6 @@
 # Ruleset du TCG tactique
 
-> Dossier de conception des règles, intégré au dépôt du jeu `tcg-game`, dans `docs/ruleset/` (décision 0014 du projet). Édition courante : **0.45** (Ordre et effets déclenchés du Hero, 26 octobre 2026). Historique dans [90-changelog.md](90-changelog.md).
+> Dossier de conception des règles, intégré au dépôt du jeu `tcg-game`, dans `docs/ruleset/` (décision 0014 du projet). Édition courante : **0.46** (passif du Hero facultatif, texte du Hero public, Défausser, coût X et valeur X, 26 octobre 2026). Historique dans [90-changelog.md](90-changelog.md).
 
 ## Quel document pour quel lecteur
 
@@ -35,6 +35,8 @@
 | [209](20-regles-completes/209-controles-d-etat.md) | Contrôles d'état : Force ≤ 0, victoire, nul, inactivité, temps de tour et temps de réponse, fatigue |
 | [210](20-regles-completes/210-mots-cles.md) | Mots-clés : conventions, texte de règle de chacun, mots-clés de déclencheurs et de combat |
 | [211](20-regles-completes/211-ordre-du-hero.md) | Ordre du Hero : nature, annonce, coût, cibles |
+| [212](20-regles-completes/212-defausser.md) | Défausser : nature de l'effet, défausse comme événement |
+| [213](20-regles-completes/213-valeur-x.md) | Valeur X : coût X, valeur X définie par un texte |
 
 ## Workflow d'une session de travail
 

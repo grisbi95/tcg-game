@@ -10,7 +10,7 @@ Aucun Invariant.
 
 **202.1.1** [ACTÉ] Toute carte de deck porte un nom (décision 0015).
 
-**202.1.2** [ACTÉ] Toute carte de deck porte un coût (décision 0015).
+**202.1.2** [ACTÉ] Toute carte de deck porte un coût (décision 0015 ; voir 213.1.1).
 
 **202.1.3** [ACTÉ] Toute carte de deck porte un type (décision 0015).
 
@@ -102,7 +102,7 @@ Aucun Invariant.
 
 **202.3.10** [ACTÉ] Le Hero n'attaque jamais (décision 0017).
 
-**202.3.11** [ACTÉ] Le texte de la carte Hero porte un passif (décision 0018).
+**202.3.11** [ACTÉ] Le texte de la carte Hero peut porter un passif (décisions 0018 et 0212).
 
 **202.3.12** Supprimée en édition 0.42, voir décision 0208.
 
@@ -118,9 +118,9 @@ Aucun Invariant.
 
 **202.3.18** [ACTÉ] Le passif du Hero est un effet statique, soumis aux règles de la section 207.2 (décision 0101 ; voir 202.3.11 et 207.2.1).
 
-**202.3.19** [ACTÉ] Le texte de la carte Hero peut porter, en plus du passif, un Ordre (décision 0211 ; voir 202.3.11 et 211.1.1).
+**202.3.19** [ACTÉ] Le texte de la carte Hero peut porter un Ordre (décisions 0211 et 0212 ; voir 202.3.11 et 211.1.1).
 
-**202.3.20** [ACTÉ] Le texte de la carte Hero peut porter, en plus du passif, un effet déclenché (décision 0211 ; voir 202.3.11 et 207.3.1).
+**202.3.20** [ACTÉ] Le texte de la carte Hero peut porter un effet déclenché (décisions 0211 et 0212 ; voir 202.3.11 et 207.3.1).
 
 **202.3.21** [ACTÉ] Le texte de la carte Hero fixe le nombre de ses Ordres et de ses effets déclenchés (décision 0211 ; voir 202.3.19 et 202.3.20).
 
