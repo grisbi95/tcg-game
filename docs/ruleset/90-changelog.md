@@ -433,3 +433,89 @@
 - Q-104 tranchée, option A, et descendue dans Tranchées. Aucun terme ajouté ni modifié au glossaire.
 - Décision associée : [0210](40-decisions/0210-etat-endormi-ou-eveille-public.md).
 - [README.md](README.md) : édition courante passée à 0.44.
+
+## 0.45 · 26 octobre 2026 · majeure · Ordre et effets déclenchés du Hero
+
+- Ordre du Hero ajouté : la carte Hero peut porter, en plus du passif, un Ordre (vitesse Action ou Réaction, coût en Essence éventuel) et des effets déclenchés. Seul un Hero éveillé annonce son Ordre ; il s'endort dès l'annonce ; l'annonce passe par la pile et l'adversaire peut y répondre ; les cibles sont choisies à l'annonce. Chapitre 211 créé ([211-ordre-du-hero.md](20-regles-completes/211-ordre-du-hero.md), selon la décision 0116). Identifiants ajoutés : 211.1.1 à 211.1.4, 211.2.1 à 211.2.8, 211.3.1, 211.3.2, 211.4.1, 211.4.2 ; 202.3.19, 202.3.20, 202.3.21 ; 201.5.4c ; 204.4.8 ; 208.1.12, 208.7.17.
+- Identifiants modifiés : 202.4.6 (la source « Ordre » est ajoutée), 207.5.15 et 207.6.3 (l'Ordre est ajouté), 208.2.3 (Spells ou Ordres de vitesse Réaction). Identifiants dont seul le renvoi change, sans changement de sens : 203.6.11, 209.2.10. Identifiants inchangés : 202.3.11, 202.3.18, 203.0.1, 203.3.2, 203.3.3, 204.1.18, 204.3.11, 204.4.5, 205.4.7, 207.5.7, 207.5.8, 207.5.10, 208.2.4.
+- Glossaire : terme ajouté : Ordre ; termes modifiés : Action (vitesse), Réaction (vitesse), Vitesse, Coût, Annoncer, Appartenir, Cible légale, Endormie, Éveillée, Entrée de la pile. Pouvoir reste « Retiré en édition 0.42 » : l'Ordre n'est pas le pouvoir.
+- Questions ouvertes créées : Q-116 (expiration du temps pendant le choix des cibles d'un Ordre), Q-117 (effets déclenchés par un Ordre, 208.2.4a, 208.7.10, 208.7.11), Q-118 (visibilité de la carte Hero).
+- Décision 0208 marquée d'une ligne en tête (remplacée en partie). Livret [10-regles-de-base.md](10-regles-de-base.md), [decks-de-test.md](70-playtest/decks-de-test.md) et [protocole.md](70-playtest/protocole.md) non modifiés : le Capitaine reste un Hero à passif seul.
+- Décision associée : [0211](40-decisions/0211-ordre-et-effets-declenches-du-hero.md). Mesures du playtest J3 consignées dans la décision : fréquence d'usage des Ordres, tours où le Hero reste éveillé pendant le tour adverse, PV perdus par un Hero avancé pour son Ordre.
+- [README.md](README.md) : édition courante passée à 0.45 ; ligne du chapitre 211 ajoutée.
+
+## 0.46 · 26 octobre 2026 · majeure · passif du Hero facultatif, texte du Hero public, Défausser, coût X, valeur X définie par un texte
+
+- Passif du Hero facultatif. Identifiants modifiés : 202.3.11 (« peut porter un passif »), 202.3.19 et 202.3.20 (« en plus du passif » retiré) ([202-cartes.md](20-regles-completes/202-cartes.md)). Décision [0212](40-decisions/0212-le-passif-du-hero-est-facultatif.md). Q-119 créée (capacité minimale du texte du Hero, « au moins une » non dit par le créateur).
+- Texte de la carte Hero public. Identifiant ajouté : 201.4.12 ([201-concepts.md](20-regles-completes/201-concepts.md)). Décision [0213](40-decisions/0213-le-texte-de-la-carte-hero-est-public.md). Q-118 tranchée, option A.
+- Défausser. Chapitre 212 créé ([212-defausser.md](20-regles-completes/212-defausser.md)) : 212.1.1 à 212.1.7, 212.2.1, 212.2.2, 212.2.2a à 212.2.2d, 212.2.3 à 212.2.5. Décision [0214](40-decisions/0214-defausser.md). Q-120 créée (expiration du temps pendant le choix de la carte à défausser).
+- Coût X et valeur X définie par un texte. Chapitre 213 créé ([213-valeur-x.md](20-regles-completes/213-valeur-x.md)) : 213.1.1 à 213.1.8, 213.2.1 à 213.2.5. Décisions [0215](40-decisions/0215-cout-variable-x.md) et [0216](40-decisions/0216-valeur-x-definie-par-un-texte.md). Q-121 (coût qui combine X et une partie fixe), Q-122 (ordre du choix de X et des cibles) et Q-123 (Force lue pour X pendant un combat) créées.
+- Identifiants dont seul le renvoi change, sans changement de sens : 202.1.2 (renvoi vers 213.1.1), 210.1.3 (renvoi vers 213.2.1). Identifiants inchangés : 202.3.18, 202.3.21, 203.0.1, 207.5.13, 206.2.3, 210.4.1, 210.4.2.
+- Glossaire : termes ajoutés : Défausser, Coût X, Valeur X définie par un texte ; terme modifié : Coût (renvoi vers 213.1.1).
+- Décisions 0018 et 0211 marquées d'une ligne en tête (remplacées en partie). Livret [10-regles-de-base.md](10-regles-de-base.md), [decks-de-test.md](70-playtest/decks-de-test.md) et [protocole.md](70-playtest/protocole.md) non modifiés.
+- Mesures du playtest J3 consignées dans les décisions : nombre de défausses par partie ; valeurs de X choisies et Sources recyclées pour payer un coût X.
+- [README.md](README.md) : édition courante passée à 0.46 ; lignes des chapitres 212 et 213 ajoutées.
+
+## 0.47 · 26 octobre 2026 · majeure · Échanger, capacité minimale du Hero, temps de la défausse, coût X et valeur X précisés
+
+- Échanger les cases de deux Units alliées. Chapitre 214 créé ([214-echanger.md](20-regles-completes/214-echanger.md)) : 214.1.1 à 214.1.4, 214.2.1 à 214.2.4 ; identifiants ajoutés : 200.4.2a ([200-regles-d-or.md](20-regles-completes/200-regles-d-or.md)), 207.5.4a ([207-effets.md](20-regles-completes/207-effets.md)). Décision [0217](40-decisions/0217-echanger-les-cases-de-deux-pieces.md). Q-125 créée (échange et mot « déplacement »).
+- Capacité minimale du Hero. Identifiant ajouté : 202.3.22 ([202-cartes.md](20-regles-completes/202-cartes.md)). Décision [0218](40-decisions/0218-capacite-minimale-du-texte-du-hero.md). Q-119 tranchée, option A.
+- Temps pendant le choix des cartes à défausser. Identifiants ajoutés : 209.4.7c, 209.4.13 ([209-controles-d-etat.md](20-regles-completes/209-controles-d-etat.md)). Décision [0219](40-decisions/0219-expiration-du-temps-pendant-le-choix-des-cartes-a-defausser.md). Q-120 tranchée, option A.
+- Coût X sans partie fixe. Identifiant ajouté : 213.1.12. Décision [0220](40-decisions/0220-cout-x-sans-partie-fixe.md). Q-121 tranchée, option A.
+- Ordre du choix de X et des cibles. Identifiants ajoutés : 213.1.9, 213.1.10, 213.1.11. Décision [0221](40-decisions/0221-ordre-du-choix-de-x-et-des-cibles.md). Q-122 tranchée, option A. Q-124 créée (expiration du temps pendant le choix de X).
+- Force lue pour X sans Assaut ni Rempart. Identifiant modifié : 213.2.4 (« ne comptent jamais », comportement changé pendant un combat) ([213-valeur-x.md](20-regles-completes/213-valeur-x.md)). Décision [0222](40-decisions/0222-force-lue-pour-x-sans-assaut-ni-rempart.md). Q-123 tranchée, option A.
+- Glossaire : termes ajoutés : Échanger, Tirage au sort ; termes modifiés : Coût X, Temps de réponse, Hero (renvois).
+- Livret [10-regles-de-base.md](10-regles-de-base.md), [decks-de-test.md](70-playtest/decks-de-test.md) et [protocole.md](70-playtest/protocole.md) non modifiés.
+- Mesures du playtest J3 consignées dans les décisions : échanges déjoués par une réponse adverse ; défausses tirées au sort à l'expiration ; écart entre X et la Force au combat.
+- [README.md](README.md) : édition courante passée à 0.47 ; ligne du chapitre 214 ajoutée.
+
+## 0.48 · 26 octobre 2026 · majeure · Hero déplacé sur tout le plateau, premier playtest avec le catalogue de playtest
+
+- Le Hero se déplace sur tout le plateau. Identifiant supprimé : 205.3.2 ([205-actions.md](20-regles-completes/205-actions.md), identifiant conservé). 205.3.1, 205.3.3, 202.3.9, 202.3.10 et 204.1.1 inchangées. Décision [0223](40-decisions/0223-le-hero-se-deplace-sur-tout-le-plateau.md) ; décision 0043 marquée « Remplacée en partie ». Q-126 créée (Unit déployée en attaquant sur la case du Hero adverse). Mesures du playtest J3 consignées dans la décision : rangée la plus avancée de chaque Hero ; PV perdus par un Hero avancé ; Heroes attaqués hors de leurs deux premières rangées.
+- Le premier playtest se joue avec le catalogue de playtest. Aucun identifiant touché. Décision [0224](40-decisions/0224-le-premier-playtest-se-joue-avec-le-catalogue-de-playtest.md) ; décisions 0153 et 0164 marquées « Remplacée en partie ». Une phrase de portée ajoutée dans [protocole.md](70-playtest/protocole.md) et [decks-de-test.md](70-playtest/decks-de-test.md). Q-127 à Q-131 créées (lieu du catalogue, affrontements et parties par série, attribution des decks, alternance du premier joueur, mesures valables).
+- Glossaire inchangé. Livret [10-regles-de-base.md](10-regles-de-base.md) non modifié (aucun renvoi à 205.3.2).
+- [README.md](README.md) : édition courante passée à 0.48.
+
+## 0.49 · 26 octobre 2026 · majeure · déploiement et Hero ennemi, temps pendant le choix de X, échange et déplacement, catalogue de playtest
+
+- Déploiement d'une Unit interdit sur la case du Hero ennemi à l'annonce. Identifiant ajouté : 205.1.11 ([205-actions.md](20-regles-completes/205-actions.md)). 205.1.5, 205.1.6, 205.2.6 et 206.4.5 inchangées. Décision [0225](40-decisions/0225-pas-de-deploiement-sur-la-case-du-hero-ennemi.md). Q-126 tranchée, option A.
+- Expiration du temps pendant le choix de X. Identifiants ajoutés : 209.4.4h, 209.4.11b ([209-controles-d-etat.md](20-regles-completes/209-controles-d-etat.md)). 209.4.4d, 209.4.7 et 209.4.11 inchangées. Décision [0226](40-decisions/0226-expiration-du-temps-pendant-le-choix-de-x.md). Q-124 tranchée, option A.
+- Un échange n'est pas un déplacement. Identifiant ajouté : 214.2.5 ([214-echanger.md](20-regles-completes/214-echanger.md)). Décision [0227](40-decisions/0227-un-echange-n-est-pas-un-deplacement.md). Q-125 tranchée, option A, contre la recommandation.
+- Catalogue de playtest consigné dans `50-cartes/` : [README.md](50-cartes/README.md), [heroes.md](50-cartes/heroes.md), [rouge.md](50-cartes/rouge.md), [vert.md](50-cartes/vert.md), [violet.md](50-cartes/violet.md), [bleu.md](50-cartes/bleu.md), [neutres.md](50-cartes/neutres.md), [decks.md](50-cartes/decks.md) : 4 Heroes, 36 cartes de couleur, 12 neutres, 4 decks de 30 cartes. Aucun identifiant de règle touché. Décision [0228](40-decisions/0228-le-catalogue-de-playtest-vit-dans-50-cartes.md). Q-127 tranchée, option A. Phrase de portée de [decks-de-test.md](70-playtest/decks-de-test.md) mise à jour.
+- Questions ouvertes créées par la relecture des textes de cartes contre les règles 0.48 : Q-132 (déplacer une Unit par un effet), Q-133 (renvoyer dans la main), Q-134 (regarder le dessus du deck), Q-135 (condition « si » d'un effet déclenché), Q-136 (effet déclenché d'un Gear), Q-137 (sens de « détruit son défenseur »), Q-138 (case d'une pièce partie du plateau), Q-139 (marque du ciblage), Q-140 (construction du deck par couleur). Aucun texte de carte corrigé.
+- Glossaire : termes ajoutés : Catalogue de playtest, Couleur, Neutre ; termes modifiés : Déplacement, Échanger, Déployer, Temps de tour (renvois).
+- Livret [10-regles-de-base.md](10-regles-de-base.md) et [protocole.md](70-playtest/protocole.md) non modifiés.
+- [README.md](README.md) : édition courante passée à 0.49 ; ligne `50-cartes/` mise à jour.
+
+## 0.50 · 26 octobre 2026 · mineure · protocole du premier playtest : série de 24 parties, plan de série, cibles et seuils à refixer
+
+- Série de 24 parties : les 6 affrontements entre deux decks distincts du catalogue de playtest, 4 parties chacun, sans partie miroir. Décision [0229](40-decisions/0229-affrontements-et-parties-par-serie.md) ; décision 0154 marquée « Remplacée en partie ». Q-128 tranchée, option A.
+- Attribution des decks par un plan de série fixé à l'avance, écrit dans [protocole.md](70-playtest/protocole.md), section Plan de série (24 parties, contraintes vérifiées). Décision [0230](40-decisions/0230-attribution-des-decks-aux-joueurs.md). Q-129 tranchée, option A. Q-142 créée (ordre de jeu des 24 parties).
+- Premier joueur fixé par le plan de série, chaque deck commençant 2 parties sur 4 dans chaque affrontement ; 204.1.14 inchangée. Décision [0231](40-decisions/0231-premier-joueur-fixe-par-le-plan-de-serie.md) ; décisions 0158 et 0168 marquées « Remplacée en partie ». Q-130 tranchée, option A. Mention ajoutée à Q-102.
+- Cibles et seuils du tableau du protocole à refixer avant la première série J3, mesures des décisions 0211 à 0228 comprises, aucune valeur fixée. Décision [0232](40-decisions/0232-cibles-et-seuils-refixes-avant-la-serie.md). Q-131 tranchée, option C, contre la recommandation. Q-141 créée (liste des lignes et des mesures à refixer).
+- [protocole.md](70-playtest/protocole.md) : portée de la section Decks de test, tableau des décisions, section Série, section Plan de série (nouvelle), définitions Affrontement et Plan de série, introduction du tableau des cibles et seuils, section Points à trancher. Fiche de relevé, tableau des cibles et seuils et couverture des règles PROVISOIRE non modifiés.
+- Aucun identifiant de règle touché. Glossaire, livret [10-regles-de-base.md](10-regles-de-base.md) et chapitre 210 non modifiés.
+- [README.md](README.md) : édition courante passée à 0.50 ; ligne `70-playtest/` mise à jour.
+
+## 0.51 · 26 octobre 2026 · majeure · déplacement par un effet, renvoi dans la main, regard sur le dessus du deck, condition « si » d'un effet déclenché, effet déclenché d'un Gear
+
+- Déplacement d'une Unit par un effet : chapitre [215](20-regles-completes/215-deplacer-par-un-effet.md) créé. Identifiants ajoutés : 215.1.1, 215.1.2, 215.2.1, 215.2.2, 215.2.3, 215.2.4, 215.2.5, 215.2.6. Décision [0233](40-decisions/0233-deplacer-une-unit-par-un-effet.md). Q-132 tranchée, option A.
+- Renvoi dans la main : chapitre [216](20-regles-completes/216-renvoyer-dans-la-main.md) créé. Identifiants ajoutés : 216.1.1, 216.1.2, 216.1.2a, 216.1.3, 216.1.4, 216.2.1, 216.2.2. Décision [0234](40-decisions/0234-renvoyer-une-piece-dans-la-main.md). Q-133 tranchée, option A.
+- Regard sur le dessus du deck : chapitre [217](20-regles-completes/217-regarder-le-dessus-du-deck.md) créé. Identifiants ajoutés : 217.1.1, 217.1.2, 217.1.3, 217.1.4, 217.1.5, 217.1.6, 217.1.7, et 201.4.1a ([201-concepts.md](20-regles-completes/201-concepts.md)). 201.4.1 inchangée. Décision [0235](40-decisions/0235-regarder-le-dessus-du-deck.md). Q-134 tranchée, option A. Q-143 créée (expiration du temps pendant ce choix).
+- Condition « si » d'un effet déclenché lue à l'événement. Identifiants ajoutés : 204.3.12, 204.3.12a ([204-tour.md](20-regles-completes/204-tour.md)), 207.3.13, 207.3.13a, 207.3.13b ([207-effets.md](20-regles-completes/207-effets.md)). 204.3.6 et 204.3.8 inchangées. Décision [0236](40-decisions/0236-condition-si-lue-a-l-evenement.md). Q-135 tranchée, option A. Q-144 créée (place de l'événement « début du tour » par rapport aux autres étapes de 204.3.8).
+- Effet déclenché porté par un Gear. Identifiants ajoutés : 207.3.12, 207.3.12a, 207.3.12b, 207.3.12c ([207-effets.md](20-regles-completes/207-effets.md)). 207.2.8, 207.2.9 et 207.3.3 inchangées. Décision [0237](40-decisions/0237-effet-declenche-porte-par-un-gear.md). Q-136 tranchée, option A.
+- Glossaire : termes ajoutés : Regarder, Renvoyer, Sous son deck ; terme modifié : Déplacement (renvoi à 215.1.2). Chapitre 210 non modifié (aucun mot-clé touché).
+- [50-cartes/](50-cartes/README.md) : colonne « Questions ouvertes » mise à jour, textes inchangés : Passeur, Manipulateur, Glissement, Reflux, Pilleuse (aucune question), Observatoire (Q-143), Trophée et Grimoire (Q-137).
+- Livret [10-regles-de-base.md](10-regles-de-base.md) non modifié.
+- [README.md](README.md) : édition courante passée à 0.51 ; chapitres 215 à 217 ajoutés au tableau.
+
+## 0.52 · 26 octobre 2026 · majeure · sens de « détruit son défenseur », case d'une pièce partie du plateau, marque du ciblage, decks du premier playtest
+
+- Sens de « détruit son défenseur » : identifiants ajoutés 206.3.7, 206.3.7a, 206.3.7b ([206-combat.md](20-regles-completes/206-combat.md)). Terme ajouté au glossaire : Détruire son défenseur. Décision [0238](40-decisions/0238-sens-de-detruit-son-defenseur.md). Q-137 tranchée, option A.
+- Case d'une pièce qui a quitté le plateau : identifiant ajouté 207.3.14 ([207-effets.md](20-regles-completes/207-effets.md)). Décision [0239](40-decisions/0239-case-d-une-piece-qui-a-quitte-le-plateau.md). Q-138 tranchée, option A.
+- Marque du ciblage dans le texte d'une carte : identifiant ajouté 207.5.18 ([207-effets.md](20-regles-completes/207-effets.md)) ; renvoi 207.5.18 ajouté à l'entrée Cible du glossaire. Décision [0240](40-decisions/0240-marque-du-ciblage-dans-le-texte-d-une-carte.md). Q-139 tranchée, option A.
+- Textes de [50-cartes/](50-cartes/README.md) corrigés, effet inchangé, édition d'écriture passée à 0.52 : Chef de guerre, « réveillez une Unit alliée adjacente au Hero » devient « réveillez une Unit alliée ciblée adjacente au Hero » ; Recruteuse, « sur une case libre adjacente au Hero » devient « sur une case libre ciblée adjacente au Hero » ; Rassemblement, « Choisissez deux cases libres ciblées distinctes parmi les deux rangées les plus proches de vous. Créez un jeton Unit de Force 1 sur chacune. » devient « Créez un jeton Unit de Force 1 sur chacune de deux cases libres ciblées distinctes parmi les deux rangées les plus proches de vous. ». Aucun autre texte de carte ni de Hero ne désigne une pièce ou une case sans le mot « ciblée » ; les decks de test de 70-playtest ne contredisent pas la règle.
+- Decks du premier playtest : les 4 decks de [50-cartes/decks.md](50-cartes/decks.md) sont des listes fixes ; 201.6.3 inchangée ; la règle de construction par couleur s'écrira après les premières parties. Décision [0241](40-decisions/0241-decks-du-premier-playtest-en-listes-fixes.md). Q-140 tranchée, option A.
+- [50-cartes/](50-cartes/README.md) : colonne « Questions ouvertes » mise à jour : Trophée, Grimoire, Poudrière, Chef de guerre et Recruteuse sans question ; Rassemblement garde Q-098 ; renvois du README remplacés par les décisions 0241 et 0238.
+- Livret [10-regles-de-base.md](10-regles-de-base.md) et chapitre 210 non modifiés.
+- [README.md](README.md) : édition courante passée à 0.52.

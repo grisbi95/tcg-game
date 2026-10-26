@@ -32,6 +32,8 @@ Aucun Invariant.
 
 **205.1.10** [ACTÉ] Une carte qui doit revenir dans la main selon 205.1.7 ou 205.1.8 va dans la défausse du joueur à qui elle appartient si son entrée dans la main ferait dépasser la limite de main (décision 0096 ; voir 201.3.5 et 201.3.6a).
 
+**205.1.11** [ACTÉ] À l'annonce du déploiement d'une Unit, la case choisie n'est pas occupée par un Hero ennemi (décision 0225 ; voir 205.1.5, 205.1.6 et 206.4.1).
+
 ## 205.2 Action normale
 
 **205.2.1** Supprimée en édition 0.6, voir décision 0086.
@@ -52,7 +54,7 @@ Aucun Invariant.
 
 **205.3.1** [ACTÉ] L'action normale du Hero le déplace sur une case libre adjacente (décision 0043).
 
-**205.3.2** [ACTÉ] Le Hero ne quitte jamais les deux rangées les plus proches de son joueur (décision 0043).
+**205.3.2** Supprimée en édition 0.48, voir décision 0223.
 
 **205.3.3** [ACTÉ] À l'annonce de l'action normale du Hero, la case visée est libre (décision 0182 ; voir 205.3.1 et 205.2.6).
 

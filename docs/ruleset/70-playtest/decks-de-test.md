@@ -1,8 +1,10 @@
 # Decks de test du premier playtest
 
-> Rôle : donner le Hero de test et les cartes des deux decks du premier playtest, identiques pour les deux joueurs. Statut : rédigé, aucune partie jouée ; cartes écrites sous l'édition 0.26, nommées sous l'édition 0.27, texte de Martyr corrigé sous l'édition 0.28, noms provisoires. Créé le 16 octobre 2026, mis à jour le 16 octobre 2026. Ce document ne contient aucune règle de jeu : il renvoie aux identifiants de [20-regles-completes/](../20-regles-completes/) et aux décisions de [40-decisions/](../40-decisions/). Il ne fait pas partie du catalogue `50-cartes/`, créé avec la première édition jouable.
+> Rôle : donner le Hero de test et les cartes des deux decks du premier playtest, identiques pour les deux joueurs. Statut : rédigé, aucune partie jouée ; cartes écrites sous l'édition 0.26, nommées sous l'édition 0.27, texte de Martyr corrigé sous l'édition 0.28, noms provisoires. Créé le 16 octobre 2026, mis à jour le 16 octobre 2026. Ce document ne contient aucune règle de jeu : il renvoie aux identifiants de [20-regles-completes/](../20-regles-completes/) et aux décisions de [40-decisions/](../40-decisions/). Il ne fait pas partie du catalogue de playtest de [50-cartes/](../50-cartes/README.md), qui reprend dix de ses cartes sous les mêmes noms et avec les mêmes valeurs (décision 0228).
 
 ## Portée
+
+Ces decks sont des decks de référence du moteur : la décision [0224](../40-decisions/0224-le-premier-playtest-se-joue-avec-le-catalogue-de-playtest.md) fait jouer le premier playtest avec le catalogue de playtest.
 
 Les deux joueurs jouent le même Hero de test et le même deck (décisions 0153 et 0164). Les cartes sont écrites sous l'édition 0.26 et reçoivent leur nom sous l'édition 0.27 (CHARTE.md §9). Les noms des cartes sont provisoires (décisions 0172 et 0173) ; une carte du futur catalogue ne reprend pas forcément ces noms. Aucun nom ne reprend un mot-clé ni un terme du glossaire (décision 0173). Les exigences et les échelles de Force sont dans [protocole.md](protocole.md), section Decks de test.
 

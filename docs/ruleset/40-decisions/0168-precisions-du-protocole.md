@@ -1,5 +1,7 @@
 # 0168 · Cinq précisions du protocole
 
+Remplacée en partie par 0231 (précision 5 : le plan de série fixe le premier joueur de chaque partie, dont la partie 1).
+
 > Décision consignée le 16 octobre 2026. Statut : ACTÉ. Une décision ne se modifie jamais ; pour revenir dessus, une nouvelle décision la remplace et cette ligne reçoit « Remplacée par NNNN ».
 
 ## Contexte

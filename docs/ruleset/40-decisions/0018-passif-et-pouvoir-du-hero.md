@@ -1,6 +1,6 @@
 # 0018 · Passif et pouvoir du Hero
 
-Remplacée en partie par 0208 (le Hero n'a pas de pouvoir ; le passif reste).
+Remplacée en partie par 0208 (le Hero n'a pas de pouvoir ; le passif reste) et par 0212 (le passif est facultatif).
 
 > Décision consignée le 15 octobre 2026. Statut : ACTÉ. Une décision ne se modifie jamais ; pour revenir dessus, une nouvelle décision la remplace et cette ligne reçoit « Remplacée par NNNN ».
 

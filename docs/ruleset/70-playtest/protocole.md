@@ -1,6 +1,6 @@
 # Protocole du premier playtest
 
-> Rôle : fixer avant la première partie les decks, la taille de la série, la fiche de relevé et les seuils de jugement du premier playtest du ruleset. Statut : rédigé, decks composés dans [decks-de-test.md](decks-de-test.md) ; aucune partie jouée. Créé le 16 octobre 2026, complété le 16 octobre 2026 (édition 0.28) et le 18 octobre 2026 (édition 0.35, mesure de l'Essence perdue, décision 0195 ; édition 0.36, mesures de la fenêtre de réponse, décision 0198 ; édition 0.37, mesure de lisibilité du texte des cartes de main) et le 21 octobre 2026 (édition 0.38, fenêtre de réponse sans échéance, décision 0199) et le 22 octobre 2026 (édition 0.39, hypothèse des 15 PV réécrite et mesure des PV perdus par un Hero en un tour, décision 0202 ; hypothèse des 15 PV sans chiffre de fin de partie, décision 0204 ; édition 0.40, temps de tour et temps de réponse, décision 0205). Ce document ne contient aucune règle de jeu : il renvoie aux identifiants de [20-regles-completes/](../20-regles-completes/).
+> Rôle : fixer avant la première partie les decks, la taille de la série, la fiche de relevé et les seuils de jugement du premier playtest du ruleset. Statut : rédigé, decks composés dans [decks-de-test.md](decks-de-test.md) ; aucune partie jouée. Créé le 16 octobre 2026, complété le 16 octobre 2026 (édition 0.28) et le 18 octobre 2026 (édition 0.35, mesure de l'Essence perdue, décision 0195 ; édition 0.36, mesures de la fenêtre de réponse, décision 0198 ; édition 0.37, mesure de lisibilité du texte des cartes de main) et le 21 octobre 2026 (édition 0.38, fenêtre de réponse sans échéance, décision 0199) et le 22 octobre 2026 (édition 0.39, hypothèse des 15 PV réécrite et mesure des PV perdus par un Hero en un tour, décision 0202 ; hypothèse des 15 PV sans chiffre de fin de partie, décision 0204 ; édition 0.40, temps de tour et temps de réponse, décision 0205) et le 26 octobre 2026 (édition 0.50, série de 24 parties entre les 4 decks du catalogue de playtest, plan de série, cibles et seuils à refixer, décisions 0229 à 0232). Ce document ne contient aucune règle de jeu : il renvoie aux identifiants de [20-regles-completes/](../20-regles-completes/).
 
 ## Objet
 
@@ -35,8 +35,14 @@ Le premier playtest éprouve les règles de base. Il mesure les 23 règles PROVI
 | Fenêtre de réponse à l'écran | [0198](../40-decisions/0198-fenetre-de-reponse-a-l-ecran.md), remplacée par [0199](../40-decisions/0199-fenetre-de-reponse-sans-echeance.md), modifiée par [0205](../40-decisions/0205-temps-de-tour-et-temps-de-reponse.md) | Fiche de relevé, Cibles et seuils |
 | Temps de tour et temps de réponse | [0205](../40-decisions/0205-temps-de-tour-et-temps-de-reponse.md) | Fiche de relevé, Cibles et seuils |
 | Hypothèse des 15 PV et mesure des PV perdus en un tour | [0202](../40-decisions/0202-hypothese-des-pv-et-mesure-des-pv-perdus-en-un-tour.md), complétée par [0204](../40-decisions/0204-hypothese-des-15-pv-sans-chiffre-de-fin-de-partie.md) | Decks de test, Fiche de relevé, Cibles et seuils |
+| Affrontements et nombre de parties par série | [0229](../40-decisions/0229-affrontements-et-parties-par-serie.md), remplace en partie 0154 | Série |
+| Attribution des decks aux joueurs | [0230](../40-decisions/0230-attribution-des-decks-aux-joueurs.md) | Plan de série |
+| Premier joueur fixé par le plan de série | [0231](../40-decisions/0231-premier-joueur-fixe-par-le-plan-de-serie.md), remplace en partie 0158 et 0168 | Série, Plan de série |
+| Cibles et seuils refixés avant la série | [0232](../40-decisions/0232-cibles-et-seuils-refixes-avant-la-serie.md) | Cibles et seuils, Points à trancher avant la première série |
 
 ## Decks de test
+
+Portée : la décision [0224](../40-decisions/0224-le-premier-playtest-se-joue-avec-le-catalogue-de-playtest.md) remplace en partie les décisions 0153 et 0164 ; le premier playtest se joue avec le catalogue de playtest, et les decks de test décrits dans cette section sont des decks de référence du moteur. Les questions Q-127 à Q-131 de [02-questions-ouvertes.md](../02-questions-ouvertes.md) sont tranchées : la série compte 24 parties entre les 4 decks du catalogue de playtest, selon le plan de série (décisions 0229, 0230 et 0231), et les cibles et seuils du tableau sont refixés par une décision avant la première série (décision 0232, Q-141).
 
 Le premier playtest se joue avec deux decks de test simples et presque identiques (miroirs), conçus seulement pour éprouver les règles de base. Les deux decks sont identiques, Hero de test compris. Les cartes, le Hero de test et la répartition des 30 cartes sont écrits dans [decks-de-test.md](decks-de-test.md) (décisions 0170, 0171, 0172, 0173 et 0174). Les cartes y portent des noms lisibles et provisoires, et le Hero de test se nomme Capitaine (décision 0173). Le texte de Martyr est fixé par la décision 0174. Le catalogue de `50-cartes/` viendra après.
 
@@ -83,13 +89,65 @@ Aucune tâche en attente sur les decks. Les deux decks sont composés (décision
 
 | Paramètre | Valeur | Règle ou décision |
 | --- | --- | --- |
-| Nombre de parties | 20 | décision 0154 |
-| Parties avec chaque joueur en premier | 10 | décision 0154 |
-| Désignation du premier joueur | alterne d'une partie à l'autre, à la place du tirage au sort de 204.1.14 | décision 0158 |
-| Premier joueur de la partie 1 | le joueur A ; l'alternance s'applique ensuite | décision 0168 |
-| Règle 204.1.14 | inchangée ; la série n'éprouve pas le tirage au sort | décision 0158 |
+| Decks de la série | les 4 decks du catalogue de playtest, décrits dans [decks.md](../50-cartes/decks.md) | décision 0224 |
+| Affrontements | les 6 affrontements entre deux decks distincts, sans partie miroir | décision 0229 |
+| Parties par affrontement | 4 | décision 0229 |
+| Nombre de parties | 24 | décision 0229 |
+| Attribution des decks aux joueurs | fixée par le plan de série | décision 0230 |
+| Parties avec chaque joueur en premier | 12, soit 2 par affrontement avec le joueur A en premier et 2 avec le joueur B en premier | décision 0231 ; plan de série |
+| Parties avec chaque deck en premier | 2 sur 4 dans chaque affrontement | décision 0231 |
+| Désignation du premier joueur | fixée par le plan de série, à la place du tirage au sort de 204.1.14 | décision 0231 |
+| Règle 204.1.14 | inchangée ; la série n'éprouve pas le tirage au sort | décisions 0158 et 0231 |
 | Précision du taux de victoire du premier joueur | indicative ; environ 100 parties pour ±10 points | décision 0154 |
 | Cumul du taux de victoire du premier joueur | d'une série à l'autre, tant que 204.3.4 ne change pas | décision 0154 |
+
+## Plan de série
+
+Le plan de série dit, pour chacune des 24 parties, quel deck tient le joueur A, quel deck tient le joueur B et qui commence (décisions 0230 et 0231). Les joueurs A et B sont les joueurs de la série notés sur la fiche de relevé ; un joueur A ou B n'est pas lié à un deck. La numérotation est l'ordre de lecture du plan ; l'ordre de jeu des parties n'est pas fixé (Q-142).
+
+Contraintes (décisions 0229, 0230 et 0231) :
+
+- chaque affrontement compte 4 parties ;
+- le joueur A et le joueur B tiennent chacun chaque deck le même nombre de fois sur la série ;
+- dans chaque affrontement, chaque deck commence 2 parties sur 4.
+
+Construction : dans chaque affrontement entre un deck X et un deck Y, les 4 parties sont les 4 combinaisons de deux choix : le joueur A tient X ou Y, et X ou Y commence. Les 6 affrontements sont rangés dans l'ordre de lecture de [decks.md](../50-cartes/decks.md), le premier deck de la paire étant le premier cité.
+
+| Partie | Affrontement | Joueur A | Joueur B | Premier joueur |
+| --- | --- | --- | --- | --- |
+| 1 | Percée contre Phalange | Percée | Phalange | A (Percée) |
+| 2 | Percée contre Phalange | Percée | Phalange | B (Phalange) |
+| 3 | Percée contre Phalange | Phalange | Percée | A (Phalange) |
+| 4 | Percée contre Phalange | Phalange | Percée | B (Percée) |
+| 5 | Percée contre Échiquier | Percée | Échiquier | A (Percée) |
+| 6 | Percée contre Échiquier | Percée | Échiquier | B (Échiquier) |
+| 7 | Percée contre Échiquier | Échiquier | Percée | A (Échiquier) |
+| 8 | Percée contre Échiquier | Échiquier | Percée | B (Percée) |
+| 9 | Percée contre Grimoire | Percée | Grimoire | A (Percée) |
+| 10 | Percée contre Grimoire | Percée | Grimoire | B (Grimoire) |
+| 11 | Percée contre Grimoire | Grimoire | Percée | A (Grimoire) |
+| 12 | Percée contre Grimoire | Grimoire | Percée | B (Percée) |
+| 13 | Phalange contre Échiquier | Phalange | Échiquier | A (Phalange) |
+| 14 | Phalange contre Échiquier | Phalange | Échiquier | B (Échiquier) |
+| 15 | Phalange contre Échiquier | Échiquier | Phalange | A (Échiquier) |
+| 16 | Phalange contre Échiquier | Échiquier | Phalange | B (Phalange) |
+| 17 | Phalange contre Grimoire | Phalange | Grimoire | A (Phalange) |
+| 18 | Phalange contre Grimoire | Phalange | Grimoire | B (Grimoire) |
+| 19 | Phalange contre Grimoire | Grimoire | Phalange | A (Grimoire) |
+| 20 | Phalange contre Grimoire | Grimoire | Phalange | B (Phalange) |
+| 21 | Échiquier contre Grimoire | Échiquier | Grimoire | A (Échiquier) |
+| 22 | Échiquier contre Grimoire | Échiquier | Grimoire | B (Grimoire) |
+| 23 | Échiquier contre Grimoire | Grimoire | Échiquier | A (Grimoire) |
+| 24 | Échiquier contre Grimoire | Grimoire | Échiquier | B (Échiquier) |
+
+Vérification des contraintes :
+
+| Contrainte | Vérification |
+| --- | --- |
+| 4 parties par affrontement | les parties 1 à 4, 5 à 8, 9 à 12, 13 à 16, 17 à 20 et 21 à 24 forment les 6 affrontements |
+| Chaque joueur tient chaque deck le même nombre de fois | chaque deck figure dans 3 affrontements, et dans chacun le joueur A tient ce deck 2 fois sur 4, comme le joueur B : 6 parties pour chaque joueur et chaque deck |
+| Chaque deck commence 2 parties sur 4 dans chaque affrontement | dans chaque affrontement, le premier deck de la paire commence les parties de rang 1 et 4 et le second deck les parties de rang 2 et 3 |
+| Total des premiers joueurs | le joueur A commence 12 parties (rangs 1 et 3 de chaque affrontement), le joueur B 12 (rangs 2 et 4) |
 
 ## Fiche de relevé
 
@@ -185,7 +243,7 @@ Dans le protocole, « tour N » veut dire le N-ième tour de chaque joueur, soit
 
 ### Tableau
 
-Tableau validé tel quel le 16 octobre 2026 (décision 0157), complété le même jour sur ses règles visées par les règles 204.1.12 et 204.1.13 (décision 0163) et sur l'intitulé de la mesure de l'Essence inutilisée (décision 0168), complété le 18 octobre 2026 par la mesure de l'Essence perdue, sans cible ni seuil chiffrés (décision 0195), puis par les mesures de la fenêtre de réponse (décision 0198), dont les définitions sont réécrites le 21 octobre 2026 sans passe automatique ni arrêt du décompte (décision 0199), puis complété le 22 octobre 2026 par la mesure des PV perdus par un Hero en un tour, sans cible ni seuil chiffrés (décision 0202), puis remplacées le 22 octobre 2026 par les mesures du temps de tour, du temps de réponse et de l'inactivité, sans cible ni seuil chiffrés (décision 0205), révisable après la première série par une décision.
+Les cibles et les seuils de ce tableau sont écrits pour un deck miroir de 20 parties ; une décision les refixe avant la première série, mesures des décisions 0211 à 0228 comprises (décision 0232 ; liste dans Q-141). Tableau validé tel quel le 16 octobre 2026 (décision 0157), complété le même jour sur ses règles visées par les règles 204.1.12 et 204.1.13 (décision 0163) et sur l'intitulé de la mesure de l'Essence inutilisée (décision 0168), complété le 18 octobre 2026 par la mesure de l'Essence perdue, sans cible ni seuil chiffrés (décision 0195), puis par les mesures de la fenêtre de réponse (décision 0198), dont les définitions sont réécrites le 21 octobre 2026 sans passe automatique ni arrêt du décompte (décision 0199), puis complété le 22 octobre 2026 par la mesure des PV perdus par un Hero en un tour, sans cible ni seuil chiffrés (décision 0202), puis remplacées le 22 octobre 2026 par les mesures du temps de tour, du temps de réponse et de l'inactivité, sans cible ni seuil chiffrés (décision 0205), révisable après la première série par une décision.
 
 | Mesure | Règles visées | Cible | Seuil d'alerte |
 | --- | --- | --- | --- |
@@ -215,6 +273,8 @@ Ces termes ne figurent pas au glossaire. Ils ne valent que pour ce protocole.
 
 | Terme | Définition |
 | --- | --- |
+| Affrontement | Paire de deux decks distincts du catalogue de playtest ; la série en compte 6 (décision 0229). |
+| Plan de série | Tableau qui fixe, pour chaque partie de la série, le deck du joueur A, le deck du joueur B et le premier joueur (décisions 0230 et 0231). |
 | Partie bloquée | Partie où aucun combat n'a lieu pendant 3 tours de chaque joueur de suite, après le tour 5 de chaque joueur (décision 0159). |
 | Recyclage de 3 Sources ou plus | Recyclage, par un même joueur pendant un même tour, d'au moins 3 Sources (203.4.2). |
 | Partie décidée le tour d'un recyclage de 3 Sources ou plus | Partie qui prend fin pendant un tour où le joueur actif a fait un recyclage de 3 Sources ou plus. |
@@ -289,9 +349,11 @@ Ces termes ne figurent pas au glossaire. Ils ne valent que pour ce protocole.
 
 ## Points à trancher avant la première série
 
-Deux points ouverts dans [02-questions-ouvertes.md](../02-questions-ouvertes.md) :
+Quatre points ouverts dans [02-questions-ouvertes.md](../02-questions-ouvertes.md) :
 
 - Q-102 : le mulligan de la série et le rôle de chaque joueur connu d'avance, à trancher avant la première série (jalon J3) ;
-- Q-103 : le mulligan de deux humains sur un même écran, à trancher avant une série jouée à deux humains.
+- Q-103 : le mulligan de deux humains sur un même écran, à trancher avant une série jouée à deux humains ;
+- Q-141 : les cibles, les seuils et les mesures à refixer pour des decks asymétriques, par une décision avant la première série (jalon J3, décision 0232) ;
+- Q-142 : l'ordre de jeu des 24 parties du plan de série.
 
 Q-070 est tranchée le 16 octobre 2026 par la décision 0163 ; Q-071, Q-072, Q-073 et Q-074 sont tranchées le même jour par les décisions 0158 à 0162. Le Passif du Hero de test est fixé par la décision 0170 ; le pouvoir et son coût sont retirés par la décision 0208.

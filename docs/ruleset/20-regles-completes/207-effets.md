@@ -84,6 +84,22 @@ Aucun Invariant.
 
 **207.3.11a** [ACTÉ] Un jeton qui a quitté le plateau compte encore comme une carte du joueur à qui il appartenait, pour un effet déclenché qu'il a déjà déclenché (décision 0150 ; voir 200.1.1, 202.4.3, 207.3.3 et 207.3.11).
 
+**207.3.12** [ACTÉ] Un Gear peut porter un effet déclenché (décision 0237 ; voir 202.2.6 et 207.3.1).
+
+**207.3.12a** [ACTÉ] L'effet déclenché d'un Gear se déclenche tant que le Gear est attaché à une Unit en jeu (décision 0237 ; voir 207.2.9 et 207.3.12).
+
+**207.3.12b** [ACTÉ] L'effet déclenché d'un Gear appartient au joueur à qui appartient le Gear (décision 0237 ; voir 207.3.4 et 207.3.12).
+
+**207.3.12c** [ACTÉ] Un effet déjà déclenché par un Gear a lieu même si le Gear a été détaché ou si l'Unit à laquelle il était attaché a quitté le plateau (décision 0237 ; voir 207.3.3, 207.2.9a et 207.2.9b).
+
+**207.3.13** [ACTÉ] La condition « si » placée dans le texte d'un effet déclenché se lit quand survient l'événement qui le déclenche (décision 0236 ; voir 207.3.1 et 204.3.12a).
+
+**207.3.13a** [ACTÉ] Un effet déclenché dont la condition « si » est fausse à cet événement ne se déclenche pas (décision 0236 ; voir 207.3.13).
+
+**207.3.13b** [ACTÉ] La condition « si » d'un effet déclenché ne se lit pas de nouveau à la résolution de cet effet (décision 0236 ; voir 207.3.13 et 208.3.2).
+
+**207.3.14** [ACTÉ] Quand un effet parle de la case d'une pièce qui a quitté le plateau, il lit la dernière case que cette pièce a occupée (décision 0239 ; voir 207.3.3 et 210.3.2b).
+
 ## 207.4 Durées
 
 **207.4.1** [ACTÉ] Le texte d'un effet peut porter une durée (décision 0092).
@@ -124,6 +140,8 @@ Aucun Invariant.
 
 **207.5.4** [ACTÉ] À sa résolution, un effet s'applique à chaque cible restée valide (décision 0074 ; voir 200.4.2 et 207.5.3).
 
+**207.5.4a** [ACTÉ] Un effet qui échange les cases de deux cibles ne s'applique que si les deux cibles sont restées valides (décision 0217 ; voir 207.5.4 et 214.2.1).
+
 **207.5.5** [ACTÉ] Un effet qui a perdu toutes ses cibles n'a pas lieu (décision 0074 ; voir 200.4.1 et 207.5.3).
 
 **207.5.6** [ACTÉ] Une cible reste valide si elle remplit encore les conditions d'origine de la carte (décision 0074 ; voir 207.5.3).
@@ -150,7 +168,7 @@ Aucun Invariant.
 
 **207.5.14** [ACTÉ] Un effet peut cibler un Spell qui se trouve sur la pile, ce que 207.5.13 n'exclut pas (décision 0087 ; voir 201.3.8 et 207.5.11).
 
-**207.5.15** [ACTÉ] Un effet ne cible ni un déploiement, ni une action normale, ni un effet déclenché qui se trouve sur la pile (décisions 0087 et 0208 ; voir 207.5.14).
+**207.5.15** [ACTÉ] Un effet ne cible ni un déploiement, ni une action normale, ni un effet déclenché, ni un Ordre qui se trouve sur la pile (décisions 0087, 0208 et 0211 ; voir 207.5.14).
 
 **207.5.16** [ACTÉ] Une entrée de la pile ne se cible jamais elle-même, ni à son ajout à la pile, ni ensuite (décision 0088 ; voir 207.5.1).
 
@@ -162,13 +180,15 @@ Aucun Invariant.
 
 **207.5.17c** Supprimée en édition 0.42, voir décision 0208.
 
+**207.5.18** [ACTÉ] Seul le mot « ciblée » (ou « ciblé », « ciblées », « ciblés ») désigne une cible dans le texte d'une carte (décision 0240 ; voir 207.5.1 et 207.5.11).
+
 ## 207.6 Contrecarrer
 
 **207.6.1** [ACTÉ] Le jeu a un effet Contrecarrer (décision 0075).
 
 **207.6.2** [ACTÉ] Contrecarrer ne vise qu'un Spell qui se trouve sur la pile (décision 0075 ; voir 201.3.8 et 207.5.1a).
 
-**207.6.3** [ACTÉ] Contrecarrer ne vise ni un déploiement, ni une action normale, ni un effet déclenché (décisions 0075 et 0208 ; voir 207.6.2).
+**207.6.3** [ACTÉ] Contrecarrer ne vise ni un déploiement, ni une action normale, ni un effet déclenché, ni un Ordre (décisions 0075, 0208 et 0211 ; voir 207.6.2).
 
 **207.6.4** [ACTÉ] Un Spell contrecarré n'a pas lieu (décision 0075 ; voir 207.6.2).
 

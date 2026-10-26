@@ -1,6 +1,6 @@
 # Ruleset du TCG tactique
 
-> Dossier de conception des règles, intégré au dépôt du jeu `tcg-game`, dans `docs/ruleset/` (décision 0014 du projet). Édition courante : **0.44** (état endormi ou éveillé public, 24 octobre 2026). Historique dans [90-changelog.md](90-changelog.md).
+> Dossier de conception des règles, intégré au dépôt du jeu `tcg-game`, dans `docs/ruleset/` (décision 0014 du projet). Édition courante : **0.52** (sens de « détruit son défenseur », case d'une pièce qui a quitté le plateau, marque du ciblage dans le texte d'une carte, decks du premier playtest en listes fixes, 26 octobre 2026). Historique dans [90-changelog.md](90-changelog.md).
 
 ## Quel document pour quel lecteur
 
@@ -14,9 +14,9 @@
 | Moteur, arbitres, design | [20-regles-completes/](20-regles-completes/) | **Fait foi.** Règles numérotées, une phrase par règle, sans exemple. |
 | Équipe de design | `30-guides-de-design/` | Le pourquoi : écriture des cartes, mots-clés, économie, Heroes, budget de complexité. Créé avec la première édition jouable. |
 | Équipe de design | [40-decisions/](40-decisions/) | Une décision par fichier, numérotée, jamais modifiée après coup. |
-| Design, moteur | `50-cartes/` | Catalogue en construction. Créé avec la première édition jouable. |
+| Design, moteur | [50-cartes/](50-cartes/README.md) | **Fait foi.** Catalogue de playtest : 4 Heroes, cartes de couleur et neutres, 4 decks de 30 cartes. Créé le 26 octobre 2026 (décision 0228) ; le journal de conception reste hors ruleset. |
 | Arbitres, joueurs | `60-rulings.md` | Interactions de cartes tranchées. Créé avec le catalogue. |
-| Design | [70-playtest/](70-playtest/protocole.md) | Protocole, decks de test, métriques, comptes rendus de sessions. Protocole du premier playtest écrit le 16 octobre 2026 et complété le même jour (édition 0.28) et le 18 octobre 2026 (édition 0.35, mesure de l'Essence perdue ; édition 0.36, mesures de la fenêtre de réponse) et le 21 octobre 2026 (édition 0.38, définitions des mesures de la fenêtre de réponse sans échéance) et le 22 octobre 2026 (édition 0.39, mesure des PV perdus par un Hero en un tour ; édition 0.40, mesures du temps de tour, du temps de réponse et de l'inactivité), avec les [decks de test](70-playtest/decks-de-test.md) ; les comptes rendus s'ajoutent après chaque série. |
+| Design | [70-playtest/](70-playtest/protocole.md) | Protocole, decks de test, métriques, comptes rendus de sessions. Le premier playtest se joue avec le catalogue de playtest (décision 0224, 26 octobre 2026), en 24 parties selon un plan de série (édition 0.50, décisions 0229 à 0232). Protocole du premier playtest écrit le 16 octobre 2026 et complété le même jour (édition 0.28) et le 18 octobre 2026 (édition 0.35, mesure de l'Essence perdue ; édition 0.36, mesures de la fenêtre de réponse) et le 21 octobre 2026 (édition 0.38, définitions des mesures de la fenêtre de réponse sans échéance) et le 22 octobre 2026 (édition 0.39, mesure des PV perdus par un Hero en un tour ; édition 0.40, mesures du temps de tour, du temps de réponse et de l'inactivité), avec les [decks de test](70-playtest/decks-de-test.md) ; les comptes rendus s'ajoutent après chaque série. |
 | Tout le monde | [90-changelog.md](90-changelog.md) | Une entrée par édition, avec les règles touchées. |
 
 ## Chapitres des règles complètes
@@ -34,6 +34,13 @@
 | [208](20-regles-completes/208-pile-et-priorite.md) | Pile et priorité : passes, résolution en bloc, chaînes, fenêtre de réponse, annonces sans réponse |
 | [209](20-regles-completes/209-controles-d-etat.md) | Contrôles d'état : Force ≤ 0, victoire, nul, inactivité, temps de tour et temps de réponse, fatigue |
 | [210](20-regles-completes/210-mots-cles.md) | Mots-clés : conventions, texte de règle de chacun, mots-clés de déclencheurs et de combat |
+| [211](20-regles-completes/211-ordre-du-hero.md) | Ordre du Hero : nature, annonce, coût, cibles |
+| [212](20-regles-completes/212-defausser.md) | Défausser : nature de l'effet, défausse comme événement |
+| [213](20-regles-completes/213-valeur-x.md) | Valeur X : coût X, valeur X définie par un texte |
+| [214](20-regles-completes/214-echanger.md) | Échanger : échange des cases de deux Units alliées |
+| [215](20-regles-completes/215-deplacer-par-un-effet.md) | Déplacer une Unit par un effet : nature, conséquences |
+| [216](20-regles-completes/216-renvoyer-dans-la-main.md) | Renvoyer dans la main : carte, jeton, Gear, Dernier souffle |
+| [217](20-regles-completes/217-regarder-le-dessus-du-deck.md) | Regarder le dessus du deck : visibilité, choix, deck vide |
 
 ## Workflow d'une session de travail
 

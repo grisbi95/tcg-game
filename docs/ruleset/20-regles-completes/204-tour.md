@@ -98,6 +98,10 @@ Aucun Invariant.
 
 **204.3.11** [ACTÉ] Au début de son tour, un joueur réveille son Hero (décision 0200 ; voir 205.5.2 et 204.3.8).
 
+**204.3.12** [ACTÉ] L'événement « début du tour » survient avant la pioche de 204.3.6 (décision 0236 ; voir 204.3.8 et 207.3.13).
+
+**204.3.12a** [ACTÉ] La condition « si » d'un effet déclenché par le début du tour se lit à cet événement, avant la pioche de 204.3.6 (décision 0236 ; voir 204.3.12 et 207.3.13).
+
 ## 204.4 Phase principale
 
 **204.4.1** [ACTÉ] Après le début du tour vient la phase principale (décision 0035).
@@ -113,6 +117,8 @@ Aucun Invariant.
 **204.4.6** Supprimée en édition 0.39, voir décision 0200.
 
 **204.4.7** [ACTÉ] Pendant sa phase principale, le joueur actif peut terminer son tour (décision 0035).
+
+**204.4.8** [ACTÉ] Pendant sa phase principale, le joueur actif peut annoncer l'Ordre de son Hero éveillé (décision 0211 ; voir 211.2.1, 211.2.4, 211.2.5 et 211.2.6).
 
 ## 204.5 Fin du tour
 

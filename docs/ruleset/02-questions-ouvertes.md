@@ -45,6 +45,7 @@ Chaque joueur de la série peut-il connaître son rôle de premier ou de second 
 - Option A : le protocole consigne l'exception, l'ordre étant connu avant le mulligan, et 204.1.16 ne change pas ; compromis : la série éprouve le mulligan (204.1.15) dans des conditions que 204.1.16 écarte.
 - Option B : 204.1.16 est révisée pour admettre un premier joueur connu d'avance ; compromis : une règle de jeu modifiée pour les besoins du playtest, par une nouvelle décision qui remplace la décision 0177.
 Manque pour trancher : ce que la première série (jalon J3) veut mesurer : la fréquence des mulligans dans les conditions de 204.1.16 (ligne « Mains de départ remplacées par un mulligan » du protocole, 204.1.15), ou seulement l'avantage du premier joueur (ligne « Victoires du premier joueur », 204.3.4). Réviser la décision 0158 passe par une nouvelle décision.
+Mise à jour du 26 octobre 2026 : les décisions 0158 et 0168 sont remplacées en partie par la décision 0231 (le plan de série fixe le premier joueur de chaque partie) ; le premier joueur reste connu d'avance, la question reste ouverte.
 
 **Q-103 · Mulligan à deux humains sur un même écran** · chapitre 204 · ouverte le 21 octobre 2026
 Le mulligan se fait-il en même temps pour deux humains sur un même appareil, alors que 204.2.2 dit que les deux joueurs décident de leur mulligan en même temps, que 204.2.3 dit qu'aucun joueur ne voit le choix de l'autre avant d'avoir décidé, et que, sur un même écran, les deux joueurs décident l'un après l'autre (joueur A puis joueur B) ?
@@ -76,6 +77,75 @@ Une annonce faite en réponse pendant le tour de l'adversaire (208.2.3) empêche
 - Option A : seules comptent les annonces faites pendant ses propres tours ; compromis : une règle simple à vérifier, qui laisse inactif un joueur qui ne fait que répondre pendant le tour adverse.
 - Option B : une annonce faite en réponse depuis la fin de son tour précédent compte pour le tour qui suit ; compromis : une règle de rattachement à écrire, plus complexe à vérifier.
 Manque pour trancher : le choix du créateur.
+
+**Q-116 · Expiration du temps pendant le choix des cibles d'un Ordre** · chapitres 209 et 211 · ouverte le 26 octobre 2026
+Que devient l'annonce d'un Ordre quand le temps de tour ou le temps de réponse de son joueur atteint 0 seconde pendant qu'il en choisit les cibles, alors que 209.4.11 abandonne l'annonce sans rien payer et dit que « la carte reste où elle était », qu'un Ordre n'est pas une carte de deck, et que 211.2.2 endort le Hero « dès l'annonce » ?
+- Option A : l'annonce est abandonnée, rien n'est payé, le Hero reste éveillé ; compromis : 209.4.11 est reformulée pour viser l'Ordre sans parler de carte, et le Hero n'est pas endormi par une annonce qui n'a pas eu lieu.
+- Option B : l'annonce est abandonnée, rien n'est payé, mais le Hero s'endort ; compromis : un joueur qui hésite perd l'usage du Hero pour le tour, et 211.2.2 se lit à partir du début du choix des cibles.
+Manque pour trancher : le choix du créateur.
+
+**Q-117 · Effets déclenchés par l'annonce ou la résolution d'un Ordre** · chapitres 208 et 211 · ouverte le 26 octobre 2026
+Faut-il étendre aux Ordres 208.2.4a, 208.7.10 et 208.7.11, qui ne citent que l'annonce ou la résolution d'un Spell ou d'une attaque, alors que 208.7.17 permet de répondre à l'annonce d'un Ordre et que 208.7.8 ne rend sans réponse que les effets déclenchés par une entrée sans réponse ?
+- Option A : étendre les trois règles aux Ordres ; compromis : une édition sans changement de comportement, qui écrit ce que 208.2.4 et 208.7.8 donnent déjà.
+- Option B : ne rien changer, les trois règles se lisent avec 208.2.4 et 208.7.8 ; compromis : une règle qui ne dit pas explicitement le cas de l'Ordre.
+Manque pour trancher : le choix éditorial du créateur.
+
+**Q-141 · Cibles, seuils et mesures à refixer avant la première série J3** · `70-playtest/protocole.md` · ouverte le 26 octobre 2026
+Quelle cible, quel seuil d'alerte et quel niveau de relevé (série entière, deck, Hero ou affrontement) reçoit chaque mesure ci-dessous pour une série de 24 parties entre 4 decks asymétriques, alors que la décision 0232 impose de les refixer avant la série et que le tableau actuel a été écrit pour un deck miroir de 20 parties ?
+- Aucune option formulée : chaque ligne se tranche une à une par le créateur ; aucune valeur n'est proposée par l'agent.
+Lignes du tableau de la section Cibles et seuils (cible et seuil actuels entre parenthèses) :
+- Durée moyenne d'une partie (15 min ; alerte au-delà de 25 min ou en deçà de 8 min).
+- Durée moyenne d'un tour (à fixer).
+- Tours terminés par l'expiration du temps de tour, moyenne par partie (à fixer).
+- Réponses passées par l'expiration du temps de réponse, moyenne par partie (à fixer).
+- Défaites par inactivité (à fixer).
+- Essence inutilisée, à partir du tour 3, moyenne (1 ou moins ; alerte à 3 ou plus).
+- Essence perdue en fin de tour, moyenne (à fixer).
+- PV perdus par un Hero en un tour, maximum par partie (à fixer).
+- Tour de fin de partie, moyenne (tours 8 à 12 ; alerte avant le tour 6 ou après le tour 15).
+- Victoires du premier joueur (10 sur 20 indicatif ; alerte à 13 ou plus, ou 7 ou moins) : effectif à réécrire pour 24 parties.
+- Mains de départ remplacées par un mulligan (1 sur 3 ou moins ; alerte au-delà de la moitié).
+- Tours passés à main pleine (rares ; alerte au-delà de 20 % des tours d'un joueur).
+- Parties où une fatigue apparaît (moins de 25 % ; alerte à 25 % ou plus).
+- Parties finies par la fatigue (0 ou 1 sur 20 ; alerte à 2 ou plus) : effectif à réécrire pour 24 parties.
+- Parties bloquées (0 ou 1 sur 20 ; alerte à 2 ou plus) : effectif à réécrire pour 24 parties.
+- Parties décidées le tour d'un recyclage de 3 Sources ou plus (moins de 25 % ; alerte à 25 % ou plus).
+- Parties où un joueur passe 2 tours sans rien jouer (moins de 20 % ; alerte à 20 % ou plus).
+- Ressemblance entre les parties (notes qualitatives, sans seuil chiffré).
+- Ressenti du rythme (notes qualitatives, sans seuil chiffré).
+Mesures annoncées par les décisions 0211 à 0228, à ajouter au tableau (cible, seuil, champ de la fiche de relevé, règle visée) :
+- 0211 : fréquence d'usage des Ordres ; tours où le Hero reste éveillé pendant le tour adverse ; PV perdus par un Hero avancé pour son Ordre.
+- 0212 : répartition des Heroes par type de capacité.
+- 0214 : nombre de défausses par partie ; part des défausses faites avec une main de 1 carte ; usage des effets déclenchés par une défausse.
+- 0215 : valeurs de X choisies ; Sources recyclées pour payer un coût X ; part des Spells à coût X jouée avec la valeur 1.
+- 0216 : part des valeurs X définies par un texte lues sur une Unit qui perd ensuite une aura ; écart entre X et la Force de l'Unit au combat.
+- 0217 : part des échanges déjoués par une réponse adverse ; fréquence d'usage de l'échange par carte.
+- 0219 : nombre de défausses tirées au sort à l'expiration du temps, par partie.
+- 0222 : écart entre X et la Force de l'Unit au combat pour les Spells à X défini par la Force, jouées pendant un combat.
+- 0223 : rangée la plus avancée atteinte par chaque Hero ; PV perdus par un Hero avancé ; Heroes attaqués hors de leurs deux premières rangées.
+- 0224 : les mesures de la décision 0211 prises avec les Heroes à Ordre.
+- 0228 : noms, coûts, Forces et textes des cartes du catalogue de playtest, tous provisoires.
+- 0213 : sans objet, aucune mesure.
+Manque pour trancher : la cible, le seuil et le niveau de relevé de chaque ligne, à fixer par le créateur dans une décision avant la première série J3.
+
+**Q-142 · Ordre de jeu des 24 parties du plan de série** · `70-playtest/protocole.md` · ouverte le 26 octobre 2026
+Dans quel ordre se jouent les 24 parties du plan de série, alors que le plan fixe le deck de chaque joueur et le premier joueur de chaque partie mais pas l'ordre des parties, et que la numérotation du plan est un ordre de lecture ?
+- Option A : l'ordre de lecture du plan ; compromis : les 4 parties d'un affrontement se jouent de suite, un affrontement par session au plus tôt.
+- Option B : un ordre différent fixé avant la série ; compromis : un second plan à écrire.
+Manque pour trancher : le nombre de parties jouables par session et le choix du créateur.
+
+**Q-143 · Expiration du temps pendant le choix de laisser la carte ou de la mettre sous son deck** · chapitres 209 et 217 · ouverte le 26 octobre 2026
+Que devient le choix de 217.1.2 et 217.1.3 quand le temps d'un joueur atteint 0 seconde pendant qu'il le fait (Observatoire du catalogue de playtest), alors que 209.4.4 et 209.4.7 font s'écouler le temps pour chaque décision que les règles attendent et qu'aucune règle d'expiration ne vise ce choix ?
+- Option A : la carte reste au dessus du deck ; compromis : un joueur qui hésite garde la carte, sans règle de tirage au sort.
+- Option B : la carte est mise sous le deck ; compromis : un joueur qui hésite perd la carte du dessus.
+- Option C : un tirage au sort entre les deux choix (209.4.13) ; compromis : une règle d'expiration de plus, au hasard.
+Manque pour trancher : le choix du créateur.
+
+**Q-144 · Place de l'événement « début du tour » par rapport au réveil, au redressement et à la Source reçue** · chapitre 204 · ouverte le 26 octobre 2026
+L'événement « début du tour » de 204.3.12 survient-il avant ou après le réveil (204.3.10, 204.3.11), le redressement (204.3.2) et la Source reçue (204.3.1), alors que 204.3.12 ne le place que par rapport à la pioche de 204.3.6 ?
+- Option A : avant toutes les étapes de 204.3.8 ; compromis : une condition « si » d'un effet du début du tour ne lit jamais l'état après le réveil, le redressement ou la Source reçue.
+- Option B : après le réveil, le redressement et la Source reçue, avant la pioche ; compromis : une condition lit les Sources redressées et les pièces réveillées de ce tour.
+Manque pour trancher : une carte du catalogue dont la condition « si » dépend d'un de ces états, et le choix du créateur.
 
 ## Tranchées
 
@@ -185,4 +255,27 @@ Manque pour trancher : le choix du créateur.
 | Q-114 · Action normale dont la case visée n'est plus adjacente pendant l'attente · chapitre 205 · ouverte le 23 octobre 2026 · Que devient le combat en attente d'une action normale si la case visée n'est plus adjacente à l'Unit à sa résolution ? Tranchée le 23 octobre 2026 : l'action normale échoue et l'Unit reste où elle est, comme 205.4.4 (205.6.17). | [0207](40-decisions/0207-reponse-limitee-aux-spells-et-aux-attaques.md) |
 | Q-115 · Scission du chapitre 208 · chapitre 208 · ouverte le 23 octobre 2026 · Faut-il scinder le chapitre 208, qui compte 61 identifiants suppressions comprises (CHARTE.md §4) ? Tranchée le 23 octobre 2026 : option B, le chapitre 208 n'est pas scindé, comme le chapitre 207 (décision 0116). | [0207](40-decisions/0207-reponse-limitee-aux-spells-et-aux-attaques.md), [0116](40-decisions/0116-pas-de-scission-du-chapitre-207.md) |
 | Q-104 · Visibilité de l'état endormi ou éveillé · chapitres 201 et 205 · ouverte le 22 octobre 2026 · L'état endormi ou éveillé d'une Unit ou d'un Hero (205.5.1 et 205.5.2) est-il visible des deux joueurs ? Tranchée le 24 octobre 2026 : oui, option A (201.4.11). | [0210](40-decisions/0210-etat-endormi-ou-eveille-public.md) |
+| Q-118 · Visibilité de la carte Hero et de son texte · chapitre 201 · ouverte le 26 octobre 2026 · La carte Hero d'un joueur, son passif, son Ordre et ses effets déclenchés sont-ils visibles des deux joueurs dès le début de la partie ? Tranchée le 26 octobre 2026 : oui, option A (201.4.12). | [0213](40-decisions/0213-le-texte-de-la-carte-hero-est-public.md) |
+| Q-119 · Capacité minimale du texte de la carte Hero · chapitre 202 · ouverte le 26 octobre 2026 · Le texte de la carte Hero doit-il porter au moins une capacité parmi passif, Ordre et effet déclenché ? Tranchée le 26 octobre 2026 : oui, option A (202.3.22). | [0218](40-decisions/0218-capacite-minimale-du-texte-du-hero.md) |
+| Q-120 · Expiration du temps pendant le choix des cartes à défausser · chapitres 209 et 212 · ouverte le 26 octobre 2026 · Que devient le choix des cartes à défausser quand le temps d'un joueur atteint 0 seconde ? Tranchée le 26 octobre 2026 : le temps de réponse s'écoule et, à 0 seconde, les cartes sont tirées au sort dans la main, option A (209.4.7c et 209.4.13). | [0219](40-decisions/0219-expiration-du-temps-pendant-le-choix-des-cartes-a-defausser.md) |
+| Q-121 · Coût qui combine X et une partie fixe · chapitre 213 · ouverte le 26 octobre 2026 · Une carte peut-elle porter un coût composé d'une partie fixe et de X ? Tranchée le 26 octobre 2026 : non, un coût X est X seul, option A (213.1.12). | [0220](40-decisions/0220-cout-x-sans-partie-fixe.md) |
+| Q-122 · Ordre du choix de X et du choix des cibles · chapitres 207 et 213 · ouverte le 26 octobre 2026 · Le joueur choisit-il X avant les cibles du Spell ? Tranchée le 26 octobre 2026 : X d'abord, puis les cibles, option A (213.1.9 à 213.1.11) ; expiration du temps pendant le choix de X : voir Q-124. | [0221](40-decisions/0221-ordre-du-choix-de-x-et-des-cibles.md) ; voir Q-124 |
+| Q-123 · Force lue pour X quand l'entrée se résout pendant un combat · chapitres 206, 210 et 213 · ouverte le 26 octobre 2026 · Quelle Force d'Unit 213.2.3 lit-il pendant un combat ? Tranchée le 26 octobre 2026 : sans Assaut ni Rempart, option A (213.2.4 modifiée). | [0222](40-decisions/0222-force-lue-pour-x-sans-assaut-ni-rempart.md) |
 | Q-099 · Pouvoir du Hero à plusieurs cibles · chapitre 207 · ouverte le 21 octobre 2026 · Un pouvoir du Hero dont l'effet exige plusieurs cibles s'annonce-t-il même s'il n'existe pas le nombre minimal de cibles légales, 207.5.17 et 207.5.10 se contredisant ? Sans objet le 23 octobre 2026 : le Hero n'a plus de pouvoir, 207.5.17 et ses sous-règles sont supprimées. | [0208](40-decisions/0208-le-hero-n-a-pas-de-pouvoir.md) |
+| Q-126 · Unit déployée en attaquant sur la case du Hero adverse · chapitres 205 et 206 · ouverte le 26 octobre 2026 · Que se passe-t-il quand une Unit se déploie sur une case occupée par le Hero adverse ? Tranchée le 26 octobre 2026 : le déploiement sur une case occupée par le Hero ennemi n'est pas permis à l'annonce, option A (205.1.11). | [0225](40-decisions/0225-pas-de-deploiement-sur-la-case-du-hero-ennemi.md) |
+| Q-124 · Expiration du temps pendant le choix de X · chapitres 209 et 213 · ouverte le 26 octobre 2026 · Que devient l'annonce d'un Spell à coût X quand le temps d'un joueur atteint 0 seconde pendant qu'il choisit X ? Tranchée le 26 octobre 2026 : l'annonce est abandonnée, rien n'est payé, la carte reste où elle était, option A (209.4.4h et 209.4.11b). | [0226](40-decisions/0226-expiration-du-temps-pendant-le-choix-de-x.md) |
+| Q-125 · Échange de cases et mot « déplacement » · chapitres 205 et 214 · ouverte le 26 octobre 2026 · Un échange des cases de deux pièces est-il un déplacement ? Tranchée le 26 octobre 2026 : non, option A (214.2.5), contre la recommandation. | [0227](40-decisions/0227-un-echange-n-est-pas-un-deplacement.md) |
+| Q-127 · Lieu du catalogue de playtest dans le ruleset · `README.md`, `50-cartes/` et `70-playtest/` · ouverte le 26 octobre 2026 · Où vit le catalogue de playtest dans le ruleset ? Tranchée le 26 octobre 2026 : `50-cartes/` est créé maintenant et fait foi, option A. | [0228](40-decisions/0228-le-catalogue-de-playtest-vit-dans-50-cartes.md) |
+| Q-128 · Affrontements et nombre de parties par série · `70-playtest/protocole.md` · ouverte le 26 octobre 2026 · Quels affrontements et combien de parties compte une série avec quatre decks asymétriques ? Tranchée le 26 octobre 2026 : les 6 affrontements entre deux decks distincts, 4 parties chacun, soit 24 parties, sans partie miroir, option A. | [0229](40-decisions/0229-affrontements-et-parties-par-serie.md) |
+| Q-129 · Attribution des decks aux joueurs · `70-playtest/protocole.md` · ouverte le 26 octobre 2026 · Comment les decks du catalogue de playtest sont-ils attribués aux joueurs A et B d'une partie ? Tranchée le 26 octobre 2026 : un plan de série fixé à l'avance, option A ; ordre de jeu des parties : voir Q-142. | [0230](40-decisions/0230-attribution-des-decks-aux-joueurs.md) ; voir Q-142 |
+| Q-130 · Alternance du premier joueur avec des decks asymétriques · `70-playtest/protocole.md` et 204.3.4 · ouverte le 26 octobre 2026 · L'alternance du premier joueur (décision 0158) est-elle maintenue avec des decks asymétriques ? Tranchée le 26 octobre 2026 : le plan de série fixe le premier joueur, chaque deck commençant 2 parties sur 4 dans chaque affrontement, option A. | [0231](40-decisions/0231-premier-joueur-fixe-par-le-plan-de-serie.md) |
+| Q-131 · Mesures du protocole avec des decks différents · `70-playtest/protocole.md` · ouverte le 26 octobre 2026 · Quelles mesures du tableau des cibles et seuils restent valables avec des decks différents ? Tranchée le 26 octobre 2026 : les cibles et seuils sont refixés par une décision avant la première série J3, option C, contre la recommandation ; les mesures à refixer : voir Q-141. | [0232](40-decisions/0232-cibles-et-seuils-refixes-avant-la-serie.md) ; voir Q-141 |
+| Q-132 · Déplacer une Unit par un effet · chapitres 205 et 207 · ouverte le 26 octobre 2026 · Que fait un effet de carte qui déplace une Unit ennemie sur une case libre ciblée ? Tranchée le 26 octobre 2026 : il n'endort ni ne réveille l'Unit, n'est pas une action normale, ne la fait pas arriver et n'est pas un combat, option A (chapitre 215). | [0233](40-decisions/0233-deplacer-une-unit-par-un-effet.md) |
+| Q-133 · Renvoyer une pièce dans la main · chapitres 201, 202 et 207 · ouverte le 26 octobre 2026 · Que fait un effet qui renvoie une Unit ennemie dans la main de son joueur ? Tranchée le 26 octobre 2026 : la carte revient dans la main, dans la défausse si la main est pleine ; le jeton cesse d'exister ; le Gear va dans la défausse ; Dernier souffle ne se déclenche pas, option A (chapitre 216). | [0234](40-decisions/0234-renvoyer-une-piece-dans-la-main.md) |
+| Q-134 · Regarder le dessus du deck et le mettre dessous · chapitres 201 et 207 · ouverte le 26 octobre 2026 · Que fait l'effet « regardez la carte du dessus de votre deck ; vous pouvez la mettre sous votre deck » ? Tranchée le 26 octobre 2026 : seul le joueur regarde la carte, choix libre, l'adversaire voit le choix, option A (chapitre 217 et 201.4.1a) ; expiration du temps : voir Q-143. | [0235](40-decisions/0235-regarder-le-dessus-du-deck.md) ; voir Q-143 |
+| Q-135 · Condition « si » d'un effet déclenché · chapitres 204 et 207 · ouverte le 26 octobre 2026 · Quand se lit la condition « si » d'un effet déclenché au début du tour ? Tranchée le 26 octobre 2026 : à l'événement, avant la pioche de 204.3.6, option A (204.3.12, 204.3.12a, 207.3.13) ; place de l'événement dans le début du tour : voir Q-144. | [0236](40-decisions/0236-condition-si-lue-a-l-evenement.md) ; voir Q-144 |
+| Q-136 · Effet déclenché porté par un Gear · chapitres 202 et 207 · ouverte le 26 octobre 2026 · Un Gear peut-il porter un effet déclenché ? Tranchée le 26 octobre 2026 : oui, tant qu'il est attaché à une Unit en jeu, option A (207.3.12). | [0237](40-decisions/0237-effet-declenche-porte-par-un-gear.md) |
+| Q-137 · Sens de « détruit son défenseur » · chapitres 206 et 207 · ouverte le 26 octobre 2026 · Que veut dire « l'Unit qui porte ce Gear détruit son défenseur » ? Tranchée le 26 octobre 2026 : le défenseur est détruit et l'attaquant ne l'est pas ; l'égalité et l'attaque d'un Hero ne comptent pas, option A (206.3.7, 206.3.7a, 206.3.7b). | [0238](40-decisions/0238-sens-de-detruit-son-defenseur.md) |
+| Q-138 · Case d'une pièce qui a quitté le plateau · chapitres 207 et 210 · ouverte le 26 octobre 2026 · Où se lit la case d'une pièce qui a quitté le plateau ? Tranchée le 26 octobre 2026 : la dernière case que la pièce a occupée, option A (207.3.14). | [0239](40-decisions/0239-case-d-une-piece-qui-a-quitte-le-plateau.md) |
+| Q-139 · Marque du ciblage dans le texte d'une carte · chapitres 207 et 211 · ouverte le 26 octobre 2026 · À quoi voit-on qu'un texte de carte vise une cible ? Tranchée le 26 octobre 2026 : seul le mot « ciblée » désigne une cible, option A (207.5.18) ; trois textes du catalogue de playtest corrigés. | [0240](40-decisions/0240-marque-du-ciblage-dans-le-texte-d-une-carte.md) |
+| Q-140 · Construction du deck selon la couleur et le Hero · chapitre 201 et `50-cartes/` · ouverte le 26 octobre 2026 · Le deck d'un joueur est-il contraint par sa couleur ou son Hero ? Tranchée le 26 octobre 2026 : au premier playtest, les 4 decks sont des listes fixes et 201.6.3 reste, option A ; la règle de construction par couleur s'écrira après les premières parties et avant toute construction libre de deck. | [0241](40-decisions/0241-decks-du-premier-playtest-en-listes-fixes.md) |
