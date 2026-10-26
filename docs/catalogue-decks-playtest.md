@@ -2,14 +2,14 @@
 
 > Document de travail créé le **26 octobre 2026**, à affiner. Il complète le suivi des décisions [catalogue-cartes-playtest.md](catalogue-cartes-playtest.md), qui reste la référence pour ce qui est validé ou non.
 >
-> Base de règles : **ruleset 0.44**. Ce document ne modifie aucune règle, n'est pas le catalogue officiel et ne décrit aucune carte implémentée. Il est volontairement placé hors de `docs/ruleset/`.
+> Base de règles : **ruleset 0.44**, puis **0.45 à 0.48** pour les arbitrages de la section 8 (décisions 0211 à 0224, branche `docs/ordre-du-hero`, pas encore fusionnée). Ce document ne modifie aucune règle, n'est pas le catalogue officiel et ne décrit aucune carte implémentée. Il est volontairement placé hors de `docs/ruleset/`.
 >
-> **Statut : base de travail acceptée par le créateur** (« Très bien, cela est une très bonne réflexion de deck, consigne ça dans un doc que l'on va affiner »). Cet accord retient l'ensemble comme point de départ. Il ne fige ni les coûts, ni les Forces, ni les textes, ni la répartition par type, ni les compositions de decks. Les points marqués ⚠️ attendent un arbitrage (section 8).
+> **Statut : base de travail acceptée par le créateur** (« Très bien, cela est une très bonne réflexion de deck, consigne ça dans un doc que l'on va affiner »). Cet accord retient l'ensemble comme point de départ. Il ne fige ni les coûts, ni les Forces, ni les textes, ni les compositions de decks. Les arbitrages de la section 8 sont tranchés depuis le 26 octobre 2026 ; le marqueur ⚠️ signale les cartes qui en dépendent.
 
 ## 1. Légende
 
 - ★ : carte issue d'une piste du créateur (section 9), reformulée dans le style du ruleset.
-- ⚠️ : carte qui dépend d'un arbitrage de règle ou de conception non tranché.
+- ⚠️ : carte qui dépend d'une règle nouvelle des éditions 0.45 à 0.48 (section 8), tranchée mais pas encore codée.
 - Échelle de valeurs reprise du deck de test : Unit sans texte, Force = coût + 1 ; Unit à texte ou à mot-clé, Force ≤ coût ; Building sans texte, Force = coût + 2 ; Building moteur, Force faible pour rester une cible.
 - Toutes les valeurs sont des propositions à mesurer en playtest.
 
@@ -18,7 +18,7 @@
 - Format validé dans le suivi : **4 couleurs**, **4 Heroes** (un par couleur, hors deck, 202.3.5), **48 cartes distinctes** de deck : 9 par couleur et 12 neutres.
 - Système de Hero validé dans le suivi : couleur principale fixe, seconde couleur libre, plus les neutres. Les quatre decks ci-dessous sont des listes fixes : l'écart avec la règle 201.6.3 (le Hero ne limite pas le deck) reste à traiter, sans gêner ces essais.
 - Decks de **30 cartes**, **3 exemplaires** au plus (201.6.1 et 201.6.2, PROVISOIRE).
-- **Répartition par type proposée, non validée** :
+- **Répartition par type retenue par le créateur le 26 octobre 2026** :
 
 | | Units | Spells | Buildings | Gear | Total |
 |---|---|---|---|---|---|
@@ -26,11 +26,11 @@
 | Neutres | 6 | 4 | 1 | 1 | 12 |
 | **Total** | **22** | **12** | **9** | **5** | **48** |
 
-Deux Buildings par couleur donnent à chaque couleur de vrais Buildings moteurs : des Buildings dont l'effet justifie que l'adversaire veuille les détruire. La répartition précédente du suivi (4 Units, 3 Spells, 1 Building, 1 Gear par couleur) reste une alternative.
+Deux Buildings par couleur donnent à chaque couleur de vrais Buildings moteurs : des Buildings dont l'effet justifie que l'adversaire veuille les détruire. La répartition précédente du suivi (4 Units, 3 Spells, 1 Building, 1 Gear par couleur) n'est pas retenue.
 
 ## 3. Heroes
 
-Les quatre Heroes reposent sur **l'Ordre du Hero**, proposé en conversation et **non validé** (section 8, point 1) :
+Les quatre Heroes reposent sur **l'Ordre du Hero**, acté par la décision 0211 (ruleset 0.45, chapitre 211) ; un Hero porte au moins une capacité, le passif est facultatif (0212, 0218) et son texte est public (0213) :
 
 > **Ordre** (Action ou Réaction) — *Endormez le Hero* [+ éventuellement un coût en Essence] : effet.
 
@@ -40,12 +40,12 @@ L'Ordre réutilise l'état endormi ou éveillé du Hero (205.5.2 et 201.4.11). L
 |---|---|---|---|---|---|
 | **Chef de guerre** | 🔴 Rouge | 13 | Ordre (Action) — Endormez le Hero : réveillez une Unit alliée adjacente au Hero. | Ton tour, à l'avant | Commandant qui monte au front |
 | **Recruteuse** | 🟢 Vert | 16 | Ordre (Action) — Endormez le Hero, payez 2 Essence : créez un jeton Unit de Force 1 sur une case libre adjacente au Hero. | Ton tour, à l'arrière | Source de troupes : sa position décide où elles apparaissent |
-| **Stratège** | 🟣 Violet | 15 | Ordre (Réaction) — Endormez le Hero : échangez les cases de deux Units alliées adjacentes au Hero. | Tour adverse | Menace éveillée qui rend chaque attaque incertaine |
+| **Stratège** | 🟣 Violet | 15 | Ordre (Réaction) — Endormez le Hero : échangez les cases de deux Units alliées ciblées distinctes adjacentes au Hero. | Tour adverse | Menace éveillée qui rend chaque attaque incertaine |
 | **Pilleuse** | 🔵 Bleu | 15 | Au début de votre tour, si vous avez une carte ou moins en main, piochez deux cartes. | Début de ton tour | Libre de bouger : sa capacité ne l'endort pas |
 
 Points propres aux Heroes :
 
-- **Chef de guerre** : le Hero ne quitte jamais ses deux premières rangées (205.3.2) ; il ne réveille donc que des Units de ses rangées 1 à 3. Garder cette limite ou laisser ce Hero la dépasser reste à décider.
+- **Chef de guerre** : depuis la décision 0223 (ruleset 0.48), tout Hero se déplace sur tout le plateau sans jamais attaquer ; le Chef peut donc accompagner l'assaut jusqu'au camp adverse, au risque d'y être attaqué.
 - **Pilleuse** : la fatigue (209.5) est sa limite naturelle ; ses PV sont à ajuster selon le tour où son deck se vide.
 - Inspirations : Recruteuse (Viktor), Pilleuse (Jinx) de Riftbound, sans reprise de leurs règles ni de leurs chiffres.
 
@@ -124,7 +124,7 @@ Porte-enseigne, Compagnon tenace et Rassemblement sont les prototypes FJ-01, FJ-
 | ★ Choc | Spell, Réaction | 2 | — | Une Unit ennemie ciblée a −2 Force jusqu'à la fin du tour. |
 | ★ Exécution ⚠️ | Spell, Action | X | — | Détruisez une Unit ennemie ciblée de Force X ou moins. |
 | Campement | Building | 3 | 4 | Avant-poste |
-| ★ Trophée ⚠️ | Gear | 2 | — | Quand l'Unit qui porte ce Gear détruit son défenseur, elle a +1 Force tant que la pièce est en jeu. |
+| ★ Trophée | Gear | 2 | — | Quand l'Unit qui porte ce Gear détruit son défenseur, elle a +1 Force tant que la pièce est en jeu. |
 
 Recrue, Soldat, Gardien, Vétéran, Champion, Colosse, Renfort et Campement reprennent les cartes du [deck de test](ruleset/70-playtest/decks-de-test.md).
 
@@ -178,16 +178,22 @@ Phalange > Percée (le mur absorbe la vague) ; Percée > Grimoire (frappe avant 
 - **Verbes :** 12 des 13 retenus. **Endormir** est absent volontairement : une pièce endormie se réveille au début de son tour (204.3.10), le verbe a donc peu d'effet avec les règles actuelles. Il est à repenser avant usage.
 - **Autres outils :** Buildings moteurs déclenchés au début du tour, jeton Unit, Gear sur Units et jetons, Réactions pendant le tour adverse, Contrecarrer, recyclage des Sources, fatigue.
 
-## 8. Arbitrages à faire
+## 8. Arbitrages tranchés le 26 octobre 2026
 
-1. **Ordre du Hero et déclencheurs de Hero** : nouvelle décision qui précise ou remplace en partie la décision 0208. Les quatre Heroes en dépendent.
-2. **Défausser depuis sa main** : un choix dans la main n'est pas une cible au sens de 207.5.13 (Étude, Spectre des archives, Grimoire).
-3. **Coût variable X** : 202.1.2 ne prévoit qu'un coût fixe (Exécution).
-4. **Assaut X et Rempart X égaux à la Force** : X lu une seule fois, à la résolution (Furie, Sève).
-5. **Procédure d'échange de cases** : notamment quand une cible devient invalide (Ombre, Stratège).
-6. **Bonus durable** de Trophée, alors que les renforcements persistants n'avaient pas été retenus, et définition de « détruit son défenseur ».
-7. **Chef de guerre** : garder ou lever la limite des deux premières rangées pour ce Hero.
-8. **Répartition par type** de la section 2.
+| # | Sujet | Choix du créateur | Règles | Cartes concernées |
+|---|---|---|---|---|
+| 1 | Ordre du Hero et effets déclenchés du Hero | Ordre : endormir le Hero, plus l'Essence indiquée ; vitesse Action ou Réaction ; déclencheurs sur tout événement ; pas d'Ordre avant le premier réveil | 0211, chapitre 211 | les 4 Heroes |
+| 1b | Passif, capacité minimale, texte du Hero | Passif facultatif ; au moins une capacité ; texte du Hero public | 0212, 0218, 0213 (201.4.12, 202.3.22) | les 4 Heroes |
+| 2 | Défausser | Choix à la résolution, pas une cible ; seule une défausse par Défausser compte ; plusieurs cartes choisies ensemble, une défausse par carte ; tirage au sort à l'expiration du temps | 0214, 0219, chapitre 212, 209.4.13 | Étude, Spectre des archives, Grimoire |
+| 3 | Coût variable X | X choisi à l'annonce, au moins 1, Spells seulement, sans partie fixe ; X avant les cibles | 0215, 0220, 0221, chapitre 213 | Exécution |
+| 4 | Valeur X définie par un texte | Lue une seule fois à la résolution ; Assaut et Rempart n'y comptent jamais | 0216, 0222, 213.2 | Furie, Sève |
+| 5 | Échanger | Tout ou rien ; n'endort ni ne réveille ; ne déclenche pas Arrivée ; deux Units alliées | 0217, chapitre 214 | Ombre, Stratège |
+| 6 | Bonus durable de Trophée | Gardé ; « détruit son défenseur » = l'attaquant gagne le combat (égalité et attaque d'un Hero exclues) | décision du catalogue, sans règle nouvelle (207.4.2) | Trophée |
+| 7 | Limite de rangées du Hero | Levée pour tous les Heroes ; le Hero n'attaque jamais | 0223 (205.3.2 supprimée) | Chef de guerre, Recruteuse, Stratège |
+| 8 | Répartition par type | 2 Buildings par couleur (22 / 12 / 9 / 5) | décision du catalogue | section 2 |
+| 9 | Premier playtest | Joué avec ce catalogue, et non avec le Capitaine et les decks de test | 0224 | tout le catalogue |
+
+Questions encore ouvertes qui touchent ce catalogue : Q-124 (expiration pendant le choix de X), Q-125 (un échange est-il un déplacement), Q-126 (Unit déployée sur la case d'un Hero adverse avancé), Q-127 à Q-131 (lieu du catalogue dans le ruleset, organisation des séries de playtest avec quatre decks).
 
 ## 9. Pistes du créateur (26 octobre 2026)
 
@@ -286,3 +292,4 @@ Pistes non reprises dans cette version :
 ## 11. Historique
 
 - 2026-10-26 : version de travail 0.1 — 4 Heroes, 36 cartes de couleur, 12 neutres, 4 decks de 30 cartes ; acceptée comme base à affiner.
+- 2026-10-26 : arbitrages de la section 8 tranchés (ruleset 0.45 à 0.48, décisions 0211 à 0224) ; répartition par type retenue ; Ordre du Stratège précisé (Units « ciblées distinctes ») ; premier playtest joué avec ce catalogue.
