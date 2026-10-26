@@ -30,3 +30,5 @@ Aucun Invariant.
 
 **200.4.2** [ACTÉ] Quand ce qui doit se faire n'est possible qu'en partie, la partie possible a lieu (décision 0038 ; voir 200.4.1).
 
+**200.4.2a** [ACTÉ] Quand l'échange des cases de deux pièces n'est possible qu'en partie, aucun échange n'a lieu (décision 0217 ; voir 214.2.1 et 200.1.1).
+

@@ -89,35 +89,17 @@ Faut-il étendre aux Ordres 208.2.4a, 208.7.10 et 208.7.11, qui ne citent que l'
 - Option B : ne rien changer, les trois règles se lisent avec 208.2.4 et 208.7.8 ; compromis : une règle qui ne dit pas explicitement le cas de l'Ordre.
 Manque pour trancher : le choix éditorial du créateur.
 
-**Q-119 · Capacité minimale du texte de la carte Hero** · chapitre 202 · ouverte le 26 octobre 2026
-Le texte de la carte Hero doit-il porter au moins une capacité parmi passif, Ordre et effet déclenché, alors que 202.3.11, 202.3.19 et 202.3.20 rendent chacune facultative et que 202.3.8 dit seulement que la carte Hero porte un texte ?
-- Option A : au moins une capacité est obligatoire ; compromis : une règle de plus, qui écarte un Hero au texte vide.
-- Option B : aucune capacité n'est obligatoire ; compromis : un Hero sans capacité est légal, ce qui peut convenir à un Hero de test.
-Manque pour trancher : le choix du créateur, qui n'a pas dit « au moins une » dans la décision 0212.
-
-**Q-120 · Expiration du temps pendant le choix des cartes à défausser** · chapitres 209 et 212 · ouverte le 26 octobre 2026
-Que devient le choix d'une carte à défausser quand le temps de tour ou le temps de réponse de son joueur atteint 0 seconde pendant ce choix, alors que 212.1.3 le fait à la résolution, que 209.4.4c et 209.4.4d ne citent que l'ordre des effets déclenchés et le choix des cibles, et que 209.4.11 ne vise que le choix des cibles ?
-- Option A : le temps s'écoule pour ce choix et la carte est choisie par défaut, selon une règle à écrire ; compromis : une règle de choix par défaut, qui retire une décision au joueur.
-- Option B : aucun temps ne s'écoule pendant ce choix ; compromis : un joueur absent bloque la partie, comme Q-108.
+**Q-124 · Expiration du temps pendant le choix de X** · chapitres 209 et 213 · ouverte le 26 octobre 2026
+Que devient l'annonce d'un Spell à coût X quand le temps de tour ou le temps de réponse de son joueur atteint 0 seconde pendant qu'il choisit X, alors que 213.1.9 place ce choix avant celui des cibles, que 209.4.11 ne vise que le choix des cibles et que 209.4.4d et 209.4.7 ne citent pas le choix de X ?
+- Option A : l'annonce est abandonnée, rien n'est payé, la carte reste où elle était, comme 209.4.11 ; compromis : 209.4.11 est étendue au choix de X.
+- Option B : X prend sa valeur minimale (213.1.4) et l'annonce se poursuit ; compromis : une valeur par défaut que le joueur n'a pas choisie.
 Manque pour trancher : le choix du créateur.
 
-**Q-121 · Coût qui combine X et une partie fixe** · chapitre 213 · ouverte le 26 octobre 2026
-Une carte peut-elle porter un coût composé d'une partie fixe et de X, alors que 213.1.5 ne fait payer que X Essence et que 213.1.6 fait valoir le coût sur la pile pour la valeur de X ?
-- Option A : non, un coût X est X seul ; compromis : aucune règle de plus, des cartes plus simples à lire.
-- Option B : oui, le joueur paie la partie fixe plus X, et le coût sur la pile vaut la somme ; compromis : 213.1.5 et 213.1.6 sont à réécrire, et la valeur de X reste à distinguer du coût.
-Manque pour trancher : le choix du créateur, qui a laissé ce cas ouvert dans la décision 0215.
-
-**Q-122 · Ordre du choix de X et du choix des cibles** · chapitres 207 et 213 · ouverte le 26 octobre 2026
-Le joueur choisit-il la valeur de X avant les cibles du Spell, alors que 213.1.3 et 207.5.1a placent les deux à l'annonce et que la condition d'une cible peut dépendre de X ?
-- Option A : X est choisi avant les cibles ; compromis : une règle d'ordre de plus, qui rend la condition de cible lisible à l'annonce.
-- Option B : les cibles sont choisies avant X, la condition de cible étant lue avec la valeur de X choisie ensuite ; compromis : une cible légale ne se détermine qu'une fois X choisi.
-Manque pour trancher : le choix du créateur.
-
-**Q-123 · Force lue pour X quand l'entrée se résout pendant un combat** · chapitres 206, 210 et 213 · ouverte le 26 octobre 2026
-Quelle Force d'Unit 213.2.3 lit-il quand l'entrée qui porte l'effet se résout alors qu'un combat est en cours, par exemple pour une Unit qui attaque ou défend et porte déjà Assaut X ou Rempart X, alors que 213.2.4 exclut Assaut et Rempart en dehors d'un combat et que 210.4.1b et 210.4.2b les lisent au moment du combat ?
-- Option A : la Force lue exclut toujours Assaut et Rempart tant que le combat n'est pas résolu ; compromis : une règle simple, qui laisse X sans lien avec la Force du combat.
-- Option B : la Force lue comprend Assaut ou Rempart de la pièce si elle attaque ou défend dans ce combat ; compromis : X peut croître avec un mot-clé déjà porté, l'ordre de jeu change la valeur.
-Manque pour trancher : le choix du créateur, qui a demandé de signaler ce cas sans le trancher dans la décision 0216.
+**Q-125 · Échange de cases et mot « déplacement »** · chapitres 205 et 214 · ouverte le 26 octobre 2026
+Un échange des cases de deux pièces (214.1.1) est-il un déplacement, alors que le glossaire définit le déplacement comme le passage d'une pièce de sa case à une autre case, que 214.2.3 dit seulement que l'échange n'est pas une action normale et que 214.2.4 dit qu'il ne fait pas arriver la pièce ?
+- Option A : l'échange n'est pas un déplacement ; compromis : une règle de plus et une précision au glossaire, sans effet sur les cartes actuelles.
+- Option B : l'échange est un déplacement pour chaque effet qui lit un déplacement ; compromis : un futur effet « quand une pièce se déplace » se déclenche aussi sur un échange.
+Manque pour trancher : une première carte qui lit un déplacement.
 
 ## Tranchées
 
@@ -228,4 +210,9 @@ Manque pour trancher : le choix du créateur, qui a demandé de signaler ce cas 
 | Q-115 · Scission du chapitre 208 · chapitre 208 · ouverte le 23 octobre 2026 · Faut-il scinder le chapitre 208, qui compte 61 identifiants suppressions comprises (CHARTE.md §4) ? Tranchée le 23 octobre 2026 : option B, le chapitre 208 n'est pas scindé, comme le chapitre 207 (décision 0116). | [0207](40-decisions/0207-reponse-limitee-aux-spells-et-aux-attaques.md), [0116](40-decisions/0116-pas-de-scission-du-chapitre-207.md) |
 | Q-104 · Visibilité de l'état endormi ou éveillé · chapitres 201 et 205 · ouverte le 22 octobre 2026 · L'état endormi ou éveillé d'une Unit ou d'un Hero (205.5.1 et 205.5.2) est-il visible des deux joueurs ? Tranchée le 24 octobre 2026 : oui, option A (201.4.11). | [0210](40-decisions/0210-etat-endormi-ou-eveille-public.md) |
 | Q-118 · Visibilité de la carte Hero et de son texte · chapitre 201 · ouverte le 26 octobre 2026 · La carte Hero d'un joueur, son passif, son Ordre et ses effets déclenchés sont-ils visibles des deux joueurs dès le début de la partie ? Tranchée le 26 octobre 2026 : oui, option A (201.4.12). | [0213](40-decisions/0213-le-texte-de-la-carte-hero-est-public.md) |
+| Q-119 · Capacité minimale du texte de la carte Hero · chapitre 202 · ouverte le 26 octobre 2026 · Le texte de la carte Hero doit-il porter au moins une capacité parmi passif, Ordre et effet déclenché ? Tranchée le 26 octobre 2026 : oui, option A (202.3.22). | [0218](40-decisions/0218-capacite-minimale-du-texte-du-hero.md) |
+| Q-120 · Expiration du temps pendant le choix des cartes à défausser · chapitres 209 et 212 · ouverte le 26 octobre 2026 · Que devient le choix des cartes à défausser quand le temps d'un joueur atteint 0 seconde ? Tranchée le 26 octobre 2026 : le temps de réponse s'écoule et, à 0 seconde, les cartes sont tirées au sort dans la main, option A (209.4.7c et 209.4.13). | [0219](40-decisions/0219-expiration-du-temps-pendant-le-choix-des-cartes-a-defausser.md) |
+| Q-121 · Coût qui combine X et une partie fixe · chapitre 213 · ouverte le 26 octobre 2026 · Une carte peut-elle porter un coût composé d'une partie fixe et de X ? Tranchée le 26 octobre 2026 : non, un coût X est X seul, option A (213.1.12). | [0220](40-decisions/0220-cout-x-sans-partie-fixe.md) |
+| Q-122 · Ordre du choix de X et du choix des cibles · chapitres 207 et 213 · ouverte le 26 octobre 2026 · Le joueur choisit-il X avant les cibles du Spell ? Tranchée le 26 octobre 2026 : X d'abord, puis les cibles, option A (213.1.9 à 213.1.11) ; expiration du temps pendant le choix de X : voir Q-124. | [0221](40-decisions/0221-ordre-du-choix-de-x-et-des-cibles.md) ; voir Q-124 |
+| Q-123 · Force lue pour X quand l'entrée se résout pendant un combat · chapitres 206, 210 et 213 · ouverte le 26 octobre 2026 · Quelle Force d'Unit 213.2.3 lit-il pendant un combat ? Tranchée le 26 octobre 2026 : sans Assaut ni Rempart, option A (213.2.4 modifiée). | [0222](40-decisions/0222-force-lue-pour-x-sans-assaut-ni-rempart.md) |
 | Q-099 · Pouvoir du Hero à plusieurs cibles · chapitre 207 · ouverte le 21 octobre 2026 · Un pouvoir du Hero dont l'effet exige plusieurs cibles s'annonce-t-il même s'il n'existe pas le nombre minimal de cibles légales, 207.5.17 et 207.5.10 se contredisant ? Sans objet le 23 octobre 2026 : le Hero n'a plus de pouvoir, 207.5.17 et ses sous-règles sont supprimées. | [0208](40-decisions/0208-le-hero-n-a-pas-de-pouvoir.md) |

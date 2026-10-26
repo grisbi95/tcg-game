@@ -124,6 +124,8 @@ Aucun Invariant.
 
 **202.3.21** [ACTÉ] Le texte de la carte Hero fixe le nombre de ses Ordres et de ses effets déclenchés (décision 0211 ; voir 202.3.19 et 202.3.20).
 
+**202.3.22** [ACTÉ] Le texte de la carte Hero porte au moins une capacité parmi un passif, un Ordre ou un effet déclenché (décision 0218 ; voir 202.3.8, 202.3.11, 202.3.19 et 202.3.20).
+
 ## 202.4 Permanents et jetons
 
 **202.4.1** [ACTÉ] Un jeton est une pièce créée par un effet (décision 0020).

@@ -124,6 +124,8 @@ Aucun Invariant.
 
 **207.5.4** [ACTÉ] À sa résolution, un effet s'applique à chaque cible restée valide (décision 0074 ; voir 200.4.2 et 207.5.3).
 
+**207.5.4a** [ACTÉ] Un effet qui échange les cases de deux cibles ne s'applique que si les deux cibles sont restées valides (décision 0217 ; voir 207.5.4 et 214.2.1).
+
 **207.5.5** [ACTÉ] Un effet qui a perdu toutes ses cibles n'a pas lieu (décision 0074 ; voir 200.4.1 et 207.5.3).
 
 **207.5.6** [ACTÉ] Une cible reste valide si elle remplit encore les conditions d'origine de la carte (décision 0074 ; voir 207.5.3).

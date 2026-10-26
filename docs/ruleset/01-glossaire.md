@@ -33,7 +33,7 @@
 | Contrecarrer | Effet qui fait qu'un Spell qui se trouve sur la pile n'a pas lieu ; voir 207.6.1, 207.6.2, 207.6.4 et 207.6.5. | |
 | Contrôler | Relation d'un joueur avec chaque carte et chaque jeton qui lui appartiennent ; voir 201.5.2 et 201.5.2a. | |
 | Coût | Valeur que porte toute carte de deck, ou que la carte Hero indique pour un Ordre ; voir 202.1.2, 211.1.3 et 213.1.1. | |
-| Coût X | Coût d'une carte Spell dont le joueur choisit la valeur à l'annonce et qu'il paie en Essence, distinct d'une valeur X définie par un texte ; voir 213.1.1, 213.1.3, 213.1.5, 213.1.6 et 213.1.7. | |
+| Coût X | Coût d'une carte Spell dont le joueur choisit la valeur à l'annonce et qu'il paie en Essence, distinct d'une valeur X définie par un texte ; voir 213.1.1, 213.1.3, 213.1.5, 213.1.6, 213.1.7, 213.1.9, 213.1.10, 213.1.11 et 213.1.12. | |
 | Début du tour | Première partie du tour, qui précède la phase principale ; voir 204.3.8, 204.4.1, 208.4.10 et 208.4.11. | |
 | Deck | Zone hors du plateau qui forme l'ensemble de cartes face cachée d'un joueur ; voir 201.3.1 et 201.4.1. | |
 | Déclencher | Faire qu'un effet déclenché doive avoir lieu, pour un événement indiqué par le texte de cet effet ; voir 207.3.1, 208.4.2 et 208.4.4. | |
@@ -48,6 +48,7 @@
 | Durée | Mention du texte d'un effet qui fixe jusqu'à quand il dure, parmi « jusqu'à la fin du tour » et « tant que la pièce est en jeu » ; voir 207.4.1, 207.4.2, 207.4.3, 207.4.7, 207.4.7a, 207.4.7b, 207.4.8 et 207.4.10. | |
 | Écart | Zone temporaire hors du plateau, propre à chaque joueur et face cachée, qui existe pendant le mulligan et accueille les cartes écartées ; voir 201.3.9, 201.3.10, 201.4.9, 204.2.10 et 204.2.11. | |
 | Écarter | Choisir, pendant son mulligan, une carte de sa main à remettre dans son deck, la carte allant alors dans l'Écart ; voir 204.2.4, 204.2.6, 204.2.8 et 204.2.10. | |
+| Échanger | Faire occuper à chacune de deux pièces la case de l'autre, en même temps ; voir 214.1.1, 214.1.2, 214.1.3, 214.2.1 et 200.4.2a. | |
 | Échouer | Pour une action annoncée, ne pas avoir lieu à sa résolution ; voir 205.4.6. | |
 | Effet | Instruction du texte d'une carte qui change l'état de la partie ou les règles qui s'y appliquent. | |
 | Effet déclenché | Effet qui a lieu quand survient un événement indiqué par son texte ; voir 204.5.3, 207.3.1, 207.3.2, 207.3.3, 207.3.4, 207.3.4a, 207.3.5, 207.3.7a, 207.3.11, 207.3.11a, 208.3.2a, 208.4.2, 208.4.3, 208.4.4, 208.4.5, 208.4.6, 208.4.7, 208.4.8, 208.4.10, 208.4.11, 208.5.1a, 208.7.8, 208.7.9, 208.7.10, 208.7.11, 208.7.15, 208.7.16, 210.3.1b et 210.3.2a. | |
@@ -67,7 +68,7 @@
 | Force imprimée | Force que porte la carte d'une Unit ou d'un Building, ou que l'effet qui crée un jeton donne à ce jeton ; voir 202.1.5, 202.1.6, 209.1.1 et 209.1.1a. | |
 | Garder sa main | Pour un joueur, n'écarter aucune carte de sa main pendant le mulligan, ce qui n'est pas un mulligan ; voir 204.2.12, 204.2.13 et 204.2.14. | |
 | Gear | Type de carte de deck ; voir 202.2.6 et 202.2.7. | |
-| Hero | Pièce du plateau qui représente un joueur et porte ses PV, et qui est aussi une carte hors du deck ; voir 202.3.2, 202.3.4 et 202.3.5. | |
+| Hero | Pièce du plateau qui représente un joueur et porte ses PV, et qui est aussi une carte hors du deck ; voir 202.3.2, 202.3.4, 202.3.5 et 202.3.22. | |
 | Inactivité | Défaite d'un joueur dont trois tours consécutifs se terminent par l'expiration de son temps de tour sans qu'il ait fait d'annonce ; voir 209.2.10, 201.1.3d et 206.4.6c. | PROVISOIRE |
 | Incliner | Faire passer une Source de l'état redressé à l'état incliné ; voir 203.2.1. | |
 | Invariant | Règle de la section Invariants d'un chapitre des règles complètes, dont l'identifiant a la forme 201.0.1, qu'aucune carte ne contredit ; voir 200.2.1a, 201.0.1, 201.0.2, 201.0.4, 203.0.1, 206.0.1 et 206.0.2. | |
@@ -117,10 +118,11 @@
 | Source | Élément d'un joueur qui produit l'Essence ; voir 203.1.2. | |
 | Sous-règle | Règle dont l'identifiant ajoute une lettre à celui de la règle qu'elle précise ; voir 200.1.1. | |
 | Spell | Type de carte de deck ; voir 202.2.5, 202.2.20, 202.2.21, 207.1.1, 207.1.7 et 207.1.7a. | |
-| Temps de réponse | Temps dont dispose un joueur pour chaque décision que les règles attendent de lui quand la pile n'est pas vide, ou quand il n'est pas le joueur actif ; voir 209.4.6, 209.4.7, 209.4.7a, 209.4.7b et 209.4.10. | |
+| Temps de réponse | Temps dont dispose un joueur pour chaque décision que les règles attendent de lui quand la pile n'est pas vide, ou quand il n'est pas le joueur actif ; voir 209.4.6, 209.4.7, 209.4.7a, 209.4.7b, 209.4.7c, 209.4.10 et 209.4.13. | |
 | Temps de tour | Temps dont dispose le joueur actif pour ses décisions pendant son tour quand la pile est vide, en pause tant que la pile n'est pas vide ; voir 209.4.3, 209.4.4, 209.4.4a, 209.4.4c, 209.4.4d, 209.4.8, 209.4.8a et 209.4.9. | |
 | Temps écoulé | Retiré en édition 0.40 : le temps ne fait plus perdre la partie ; voir décision 0205. | |
 | Texte | Énoncé que porte une carte, qui peut être vide ; voir 202.1.4 et 202.3.8. | |
+| Tirage au sort | Choix qu'aucun joueur ne fait, où chaque possibilité a la même chance d'être retenue ; voir 209.4.13. | |
 | Tour | Période de la partie attribuée à un joueur ; voir le chapitre 204. | |
 | Type | Catégorie d'une carte de deck, parmi celles de 202.2.1 ; voir 202.1.3. | |
 | Unit | Type de carte de deck, et pièce du plateau issue d'une carte de ce type ou jeton que désigne l'effet qui le crée ; voir 202.2.2, 202.4.8 et 202.4.10. | |

@@ -455,3 +455,16 @@
 - Décisions 0018 et 0211 marquées d'une ligne en tête (remplacées en partie). Livret [10-regles-de-base.md](10-regles-de-base.md), [decks-de-test.md](70-playtest/decks-de-test.md) et [protocole.md](70-playtest/protocole.md) non modifiés.
 - Mesures du playtest J3 consignées dans les décisions : nombre de défausses par partie ; valeurs de X choisies et Sources recyclées pour payer un coût X.
 - [README.md](README.md) : édition courante passée à 0.46 ; lignes des chapitres 212 et 213 ajoutées.
+
+## 0.47 · 26 octobre 2026 · majeure · Échanger, capacité minimale du Hero, temps de la défausse, coût X et valeur X précisés
+
+- Échanger les cases de deux Units alliées. Chapitre 214 créé ([214-echanger.md](20-regles-completes/214-echanger.md)) : 214.1.1 à 214.1.4, 214.2.1 à 214.2.4 ; identifiants ajoutés : 200.4.2a ([200-regles-d-or.md](20-regles-completes/200-regles-d-or.md)), 207.5.4a ([207-effets.md](20-regles-completes/207-effets.md)). Décision [0217](40-decisions/0217-echanger-les-cases-de-deux-pieces.md). Q-125 créée (échange et mot « déplacement »).
+- Capacité minimale du Hero. Identifiant ajouté : 202.3.22 ([202-cartes.md](20-regles-completes/202-cartes.md)). Décision [0218](40-decisions/0218-capacite-minimale-du-texte-du-hero.md). Q-119 tranchée, option A.
+- Temps pendant le choix des cartes à défausser. Identifiants ajoutés : 209.4.7c, 209.4.13 ([209-controles-d-etat.md](20-regles-completes/209-controles-d-etat.md)). Décision [0219](40-decisions/0219-expiration-du-temps-pendant-le-choix-des-cartes-a-defausser.md). Q-120 tranchée, option A.
+- Coût X sans partie fixe. Identifiant ajouté : 213.1.12. Décision [0220](40-decisions/0220-cout-x-sans-partie-fixe.md). Q-121 tranchée, option A.
+- Ordre du choix de X et des cibles. Identifiants ajoutés : 213.1.9, 213.1.10, 213.1.11. Décision [0221](40-decisions/0221-ordre-du-choix-de-x-et-des-cibles.md). Q-122 tranchée, option A. Q-124 créée (expiration du temps pendant le choix de X).
+- Force lue pour X sans Assaut ni Rempart. Identifiant modifié : 213.2.4 (« ne comptent jamais », comportement changé pendant un combat) ([213-valeur-x.md](20-regles-completes/213-valeur-x.md)). Décision [0222](40-decisions/0222-force-lue-pour-x-sans-assaut-ni-rempart.md). Q-123 tranchée, option A.
+- Glossaire : termes ajoutés : Échanger, Tirage au sort ; termes modifiés : Coût X, Temps de réponse, Hero (renvois).
+- Livret [10-regles-de-base.md](10-regles-de-base.md), [decks-de-test.md](70-playtest/decks-de-test.md) et [protocole.md](70-playtest/protocole.md) non modifiés.
+- Mesures du playtest J3 consignées dans les décisions : échanges déjoués par une réponse adverse ; défausses tirées au sort à l'expiration ; écart entre X et la Force au combat.
+- [README.md](README.md) : édition courante passée à 0.47 ; ligne du chapitre 214 ajoutée.

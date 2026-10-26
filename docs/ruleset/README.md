@@ -1,6 +1,6 @@
 # Ruleset du TCG tactique
 
-> Dossier de conception des règles, intégré au dépôt du jeu `tcg-game`, dans `docs/ruleset/` (décision 0014 du projet). Édition courante : **0.46** (passif du Hero facultatif, texte du Hero public, Défausser, coût X et valeur X, 26 octobre 2026). Historique dans [90-changelog.md](90-changelog.md).
+> Dossier de conception des règles, intégré au dépôt du jeu `tcg-game`, dans `docs/ruleset/` (décision 0014 du projet). Édition courante : **0.47** (Échanger, capacité minimale du Hero, temps de la défausse, coût X et valeur X précisés, 26 octobre 2026). Historique dans [90-changelog.md](90-changelog.md).
 
 ## Quel document pour quel lecteur
 
@@ -37,6 +37,7 @@
 | [211](20-regles-completes/211-ordre-du-hero.md) | Ordre du Hero : nature, annonce, coût, cibles |
 | [212](20-regles-completes/212-defausser.md) | Défausser : nature de l'effet, défausse comme événement |
 | [213](20-regles-completes/213-valeur-x.md) | Valeur X : coût X, valeur X définie par un texte |
+| [214](20-regles-completes/214-echanger.md) | Échanger : échange des cases de deux Units alliées |
 
 ## Workflow d'une session de travail
 

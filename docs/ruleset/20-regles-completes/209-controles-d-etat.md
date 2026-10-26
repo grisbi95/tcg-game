@@ -88,6 +88,8 @@ Aucun Invariant.
 
 **209.4.7b** [ACTÉ] Le temps de réponse d'un joueur autre que le joueur actif s'écoule pour chaque décision que les règles attendent de lui quand la pile est vide (décision 0205 ; voir 208.4.7 et 209.4.2d).
 
+**209.4.7c** [ACTÉ] Le temps de réponse du joueur qui défausse s'écoule pour le choix des cartes à défausser, quand l'entrée de la pile qui porte l'effet se résout (décision 0219 ; voir 209.4.2a, 209.4.6 et 212.1.3).
+
 **209.4.8** [ACTÉ] Le temps de tour du joueur actif est en pause tant que la pile n'est pas vide (décision 0205 ; voir 208.5.1 et 209.4.4).
 
 **209.4.8a** [ACTÉ] Le temps de tour du joueur actif reprend à la valeur qu'il avait quand la pile redevient vide (décision 0205 ; voir 209.4.8).
@@ -101,6 +103,8 @@ Aucun Invariant.
 **209.4.11a** [ACTÉ] Quand le temps de tour ou le temps de réponse d'un joueur atteint 0 seconde pendant qu'il choisit les cibles d'un effet déclenché, cet effet ne s'ajoute pas à la pile (décision 0206 ; voir 209.4.11 et 207.3.2).
 
 **209.4.12** [ACTÉ] Quand le temps de tour ou le temps de réponse d'un joueur atteint 0 seconde pendant qu'il choisit l'ordre de ses effets déclenchés, ces effets s'ajoutent à la pile dans l'ordre où ils se sont déclenchés (décision 0206 ; voir 208.4.6, 208.4.7, 209.4.4c et 209.4.7b).
+
+**209.4.13** [ACTÉ] Quand le temps de réponse d'un joueur atteint 0 seconde pendant qu'il choisit les cartes à défausser, ces cartes sont choisies par tirage au sort parmi les cartes de sa main (décision 0219 ; voir 209.4.7c, 212.1.3 et 212.2.3).
 
 ## 209.5 Compteur de fatigue
 
