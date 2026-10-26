@@ -1,5 +1,7 @@
 # 0154 · Taille de la première série
 
+Remplacée en partie par 0229 (la série compte 24 parties de 6 affrontements entre decks distincts, non 20 parties d'un deck miroir).
+
 > Décision consignée le 16 octobre 2026. Statut : ACTÉ. Une décision ne se modifie jamais ; pour revenir dessus, une nouvelle décision la remplace et cette ligne reçoit « Remplacée par NNNN ».
 
 ## Contexte

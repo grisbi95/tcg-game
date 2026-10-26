@@ -486,3 +486,13 @@
 - Glossaire : termes ajoutés : Catalogue de playtest, Couleur, Neutre ; termes modifiés : Déplacement, Échanger, Déployer, Temps de tour (renvois).
 - Livret [10-regles-de-base.md](10-regles-de-base.md) et [protocole.md](70-playtest/protocole.md) non modifiés.
 - [README.md](README.md) : édition courante passée à 0.49 ; ligne `50-cartes/` mise à jour.
+
+## 0.50 · 26 octobre 2026 · mineure · protocole du premier playtest : série de 24 parties, plan de série, cibles et seuils à refixer
+
+- Série de 24 parties : les 6 affrontements entre deux decks distincts du catalogue de playtest, 4 parties chacun, sans partie miroir. Décision [0229](40-decisions/0229-affrontements-et-parties-par-serie.md) ; décision 0154 marquée « Remplacée en partie ». Q-128 tranchée, option A.
+- Attribution des decks par un plan de série fixé à l'avance, écrit dans [protocole.md](70-playtest/protocole.md), section Plan de série (24 parties, contraintes vérifiées). Décision [0230](40-decisions/0230-attribution-des-decks-aux-joueurs.md). Q-129 tranchée, option A. Q-142 créée (ordre de jeu des 24 parties).
+- Premier joueur fixé par le plan de série, chaque deck commençant 2 parties sur 4 dans chaque affrontement ; 204.1.14 inchangée. Décision [0231](40-decisions/0231-premier-joueur-fixe-par-le-plan-de-serie.md) ; décisions 0158 et 0168 marquées « Remplacée en partie ». Q-130 tranchée, option A. Mention ajoutée à Q-102.
+- Cibles et seuils du tableau du protocole à refixer avant la première série J3, mesures des décisions 0211 à 0228 comprises, aucune valeur fixée. Décision [0232](40-decisions/0232-cibles-et-seuils-refixes-avant-la-serie.md). Q-131 tranchée, option C, contre la recommandation. Q-141 créée (liste des lignes et des mesures à refixer).
+- [protocole.md](70-playtest/protocole.md) : portée de la section Decks de test, tableau des décisions, section Série, section Plan de série (nouvelle), définitions Affrontement et Plan de série, introduction du tableau des cibles et seuils, section Points à trancher. Fiche de relevé, tableau des cibles et seuils et couverture des règles PROVISOIRE non modifiés.
+- Aucun identifiant de règle touché. Glossaire, livret [10-regles-de-base.md](10-regles-de-base.md) et chapitre 210 non modifiés.
+- [README.md](README.md) : édition courante passée à 0.50 ; ligne `70-playtest/` mise à jour.

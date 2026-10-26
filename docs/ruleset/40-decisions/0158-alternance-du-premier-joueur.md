@@ -1,5 +1,7 @@
 # 0158 · Alternance du premier joueur
 
+Remplacée en partie par 0231 (le plan de série fixe le premier joueur de chaque partie, non l'alternance d'une partie à l'autre).
+
 > Décision consignée le 16 octobre 2026. Statut : ACTÉ. Une décision ne se modifie jamais ; pour revenir dessus, une nouvelle décision la remplace et cette ligne reçoit « Remplacée par NNNN ».
 
 ## Contexte

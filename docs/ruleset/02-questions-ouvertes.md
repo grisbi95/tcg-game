@@ -45,6 +45,7 @@ Chaque joueur de la série peut-il connaître son rôle de premier ou de second 
 - Option A : le protocole consigne l'exception, l'ordre étant connu avant le mulligan, et 204.1.16 ne change pas ; compromis : la série éprouve le mulligan (204.1.15) dans des conditions que 204.1.16 écarte.
 - Option B : 204.1.16 est révisée pour admettre un premier joueur connu d'avance ; compromis : une règle de jeu modifiée pour les besoins du playtest, par une nouvelle décision qui remplace la décision 0177.
 Manque pour trancher : ce que la première série (jalon J3) veut mesurer : la fréquence des mulligans dans les conditions de 204.1.16 (ligne « Mains de départ remplacées par un mulligan » du protocole, 204.1.15), ou seulement l'avantage du premier joueur (ligne « Victoires du premier joueur », 204.3.4). Réviser la décision 0158 passe par une nouvelle décision.
+Mise à jour du 26 octobre 2026 : les décisions 0158 et 0168 sont remplacées en partie par la décision 0231 (le plan de série fixe le premier joueur de chaque partie) ; le premier joueur reste connu d'avance, la question reste ouverte.
 
 **Q-103 · Mulligan à deux humains sur un même écran** · chapitre 204 · ouverte le 21 octobre 2026
 Le mulligan se fait-il en même temps pour deux humains sur un même appareil, alors que 204.2.2 dit que les deux joueurs décident de leur mulligan en même temps, que 204.2.3 dit qu'aucun joueur ne voit le choix de l'autre avant d'avoir décidé, et que, sur un même écran, les deux joueurs décident l'un après l'autre (joueur A puis joueur B) ?
@@ -88,34 +89,6 @@ Faut-il étendre aux Ordres 208.2.4a, 208.7.10 et 208.7.11, qui ne citent que l'
 - Option A : étendre les trois règles aux Ordres ; compromis : une édition sans changement de comportement, qui écrit ce que 208.2.4 et 208.7.8 donnent déjà.
 - Option B : ne rien changer, les trois règles se lisent avec 208.2.4 et 208.7.8 ; compromis : une règle qui ne dit pas explicitement le cas de l'Ordre.
 Manque pour trancher : le choix éditorial du créateur.
-
-**Q-128 · Affrontements et nombre de parties par série** · `70-playtest/protocole.md` · ouverte le 26 octobre 2026
-Quels affrontements et combien de parties compte une série avec quatre decks asymétriques, alors que la décision 0154 fixe 20 parties d'un deck miroir, 10 avec chaque joueur en premier ?
-- Option A : tous les affrontements entre deux decks distincts, un nombre de parties égal pour chacun ; compromis : une série plus longue, chaque affrontement mesuré avec peu de parties.
-- Option B : une sélection d'affrontements, fixée avant la série ; compromis : des decks qui ne se rencontrent jamais.
-- Option C : les affrontements miroirs (un deck contre lui-même) inclus ; compromis : plus de parties, mais chacun éprouve un seul deck.
-Manque pour trancher : le nombre de parties jouables par session et le choix du créateur.
-
-**Q-129 · Attribution des decks aux joueurs** · `70-playtest/protocole.md` · ouverte le 26 octobre 2026
-Comment les decks du catalogue de playtest sont-ils attribués aux joueurs A et B d'une partie, alors que les joueurs de la série sont notés A et B sur la fiche ?
-- Option A : attribution fixée à l'avance pour chaque partie ; compromis : un plan de série à écrire.
-- Option B : chaque joueur choisit son deck ; compromis : la série dépend des choix, et le choix de l'un peut dépendre de l'autre.
-- Option C : tirage au sort ; compromis : la couverture des affrontements n'est pas garantie.
-Manque pour trancher : Q-128 et le choix du créateur.
-
-**Q-130 · Alternance du premier joueur avec des decks asymétriques** · `70-playtest/protocole.md` et 204.3.4 · ouverte le 26 octobre 2026
-L'alternance du premier joueur (décision 0158) est-elle maintenue, alors que le joueur A ne tient plus forcément le même deck d'une partie à l'autre ?
-- Option A : alternance maintenue, d'une partie à l'autre ; compromis : le premier joueur peut toujours être le même deck dans un affrontement.
-- Option B : alternance par affrontement, chaque deck ouvrant autant de parties ; compromis : une règle d'alternance plus complexe à suivre.
-- Option C : tirage au sort de 204.1.14 ; compromis : la répartition entre premier et second joueur n'est pas garantie.
-Manque pour trancher : Q-128, Q-129 et la mesure « Victoires du premier joueur » (204.3.4, voir Q-131).
-
-**Q-131 · Mesures du protocole avec des decks différents** · `70-playtest/protocole.md` · ouverte le 26 octobre 2026
-Quelles mesures du tableau des cibles et seuils restent valables quand les deux joueurs jouent des decks différents, alors que ses cibles et ses seuils ont été écrits pour un deck miroir et que la décision 0211 demande des mesures propres aux Ordres ?
-- Option A : toutes les mesures sont gardées, relevées par deck et par Hero ; compromis : des effectifs plus petits par ligne, des cibles à relire.
-- Option B : seules les mesures indépendantes du deck sont gardées (durée, tours, Essence, fatigue) ; compromis : les mesures liées au miroir (ressemblance, parties bloquées, victoires du premier joueur) sont suspendues.
-- Option C : les cibles et seuils sont refixés par une décision avant la série ; compromis : un travail de révision avant le J3.
-Manque pour trancher : Q-128 et le choix du créateur.
 
 **Q-132 · Déplacer une Unit par un effet** · chapitres 205 et 207 · ouverte le 26 octobre 2026
 Que fait un effet de carte qui déplace une Unit ennemie sur une case libre ciblée (Glissement, Manipulateur du catalogue de playtest), alors que le glossaire ne définit le déplacement que par l'action normale (205.2.2, 205.3.1), que Q-125 a tranché qu'un échange n'est pas un déplacement (214.2.5) et qu'aucune règle ne dit si cette Unit s'endort, se réveille, arrive sur le plateau ou attaque ?
@@ -170,6 +143,50 @@ Le deck d'un joueur est-il contraint par sa couleur ou par son Hero, alors que 2
 - Option A : aucune contrainte, les quatre decks du catalogue de playtest sont des listes fixes et 201.6.3 reste ; compromis : rien n'empêche un deck sans lien avec la couleur de son Hero, hors du premier playtest.
 - Option B : une règle de construction par couleur est écrite au chapitre 201 ; compromis : une règle de plus, qui change 201.6.3.
 Manque pour trancher : le choix du créateur, avant tout deck libre.
+
+**Q-141 · Cibles, seuils et mesures à refixer avant la première série J3** · `70-playtest/protocole.md` · ouverte le 26 octobre 2026
+Quelle cible, quel seuil d'alerte et quel niveau de relevé (série entière, deck, Hero ou affrontement) reçoit chaque mesure ci-dessous pour une série de 24 parties entre 4 decks asymétriques, alors que la décision 0232 impose de les refixer avant la série et que le tableau actuel a été écrit pour un deck miroir de 20 parties ?
+- Aucune option formulée : chaque ligne se tranche une à une par le créateur ; aucune valeur n'est proposée par l'agent.
+Lignes du tableau de la section Cibles et seuils (cible et seuil actuels entre parenthèses) :
+- Durée moyenne d'une partie (15 min ; alerte au-delà de 25 min ou en deçà de 8 min).
+- Durée moyenne d'un tour (à fixer).
+- Tours terminés par l'expiration du temps de tour, moyenne par partie (à fixer).
+- Réponses passées par l'expiration du temps de réponse, moyenne par partie (à fixer).
+- Défaites par inactivité (à fixer).
+- Essence inutilisée, à partir du tour 3, moyenne (1 ou moins ; alerte à 3 ou plus).
+- Essence perdue en fin de tour, moyenne (à fixer).
+- PV perdus par un Hero en un tour, maximum par partie (à fixer).
+- Tour de fin de partie, moyenne (tours 8 à 12 ; alerte avant le tour 6 ou après le tour 15).
+- Victoires du premier joueur (10 sur 20 indicatif ; alerte à 13 ou plus, ou 7 ou moins) : effectif à réécrire pour 24 parties.
+- Mains de départ remplacées par un mulligan (1 sur 3 ou moins ; alerte au-delà de la moitié).
+- Tours passés à main pleine (rares ; alerte au-delà de 20 % des tours d'un joueur).
+- Parties où une fatigue apparaît (moins de 25 % ; alerte à 25 % ou plus).
+- Parties finies par la fatigue (0 ou 1 sur 20 ; alerte à 2 ou plus) : effectif à réécrire pour 24 parties.
+- Parties bloquées (0 ou 1 sur 20 ; alerte à 2 ou plus) : effectif à réécrire pour 24 parties.
+- Parties décidées le tour d'un recyclage de 3 Sources ou plus (moins de 25 % ; alerte à 25 % ou plus).
+- Parties où un joueur passe 2 tours sans rien jouer (moins de 20 % ; alerte à 20 % ou plus).
+- Ressemblance entre les parties (notes qualitatives, sans seuil chiffré).
+- Ressenti du rythme (notes qualitatives, sans seuil chiffré).
+Mesures annoncées par les décisions 0211 à 0228, à ajouter au tableau (cible, seuil, champ de la fiche de relevé, règle visée) :
+- 0211 : fréquence d'usage des Ordres ; tours où le Hero reste éveillé pendant le tour adverse ; PV perdus par un Hero avancé pour son Ordre.
+- 0212 : répartition des Heroes par type de capacité.
+- 0214 : nombre de défausses par partie ; part des défausses faites avec une main de 1 carte ; usage des effets déclenchés par une défausse.
+- 0215 : valeurs de X choisies ; Sources recyclées pour payer un coût X ; part des Spells à coût X jouée avec la valeur 1.
+- 0216 : part des valeurs X définies par un texte lues sur une Unit qui perd ensuite une aura ; écart entre X et la Force de l'Unit au combat.
+- 0217 : part des échanges déjoués par une réponse adverse ; fréquence d'usage de l'échange par carte.
+- 0219 : nombre de défausses tirées au sort à l'expiration du temps, par partie.
+- 0222 : écart entre X et la Force de l'Unit au combat pour les Spells à X défini par la Force, jouées pendant un combat.
+- 0223 : rangée la plus avancée atteinte par chaque Hero ; PV perdus par un Hero avancé ; Heroes attaqués hors de leurs deux premières rangées.
+- 0224 : les mesures de la décision 0211 prises avec les Heroes à Ordre.
+- 0228 : noms, coûts, Forces et textes des cartes du catalogue de playtest, tous provisoires.
+- 0213 : sans objet, aucune mesure.
+Manque pour trancher : la cible, le seuil et le niveau de relevé de chaque ligne, à fixer par le créateur dans une décision avant la première série J3.
+
+**Q-142 · Ordre de jeu des 24 parties du plan de série** · `70-playtest/protocole.md` · ouverte le 26 octobre 2026
+Dans quel ordre se jouent les 24 parties du plan de série, alors que le plan fixe le deck de chaque joueur et le premier joueur de chaque partie mais pas l'ordre des parties, et que la numérotation du plan est un ordre de lecture ?
+- Option A : l'ordre de lecture du plan ; compromis : les 4 parties d'un affrontement se jouent de suite, un affrontement par session au plus tôt.
+- Option B : un ordre différent fixé avant la série ; compromis : un second plan à écrire.
+Manque pour trancher : le nombre de parties jouables par session et le choix du créateur.
 
 ## Tranchées
 
@@ -290,3 +307,7 @@ Manque pour trancher : le choix du créateur, avant tout deck libre.
 | Q-124 · Expiration du temps pendant le choix de X · chapitres 209 et 213 · ouverte le 26 octobre 2026 · Que devient l'annonce d'un Spell à coût X quand le temps d'un joueur atteint 0 seconde pendant qu'il choisit X ? Tranchée le 26 octobre 2026 : l'annonce est abandonnée, rien n'est payé, la carte reste où elle était, option A (209.4.4h et 209.4.11b). | [0226](40-decisions/0226-expiration-du-temps-pendant-le-choix-de-x.md) |
 | Q-125 · Échange de cases et mot « déplacement » · chapitres 205 et 214 · ouverte le 26 octobre 2026 · Un échange des cases de deux pièces est-il un déplacement ? Tranchée le 26 octobre 2026 : non, option A (214.2.5), contre la recommandation. | [0227](40-decisions/0227-un-echange-n-est-pas-un-deplacement.md) |
 | Q-127 · Lieu du catalogue de playtest dans le ruleset · `README.md`, `50-cartes/` et `70-playtest/` · ouverte le 26 octobre 2026 · Où vit le catalogue de playtest dans le ruleset ? Tranchée le 26 octobre 2026 : `50-cartes/` est créé maintenant et fait foi, option A. | [0228](40-decisions/0228-le-catalogue-de-playtest-vit-dans-50-cartes.md) |
+| Q-128 · Affrontements et nombre de parties par série · `70-playtest/protocole.md` · ouverte le 26 octobre 2026 · Quels affrontements et combien de parties compte une série avec quatre decks asymétriques ? Tranchée le 26 octobre 2026 : les 6 affrontements entre deux decks distincts, 4 parties chacun, soit 24 parties, sans partie miroir, option A. | [0229](40-decisions/0229-affrontements-et-parties-par-serie.md) |
+| Q-129 · Attribution des decks aux joueurs · `70-playtest/protocole.md` · ouverte le 26 octobre 2026 · Comment les decks du catalogue de playtest sont-ils attribués aux joueurs A et B d'une partie ? Tranchée le 26 octobre 2026 : un plan de série fixé à l'avance, option A ; ordre de jeu des parties : voir Q-142. | [0230](40-decisions/0230-attribution-des-decks-aux-joueurs.md) ; voir Q-142 |
+| Q-130 · Alternance du premier joueur avec des decks asymétriques · `70-playtest/protocole.md` et 204.3.4 · ouverte le 26 octobre 2026 · L'alternance du premier joueur (décision 0158) est-elle maintenue avec des decks asymétriques ? Tranchée le 26 octobre 2026 : le plan de série fixe le premier joueur, chaque deck commençant 2 parties sur 4 dans chaque affrontement, option A. | [0231](40-decisions/0231-premier-joueur-fixe-par-le-plan-de-serie.md) |
+| Q-131 · Mesures du protocole avec des decks différents · `70-playtest/protocole.md` · ouverte le 26 octobre 2026 · Quelles mesures du tableau des cibles et seuils restent valables avec des decks différents ? Tranchée le 26 octobre 2026 : les cibles et seuils sont refixés par une décision avant la première série J3, option C, contre la recommandation ; les mesures à refixer : voir Q-141. | [0232](40-decisions/0232-cibles-et-seuils-refixes-avant-la-serie.md) ; voir Q-141 |
