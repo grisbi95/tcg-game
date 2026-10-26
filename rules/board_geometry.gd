@@ -11,7 +11,7 @@ const COLUMN_COUNT: int = 5  # 201.0.2
 const ROW_COUNT: int = 5  # 201.0.2
 const FIRST_COLUMN_LETTER: String = "A"  # 201.2.2
 const CENTRAL_ROW_INDEX: int = 2  # 205.1.4 : rangée 3
-const NEAR_ROW_COUNT: int = 2  # 205.1.3, 205.3.2
+const NEAR_ROW_COUNT: int = 2  # 205.1.3
 const HERO_START_COLUMN_INDEX: int = 2  # 204.1.1 : colonne C
 const _FIRST_ROW_NUMBER: int = 1  # 201.2.3
 const _NOTATION_LENGTH: int = 2  # 201.2.4 : une lettre, un chiffre
@@ -81,7 +81,7 @@ static func is_in_first_row(side: DuelState.PlayerSide, cell: Vector2i) -> bool:
 	return is_on_board(cell) and distance_from_first_row(side, cell) == 0
 
 
-# 205.1.3, 205.3.2 : les deux rangées les plus proches de `side`.
+# 205.1.3 : les deux rangées les plus proches de `side`.
 static func is_in_near_rows(side: DuelState.PlayerSide, cell: Vector2i) -> bool:
 	return is_on_board(cell) and distance_from_first_row(side, cell) < NEAR_ROW_COUNT
 

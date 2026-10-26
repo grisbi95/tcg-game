@@ -93,6 +93,16 @@ func test_205_1_2_occupied_cell_rejected_at_announcement() -> void:
 	_assert_rejected(_deploy(card_id, "C1"), REASON.CELL_NOT_FREE)
 
 
+func test_205_1_11_unit_cannot_deploy_on_enemy_hero_cell() -> void:
+	var unit_card_id := _builder.add_to_hand(A, UNIT_ID)
+	var building_card_id := _builder.add_to_hand(A, BUILDING_ID)
+	_start()
+	_engine.get_state().find_hero(B).cell = DuelStateBuilder.cell("D1")
+	_assert_rejected(_deploy(unit_card_id, "D1"), REASON.CELL_OCCUPIED_BY_ENEMY_HERO)
+	# 205.1.3, 205.1.11 : un Building n'est pas concerné, la case occupée est refusée comme non libre.
+	_assert_rejected(_deploy(building_card_id, "D1", BUILDING_COST), REASON.CELL_NOT_FREE)
+
+
 func test_205_1_3_building_enters_play_in_second_row() -> void:
 	var card_id := _builder.add_to_hand(A, BUILDING_ID)
 	_start()
