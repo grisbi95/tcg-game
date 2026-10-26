@@ -15,7 +15,7 @@ enum Mark {
 
 const RING_WIDTH: int = 3
 const RING_GAP: float = 1.0
-const RING_RADIUS: int = 10
+const RING_CUT: int = 10
 
 
 ## Marque à montrer : le choix l'emporte sur le surlignage, qui l'emporte sur le survol.
@@ -42,10 +42,6 @@ static func draw(canvas: CanvasItem, rect: Rect2, mark: Mark, outset: float) -> 
 
 
 static func _draw_ring(canvas: CanvasItem, rect: Rect2, color: Color) -> void:
-	var ring := StyleBoxFlat.new()
-	ring.draw_center = false
-	ring.border_color = color
-	ring.set_border_width_all(RING_WIDTH)
-	ring.set_corner_radius_all(RING_RADIUS)
+	var ring := DuelPalette.outline_style(color, RING_WIDTH, RING_CUT)
 	ring.anti_aliasing = true
 	canvas.draw_style_box(ring, rect)

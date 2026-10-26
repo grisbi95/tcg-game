@@ -20,3 +20,7 @@ Fichier relatif à `assets/` ; statut `provisoire` ou `définitif`.
 
 | Fichier | Sorte | Outil ou source | Date | Instruction ou URL | Droits | Statut |
 | --- | --- | --- | --- | --- | --- | --- |
+| `fonts/archivo.ttf` | police (variable, graisse et largeur) | Google Fonts, `ofl/archivo/Archivo[wdth,wght].ttf` | 2026-10-26 | https://github.com/google/fonts/tree/main/ofl/archivo | OFL 1.1, `fonts/archivo_ofl.txt` | définitif |
+| `fonts/archivo_ofl.txt` | licence | Google Fonts, `ofl/archivo/OFL.txt` | 2026-10-26 | https://github.com/google/fonts/tree/main/ofl/archivo | texte de la licence OFL 1.1 | définitif |
+| `fonts/source_serif_4.ttf` | police (variable, graisse et taille optique) | Google Fonts, `ofl/sourceserif4/SourceSerif4[opsz,wght].ttf` | 2026-10-26 | https://github.com/google/fonts/tree/main/ofl/sourceserif4 | OFL 1.1, `fonts/source_serif_4_ofl.txt` | définitif |
+| `fonts/source_serif_4_ofl.txt` | licence | Google Fonts, `ofl/sourceserif4/OFL.txt` | 2026-10-26 | https://github.com/google/fonts/tree/main/ofl/sourceserif4 | texte de la licence OFL 1.1 | définitif |

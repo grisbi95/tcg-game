@@ -10,7 +10,7 @@ const ART_ICON_SIZE: float = 40.0
 const BAND_ICON_SIZE: float = 14.0
 const TEXT_HEIGHT: float = 84.0
 const TEXT_MARGIN: float = 5.0
-const ART_RADIUS: int = 6
+const ART_CUT: int = 6
 ## Taille de police la plus petite du texte, à l'échelle 1.
 const TEXT_MIN_FONT_SIZE: int = 9
 const HIGHLIGHT_PADDING_NAMES: Array[StringName] = [
@@ -75,13 +75,16 @@ func apply_scale(card_scale: float) -> void:
 	_parts.art_icon.custom_minimum_size = Vector2.ONE * ART_ICON_SIZE * _scale
 	_parts.band_icon.custom_minimum_size = Vector2.ONE * BAND_ICON_SIZE * _scale
 	_parts.text_panel.custom_minimum_size.y = TEXT_HEIGHT * _scale
-	var radius := roundi(ART_RADIUS * _scale)
-	_parts.art.add_theme_stylebox_override(
-		"panel", DuelPalette.fill_style(DuelPalette.ART_COLOR, radius, 0.0)
+	var cut := roundi(ART_CUT * _scale)
+	var border_width := roundi(DuelPalette.BORDER_WIDTH * _scale)
+	var art_style := DuelPalette.art_style(cut, DuelPalette.BORDER_WIDTH * _scale)
+	art_style.set_border_width_all(border_width)
+	_parts.art.add_theme_stylebox_override("panel", art_style)
+	var text_style := DuelPalette.framed_style(
+		DuelPalette.CARD_FACE_COLOR, DuelPalette.INK_COLOR, border_width, TEXT_MARGIN * _scale
 	)
-	_parts.text_panel.add_theme_stylebox_override(
-		"panel", DuelPalette.fill_style(DuelPalette.CARD_FACE_COLOR, radius, TEXT_MARGIN * _scale)
-	)
+	text_style.set_corner_radius_all(cut)
+	_parts.text_panel.add_theme_stylebox_override("panel", text_style)
 	_request_text_fit()
 
 

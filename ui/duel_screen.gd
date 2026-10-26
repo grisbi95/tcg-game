@@ -25,6 +25,9 @@ signal sheet_requested
 ## Duel à distance : la connexion est perdue ou les navigateurs sont incompatibles (`reason`).
 signal connection_lost(reason: String)
 
+## Thème unique, le même que celui des scènes : ses cadres reçoivent les images de `assets/ui/`.
+const THEME: Theme = preload("res://ui/theme/duel_theme.tres")
+
 var _catalog: Catalog
 var _engine: DuelEngine
 var _session: DuelSession
@@ -38,6 +41,8 @@ var _scripted: ScriptedIntentsPlayer = ScriptedIntentsPlayer.new()
 var _final_events: Array[DuelEvent] = []
 
 @onready var _table: ColorRect = %Table
+@onready var _table_image: TextureRect = %TableImage
+@onready var _arena: ArenaFloor = %Arena
 @onready var _board: BoardView = %Board
 @onready var _hand: HandView = %Hand
 @onready var _opponent_hand: OpponentHandView = %OpponentHand
@@ -64,6 +69,9 @@ var _final_events: Array[DuelEvent] = []
 
 func _ready() -> void:
 	_table.color = DuelPalette.TABLE_COLOR
+	DuelAssets.show_table(_table_image, _table)
+	DuelAssets.skin_theme(THEME)
+	_arena.setup(_board)
 	_selection.intent_chosen.connect(_on_intent_chosen)
 	_selection.response_started.connect(_on_response_started)
 	_scripted.intent_chosen.connect(_on_intent_chosen)

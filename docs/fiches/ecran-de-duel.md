@@ -13,7 +13,7 @@
 | Mise à l'échelle | `canvas_items` / `expand` (`project.godot`) : en 1280×720, tout est réduit à 2/3 sans changer la disposition. Sur un écran plus haut ou plus large que 16:9, la surface de jeu gagne de la place, et les conteneurs décident qui la prend (§4). |
 | Marge | 16 px sur les quatre bords (`MarginContainer`). |
 | Joueur du bas | Le joueur de l'appareil, A par défaut. Pour le second écran d'un duel à distance, c'est B (décision 0050). Dans la fiche, « bas » et « haut » désignent le camp de l'appareil et le camp adverse. |
-| Couleurs de camp | A en bleu `#2f7fd8`, B en rouge `#d23a3a`, fixes (décision 0030). |
+| Couleurs de camp | A en bleu `#2f6fd6`, B en rouge `#d43b2f`, fixes (décisions 0030 et 0070). |
 | Style | Thème unique `ui/theme/duel_theme.tres`, avec des variations par `theme_type_variation`, jamais de `theme_override`. Chaque couche reçoit le thème sur sa racine, car un `CanvasLayer` coupe l'héritage du thème (décision 0052). |
 | Assets | Rangés dans `assets/`, retrouvés par leur nom, avec un repli sur le dessin actuel (décision 0051). La taille d'asset donnée ici est la taille d'affichage en 1920×1080, notée « @1x ». Un asset se livre en @1x, sauf mention « @2x » pour ce qui s'agrandit (illustrations : aperçu ×2,2). |
 | Transparence | `modulate.a` sur un élément entier ; couleur à alpha dans un `StyleBox` pour un fond. Les valeurs fixes sont dans `DuelPalette`. |
@@ -103,7 +103,7 @@ Légende des colonnes :
 
 | ID | Élément | Node | Taille | Place | Alpha | États | Asset attendu |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| E01 | Table, fond d'écran | TextureRect (repli ColorRect `#1d2127`) | 1920×1080, couvre l'écran | couche Fond | 1 | — | `ui/table.webp`, 1920×1080 (2560×1440 conseillé pour les grands écrans) |
+| E01 | Table, fond d'écran | TextureRect (repli ColorRect `#1c1916`) | 1920×1080, couvre l'écran | couche Fond | 1 | — | `ui/table.webp`, 1920×1080 (2560×1440 conseillé pour les grands écrans) |
 | E02 | Marges | MarginContainer | plein écran | 16 px | — | — | — |
 
 ### 5.2 Plateau (décisions 0030, 0035)
@@ -113,7 +113,7 @@ Chaque barre de temps (E17) prend 9 px, soit 6 de barre et 3 d'écart, au-dessus
 | ID | Élément | Node | Taille | Place | Alpha | États | Asset attendu |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | E03 | Plateau | BoardView (Control) dans AspectRatioContainer | grille 711×711 (cases 139, écart 4), plus les repères (20 px et 4 d'écart) à gauche et, sous la barre du bas, en bas | grille à x 615, y 98 | 1 | — | `ui/board_frame.png`, cadre 9-patch autour de la grille, 751×751, marges 20 (optionnel) |
-| E04 | Case | CellView (Control) | 139×139, écart 4 | grille 5×5, rangée 1 en bas | 1 | normal, survol `#333a44`, ciblable (anneau jaune 4 px), point de déplacement légal (rayon 8) | `ui/cell_normal.png`, `ui/cell_hover.png`, 139×139 ; marques dessinées |
+| E04 | Case | CellView (Control) | 139×139, écart 4 | grille 5×5, rangée 1 en bas | 1 | normal papier ombré `#e0d3b6`, survol papier `#efe5cf`, ciblable (anneau jaune 4 px), déplacement légal (carré coupé de 28 px cerné d'encre) | `ui/cell_normal.png`, `ui/cell_hover.png`, 139×139 ; marques dessinées |
 | E05 | Repères A–E, 1–5 | Label `BoardCoordinateLabel` | 20 px, plus 4 d'écart, police 13 | 1–5 à gauche de la grille ; A–E sous la barre du bas (y 821) | 1 | — | police (§6) |
 | E06 | Pièce : Unit, Building, jeton | PieceView (PanelContainer) | 125×125, 7 px de marge dans la case | centrée dans la case | 1 ; endormie : illustration en gris (Q4) | normal, survol (anneau clair `#ffffff99`), jouable (anneau jaune), choisie (deux anneaux verts), endormie | cadre par type `cards/frames/piece_<type>.png` 9-patch 125×125 ; illustration `cards/art/<id>.webp` (zone d'art à mesurer en 2b.6) |
 | E07 | Pièce Hero | PieceView | 125×125 | dans sa case | 1 | idem E06, avec les PV en cœur 46 px ; survol = aperçu de la carte Hero en E21 (remplace E23) | `cards/frames/piece_hero.png` ; `cards/art/<hero_id>.webp` |
@@ -139,7 +139,7 @@ Le compteur garde le comportement actuel (203.6, décision 0032) : pendant son t
 | ID | Élément | Node | Taille | Place | Alpha | États | Asset attendu |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | E13 | Bloc Sources | SourcesView (VBoxContainer) | 394×220 de grille, plus le compteur E15 | du bas : x 16, y 844, compteur au-dessus (y 806) ; du haut : x 16, y 16, compteur dessous (y 244) | 1 | — | — |
-| E14 | Emplacement de Source | PanelContainer | 74×106, écarts 6 et 8, 5 colonnes × 2 rangées (10 emplacements selon `DuelConfig`) | grille | inclinée : 0,55 ; réserve : alvéole creusée seule (0070) ; Fonte : 0,55, barrée | en jeu redressée (survol `#46505e`, cliquable), en jeu inclinée (bordure grise, estompée, « Recycler +1 » au survol), en réserve (alvéole creusée), en Fonte (barrée d'une croix, estompée) | `ui/source_upright.png`, `ui/source_tilted.png`, `ui/source_reserve.png`, `ui/source_fonte.png`, 74×106 ; icône `icons/source.svg` 30 px |
+| E14 | Emplacement de Source | PanelContainer | 74×106, écarts 6 et 8, 5 colonnes × 2 rangées (10 emplacements selon `DuelConfig`) | grille | inclinée : 0,55 ; réserve : alvéole creusée seule (0070) ; Fonte : 0,55, barrée | en jeu redressée (papier `#efe5cf`, survol papier éclairé `#f7f0de`, cliquable), en jeu inclinée (papier sombre `#c7b896`, estompée, « Recycler +1 » au survol), en réserve (alvéole creusée), en Fonte (barrée d'une croix, estompée) | `ui/source_upright.png`, `ui/source_tilted.png`, `ui/source_reserve.png`, `ui/source_fonte.png`, 74×106 ; icône `icons/source.svg` 30 px |
 | E15 | Compteur d'Essence (réserve, ou paiement préparé pendant le tour adverse) | PanelContainer avec icône et Label | 124×32, police 17 | au-dessus de la grille pour soi, dessous pour l'adversaire, aligné à gauche | 1 | — | fond 9-patch `ui/counter.png` ; icône `icons/essence.svg` 18 px (nouvelle icône à ajouter à `DuelIcons.Icon`) |
 
 ### 5.5 Colonne de duel et barres de temps (décisions 0029, 0030, 0032, 0045)
@@ -148,7 +148,7 @@ Choix du créateur : il n'y a plus de pendule (décision 0045 : 90 s par tour, e
 
 Choix du créateur (option A, « colonne rangée ») : trois parties fixes, de haut en bas.
 1. **En-tête** : le tour ou la taille de la pile, le joueur qui doit agir, et l'abandon.
-2. **Pile** : la zone qui s'étend. La pile vide se montre par un cadre en pointillé « Pile vide ». Avec des entrées, c'est une liste dont la dernière arrivée est en haut, sous « ↑ résout en premier ».
+2. **Pile** : la zone qui s'étend. La pile vide se montre par une alvéole creusée « Pile vide » (0070). Avec des entrées, c'est une liste dont la dernière arrivée est en haut, sous « ↑ résout en premier ».
 3. **Bouton** : ancré en bas, à la couleur du camp qui agit, avec une ligne d'aide sous son libellé.
 
 Arbre : `DuelColumnView` (PanelContainer) › `Column` (VBoxContainer) › `Header` (VBoxContainer : `TitleRow` avec `TurnNumberLabel` et `ConcedeButton`, `ActorRow` avec la pastille et `TurnActorLabel`), `HeaderRule`, `StackArea` (PanelContainer qui s'étend, avec `EmptyLabel` et `StackScroll` › `StackView`), `BigButton`.
@@ -156,9 +156,9 @@ Arbre : `DuelColumnView` (PanelContainer) › `Column` (VBoxContainer) › `Head
 | ID | Élément | Node | Taille | Place | Alpha | États | Asset attendu |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | E16 | Panneau de colonne | DuelColumnView (PanelContainer `ColumnPanel`) | 220×711, marges internes 10 | x 1342, y 98, à droite du plateau, de la hauteur de la grille | 1 | — | `ui/column_panel.png` 9-patch, marges 16 |
-| E17 | Barre de temps, une par camp | TurnTimerBar : `TextureProgressBar` (repli `ProgressBar`) et Label des secondes | largeur de la grille (711) × 6 ; zone de 96 px au bout, à droite, dans la largeur de la grille : barre de 615, secondes en police 13 (« 18 s »), puis « · tour 54 s » en police 11 | au-dessus de la grille pour l'adversaire (y 89), au-dessous pour soi (y 812), 3 px de la grille | deux états seulement. **Active** (ce camp doit agir) : 1. **Inactive** (ce camp n'a pas à agir) : piste vide à 0,25, sans secondes. | active : se vide de 90 s (tour) ou de 30 s (réponse), à la couleur du camp, puis en orange `#f2a33a` sous 10 s, avec les secondes en gras (signal visuel seul, sans effet de règle, 0053). Le reste d'un tour en pause s'écrit au bout de la barre de ce camp, active ou inactive, en petit à 0,55 : « · tour 54 s » (Q8). Pendant le mulligan, aucun temps ne s'écoule (209.4.2d) : les deux barres sont inactives. | `ui/time_bar_fill.png` et `ui/time_bar_track.png`, 9-patch 711×6, marges 3, en blanc, teintés par code |
+| E17 | Barre de temps, une par camp | TurnTimerBar : `TextureProgressBar` (repli `ProgressBar`), sans texte | largeur de la grille (711) × 6 | au-dessus de la grille pour l'adversaire (y 89), au-dessous pour soi (y 812), 3 px de la grille | deux états seulement. **Active** (ce camp doit agir) : 1. **Inactive** (ce camp n'a pas à agir) : piste à 0,25. | active : se vide de 90 s (tour) ou de 30 s (réponse), à la couleur du camp, puis en orange `#f2a33a` sous 10 s (signal visuel seul, sans effet de règle, 0053). Aucune seconde affichée. Inactive, un tour en pause (209.4.8a) reste dessiné à 0,25. Pendant le mulligan, aucun temps ne s'écoule (209.4.2d) : les deux barres sont inactives. | `ui/time_bar_fill.png` et `ui/time_bar_track.png`, 9-patch 711×6, marges 3, en blanc, teintés par code |
 | E18 | En-tête | HBoxContainer : deux Labels (`TurnNumberLabel` : « Tour 4 » ou « Pile · 2 » ; `TurnActorLabel` : « À toi de jouer », « B peut répondre », « Mulligan : choisis les cartes à écarter ») avec une pastille de camp de 10 px, puis E20c à droite | 200×56, filet de 1 px dessous | haut de la colonne | 1 | — | police ; filet dessiné |
-| E19 | Pile | PanelContainer qui s'étend, avec ScrollContainer et StackView ; vide : Label « Pile vide » dans un cadre en pointillé | 200 × reste de la hauteur ; entrée 200×52, écart 6 | entre l'en-tête et le bouton | 1 | entrée : normal, survol (aperçu E21), ciblable (anneau jaune), choisie (deux anneaux verts) ; pastille d'ordre 22 px pour l'ordre des déclencheurs, comme aujourd'hui : seul le joueur qui choisit l'ordre voit ses déclencheurs en attente (208.4.6, 201.4.7) ; défilement au-delà de 10 entrées | `ui/stack_entry.png` 9-patch 200×52, marges 8 ; liseré de camp de 5 px à gauche, dessiné ; vignette de teinte du type 30×38 (illustration recadrée en 2b.6) ; cadre vide `ui/stack_empty.png` 9-patch |
+| E19 | Pile | PanelContainer qui s'étend, avec ScrollContainer et StackView ; vide : Label « Pile vide » dans une alvéole creusée (0070) | 200 × reste de la hauteur ; entrée 200×52, écart 6 | entre l'en-tête et le bouton | 1 | entrée : normal, survol (aperçu E21), ciblable (anneau jaune), choisie (deux anneaux verts) ; pastille d'ordre 22 px pour l'ordre des déclencheurs, comme aujourd'hui : seul le joueur qui choisit l'ordre voit ses déclencheurs en attente (208.4.6, 201.4.7) ; défilement au-delà de 10 entrées | `ui/stack_entry.png` 9-patch 200×52, marges 8 ; liseré de camp de 5 px à gauche, dessiné ; vignette de teinte du type 30×38 (illustration recadrée en 2b.6) ; cadre vide `ui/stack_empty.png` 9-patch |
 | E20 | Grand bouton : « Terminer le tour », « Passer », « Confirmer » | Button `BigButton`, avec une seconde ligne en police 11 (« Fin du tour 4 », « laisser résoudre », « garder ces cartes ») | 200×64, police 19 | ancré en bas de la colonne | 1 ; désactivé : gris à 0,55, avec un texte qui dit ce qu'on attend (« Tour de B », « En attente de B ») (Q6) | normal, survol (+12 % de clarté), enfoncé (−12 %), désactivé ; couleur du camp qui agit | `ui/button_big_{normal,hover,pressed,disabled}.png` 9-patch, 200×64, marges 16, en blanc et gris, teinté par code à la couleur du camp |
 | ~~E20b~~ | ~~Décompte de réponse~~ | supprimé : le temps de réponse est sur la barre E17 | — | — | — | — | — |
 | E20c | Abandonner | Button à icône (`ConcedeButton`), drapeau | 26×26 | à droite de l'en-tête | 1 | normal (contour seul), survol, enfoncé ; ouvre E25 | `ui/button_icon_{normal,hover,pressed}.png` 9-patch 26×26 ; icône `icons/concede.svg` (nouvelle icône) |
@@ -169,7 +169,7 @@ Arbre : `DuelColumnView` (PanelContainer) › `Column` (VBoxContainer) › `Head
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | E21 | Aperçu au survol | HoverPreview (HBoxContainer), couche Informations | carte seule 348×484 (×2,2) ; carte et Gear 2 × 269×374 (×1,7) | place fixe, centre x 294, y 543 (colonne gauche) | 1 | — | reprend E11 en @2x |
 | E27 | Bulles d'information : mots-clés, effets, état (endormie…) | VBoxContainer de PanelContainers (titre en gras et texte), couche Informations, souris ignorée | 260 de large, hauteur selon le texte, écart 8, police 14 | à droite de l'aperçu, alignées sur son haut (x 478, y 301) ; avec un Gear, à droite de la paire (x 597, y 356) ; comme l'aperçu, elles suivent le centre vertical de l'écran. Elles passent par-dessus le bord gauche du plateau le temps du survol. | 1 ; ombre portée | apparaissent et disparaissent avec l'aperçu | `ui/tooltip_panel.png` 9-patch 260×80, marges 12 (en attendant, variation `InfoBubblePanel` du thème) ; police (§6) |
-| E22 | Coin deck et défausse | DeckCornerView (VBoxContainer) | 326×244 (libellé, puis deux emplacements 158×220, écart 10) | coin haut droit pour l'adversaire, bas droit pour soi | 1 | défausse : survol (aperçu) | dos `cards/frames/card_back.png` 158×220 (@2x 316×440) ; emplacement vide 9-patch |
+| E22 | Coin deck et défausse | DeckCornerView (VBoxContainer) | 326×244 (libellé, puis deux emplacements 158×220, écart 10) | coin haut droit pour l'adversaire, bas droit pour soi | 1 | défausse : survol (aperçu) | dos `cards/frames/card_back.png` 158×220 (@2x 316×440) ; défausse vide : alvéole creusée, même image que la pile vide (`ui/stack_empty.png`) |
 | ~~E23~~ | ~~Carte Hero~~ | supprimée (choix du créateur, 24 octobre 2026) : elle servait au pouvoir du Hero, retiré par la décision 0047. Le survol de la pièce Hero (E07) montre sa carte dans l'aperçu E21. `HeroCardView` sera retiré à l'étape 2b.3. | — | — | — | — | le cadre `cards/frames/card_hero.png` reste pour l'aperçu |
 
 ### 5.7 Fenêtres (couche Fenêtres, décision 0036)
@@ -184,8 +184,8 @@ Arbre : `DuelColumnView` (PanelContainer) › `Column` (VBoxContainer) › `Head
 
 | ID | Marque | Forme | Couleur et alpha | Où |
 | --- | --- | --- | --- | --- |
-| M1 | Jouable ou ciblable | anneau 3 px, écart 1, rayon 10 | jaune `#f2c14e` | cartes, pièces, cases, entrées de pile |
-| M2 | Choisi | deux anneaux 3 px | vert `#4ecb71` | idem |
+| M1 | Jouable ou ciblable | anneau 3 px, écart 1, rayon 10 | jaune `#f4c542` (bible, 0070) | cartes, pièces, cases, entrées de pile |
+| M2 | Choisi | deux anneaux 3 px | vert `#57c77a` (bible, 0070) | idem |
 | M3 | Survol | anneau 3 px | blanc à 0,6 | idem |
 | M4 | Camp | liseré 4 px | bleu ou rouge du camp | pièces, Heroes, entrées de pile |
 
@@ -196,7 +196,7 @@ Les marques restent dessinées en code : elles doivent rester nettes à toute ta
 | Rôle | Tailles actuelles (px) | Asset attendu |
 | --- | --- | --- |
 | Titres (fin de partie) | 40 | `fonts/archivo.ttf` (Archivo, gras), libre (OFL) |
-| Chiffres (deck 28, pastilles 15 à 19, secondes 15) | 15 à 28 | Archivo, chiffres de même largeur |
+| Chiffres (deck 28, pastilles 15 à 19) | 15 à 28 | Archivo, chiffres de même largeur |
 | Texte courant et boutons | 11 à 22 | Archivo (boutons, bandeaux), Source Serif 4 (phrases) |
 | Texte des cartes | 9 à 14 | Source Serif 4, `fonts/source_serif_4.ttf` ; lisible en 1280×720, soit 6 à 9 px réels (décision 0035) |
 
@@ -257,3 +257,6 @@ Une ligne par fichier, à ajouter à `assets/REGISTRE.md` le jour de sa livraiso
 - 2026-10-24 : étape 2b.3, barres de temps. `BoardArea` devient un bloc carré (marge gauche de 17 px) dans l'`AspectRatioContainer`, pour que barres et lettres suivent la grille ; la barre mesure 615 et une zone de 96 px porte les secondes (13) et le reste du tour (11), qui déborde de 6 px au-dessus et au-dessous de la barre (boîte du texte). `ColumnSlot` laisse 2 px à droite : la colonne du milieu mesure 1140, pas 1138.
 - 2026-10-24 : étape 2b.3, colonne de duel et Sources. `DuelColumnView` passe dans `BoardArea` sous `ColumnAnchor` (ancrée à droite du carré, haut +9, bas −32) : sa hauteur suit la grille à toute proportion (mesuré : y 98 à 809 en 1920×1080 et 1280×720, y 203 à 1064 en 1920×1440) ; `ColumnReserve` garde sa place dans `PlayRow`, `ColumnSlot` disparaît. L'en-tête est un `VBoxContainer` à deux rangées (le texte de l'acteur passe sous le bouton d'abandon et dispose des 200 px, sur deux lignes au plus, police 12). Le message de la fenêtre de réponse (208.6.1) reste, en petit, sous « ↑ résout en premier ». Les consignes de choix et du mulligan sont dans `TurnActorLabel`, le panneau de consigne disparaît.
 - 2026-10-24 : étape 2b.3, bulles d'information et pièce endormie. Les bulles (E27) suivent le centre vertical de l'écran comme l'aperçu, pour rester alignées sur son haut sur un écran plus haut que 1080 ; avec un Gear, y 356. Elles portent la variation `InfoBubblePanel` en attendant `tooltip_panel.png`. Le gris d'une pièce endormie touche l'illustration ou l'icône du type, rien d'autre.
+- 2026-10-26 : étape 2b.5, alignement sur la charte (0070, 0071). La pile vide (E19) est une alvéole creusée, sans pointillés ; les marques M1 et M2 prennent le jaune `#f4c542` et le vert `#57c77a` de la bible.
+- 2026-10-26 : étape 2b.5, barre de temps sur toute la largeur de la grille, sans secondes ni reste du tour écrit (choix du créateur) ; un tour en pause se lit sur la barre inactive.
+- 2026-10-26 : étape 2b.5, clôture. Valeurs alignées sur l'habillage « Vestiaire » : table E01, cases E04 (papier, point légal en carré coupé), Sources E14 (papier, papier sombre pour une Source inclinée) ; la défausse vide E22 reprend `ui/stack_empty.png`.

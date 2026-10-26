@@ -63,14 +63,6 @@ func test_decision_0025_keywords_line_names_each_keyword_with_its_value() -> voi
 	assert_str(CardText.keywords_line(unit)).is_equal("Assaut 2 · Avant-poste")
 
 
-func test_decision_0053_timer_bar_shows_started_seconds() -> void:
-	assert_str(TurnTimerBar.seconds_text(18_000)).is_equal("18 s")
-	assert_str(TurnTimerBar.seconds_text(17_001)).is_equal("18 s")
-	assert_str(TurnTimerBar.seconds_text(90_000)).is_equal("90 s")
-	assert_str(TurnTimerBar.seconds_text(1)).is_equal("1 s")
-	assert_str(TurnTimerBar.seconds_text(-5)).is_equal("0 s")
-
-
 func test_decision_0045_clock_alerts_under_ten_seconds() -> void:
 	assert_bool(TurnTimerBar.is_alert(9_000)).is_true()
 	assert_bool(TurnTimerBar.is_alert(9_001)).is_false()

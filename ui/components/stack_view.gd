@@ -17,12 +17,13 @@ const ENTRY_HEIGHT: float = 52.0
 const EDGE_WIDTH: float = 5.0
 const THUMBNAIL_SIZE := Vector2(30.0, 38.0)
 const THUMBNAIL_ICON_SIZE: float = 18.0
-const THUMBNAIL_RADIUS: int = 5
-## Pastille du rang choisi pour un effet déclenché (208.4.6) : un cercle de 22 px à l'encre de la
-## teinte, le chiffre à la couleur du fond de la teinte.
+const THUMBNAIL_CUT: int = 4
+## Pastille du rang choisi pour un effet déclenché (208.4.6) : un carré à coins coupés de 22 px à
+## l'encre de la teinte, le chiffre à la couleur du fond de la teinte.
 const ORDER_BADGE_SIZE: float = 22.0
-const ORDER_BADGE_RADIUS: int = 11
+const ORDER_BADGE_CUT: int = 5
 const NO_ORDER: int = 0
+const ENTRY_BORDER_WIDTH: int = 2
 
 
 ## Une entrée de la pile telle que l'écran la montre.
@@ -68,8 +69,14 @@ func _make_entry(line: StackLine, is_highlighted: bool) -> PanelContainer:
 	var entry := PanelContainer.new()
 	entry.custom_minimum_size.y = ENTRY_HEIGHT
 	var fill := DuelPalette.TINT_BACKGROUNDS[line.tint]
+	var drawn := DuelPalette.framed_style(
+		fill, DuelPalette.INK_COLOR, ENTRY_BORDER_WIDTH, float(ENTRY_BORDER_WIDTH)
+	)
 	entry.add_theme_stylebox_override(
-		"panel", DuelPalette.fill_style(fill, DuelPalette.CORNER_RADIUS, 0.0)
+		"panel",
+		DuelAssets.ui_style(
+			DuelAssets.STACK_ENTRY_IMAGE, drawn, DuelAssets.STACK_ENTRY_IMAGE_MARGIN, fill
+		)
 	)
 	entry.add_child(_make_row(line))
 	_connect_hover(entry, line.stack_entry_id)
@@ -91,12 +98,12 @@ func _make_row(line: StackLine) -> HBoxContainer:
 	return row
 
 
-# Le liseré suit l'arrondi gauche de l'entrée.
+# Le liseré suit le coin coupé gauche de l'entrée.
 func _make_edge(color: Color) -> PanelContainer:
 	var edge := PanelContainer.new()
 	edge.custom_minimum_size.x = EDGE_WIDTH
 	edge.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var style := DuelPalette.fill_style(color, DuelPalette.CORNER_RADIUS, 0.0)
+	var style := DuelPalette.fill_style(color, DuelPalette.CUT_SIZE, 0.0)
 	style.corner_radius_top_right = 0
 	style.corner_radius_bottom_right = 0
 	edge.add_theme_stylebox_override("panel", style)
@@ -109,7 +116,7 @@ func _make_thumbnail(tint: DuelPalette.Tint) -> Control:
 	thumbnail.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	thumbnail.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	thumbnail.add_theme_stylebox_override(
-		"panel", DuelPalette.fill_style(DuelPalette.TINT_INKS[tint], THUMBNAIL_RADIUS, 0.0)
+		"panel", DuelPalette.fill_style(DuelPalette.TINT_INKS[tint], THUMBNAIL_CUT, 0.0)
 	)
 	thumbnail.add_child(_make_icon(tint, DuelPalette.TINT_BACKGROUNDS[tint]))
 	return thumbnail
@@ -134,7 +141,7 @@ func _make_order_badge(number: int, tint: DuelPalette.Tint) -> PanelContainer:
 	badge.size_flags_horizontal = Control.SIZE_SHRINK_END
 	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	badge.add_theme_stylebox_override(
-		"panel", DuelPalette.fill_style(DuelPalette.TINT_INKS[tint], ORDER_BADGE_RADIUS, 0.0)
+		"panel", DuelPalette.fill_style(DuelPalette.TINT_INKS[tint], ORDER_BADGE_CUT, 0.0)
 	)
 	var label := Label.new()
 	label.text = str(number)

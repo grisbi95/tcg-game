@@ -18,37 +18,3 @@ mouse_filter = 2
 max_value = 1.0
 step = 0.0
 show_percentage = false
-
-[node name="ReadoutSlot" type="Control" parent="."]
-custom_minimum_size = Vector2(96, 0)
-layout_mode = 2
-mouse_filter = 2
-
-[node name="ReadoutRow" type="HBoxContainer" parent="ReadoutSlot"]
-layout_mode = 1
-anchors_preset = 13
-anchor_left = 0.0
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = 8.0
-offset_top = -9.0
-offset_bottom = 9.0
-grow_vertical = 2
-mouse_filter = 2
-theme_type_variation = &"TimerReadoutRow"
-
-[node name="SecondsLabel" type="Label" parent="ReadoutSlot/ReadoutRow"]
-unique_name_in_owner = true
-layout_mode = 2
-mouse_filter = 2
-theme_type_variation = &"TimerSecondsLabel"
-vertical_alignment = 1
-
-[node name="PausedLabel" type="Label" parent="ReadoutSlot/ReadoutRow"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-mouse_filter = 2
-theme_type_variation = &"TimerPausedLabel"
-vertical_alignment = 1

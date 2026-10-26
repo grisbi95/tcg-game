@@ -52,7 +52,7 @@ var _setup_default_status: String = ""
 
 func _ready() -> void:
 	_table.color = DuelPalette.TABLE_COLOR
-	_error_label.add_theme_color_override("font_color", DuelPalette.INK_COLOR)
+	_error_label.add_theme_color_override("font_color", DuelPalette.TEXT_COLOR)
 	_back_button.text = BACK_TEXT
 	_back_button.pressed.connect(_show_setup)
 	_catalog = GameLibrary.load_catalog()
