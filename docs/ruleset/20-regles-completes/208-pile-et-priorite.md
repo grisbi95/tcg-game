@@ -30,13 +30,15 @@ Aucun Invariant.
 
 **208.1.11** [ACTÉ] Un joueur n'annonce une action normale que si la pile est vide (décision 0061 ; voir 208.1.2).
 
+**208.1.12** [ACTÉ] Un joueur annonce chaque Ordre qu'il utilise (décision 0211 ; voir 211.2.1, 211.2.4, 211.2.5, 211.2.6 et 211.2.7).
+
 ## 208.2 Priorité
 
 **208.2.1** Supprimée en édition 0.3, voir décision 0070.
 
 **208.2.2** Supprimée en édition 0.36, voir décision 0197.
 
-**208.2.3** [ACTÉ] Un joueur qui répond n'annonce que des Spells de vitesse Réaction (décision 0061 ; voir 207.1.6).
+**208.2.3** [ACTÉ] Un joueur qui répond n'annonce que des Spells ou des Ordres de vitesse Réaction (décisions 0061 et 0211 ; voir 207.1.6 et 211.2.7).
 
 **208.2.4** [ACTÉ] Après tout ajout à la pile d'une entrée qui n'est pas sans réponse, l'adversaire du joueur à qui appartient l'entrée du sommet de la pile peut le premier répondre ou passer (décisions 0070 et 0207 ; voir 208.3.1, 208.4.1 et 208.7.12).
 
@@ -141,3 +143,5 @@ Aucun Invariant.
 **208.7.15** [ACTÉ] Un effet déclenché pendant le début du tour est sans réponse (décision 0207 ; voir 208.4.10 et 208.4.11).
 
 **208.7.16** [ACTÉ] Un effet déclenché par la fin du tour est sans réponse (décision 0207 ; voir 204.5.3).
+
+**208.7.17** [ACTÉ] Un joueur peut répondre à l'annonce d'un Ordre (décision 0211 ; voir 208.1.12 et 208.2.4).

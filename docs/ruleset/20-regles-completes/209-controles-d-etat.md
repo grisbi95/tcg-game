@@ -38,7 +38,7 @@ Aucun Invariant.
 
 **209.2.9** Supprimée en édition 0.40, voir décision 0205.
 
-**209.2.10** [PROVISOIRE] Un joueur perd la partie quand trois de ses tours consécutifs se terminent selon 209.4.9 sans qu'il ait fait d'annonce pendant aucun de ces tours (décisions 0205 et 0206 ; valeur : 3 tours ; à mesurer en playtest : défaites par inactivité, tours terminés par l'expiration du temps de tour ; voir 201.1.3d, 208.1.1 à 208.1.3 et 208.1.5).
+**209.2.10** [PROVISOIRE] Un joueur perd la partie quand trois de ses tours consécutifs se terminent selon 209.4.9 sans qu'il ait fait d'annonce pendant aucun de ces tours (décisions 0205, 0206 et 0211 ; valeur : 3 tours ; à mesurer en playtest : défaites par inactivité, tours terminés par l'expiration du temps de tour ; voir 201.1.3d, 208.1.1 à 208.1.3, 208.1.5 et 208.1.12).
 
 ## 209.3 Partie nulle
 

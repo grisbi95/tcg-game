@@ -118,6 +118,12 @@ Aucun Invariant.
 
 **202.3.18** [ACTÉ] Le passif du Hero est un effet statique, soumis aux règles de la section 207.2 (décision 0101 ; voir 202.3.11 et 207.2.1).
 
+**202.3.19** [ACTÉ] Le texte de la carte Hero peut porter, en plus du passif, un Ordre (décision 0211 ; voir 202.3.11 et 211.1.1).
+
+**202.3.20** [ACTÉ] Le texte de la carte Hero peut porter, en plus du passif, un effet déclenché (décision 0211 ; voir 202.3.11 et 207.3.1).
+
+**202.3.21** [ACTÉ] Le texte de la carte Hero fixe le nombre de ses Ordres et de ses effets déclenchés (décision 0211 ; voir 202.3.19 et 202.3.20).
+
 ## 202.4 Permanents et jetons
 
 **202.4.1** [ACTÉ] Un jeton est une pièce créée par un effet (décision 0020).
@@ -132,7 +138,7 @@ Aucun Invariant.
 
 **202.4.5a** [ACTÉ] Après sa création, un jeton peut recevoir un effet d'une source autre que l'effet qui le crée, soit un Gear attaché à ce jeton, soit un Spell, soit une aura (décision 0141 ; voir 200.1.1, 202.2.8, 202.4.5, 206.5.4 et 207.2.8).
 
-**202.4.6** [ACTÉ] Un jeton ne se crée que par l'effet d'une entrée de la pile, soit un Spell, soit un effet déclenché (décisions 0104 et 0208 ; voir 201.5.4 et 202.4.1).
+**202.4.6** [ACTÉ] Un jeton ne se crée que par l'effet d'une entrée de la pile, soit un Spell, soit un effet déclenché, soit un Ordre (décisions 0104, 0208 et 0211 ; voir 201.5.4 et 202.4.1).
 
 **202.4.7** [ACTÉ] Un effet statique ne crée pas de jeton (décision 0104 ; voir 202.4.6 et 207.2.1).
 

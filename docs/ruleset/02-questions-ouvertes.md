@@ -77,6 +77,24 @@ Une annonce faite en réponse pendant le tour de l'adversaire (208.2.3) empêche
 - Option B : une annonce faite en réponse depuis la fin de son tour précédent compte pour le tour qui suit ; compromis : une règle de rattachement à écrire, plus complexe à vérifier.
 Manque pour trancher : le choix du créateur.
 
+**Q-116 · Expiration du temps pendant le choix des cibles d'un Ordre** · chapitres 209 et 211 · ouverte le 26 octobre 2026
+Que devient l'annonce d'un Ordre quand le temps de tour ou le temps de réponse de son joueur atteint 0 seconde pendant qu'il en choisit les cibles, alors que 209.4.11 abandonne l'annonce sans rien payer et dit que « la carte reste où elle était », qu'un Ordre n'est pas une carte de deck, et que 211.2.2 endort le Hero « dès l'annonce » ?
+- Option A : l'annonce est abandonnée, rien n'est payé, le Hero reste éveillé ; compromis : 209.4.11 est reformulée pour viser l'Ordre sans parler de carte, et le Hero n'est pas endormi par une annonce qui n'a pas eu lieu.
+- Option B : l'annonce est abandonnée, rien n'est payé, mais le Hero s'endort ; compromis : un joueur qui hésite perd l'usage du Hero pour le tour, et 211.2.2 se lit à partir du début du choix des cibles.
+Manque pour trancher : le choix du créateur.
+
+**Q-117 · Effets déclenchés par l'annonce ou la résolution d'un Ordre** · chapitres 208 et 211 · ouverte le 26 octobre 2026
+Faut-il étendre aux Ordres 208.2.4a, 208.7.10 et 208.7.11, qui ne citent que l'annonce ou la résolution d'un Spell ou d'une attaque, alors que 208.7.17 permet de répondre à l'annonce d'un Ordre et que 208.7.8 ne rend sans réponse que les effets déclenchés par une entrée sans réponse ?
+- Option A : étendre les trois règles aux Ordres ; compromis : une édition sans changement de comportement, qui écrit ce que 208.2.4 et 208.7.8 donnent déjà.
+- Option B : ne rien changer, les trois règles se lisent avec 208.2.4 et 208.7.8 ; compromis : une règle qui ne dit pas explicitement le cas de l'Ordre.
+Manque pour trancher : le choix éditorial du créateur.
+
+**Q-118 · Visibilité de la carte Hero et de son texte** · chapitre 201 · ouverte le 26 octobre 2026
+La carte Hero d'un joueur, son passif, son Ordre et ses effets déclenchés sont-ils visibles des deux joueurs dès le début de la partie, alors que 201.4 ne liste pas la carte Hero (202.3.4) parmi les informations publiques ou cachées et que 201.4.11 rend visible l'état endormi ou éveillé du Hero ?
+- Option A : la carte Hero est visible des deux joueurs pendant toute la partie ; compromis : aucun bluff sur le texte du Hero, seul le moment d'emploi de l'Ordre reste caché.
+- Option B : le texte de la carte Hero n'est visible de l'adversaire qu'à partir du moment où il se déclenche ou s'annonce ; compromis : une information cachée de plus et une règle de révélation à écrire.
+Manque pour trancher : le choix du créateur.
+
 ## Tranchées
 
 | Question | Décision |

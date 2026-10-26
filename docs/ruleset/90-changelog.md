@@ -433,3 +433,13 @@
 - Q-104 tranchée, option A, et descendue dans Tranchées. Aucun terme ajouté ni modifié au glossaire.
 - Décision associée : [0210](40-decisions/0210-etat-endormi-ou-eveille-public.md).
 - [README.md](README.md) : édition courante passée à 0.44.
+
+## 0.45 · 26 octobre 2026 · majeure · Ordre et effets déclenchés du Hero
+
+- Ordre du Hero ajouté : la carte Hero peut porter, en plus du passif, un Ordre (vitesse Action ou Réaction, coût en Essence éventuel) et des effets déclenchés. Seul un Hero éveillé annonce son Ordre ; il s'endort dès l'annonce ; l'annonce passe par la pile et l'adversaire peut y répondre ; les cibles sont choisies à l'annonce. Chapitre 211 créé ([211-ordre-du-hero.md](20-regles-completes/211-ordre-du-hero.md), selon la décision 0116). Identifiants ajoutés : 211.1.1 à 211.1.4, 211.2.1 à 211.2.8, 211.3.1, 211.3.2, 211.4.1, 211.4.2 ; 202.3.19, 202.3.20, 202.3.21 ; 201.5.4c ; 204.4.8 ; 208.1.12, 208.7.17.
+- Identifiants modifiés : 202.4.6 (la source « Ordre » est ajoutée), 207.5.15 et 207.6.3 (l'Ordre est ajouté), 208.2.3 (Spells ou Ordres de vitesse Réaction). Identifiants dont seul le renvoi change, sans changement de sens : 203.6.11, 209.2.10. Identifiants inchangés : 202.3.11, 202.3.18, 203.0.1, 203.3.2, 203.3.3, 204.1.18, 204.3.11, 204.4.5, 205.4.7, 207.5.7, 207.5.8, 207.5.10, 208.2.4.
+- Glossaire : terme ajouté : Ordre ; termes modifiés : Action (vitesse), Réaction (vitesse), Vitesse, Coût, Annoncer, Appartenir, Cible légale, Endormie, Éveillée, Entrée de la pile. Pouvoir reste « Retiré en édition 0.42 » : l'Ordre n'est pas le pouvoir.
+- Questions ouvertes créées : Q-116 (expiration du temps pendant le choix des cibles d'un Ordre), Q-117 (effets déclenchés par un Ordre, 208.2.4a, 208.7.10, 208.7.11), Q-118 (visibilité de la carte Hero).
+- Décision 0208 marquée d'une ligne en tête (remplacée en partie). Livret [10-regles-de-base.md](10-regles-de-base.md), [decks-de-test.md](70-playtest/decks-de-test.md) et [protocole.md](70-playtest/protocole.md) non modifiés : le Capitaine reste un Hero à passif seul.
+- Décision associée : [0211](40-decisions/0211-ordre-et-effets-declenches-du-hero.md). Mesures du playtest J3 consignées dans la décision : fréquence d'usage des Ordres, tours où le Hero reste éveillé pendant le tour adverse, PV perdus par un Hero avancé pour son Ordre.
+- [README.md](README.md) : édition courante passée à 0.45 ; ligne du chapitre 211 ajoutée.

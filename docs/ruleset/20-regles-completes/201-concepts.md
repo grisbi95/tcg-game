@@ -110,6 +110,8 @@
 
 **201.5.4b** [ACTÉ] Pour un jeton créé par un effet déclenché, l'entrée de la pile qui l'a créé est cet effet déclenché (décision 0095 ; voir 201.5.4 et 207.3.4).
 
+**201.5.4c** [ACTÉ] Pour un jeton créé par un Ordre, l'entrée de la pile qui l'a créé est cet Ordre (décision 0211 ; voir 201.5.4, 202.4.6 et 211.2.8).
+
 ## 201.6 Construction du deck
 
 **201.6.1** [PROVISOIRE] Avant le début de la partie, le deck d'un joueur compte exactement 30 cartes (décision 0030 ; à mesurer en playtest : part des parties où un joueur n'a rien d'utile à jouer, ressemblance entre les parties).

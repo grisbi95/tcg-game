@@ -88,7 +88,7 @@
 
 **203.6.10** Supprimée en édition 0.41, voir décision 0207.
 
-**203.6.11** [ACTÉ] Produire de l'Essence selon 203.6.3 ou 203.6.4 n'est pas une annonce (décision 0196 ; voir 208.1.1, 208.1.2, 208.1.3 et 208.1.5).
+**203.6.11** [ACTÉ] Produire de l'Essence selon 203.6.3 ou 203.6.4 n'est pas une annonce (décisions 0196 et 0211 ; voir 208.1.1, 208.1.2, 208.1.3, 208.1.5 et 208.1.12).
 
 **203.6.12** [ACTÉ] L'Essence produite selon 203.6.3 ou 203.6.4 s'ajoute aussitôt à la réserve d'Essence, sans passer par la pile (décision 0196 ; voir 203.6.11 et 208.4.1).
 

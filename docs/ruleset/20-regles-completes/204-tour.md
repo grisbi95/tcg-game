@@ -114,6 +114,8 @@ Aucun Invariant.
 
 **204.4.7** [ACTÉ] Pendant sa phase principale, le joueur actif peut terminer son tour (décision 0035).
 
+**204.4.8** [ACTÉ] Pendant sa phase principale, le joueur actif peut annoncer l'Ordre de son Hero éveillé (décision 0211 ; voir 211.2.1, 211.2.4, 211.2.5 et 211.2.6).
+
 ## 204.5 Fin du tour
 
 **204.5.1** Supprimée en édition 0.3, voir décision 0071.

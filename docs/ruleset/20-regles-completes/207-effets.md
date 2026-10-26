@@ -150,7 +150,7 @@ Aucun Invariant.
 
 **207.5.14** [ACTÉ] Un effet peut cibler un Spell qui se trouve sur la pile, ce que 207.5.13 n'exclut pas (décision 0087 ; voir 201.3.8 et 207.5.11).
 
-**207.5.15** [ACTÉ] Un effet ne cible ni un déploiement, ni une action normale, ni un effet déclenché qui se trouve sur la pile (décisions 0087 et 0208 ; voir 207.5.14).
+**207.5.15** [ACTÉ] Un effet ne cible ni un déploiement, ni une action normale, ni un effet déclenché, ni un Ordre qui se trouve sur la pile (décisions 0087, 0208 et 0211 ; voir 207.5.14).
 
 **207.5.16** [ACTÉ] Une entrée de la pile ne se cible jamais elle-même, ni à son ajout à la pile, ni ensuite (décision 0088 ; voir 207.5.1).
 
@@ -168,7 +168,7 @@ Aucun Invariant.
 
 **207.6.2** [ACTÉ] Contrecarrer ne vise qu'un Spell qui se trouve sur la pile (décision 0075 ; voir 201.3.8 et 207.5.1a).
 
-**207.6.3** [ACTÉ] Contrecarrer ne vise ni un déploiement, ni une action normale, ni un effet déclenché (décisions 0075 et 0208 ; voir 207.6.2).
+**207.6.3** [ACTÉ] Contrecarrer ne vise ni un déploiement, ni une action normale, ni un effet déclenché, ni un Ordre (décisions 0075, 0208 et 0211 ; voir 207.6.2).
 
 **207.6.4** [ACTÉ] Un Spell contrecarré n'a pas lieu (décision 0075 ; voir 207.6.2).
 
