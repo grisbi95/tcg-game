@@ -38,6 +38,8 @@ Le premier playtest éprouve les règles de base. Il mesure les 23 règles PROVI
 
 ## Decks de test
 
+Portée : la décision [0224](../40-decisions/0224-le-premier-playtest-se-joue-avec-le-catalogue-de-playtest.md) remplace en partie les décisions 0153 et 0164 ; le premier playtest se joue avec le catalogue de playtest, et les decks de test décrits dans cette section sont des decks de référence du moteur. Les paramètres de série et de mesure ci-dessous restent inchangés tant que les questions Q-127 à Q-131 de [02-questions-ouvertes.md](../02-questions-ouvertes.md) ne sont pas tranchées.
+
 Le premier playtest se joue avec deux decks de test simples et presque identiques (miroirs), conçus seulement pour éprouver les règles de base. Les deux decks sont identiques, Hero de test compris. Les cartes, le Hero de test et la répartition des 30 cartes sont écrits dans [decks-de-test.md](decks-de-test.md) (décisions 0170, 0171, 0172, 0173 et 0174). Les cartes y portent des noms lisibles et provisoires, et le Hero de test se nomme Capitaine (décision 0173). Le texte de Martyr est fixé par la décision 0174. Le catalogue de `50-cartes/` viendra après.
 
 ### Exigences

@@ -1,5 +1,7 @@
 # 0164 · Hero de test commun
 
+Remplacée en partie par 0224 (le premier playtest se joue avec les Heroes du catalogue de playtest, non avec un Hero de test commun).
+
 > Décision consignée le 16 octobre 2026. Statut : ACTÉ. Une décision ne se modifie jamais ; pour revenir dessus, une nouvelle décision la remplace et cette ligne reçoit « Remplacée par NNNN ».
 
 ## Contexte

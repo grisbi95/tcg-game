@@ -468,3 +468,10 @@
 - Livret [10-regles-de-base.md](10-regles-de-base.md), [decks-de-test.md](70-playtest/decks-de-test.md) et [protocole.md](70-playtest/protocole.md) non modifiés.
 - Mesures du playtest J3 consignées dans les décisions : échanges déjoués par une réponse adverse ; défausses tirées au sort à l'expiration ; écart entre X et la Force au combat.
 - [README.md](README.md) : édition courante passée à 0.47 ; ligne du chapitre 214 ajoutée.
+
+## 0.48 · 26 octobre 2026 · majeure · Hero déplacé sur tout le plateau, premier playtest avec le catalogue de playtest
+
+- Le Hero se déplace sur tout le plateau. Identifiant supprimé : 205.3.2 ([205-actions.md](20-regles-completes/205-actions.md), identifiant conservé). 205.3.1, 205.3.3, 202.3.9, 202.3.10 et 204.1.1 inchangées. Décision [0223](40-decisions/0223-le-hero-se-deplace-sur-tout-le-plateau.md) ; décision 0043 marquée « Remplacée en partie ». Q-126 créée (Unit déployée en attaquant sur la case du Hero adverse). Mesures du playtest J3 consignées dans la décision : rangée la plus avancée de chaque Hero ; PV perdus par un Hero avancé ; Heroes attaqués hors de leurs deux premières rangées.
+- Le premier playtest se joue avec le catalogue de playtest. Aucun identifiant touché. Décision [0224](40-decisions/0224-le-premier-playtest-se-joue-avec-le-catalogue-de-playtest.md) ; décisions 0153 et 0164 marquées « Remplacée en partie ». Une phrase de portée ajoutée dans [protocole.md](70-playtest/protocole.md) et [decks-de-test.md](70-playtest/decks-de-test.md). Q-127 à Q-131 créées (lieu du catalogue, affrontements et parties par série, attribution des decks, alternance du premier joueur, mesures valables).
+- Glossaire inchangé. Livret [10-regles-de-base.md](10-regles-de-base.md) non modifié (aucun renvoi à 205.3.2).
+- [README.md](README.md) : édition courante passée à 0.48.

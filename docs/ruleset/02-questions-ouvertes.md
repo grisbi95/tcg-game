@@ -101,6 +101,48 @@ Un échange des cases de deux pièces (214.1.1) est-il un déplacement, alors qu
 - Option B : l'échange est un déplacement pour chaque effet qui lit un déplacement ; compromis : un futur effet « quand une pièce se déplace » se déclenche aussi sur un échange.
 Manque pour trancher : une première carte qui lit un déplacement.
 
+**Q-126 · Unit déployée en attaquant sur la case du Hero adverse** · chapitres 205 et 206 · ouverte le 26 octobre 2026
+Que se passe-t-il quand une Unit se déploie sur une case occupée par le Hero adverse, alors que 205.3.2 est supprimée (décision 0223), que le Hero adverse peut donc occuper une case de déploiement (205.1.2, 205.1.2a), que 205.1.6 fait entrer l'Unit en attaquant la pièce ennemie, que 206.4.5 dit que l'attaquant d'un Hero reste sur sa case et que cette Unit n'a pas de case avant le combat (voir aussi Q-100) ?
+- Option A : le déploiement sur une case occupée par le Hero adverse n'est pas permis ; compromis : une exception à 205.1.6, et un Hero qui bloque une case de déploiement.
+- Option B : le combat a lieu et 206.4.5 est complétée pour dire où se trouve l'Unit ; compromis : une règle de plus sur la position d'une Unit sans case.
+- Option C : la carte revient dans la main comme pour une pièce alliée (205.1.7) ; compromis : une exception à 205.1.6, et l'Essence payée est perdue (205.1.9).
+Manque pour trancher : le choix du créateur, avec Q-100.
+
+**Q-127 · Lieu du catalogue de playtest dans le ruleset** · `README.md`, `50-cartes/` et `70-playtest/` · ouverte le 26 octobre 2026
+Où vit le catalogue de playtest (4 Heroes, cartes de couleur et neutres, 4 decks de 30 cartes) dans le ruleset, alors que le README annonce `50-cartes/` « créé avec la première édition jouable » et que `decks-de-test.md` dit ne pas faire partie du catalogue `50-cartes/` ?
+- Option A : `50-cartes/` créé maintenant pour le catalogue de playtest ; compromis : le dossier existe avant la première édition jouable annoncée par le README.
+- Option B : un nouveau fichier dans `70-playtest/` ; compromis : un second lieu de cartes à côté de `50-cartes/`, à fusionner plus tard.
+- Option C : le catalogue reste hors ruleset jusqu'à la première édition jouable ; compromis : les cartes jouées au premier playtest ne sont pas dans le dossier qui fait foi.
+Manque pour trancher : la version du catalogue de playtest et le choix du créateur.
+
+**Q-128 · Affrontements et nombre de parties par série** · `70-playtest/protocole.md` · ouverte le 26 octobre 2026
+Quels affrontements et combien de parties compte une série avec quatre decks asymétriques, alors que la décision 0154 fixe 20 parties d'un deck miroir, 10 avec chaque joueur en premier ?
+- Option A : tous les affrontements entre deux decks distincts, un nombre de parties égal pour chacun ; compromis : une série plus longue, chaque affrontement mesuré avec peu de parties.
+- Option B : une sélection d'affrontements, fixée avant la série ; compromis : des decks qui ne se rencontrent jamais.
+- Option C : les affrontements miroirs (un deck contre lui-même) inclus ; compromis : plus de parties, mais chacun éprouve un seul deck.
+Manque pour trancher : le nombre de parties jouables par session et le choix du créateur.
+
+**Q-129 · Attribution des decks aux joueurs** · `70-playtest/protocole.md` · ouverte le 26 octobre 2026
+Comment les decks du catalogue de playtest sont-ils attribués aux joueurs A et B d'une partie, alors que les joueurs de la série sont notés A et B sur la fiche ?
+- Option A : attribution fixée à l'avance pour chaque partie ; compromis : un plan de série à écrire.
+- Option B : chaque joueur choisit son deck ; compromis : la série dépend des choix, et le choix de l'un peut dépendre de l'autre.
+- Option C : tirage au sort ; compromis : la couverture des affrontements n'est pas garantie.
+Manque pour trancher : Q-128 et le choix du créateur.
+
+**Q-130 · Alternance du premier joueur avec des decks asymétriques** · `70-playtest/protocole.md` et 204.3.4 · ouverte le 26 octobre 2026
+L'alternance du premier joueur (décision 0158) est-elle maintenue, alors que le joueur A ne tient plus forcément le même deck d'une partie à l'autre ?
+- Option A : alternance maintenue, d'une partie à l'autre ; compromis : le premier joueur peut toujours être le même deck dans un affrontement.
+- Option B : alternance par affrontement, chaque deck ouvrant autant de parties ; compromis : une règle d'alternance plus complexe à suivre.
+- Option C : tirage au sort de 204.1.14 ; compromis : la répartition entre premier et second joueur n'est pas garantie.
+Manque pour trancher : Q-128, Q-129 et la mesure « Victoires du premier joueur » (204.3.4, voir Q-131).
+
+**Q-131 · Mesures du protocole avec des decks différents** · `70-playtest/protocole.md` · ouverte le 26 octobre 2026
+Quelles mesures du tableau des cibles et seuils restent valables quand les deux joueurs jouent des decks différents, alors que ses cibles et ses seuils ont été écrits pour un deck miroir et que la décision 0211 demande des mesures propres aux Ordres ?
+- Option A : toutes les mesures sont gardées, relevées par deck et par Hero ; compromis : des effectifs plus petits par ligne, des cibles à relire.
+- Option B : seules les mesures indépendantes du deck sont gardées (durée, tours, Essence, fatigue) ; compromis : les mesures liées au miroir (ressemblance, parties bloquées, victoires du premier joueur) sont suspendues.
+- Option C : les cibles et seuils sont refixés par une décision avant la série ; compromis : un travail de révision avant le J3.
+Manque pour trancher : Q-128 et le choix du créateur.
+
 ## Tranchées
 
 | Question | Décision |

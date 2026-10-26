@@ -4,6 +4,8 @@
 
 ## Portée
 
+Ces decks sont des decks de référence du moteur : la décision [0224](../40-decisions/0224-le-premier-playtest-se-joue-avec-le-catalogue-de-playtest.md) fait jouer le premier playtest avec le catalogue de playtest.
+
 Les deux joueurs jouent le même Hero de test et le même deck (décisions 0153 et 0164). Les cartes sont écrites sous l'édition 0.26 et reçoivent leur nom sous l'édition 0.27 (CHARTE.md §9). Les noms des cartes sont provisoires (décisions 0172 et 0173) ; une carte du futur catalogue ne reprend pas forcément ces noms. Aucun nom ne reprend un mot-clé ni un terme du glossaire (décision 0173). Les exigences et les échelles de Force sont dans [protocole.md](protocole.md), section Decks de test.
 
 ## Hero de test

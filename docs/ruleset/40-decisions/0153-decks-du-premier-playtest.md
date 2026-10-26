@@ -1,5 +1,7 @@
 # 0153 · Decks du premier playtest
 
+Remplacée en partie par 0224 (le premier playtest se joue avec le catalogue de playtest, non avec deux decks de test presque identiques).
+
 > Décision consignée le 16 octobre 2026. Statut : ACTÉ. Une décision ne se modifie jamais ; pour revenir dessus, une nouvelle décision la remplace et cette ligne reçoit « Remplacée par NNNN ».
 
 ## Contexte

@@ -1,5 +1,7 @@
 # 0043 · Déplacement du Hero
 
+Remplacée en partie par 0223 (205.3.2 supprimée : la limite aux deux rangées les plus proches de son joueur est levée).
+
 > Décision consignée le 15 octobre 2026. Statut : ACTÉ. Une décision ne se modifie jamais ; pour revenir dessus, une nouvelle décision la remplace et cette ligne reçoit « Remplacée par NNNN ».
 
 ## Contexte
