@@ -503,6 +503,10 @@ Noter : numéro de partie, joueurs et decks, premier joueur, vainqueur, tour de 
 - Les changements de texte, de coût et de Force restent à décider à partir des observations. Aucun résultat fictif n'est rempli.
 
 
+### Quatre decks, neutres et Heroes — version de travail 0.1
+
+**Statut : base de travail acceptée le 26 octobre 2026, à affiner.** Le détail est dans [catalogue-decks-playtest.md](catalogue-decks-playtest.md) : quatre Heroes (Chef de guerre, Recruteuse, Stratège, Pilleuse), 9 cartes par couleur, 12 neutres et quatre decks de 30 cartes, construits à partir des pistes de cartes du créateur. Les Heroes reposent sur un « Ordre du Hero » non validé, qui demande une décision précisant ou remplaçant en partie la décision 0208. Coûts, Forces, textes, répartition par type et compositions restent ajustables.
+
 ### Autres propositions non finalisées
 
 - **Répartition par type** : 4 Units, 3 Spells, 1 Building et 1 Gear par couleur ; pour les neutres, 7 Units, 2 Spells, 2 Buildings et 1 Gear. Proposition de structure, sans validation explicite distincte.
@@ -584,6 +588,14 @@ Ce message retient six directions de conception. Les explications et mécanismes
 ### Accord pour le premier essai
 
 Le 25 octobre 2026, après la présentation de Porte-enseigne, Rassemblement, Compagnon tenace et Pas de côté, le créateur répond « Go ». Ce choix est consigné comme accord pour utiliser ces quatre propositions comme base du premier essai, sans figer leur équilibrage. Les compositions et le protocole préparés ensuite restent des propositions de l'assistant.
+
+### Accord sur la version de travail des decks
+
+Le 26 octobre 2026, après la présentation des quatre decks, des cartes neutres et de leurs Heroes, le créateur répond :
+
+> « Très bien cela est une très bonne réflexion de deck, consigne ça dans un docs que l'on va affiner »
+
+Cet accord retient l'ensemble comme base de travail, consignée dans [catalogue-decks-playtest.md](catalogue-decks-playtest.md). Il ne valide ni l'Ordre du Hero, ni les valeurs, ni les arbitrages de règles listés dans ce document.
 
 ### État conservé et prochaine discussion
 
