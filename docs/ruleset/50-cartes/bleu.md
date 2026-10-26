@@ -12,6 +12,6 @@
 | Contre | Spell | Réaction | 2 | | Contrecarrez un Spell ciblé. | |
 | Bibliothèque | Building | | 3 | 2 | Au début de votre tour, piochez une carte. | |
 | Observatoire | Building | | 2 | 3 | Au début de votre tour, regardez la carte du dessus de votre deck ; vous pouvez la mettre sous votre deck. | Q-143 |
-| Grimoire | Gear | | 1 | | Quand l'Unit qui porte ce Gear détruit son défenseur, piochez une carte, puis défaussez une carte de votre main. | Q-137 |
+| Grimoire | Gear | | 1 | | Quand l'Unit qui porte ce Gear détruit son défenseur, piochez une carte, puis défaussez une carte de votre main. | |
 
 Contre reprend la carte du deck de test (édition d'écriture 0.26, voir [README.md](README.md)).

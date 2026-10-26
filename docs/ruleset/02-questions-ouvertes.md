@@ -90,30 +90,6 @@ Faut-il étendre aux Ordres 208.2.4a, 208.7.10 et 208.7.11, qui ne citent que l'
 - Option B : ne rien changer, les trois règles se lisent avec 208.2.4 et 208.7.8 ; compromis : une règle qui ne dit pas explicitement le cas de l'Ordre.
 Manque pour trancher : le choix éditorial du créateur.
 
-**Q-137 · Sens de « détruit son défenseur »** · chapitres 206 et 207 · ouverte le 26 octobre 2026
-Que veut dire « l'Unit qui porte ce Gear détruit son défenseur » (Trophée, Grimoire du catalogue de playtest), alors que 206.3.6 détruit l'attaquant et le défenseur à égalité de Force, que 206.4.3 ne détruit pas un Hero attaqué et que le catalogue de playtest écrit que l'attaquant gagne le combat, égalité et attaque d'un Hero exclues ?
-- Option A : une règle du chapitre 206 définit l'événement : le défenseur est détruit par le combat et l'attaquant ne l'est pas ; compromis : une règle de plus, l'égalité de 206.3.6 ne déclenche rien.
-- Option B : lecture littérale : le défenseur est détruit par le combat, égalité comprise ; compromis : l'égalité déclenche l'effet, contre la décision écrite dans le catalogue.
-Manque pour trancher : le choix du créateur.
-
-**Q-138 · Case d'une pièce qui a quitté le plateau** · chapitres 207 et 210 · ouverte le 26 octobre 2026
-Où se lit « adjacente à la case de ce Building » dans le Dernier souffle de la Poudrière du catalogue de playtest, alors que 207.3.3 et 210.3.2b font avoir lieu l'effet après le départ de la pièce et qu'aucune règle ne dit quelle case garde une pièce qui a quitté le plateau ?
-- Option A : la dernière case que la pièce a occupée ; compromis : une règle de plus sur la mémoire de la case.
-- Option B : aucune case ; l'effet n'a pas de cible légale (207.5.9) ; compromis : un Dernier souffle qui ne sert à rien.
-Manque pour trancher : le choix du créateur.
-
-**Q-139 · Marque du ciblage dans le texte d'une carte** · chapitres 207 et 211 · ouverte le 26 octobre 2026
-À quoi voit-on qu'un texte de carte vise une cible, alors que 207.5.1 choisit les cibles d'un effet à l'ajout à la pile, que la plupart des textes du catalogue de playtest écrivent « ciblée », que l'Ordre du Chef de guerre dit « réveillez une Unit alliée adjacente au Hero » sans ce mot et que Rassemblement dit « Choisissez deux cases libres ciblées distinctes » ?
-- Option A : seul le mot « ciblée » désigne une cible ; compromis : l'Ordre du Chef de guerre n'a aucune cible, et une carte qui écrit « Choisissez » est à réécrire.
-- Option B : toute pièce ou case qu'un effet choisit est une cible, « ciblée » ou non ; compromis : une règle de plus, et « ciblée » devient redondant.
-Manque pour trancher : le choix du créateur.
-
-**Q-140 · Construction du deck selon la couleur et le Hero** · chapitre 201 et `50-cartes/` · ouverte le 26 octobre 2026
-Le deck d'un joueur est-il contraint par sa couleur ou par son Hero, alors que 201.6.3 dit que le Hero ne limite pas les cartes d'un deck et que le journal de conception du catalogue de playtest parle d'une couleur principale fixe et d'une seconde couleur libre ?
-- Option A : aucune contrainte, les quatre decks du catalogue de playtest sont des listes fixes et 201.6.3 reste ; compromis : rien n'empêche un deck sans lien avec la couleur de son Hero, hors du premier playtest.
-- Option B : une règle de construction par couleur est écrite au chapitre 201 ; compromis : une règle de plus, qui change 201.6.3.
-Manque pour trancher : le choix du créateur, avant tout deck libre.
-
 **Q-141 · Cibles, seuils et mesures à refixer avant la première série J3** · `70-playtest/protocole.md` · ouverte le 26 octobre 2026
 Quelle cible, quel seuil d'alerte et quel niveau de relevé (série entière, deck, Hero ou affrontement) reçoit chaque mesure ci-dessous pour une série de 24 parties entre 4 decks asymétriques, alors que la décision 0232 impose de les refixer avant la série et que le tableau actuel a été écrit pour un deck miroir de 20 parties ?
 - Aucune option formulée : chaque ligne se tranche une à une par le créateur ; aucune valeur n'est proposée par l'agent.
@@ -299,3 +275,7 @@ Manque pour trancher : une carte du catalogue dont la condition « si » dépend
 | Q-134 · Regarder le dessus du deck et le mettre dessous · chapitres 201 et 207 · ouverte le 26 octobre 2026 · Que fait l'effet « regardez la carte du dessus de votre deck ; vous pouvez la mettre sous votre deck » ? Tranchée le 26 octobre 2026 : seul le joueur regarde la carte, choix libre, l'adversaire voit le choix, option A (chapitre 217 et 201.4.1a) ; expiration du temps : voir Q-143. | [0235](40-decisions/0235-regarder-le-dessus-du-deck.md) ; voir Q-143 |
 | Q-135 · Condition « si » d'un effet déclenché · chapitres 204 et 207 · ouverte le 26 octobre 2026 · Quand se lit la condition « si » d'un effet déclenché au début du tour ? Tranchée le 26 octobre 2026 : à l'événement, avant la pioche de 204.3.6, option A (204.3.12, 204.3.12a, 207.3.13) ; place de l'événement dans le début du tour : voir Q-144. | [0236](40-decisions/0236-condition-si-lue-a-l-evenement.md) ; voir Q-144 |
 | Q-136 · Effet déclenché porté par un Gear · chapitres 202 et 207 · ouverte le 26 octobre 2026 · Un Gear peut-il porter un effet déclenché ? Tranchée le 26 octobre 2026 : oui, tant qu'il est attaché à une Unit en jeu, option A (207.3.12). | [0237](40-decisions/0237-effet-declenche-porte-par-un-gear.md) |
+| Q-137 · Sens de « détruit son défenseur » · chapitres 206 et 207 · ouverte le 26 octobre 2026 · Que veut dire « l'Unit qui porte ce Gear détruit son défenseur » ? Tranchée le 26 octobre 2026 : le défenseur est détruit et l'attaquant ne l'est pas ; l'égalité et l'attaque d'un Hero ne comptent pas, option A (206.3.7, 206.3.7a, 206.3.7b). | [0238](40-decisions/0238-sens-de-detruit-son-defenseur.md) |
+| Q-138 · Case d'une pièce qui a quitté le plateau · chapitres 207 et 210 · ouverte le 26 octobre 2026 · Où se lit la case d'une pièce qui a quitté le plateau ? Tranchée le 26 octobre 2026 : la dernière case que la pièce a occupée, option A (207.3.14). | [0239](40-decisions/0239-case-d-une-piece-qui-a-quitte-le-plateau.md) |
+| Q-139 · Marque du ciblage dans le texte d'une carte · chapitres 207 et 211 · ouverte le 26 octobre 2026 · À quoi voit-on qu'un texte de carte vise une cible ? Tranchée le 26 octobre 2026 : seul le mot « ciblée » désigne une cible, option A (207.5.18) ; trois textes du catalogue de playtest corrigés. | [0240](40-decisions/0240-marque-du-ciblage-dans-le-texte-d-une-carte.md) |
+| Q-140 · Construction du deck selon la couleur et le Hero · chapitre 201 et `50-cartes/` · ouverte le 26 octobre 2026 · Le deck d'un joueur est-il contraint par sa couleur ou son Hero ? Tranchée le 26 octobre 2026 : au premier playtest, les 4 decks sont des listes fixes et 201.6.3 reste, option A ; la règle de construction par couleur s'écrira après les premières parties et avant toute construction libre de deck. | [0241](40-decisions/0241-decks-du-premier-playtest-en-listes-fixes.md) |

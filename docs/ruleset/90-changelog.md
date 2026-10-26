@@ -508,3 +508,14 @@
 - [50-cartes/](50-cartes/README.md) : colonne « Questions ouvertes » mise à jour, textes inchangés : Passeur, Manipulateur, Glissement, Reflux, Pilleuse (aucune question), Observatoire (Q-143), Trophée et Grimoire (Q-137).
 - Livret [10-regles-de-base.md](10-regles-de-base.md) non modifié.
 - [README.md](README.md) : édition courante passée à 0.51 ; chapitres 215 à 217 ajoutés au tableau.
+
+## 0.52 · 26 octobre 2026 · majeure · sens de « détruit son défenseur », case d'une pièce partie du plateau, marque du ciblage, decks du premier playtest
+
+- Sens de « détruit son défenseur » : identifiants ajoutés 206.3.7, 206.3.7a, 206.3.7b ([206-combat.md](20-regles-completes/206-combat.md)). Terme ajouté au glossaire : Détruire son défenseur. Décision [0238](40-decisions/0238-sens-de-detruit-son-defenseur.md). Q-137 tranchée, option A.
+- Case d'une pièce qui a quitté le plateau : identifiant ajouté 207.3.14 ([207-effets.md](20-regles-completes/207-effets.md)). Décision [0239](40-decisions/0239-case-d-une-piece-qui-a-quitte-le-plateau.md). Q-138 tranchée, option A.
+- Marque du ciblage dans le texte d'une carte : identifiant ajouté 207.5.18 ([207-effets.md](20-regles-completes/207-effets.md)) ; renvoi 207.5.18 ajouté à l'entrée Cible du glossaire. Décision [0240](40-decisions/0240-marque-du-ciblage-dans-le-texte-d-une-carte.md). Q-139 tranchée, option A.
+- Textes de [50-cartes/](50-cartes/README.md) corrigés, effet inchangé, édition d'écriture passée à 0.52 : Chef de guerre, « réveillez une Unit alliée adjacente au Hero » devient « réveillez une Unit alliée ciblée adjacente au Hero » ; Recruteuse, « sur une case libre adjacente au Hero » devient « sur une case libre ciblée adjacente au Hero » ; Rassemblement, « Choisissez deux cases libres ciblées distinctes parmi les deux rangées les plus proches de vous. Créez un jeton Unit de Force 1 sur chacune. » devient « Créez un jeton Unit de Force 1 sur chacune de deux cases libres ciblées distinctes parmi les deux rangées les plus proches de vous. ». Aucun autre texte de carte ni de Hero ne désigne une pièce ou une case sans le mot « ciblée » ; les decks de test de 70-playtest ne contredisent pas la règle.
+- Decks du premier playtest : les 4 decks de [50-cartes/decks.md](50-cartes/decks.md) sont des listes fixes ; 201.6.3 inchangée ; la règle de construction par couleur s'écrira après les premières parties. Décision [0241](40-decisions/0241-decks-du-premier-playtest-en-listes-fixes.md). Q-140 tranchée, option A.
+- [50-cartes/](50-cartes/README.md) : colonne « Questions ouvertes » mise à jour : Trophée, Grimoire, Poudrière, Chef de guerre et Recruteuse sans question ; Rassemblement garde Q-098 ; renvois du README remplacés par les décisions 0241 et 0238.
+- Livret [10-regles-de-base.md](10-regles-de-base.md) et chapitre 210 non modifiés.
+- [README.md](README.md) : édition courante passée à 0.52.

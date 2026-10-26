@@ -98,6 +98,8 @@ Aucun Invariant.
 
 **207.3.13b** [ACTÉ] La condition « si » d'un effet déclenché ne se lit pas de nouveau à la résolution de cet effet (décision 0236 ; voir 207.3.13 et 208.3.2).
 
+**207.3.14** [ACTÉ] Quand un effet parle de la case d'une pièce qui a quitté le plateau, il lit la dernière case que cette pièce a occupée (décision 0239 ; voir 207.3.3 et 210.3.2b).
+
 ## 207.4 Durées
 
 **207.4.1** [ACTÉ] Le texte d'un effet peut porter une durée (décision 0092).
@@ -177,6 +179,8 @@ Aucun Invariant.
 **207.5.17b** Supprimée en édition 0.42, voir décision 0208.
 
 **207.5.17c** Supprimée en édition 0.42, voir décision 0208.
+
+**207.5.18** [ACTÉ] Seul le mot « ciblée » (ou « ciblé », « ciblées », « ciblés ») désigne une cible dans le texte d'une carte (décision 0240 ; voir 207.5.1 et 207.5.11).
 
 ## 207.6 Contrecarrer
 

@@ -46,6 +46,12 @@
 
 **206.3.6** [PROVISOIRE] Si la Force de l'attaquant est égale à celle du défenseur, l'attaquant et le défenseur sont détruits (décision 0053 ; à mesurer en playtest : tours sans combat, parties bloquées, durée de partie ; voir 206.2.1).
 
+**206.3.7** [ACTÉ] Une Unit détruit son défenseur quand, dans un combat où elle attaque, le défenseur est détruit sans que l'Unit le soit (décision 0238 ; voir 206.3.1 et 206.3.4).
+
+**206.3.7a** [ACTÉ] Une Unit qui attaque à égalité de Force ne détruit pas son défenseur (décision 0238 ; voir 206.3.6 et 206.3.7).
+
+**206.3.7b** [ACTÉ] Une Unit qui attaque un Hero ne détruit pas son défenseur (décision 0238 ; voir 206.4.3 et 206.3.7).
+
 ## 206.4 Perte de PV du Hero
 
 **206.4.1** [ACTÉ] Une Unit peut attaquer le Hero adverse comme toute autre pièce ennemie (décision 0054 ; voir 205.2.3).

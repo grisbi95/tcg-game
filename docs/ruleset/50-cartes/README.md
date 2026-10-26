@@ -20,7 +20,7 @@ Ce dossier ne contient aucune règle de jeu : il renvoie aux identifiants de [20
 
 - 4 couleurs, 4 Heroes (un par couleur, hors deck : 202.3.5), 48 cartes distinctes de deck : 9 par couleur et 12 neutres.
 - Decks de 30 cartes, au plus 3 exemplaires d'une même carte (201.6.1 et 201.6.2).
-- Le Hero ne limite pas les cartes d'un deck (201.6.3) ; les 4 decks sont des listes fixes (voir Q-140).
+- Le Hero ne limite pas les cartes d'un deck (201.6.3) ; les 4 decks sont des listes fixes au premier playtest (décision 0241).
 - Échelle de valeurs reprise du deck de test : Unit sans texte, Force égale au coût plus 1 ; Unit à texte ou à mot-clé, Force au plus égale au coût ; Building sans texte, Force égale au coût plus 2 ; Building à effet, Force faible pour rester une cible.
 
 ### Répartition par type (décision du catalogue, 26 octobre 2026)
@@ -34,7 +34,7 @@ Ce dossier ne contient aucune règle de jeu : il renvoie aux identifiants de [20
 ### Trophée (décision du catalogue, 26 octobre 2026)
 
 - Le bonus durable de Trophée est gardé.
-- « Détruit son défenseur » désigne, dans le catalogue, un combat que l'attaquant gagne ; l'égalité et l'attaque d'un Hero sont exclues. Aucune règle de 206 ne définit cet événement (voir Q-137).
+- « Détruit son défenseur » désigne, dans le catalogue, un combat que l'attaquant gagne ; l'égalité et l'attaque d'un Hero sont exclues. La règle de 206 qui définit cet événement est 206.3.7 (décision 0238).
 
 ## Cartes reprises du deck de test
 

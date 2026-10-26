@@ -24,7 +24,7 @@
 | Carte | Élément de jeu qui se trouve dans une zone. | |
 | Case | Position du plateau. | |
 | Catalogue de playtest | Ensemble des Heroes, des cartes de couleur, des cartes neutres et des decks que décrit `50-cartes/` et que joue le premier playtest ; voir décisions 0224 et 0228. | |
-| Cible | Pièce du plateau, case ou Spell de la pile qu'un effet vise, choisie quand l'entrée de la pile qui porte cet effet s'y ajoute ; voir 202.2.23, 202.4.12, 207.5.1, 207.5.2, 207.5.3, 207.5.6, 207.5.11, 207.5.14 et 207.5.16. | |
+| Cible | Pièce du plateau, case ou Spell de la pile qu'un effet vise, choisie quand l'entrée de la pile qui porte cet effet s'y ajoute ; voir 202.2.23, 202.4.12, 207.5.1, 207.5.2, 207.5.3, 207.5.6, 207.5.11, 207.5.14, 207.5.16 et 207.5.18. | |
 | Cible légale | Cible qui remplit, au moment où l'entrée s'ajoute à la pile, les conditions que la carte pose à ses cibles et celles de la section 207.5 ; voir 207.5.8, 207.5.9, 207.5.10 et 211.4.2. | |
 | Colonne | Alignement de cases du plateau qui s'étend d'un joueur à l'autre. | |
 | Combat | Affrontement d'un attaquant et d'un défenseur, réglé au chapitre 206 ; voir 206.1.1, 206.1.2, 206.2.1 et 206.4.2. | |
@@ -47,6 +47,7 @@
 | Dernier souffle | Mot-clé de déclencheur dont l'effet se déclenche quand la pièce qui le porte est détruite ; voir 210.3.2, 210.3.2a, 210.3.2b, 210.3.2c et 202.4.13a. | |
 | Détaché | Se dit d'un Gear qui n'est plus attaché à une pièce, parce qu'il a été remplacé ou que sa pièce a quitté le plateau ; voir 202.2.12, 202.2.13, 207.2.9a, 207.2.9b et 207.4.8. | |
 | Détruire | Envoyer une pièce dans la défausse du joueur à qui elle appartient ; pour un jeton, voir 202.4.3 ; voir 206.3.1, 206.3.2, 206.3.2a, 206.3.6 et 210.3.2. | |
+| Détruire son défenseur | Pour une Unit, attaquer dans un combat dont le défenseur est détruit sans qu'elle le soit ; voir 206.3.7, 206.3.7a et 206.3.7b. | |
 | Durée | Mention du texte d'un effet qui fixe jusqu'à quand il dure, parmi « jusqu'à la fin du tour » et « tant que la pièce est en jeu » ; voir 207.4.1, 207.4.2, 207.4.3, 207.4.7, 207.4.7a, 207.4.7b, 207.4.8 et 207.4.10. | |
 | Écart | Zone temporaire hors du plateau, propre à chaque joueur et face cachée, qui existe pendant le mulligan et accueille les cartes écartées ; voir 201.3.9, 201.3.10, 201.4.9, 204.2.10 et 204.2.11. | |
 | Écarter | Choisir, pendant son mulligan, une carte de sa main à remettre dans son deck, la carte allant alors dans l'Écart ; voir 204.2.4, 204.2.6, 204.2.8 et 204.2.10. | |

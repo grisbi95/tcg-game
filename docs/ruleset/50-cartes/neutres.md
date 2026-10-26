@@ -17,6 +17,6 @@ Recrue, Soldat, Gardien, Vétéran, Champion, Colosse, Renfort et Campement repr
 | Choc | Spell | Réaction | 2 | | Une Unit ennemie ciblée a −2 Force jusqu'à la fin du tour. | 0.48 | |
 | Exécution | Spell | Action | X | | Détruisez une Unit ennemie ciblée de Force X ou moins. | 0.48 | |
 | Campement | Building | | 3 | 4 | Avant-poste | 0.26 | |
-| Trophée | Gear | | 2 | | Quand l'Unit qui porte ce Gear détruit son défenseur, elle a +1 Force tant que la pièce est en jeu. | 0.48 | Q-137 |
+| Trophée | Gear | | 2 | | Quand l'Unit qui porte ce Gear détruit son défenseur, elle a +1 Force tant que la pièce est en jeu. | 0.48 | |
 
 Une Unit sans texte a un texte vide (202.1.4).
