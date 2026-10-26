@@ -107,7 +107,7 @@ static func validate_targets_choice(
 	var entry := _targeted_entry(state).clone()
 	_assign_targets(entry, intent)
 	var effect := effect_of(state, entry)
-	reason = EffectRules.validate_targets(state, entry, effect.target)
+	reason = EffectRules.validate_effect_targets(state, entry, effect)
 	if reason != IntentRejected.RejectReason.NONE:
 		return reason
 	var effects: Array[EffectDefinition] = [effect]
@@ -230,11 +230,11 @@ static func _add_next(state: DuelState, events: Array[DuelEvent]) -> void:
 		_skip(state.triggers_to_add, entry, events)
 		return
 	var effect := effect_of(state, entry)
-	if EffectRules.chosen_count(entry, effect.target) == 0:
-		if not _has_unique_targets(state, entry, effect.target):
-			_request(state, _make_targets_decision(state, entry, effect.target), events)
+	if EffectRules.chosen_effect_count(entry, effect) == 0:
+		if not _has_unique_targets(state, entry, effect):
+			_request(state, _make_targets_decision(state, entry, effect), events)
 			return
-		_assign_unique_targets(state, entry, effect.target, events)
+		_assign_unique_targets(state, entry, effect, events)
 	state.triggers_to_add.pop_front()
 	if effect.once_per_turn:
 		state.once_per_turn_card_ids.append(entry.source_card_instance_id)
@@ -248,27 +248,38 @@ static func _can_be_added(state: DuelState, entry: StackEntry) -> bool:
 	var effect := effect_of(state, entry)
 	if effect.once_per_turn and state.once_per_turn_card_ids.has(entry.source_card_instance_id):
 		return false
-	var legal_count := EffectRules.legal_target_count(state, entry.owner, effect.target)
+	var legal_count := _legal_target_count(state, entry, effect)
 	return legal_count >= effect.target.count_min
 
 
 # 207.5.2, 207.5.10, décision 0004 : autant de cibles légales que le minimum exigé, un seul
-# choix est possible ; sinon le joueur à qui appartient l'effet choisit.
-static func _has_unique_targets(state: DuelState, entry: StackEntry, spec: TargetSpec) -> bool:
-	var legal_count := _legal_ids(state, entry, spec).size()
+# choix est possible ; sinon le joueur à qui appartient l'effet choisit ses cibles. Un déplacement
+# n'a qu'un choix si une seule pièce est déplaçable, vers une seule case (décision 0056).
+static func _has_unique_targets(
+	state: DuelState, entry: StackEntry, effect: EffectDefinition
+) -> bool:
+	var spec := effect.target
+	var piece_ids := _candidate_ids(state, entry, effect)
+	var legal_count := piece_ids.size()
 	legal_count += EffectRules.legal_cells(state, entry.owner, spec).size()
-	return legal_count == spec.count_min
+	if legal_count != spec.count_min:
+		return false
+	if effect.destination == null:
+		return true
+	return _candidate_cells(state, entry, effect, piece_ids).size() == 1
 
 
 # 207.5.1b, décision 0004 : le moteur prend toutes les cibles légales, sans demander.
 static func _assign_unique_targets(
-	state: DuelState, entry: StackEntry, spec: TargetSpec, events: Array[DuelEvent]
+	state: DuelState, entry: StackEntry, effect: EffectDefinition, events: Array[DuelEvent]
 ) -> void:
-	entry.target_cells.assign(EffectRules.legal_cells(state, entry.owner, spec))
+	var spec := effect.target
+	var target_ids := _candidate_ids(state, entry, effect)
+	entry.target_cells.assign(_candidate_cells(state, entry, effect, target_ids))
 	if spec.what == TargetSpec.TargetWhat.SPELL_ON_STACK:
-		entry.target_stack_entry_ids.assign(_legal_ids(state, entry, spec))
+		entry.target_stack_entry_ids.assign(target_ids)
 	else:
-		entry.target_piece_ids.assign(_legal_ids(state, entry, spec))
+		entry.target_piece_ids.assign(target_ids)
 	var targeting := PendingDecision.DecisionKind.CHOOSE_TARGETS
 	events.append(DecisionResolvedAutomatically.new(entry.owner, targeting))
 
@@ -299,19 +310,59 @@ static func _make_order_decision(entries: Array[StackEntry]) -> PendingDecision:
 
 # 207.5.1b, 207.5.2 : le joueur à qui appartient l'effet choisit ses cibles parmi les légales.
 static func _make_targets_decision(
-	state: DuelState, entry: StackEntry, spec: TargetSpec
+	state: DuelState, entry: StackEntry, effect: EffectDefinition
 ) -> PendingDecision:
 	var decision := PendingDecision.new()
 	decision.kind = PendingDecision.DecisionKind.CHOOSE_TARGETS
 	decision.awaited_players.append(entry.owner)
 	decision.subject_stack_entry_id = entry.stack_entry_id
-	decision.candidate_ids.assign(_legal_ids(state, entry, spec))
-	decision.candidate_cells.assign(EffectRules.legal_cells(state, entry.owner, spec))
+	decision.candidate_ids.assign(_candidate_ids(state, entry, effect))
+	decision.candidate_cells.assign(_candidate_cells(state, entry, effect, decision.candidate_ids))
 	return decision
 
 
-static func _legal_ids(state: DuelState, entry: StackEntry, spec: TargetSpec) -> Array[int]:
-	return EffectRules.legal_target_ids(state, entry.owner, spec, entry.stack_entry_id)
+# 207.5.9, 207.5.10, 215.1.1 : nombre de cibles légales de l'effet ; pour un déplacement, une pièce
+# ne compte que si une case lui est légale.
+static func _legal_target_count(
+	state: DuelState, entry: StackEntry, effect: EffectDefinition
+) -> int:
+	if effect.destination == null:
+		return EffectRules.legal_target_count(state, entry.owner, effect.target)
+	return _candidate_ids(state, entry, effect).size()
+
+
+# 207.5.9, 215.1.1 : cibles légales de l'effet ; un déplacement ne propose que les pièces qui ont
+# au moins une case de destination légale.
+static func _candidate_ids(
+	state: DuelState, entry: StackEntry, effect: EffectDefinition
+) -> Array[int]:
+	var ids := EffectRules.legal_target_ids(state, entry.owner, effect.target, entry.stack_entry_id)
+	if effect.destination == null:
+		return ids
+	var movable: Array[int] = []
+	for piece_id: int in ids:
+		var piece := state.find_piece(piece_id)
+		if not EffectRules.legal_cells(state, entry.owner, effect.destination, piece).is_empty():
+			movable.append(piece_id)
+	return movable
+
+
+# 207.5.1b, 215.1.1 : cases que l'entrée peut cibler ; pour un déplacement, les cases légales pour
+# au moins l'une des pièces `piece_ids`.
+static func _candidate_cells(
+	state: DuelState, entry: StackEntry, effect: EffectDefinition, piece_ids: Array[int]
+) -> Array[Vector2i]:
+	if effect.destination == null:
+		return EffectRules.legal_cells(state, entry.owner, effect.target)
+	var cells: Array[Vector2i] = []
+	for piece_id: int in piece_ids:
+		var piece := state.find_piece(piece_id)
+		for cell: Vector2i in EffectRules.legal_cells(
+			state, entry.owner, effect.destination, piece
+		):
+			if not cells.has(cell):
+				cells.append(cell)
+	return cells
 
 
 # 207.5.1b : l'effet reçoit les cibles choisies.

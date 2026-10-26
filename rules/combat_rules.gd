@@ -39,10 +39,7 @@ static func destroy_piece(state: DuelState, piece: Piece, events: Array[DuelEven
 	if piece.card != null:
 		state.get_player(piece.card.owner).discard.append(piece.card)
 	events.append(PieceDestroyed.new(piece.owner, piece.piece_id))
-	if piece.attached_gear != null:
-		var gear := piece.attached_gear
-		state.get_player(gear.owner).discard.append(gear)
-		events.append(CardDiscarded.new(gear.owner, gear.card_instance_id))
+	ZoneRules.discard_attached_gear(state, piece, events)
 	TriggerRules.trigger(state, piece, EffectDefinition.TriggerEvent.DESTROYED, events)
 
 

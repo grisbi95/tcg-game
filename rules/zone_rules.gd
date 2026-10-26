@@ -51,8 +51,9 @@ static func draw_card(
 	return DrawOutcome.DRAWN
 
 
-## 205.1.7 à 205.1.10, 205.6.14, 202.2.24a, 202.2.24b, 201.3.6a : `card` revient dans la main de son
-## joueur, ou dans sa défausse si la main est pleine ; l'Essence payée reste dépensée.
+## 205.1.7 à 205.1.10, 205.6.14, 202.2.24a, 202.2.24b, 201.3.6a, 216.1.2, 216.1.2a : `card`
+## revient dans la main de son joueur, ou dans sa défausse si la main est pleine ;
+## l'Essence payée reste dépensée.
 static func return_card_to_hand(
 	state: DuelState, card: CardInstance, events: Array[DuelEvent]
 ) -> void:
@@ -63,6 +64,16 @@ static func return_card_to_hand(
 	else:
 		owner_player.discard.append(card)
 		events.append(CardDiscarded.new(card.owner, card.card_instance_id))
+
+
+## 202.2.13, 216.1.4 : le Gear attaché à `piece`, qui quitte le plateau, va dans la défausse de son
+## joueur.
+static func discard_attached_gear(state: DuelState, piece: Piece, events: Array[DuelEvent]) -> void:
+	if piece.attached_gear == null:
+		return
+	var gear := piece.attached_gear
+	state.get_player(gear.owner).discard.append(gear)
+	events.append(CardDiscarded.new(gear.owner, gear.card_instance_id))
 
 
 ## 201.3.9, 204.2.8, 204.2.10 : déplace de la main de `side` vers son Écart les cartes
