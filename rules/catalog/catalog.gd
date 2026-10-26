@@ -40,6 +40,18 @@ func get_hero(id: StringName) -> HeroDefinition:
 	return _heroes.get(id)
 
 
+## 207.3.3, 202.3.20 : liste d'effets que `StackEntry.effect_index` indexe pour un effet déclenché
+## de `id` : les effets de la carte, ou les effets déclenchés du Hero. Vide si `id` est inconnu.
+func triggerable_effects(id: StringName) -> Array[EffectDefinition]:
+	var hero := get_hero(id)
+	if hero != null:
+		return hero.triggered
+	var card := get_card(id)
+	if card != null:
+		return card.effects
+	return []
+
+
 func has_definition(id: StringName) -> bool:
 	return _cards.has(id) or _heroes.has(id)
 

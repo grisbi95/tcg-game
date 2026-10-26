@@ -38,8 +38,9 @@ enum RejectReason {
 	NOT_A_GEAR,  # 208.1.5 : seule une carte Gear s'attache
 	WRONG_TRIGGER_ORDER,  # 208.4.6, 208.4.7 : l'ordre cite chaque effet attendu une fois, seul
 	NO_ESSENCE_PRODUCED,  # 203.6.3, 203.6.4 : produire de l'Essence incline ou recycle une Source
-	PIECE_ASLEEP,  # 205.5.3 : une pièce endormie ne fait pas d'action normale
+	PIECE_ASLEEP,  # 205.5.3, 211.2.1 : une pièce endormie ne fait pas d'action normale ni d'Ordre
 	CELL_OCCUPIED_BY_ENEMY_HERO,  # 205.1.11 : une Unit ne s'annonce pas sur la case du Hero ennemi
+	ORDER_NOT_FOUND,  # 202.3.19, 202.3.21 : le Hero ne porte pas d'Ordre de ce rang
 }
 
 ## Intention refusée, telle que soumise ; null si le refus ne vient pas d'une intention.

@@ -101,12 +101,8 @@ func find_errors() -> PackedStringArray:
 
 
 func _read_keywords(reader: CatalogReader) -> void:
-	for entry: Variant in reader.read_array("keywords"):
-		if typeof(entry) != TYPE_DICTIONARY:
-			reader.fail("« keywords » : chaque entrée est un objet")
-			continue
-		var entry_dict: Dictionary = entry
-		_read_keyword(entry_dict, reader)
+	for entry: Dictionary in reader.read_objects("keywords"):
+		_read_keyword(entry, reader)
 
 
 func _read_keyword(entry: Dictionary, parent: CatalogReader) -> void:
@@ -125,12 +121,8 @@ func _read_keyword(entry: Dictionary, parent: CatalogReader) -> void:
 
 
 func _read_effects(reader: CatalogReader) -> void:
-	for entry: Variant in reader.read_array("effects"):
-		if typeof(entry) != TYPE_DICTIONARY:
-			reader.fail("« effects » : chaque entrée est un objet")
-			continue
-		var entry_dict: Dictionary = entry
-		effects.append(EffectDefinition.from_dict(entry_dict))
+	for entry: Dictionary in reader.read_objects("effects"):
+		effects.append(EffectDefinition.from_dict(entry))
 
 
 func _check_force(errors: PackedStringArray) -> void:
@@ -195,16 +187,10 @@ func _check_effects(errors: PackedStringArray) -> void:
 	_check_once_per_turn(errors)
 
 
-# 207.3.5, 207.3.7 : la mention « une fois par tour » est portée par la carte et décomptée par
-# carte ; le ruleset ne dit rien d'une carte à plusieurs effets déclenchés, qui est refusée.
 func _check_once_per_turn(errors: PackedStringArray) -> void:
-	var triggered := effects.filter(
-		func(effect: EffectDefinition) -> bool:
-			return effect.timing == EffectDefinition.EffectTiming.TRIGGERED
-	)
-	var marked := triggered.any(func(effect: EffectDefinition) -> bool: return effect.once_per_turn)
-	if marked and triggered.size() > 1:
-		errors.append("207.3.5 : « une fois par tour » exige un seul effet déclenché sur la carte")
+	var once_error := EffectDefinition.once_per_turn_error(effects)
+	if not once_error.is_empty():
+		errors.append(once_error)
 
 
 # 202.2.20 : un Spell se résout ; 207.2.2, 207.3 : une pièce porte du statique et du déclenché ;

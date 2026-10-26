@@ -147,6 +147,18 @@ L'événement « début du tour » de 204.3.12 survient-il avant ou après le r�
 - Option B : après le réveil, le redressement et la Source reçue, avant la pioche ; compromis : une condition lit les Sources redressées et les pièces réveillées de ce tour.
 Manque pour trancher : une carte du catalogue dont la condition « si » dépend d'un de ces états, et le choix du créateur.
 
+**Q-145 · Événements de déclenchement impossibles pour un Hero** · chapitres 202 et 207 · ouverte le 26 octobre 2026
+Faut-il interdire sur une carte Hero les déclencheurs que le Hero ne peut jamais produire, l'Arrivée et la destruction, alors que 202.3.20 permet au texte du Hero de porter un effet déclenché (207.3.1), que le Hero est placé à la préparation (204.1.1) sans arriver par un déploiement, et qu'il n'est pas détruit mais perd la partie à 0 PV (206.4.3, 209.2) ?
+- Option A : une règle explicite interdit ces déclencheurs sur une carte Hero ; compromis : une règle de plus, et le catalogue refuse une carte Hero mal écrite.
+- Option B : rien à écrire, un tel effet ne se déclenche simplement jamais ; compromis : une carte Hero peut porter un texte sans effet.
+Manque pour trancher : le choix du créateur. Aucun Hero du catalogue de `50-cartes/heroes.md` ne porte un tel déclencheur au 26 octobre 2026 (le seul effet déclenché, celui de la Pilleuse, a pour événement le début du tour). Origine : étape c.2 du code (Ordre du Hero, décision 0211), le code n'a rien tranché.
+
+**Q-146 · Ordre sans effet** · chapitre 211 · ouverte le 26 octobre 2026
+Un Ordre peut-il ne porter aucun effet, alors que 211.1.1 dit qu'un Ordre est un effet du texte du Hero et que 211.2.2 endort le Hero à l'annonce ?
+- Option A : un Ordre porte au moins un effet, règle explicite ; compromis : une règle de plus, évidente.
+- Option B : rien à écrire, 211.1.1 suffit ; compromis : la forme minimale d'un Ordre reste implicite.
+Manque pour trancher : le choix éditorial du créateur. Origine : étape c.2 du code (Ordre du Hero, décision 0211), le code n'a rien tranché.
+
 ## Tranchées
 
 | Question | Décision |

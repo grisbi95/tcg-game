@@ -14,18 +14,19 @@ Complète le `CLAUDE.md` racine pour `rules/` ; décisions 0001, 0003, 0004, 000
 | `turn_rules.gd` | 204.3 à 204.5 | début de tour (204.3.8, réveil et redressement compris), pioche, fin de tour (204.5) |
 | `action_rules.gd` | 205 | déploiement (annonce, résolution), action normale d'une pièce éveillée (205.5), déplacement du Hero, échecs, combat en attente (205.6 : naissance à la résolution, résolution selon le plateau du moment) |
 | `combat_rules.gd` | 206 | comparaison, égalité, Hero défenseur, avance, auras lues avant l'avance |
-| `spell_rules.gd` | 207.1 | Spells : vitesses, annonce, résolution ; appelle `EffectRules`, jamais l'inverse |
+| `spell_rules.gd` | 207.1 | Spells : annonce, résolution (les vitesses sont dans `StackRules.validate_speed`) ; appelle `EffectRules`, jamais l'inverse |
 | `effect_rules.gd` | 207.4 à 207.6 | cibles et validité, effets à la résolution (Force à durée, destruction, jetons), Contrecarrer (207.6, avec l'effet COUNTER) |
 | `effect_context.gd` | 207.4, 207.5 | état, entrée de pile, effet et événements de l'effet en cours d'application, passés aux fonctions d'`EffectRules` ; jamais dans l'état |
+| `order_rules.gd` | 211, 208.1.12 | Ordre du Hero (0055) : annonce (`AnnounceOrder`, le Hero s'endort, coût payé par `EssenceRules`, cibles jugées par `EffectRules`, vitesse par `StackRules.validate_speed`) et résolution de l'entrée `ORDER` par `EffectRules.resolve_all` ; n'est appelé que par `DuelEngine` |
 | `trigger_rules.gd` | 207.3, 208.4 | effets déclenchés (0017) : attente, ordre d'ajout (`ORDER_TRIGGERS`), cibles (`CHOOSE_TARGETS`), choix unique automatique (0004), « une fois par tour », résolution ; étiquette « sans réponse » recopiée de l'annonce ou de l'entrée en cours (208.7.8 à 208.7.11, `DuelState.triggers_allow_response`) ; un combat en attente (205.6) attend dans la même liste et compte comme un effet de l'attaquant (205.6.6) |
-| `stack_rules.gd` | 208 | annonce, priorité (208.2.4, aucune pour une entrée sans réponse, 208.7.12), passe (208.3.1), entrée du sommet et fin de sa résolution (208.3.2), retour au joueur actif (208.5.1) ; n'appelle aucun autre module, la boucle de résolution est dans `DuelEngine` |
+| `stack_rules.gd` | 208 | annonce, vitesses des annonces (`validate_speed`, 207.1.3 à 207.1.6, 211.2.4 à 211.2.7), priorité (208.2.4, aucune pour une entrée sans réponse, 208.7.12), passe (208.3.1), entrée du sommet et fin de sa résolution (208.3.2), retour au joueur actif (208.5.1) ; n'appelle aucun autre module, la boucle de résolution est dans `DuelEngine` |
 | `state_check_rules.gd` | 209 | Force plancher 0, victoire après chaque effet, abandon, inactivité (209.2.10), temps de tour et de réponse (209.4), fatigue |
 | `keyword_rules.gd` | 210 | texte de règle de chaque mot-clé |
 | `force_rules.gd` | 206.5, 209.1 | Force actuelle calculée à la demande, jamais stockée |
 | `board_geometry.gd` | 201.2, 205 | adjacence, rangées, zones de déploiement, notation A1 à E5 |
 | `duel_state.gd`, `player_state.gd`, `piece.gd`, `card_instance.gd`, `stack_entry.gd`, `active_effect.gd`, `pending_decision.gd` | — | État mutable, `clone()` complet |
 | `duel_config.gd` | règles PROVISOIRE | une valeur par règle PROVISOIRE, lecture seule |
-| `catalog/` | 202 | `CardDefinition`, `HeroDefinition`, `EffectDefinition`, `TargetSpec`, chacun avec `find_errors()` ; `Catalog` (résolution par id, contrôle de deck 201.6), `CatalogLoader` (JSON), `CatalogReader` (lecture typée), `JsonObjectFiles` (fichiers JSON) ; `DeckList` et `DeckLoader`, decks de `data/decks/` (0037) |
+| `catalog/` | 202 | `CardDefinition`, `HeroDefinition` (passif facultatif, effets déclenchés, Ordres), `HeroOrder`, `EffectDefinition`, `TargetSpec`, chacun avec `find_errors()` ; `Catalog` (résolution par id, contrôle de deck 201.6), `CatalogLoader` (JSON), `CatalogReader` (lecture typée), `JsonObjectFiles` (fichiers JSON) ; `DeckList` et `DeckLoader`, decks de `data/decks/` (0037) |
 | `intents/`, `events/` | — | une classe par intention et par événement ; bases `DuelIntent`, `DuelEvent`, `PlayerEvent` |
 
 ## Ajouter une intention

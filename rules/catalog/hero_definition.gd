@@ -1,6 +1,7 @@
 class_name HeroDefinition
 extends RefCounted
-## Définition d'une carte Hero : PV, texte et passif (202.3, décision 0002).
+## Définition d'une carte Hero : PV, texte, passif, effets déclenchés et Ordres (202.3, 211,
+## décisions 0002 et 0055).
 ##
 ## Le Hero est une carte hors du deck (202.3.4, 202.3.5), sans Force (202.3.9). Une définition
 ## qui renvoie des erreurs ne doit jamais servir au moteur.
@@ -14,8 +15,12 @@ var hero_name: String = ""
 var health: int = 0
 ## 202.3.8
 var text: String = ""
-## 202.3.11, 202.3.18 : effets statiques.
+## 202.3.11, 202.3.18 : effets statiques, facultatifs.
 var passive: Array[EffectDefinition] = []
+## 202.3.20 : effets déclenchés (indexés par `StackEntry.effect_index`, voir Catalog).
+var triggered: Array[EffectDefinition] = []
+## 202.3.19, 202.3.21 : Ordres, dans l'ordre du texte ; l'intention désigne un Ordre par son rang.
+var orders: Array[HeroOrder] = []
 ## Erreurs de lecture du JSON, reprises par `find_errors()`.
 var parse_errors: PackedStringArray = PackedStringArray()
 
@@ -34,11 +39,13 @@ static func from_dict(data: Dictionary) -> HeroDefinition:
 	hero.health = reader.read_int("health", CatalogReader.NON_NEGATIVE_MINIMUM, 0)
 	hero.text = reader.read_string("text")
 	hero.passive = hero._read_effects(reader, "passive")
+	hero.triggered = hero._read_effects(reader, "triggered")
+	hero._read_orders(reader)
 	hero.parse_errors = reader.finish()
 	return hero
 
 
-# 202.3.6 à 202.3.8, 202.3.11, 202.3.18 : nom, PV, texte et passif statique.
+# 202.3.6 à 202.3.8, 202.3.11, 202.3.18 à 202.3.22 : nom, PV, texte, capacités du Hero.
 func find_errors() -> PackedStringArray:
 	var errors := parse_errors.duplicate()
 	if not RegEx.create_from_string(_ID_PATTERN).search(String(id)):
@@ -48,26 +55,49 @@ func find_errors() -> PackedStringArray:
 	if health < _MIN_HEALTH:
 		errors.append("202.3.7 : un Hero a au moins %d PV" % _MIN_HEALTH)
 	_check_passive(errors)
+	_check_triggered(errors)
+	_check_orders(errors)
+	if passive.is_empty() and triggered.is_empty() and orders.is_empty():
+		errors.append("202.3.22 : le Hero porte au moins un passif, un Ordre ou un effet déclenché")
 	return errors
 
 
 func _read_effects(reader: CatalogReader, key: String) -> Array[EffectDefinition]:
 	var effects: Array[EffectDefinition] = []
-	for entry: Variant in reader.read_array(key):
-		if typeof(entry) != TYPE_DICTIONARY:
-			reader.fail("« %s » : chaque entrée est un objet" % key)
-			continue
-		var entry_dict: Dictionary = entry
-		effects.append(EffectDefinition.from_dict(entry_dict))
+	for entry: Dictionary in reader.read_objects(key):
+		effects.append(EffectDefinition.from_dict(entry))
 	return effects
 
 
-# 202.3.11 : le texte porte un passif ; 202.3.18 : le passif est statique.
+func _read_orders(reader: CatalogReader) -> void:
+	for entry: Dictionary in reader.read_objects("orders"):
+		orders.append(HeroOrder.from_dict(entry))
+
+
+# 202.3.11 : le passif est facultatif ; 202.3.18 : il est statique.
 func _check_passive(errors: PackedStringArray) -> void:
-	if passive.is_empty():
-		errors.append("202.3.11 : le Hero porte un passif, passive est vide")
 	for index: int in passive.size():
 		for message: String in passive[index].find_errors():
 			errors.append("passive %d : %s" % [index + 1, message])
 		if passive[index].timing != EffectDefinition.EffectTiming.STATIC:
 			errors.append("passive %d : timing refusé pour le Hero" % (index + 1))
+
+
+# 202.3.20, 207.3.1 : effets déclenchés ; 207.3.5 : « une fois par tour » exige un seul effet
+# déclenché sur la carte, comme pour CardDefinition.
+func _check_triggered(errors: PackedStringArray) -> void:
+	for index: int in triggered.size():
+		for message: String in triggered[index].find_errors():
+			errors.append("triggered %d : %s" % [index + 1, message])
+		if triggered[index].timing != EffectDefinition.EffectTiming.TRIGGERED:
+			errors.append("triggered %d : timing refusé pour un effet déclenché" % (index + 1))
+	var once_error := EffectDefinition.once_per_turn_error(triggered)
+	if not once_error.is_empty():
+		errors.append(once_error)
+
+
+# 202.3.19, 211.1 : chaque Ordre se contrôle lui-même.
+func _check_orders(errors: PackedStringArray) -> void:
+	for index: int in orders.size():
+		for message: String in orders[index].find_errors():
+			errors.append("order %d : %s" % [index + 1, message])

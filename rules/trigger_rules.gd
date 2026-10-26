@@ -12,18 +12,18 @@ const MIN_EFFECTS_TO_ORDER: int = 2
 
 
 ## 207.3.1, 207.3.3, 207.3.4, 208.4.2 : les effets de `piece` déclenchés par `trigger_event`
-## attendent leur ajout à la pile. Un Hero n'en porte aucun, un jeton non plus (202.4.5).
+## attendent leur ajout à la pile. Un Hero porte les siens (202.3.20), un jeton aucun (202.4.5).
 static func trigger(
 	state: DuelState,
 	piece: Piece,
 	trigger_event: EffectDefinition.TriggerEvent,
 	events: Array[DuelEvent]
 ) -> void:
-	if piece.kind == Piece.PieceKind.HERO or piece.is_token():
+	if piece.is_token():
 		return
-	var definition := state.catalog.get_card(piece.card.definition_id)
-	for index: int in definition.effects.size():
-		var effect := definition.effects[index]
+	var effects := state.catalog.triggerable_effects(piece.card.definition_id)
+	for index: int in effects.size():
+		var effect := effects[index]
 		var is_triggered := effect.timing == EffectDefinition.EffectTiming.TRIGGERED
 		if is_triggered and effect.trigger == trigger_event:
 			_wait(state, piece, index, events)
@@ -164,7 +164,7 @@ static func resolve_triggered(
 
 ## Définition de l'effet que porte `entry`.
 static func effect_of(state: DuelState, entry: StackEntry) -> EffectDefinition:
-	return state.catalog.get_card(entry.source_definition_id).effects[entry.effect_index]
+	return state.catalog.triggerable_effects(entry.source_definition_id)[entry.effect_index]
 
 
 # 207.3.4 : l'effet appartient au joueur à qui appartient la carte ; son identifiant d'entrée

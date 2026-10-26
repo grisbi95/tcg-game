@@ -46,6 +46,26 @@ static func validate_main_phase_with_empty_stack(
 	return IntentRejected.RejectReason.NONE
 
 
+## 207.1.3 à 207.1.6, 208.2.3, 211.2.4 à 211.2.7 : raison du refus d'une annonce de vitesse
+## `speed` par `side` (Spell ou Ordre), ou NONE. Action : phase principale du joueur actif, pile
+## vide. Réaction : de même, ou chaque fois que `side` peut répondre. Pur.
+static func validate_speed(
+	state: DuelState, side: DuelState.PlayerSide, speed: CardDefinition.SpellSpeed
+) -> IntentRejected.RejectReason:
+	var responding := not state.stack.is_empty()
+	if responding and speed == CardDefinition.SpellSpeed.REACTION:
+		if side != state.priority_player:
+			return IntentRejected.RejectReason.NOT_YOUR_PRIORITY
+		return IntentRejected.RejectReason.NONE
+	if state.phase != DuelState.DuelPhase.MAIN:
+		return IntentRejected.RejectReason.WRONG_PHASE
+	if side != state.active_player:
+		return IntentRejected.RejectReason.NOT_YOUR_TURN
+	if responding:
+		return IntentRejected.RejectReason.STACK_NOT_EMPTY
+	return IntentRejected.RejectReason.NONE
+
+
 ## 208.2.4, 208.3.1 : raison du refus de `intent`, ou NONE. L'attente est contrôlée
 ## par DuelEngine. Pur.
 static func validate_pass(state: DuelState, intent: PassPriority) -> IntentRejected.RejectReason:
@@ -84,8 +104,9 @@ static func return_priority_to_active_player(state: DuelState) -> void:
 	state.priority_player = state.active_player
 
 
-# 208.1.1 à 208.1.5, 209.2.10, Q-109 : une annonce faite pendant son propre tour interrompt
-# l'inactivité, décidée à la fin du tour. Un effet déclenché n'est pas une annonce (207.3.2).
+# 208.1.1 à 208.1.5, 208.1.12, 209.2.10, Q-109 : une annonce faite pendant son propre tour
+# interrompt l'inactivité, décidée à la fin du tour. Un effet déclenché n'est pas une annonce
+# (207.3.2).
 static func _record_announcement(state: DuelState, entry: StackEntry) -> void:
 	if entry.kind == StackEntry.StackEntryKind.TRIGGERED_EFFECT:
 		return

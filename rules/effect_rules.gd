@@ -22,6 +22,21 @@ static func validate_targets(
 	return IntentRejected.RejectReason.NONE
 
 
+## 207.5.1a, 207.5.8, 211.4.1, 211.4.2 : raison du refus des cibles que porte `entry` pour les
+## `effects` d'un Spell ou d'un Ordre : chaque effet juge les cibles de son genre, aucune cible en
+## trop. Pur.
+static func validate_announced_targets(
+	state: DuelState, entry: StackEntry, effects: Array[EffectDefinition]
+) -> IntentRejected.RejectReason:
+	for effect: EffectDefinition in effects:
+		if effect.target == null:
+			continue
+		var reason := validate_targets(state, entry, effect.target)
+		if reason != IntentRejected.RejectReason.NONE:
+			return reason
+	return validate_no_extra_targets(entry, effects)
+
+
 ## 207.5.1 : une entrée ne porte que les cibles qu'exigent ses effets ; tout autre genre de
 ## cible fait refuser l'annonce. Pur.
 static func validate_no_extra_targets(
@@ -158,6 +173,18 @@ static func resolve_effect(
 				return
 			for spell: StackEntry in spells:
 				counter_spell(state, spell, events)
+
+
+## 207.4.1, 208.3.2 : applique, dans l'ordre, les effets à la résolution (`RESOLVE`) d'un Spell ou
+## d'un Ordre ; s'arrête dès que la partie s'arrête (209.2.2).
+static func resolve_all(
+	state: DuelState, entry: StackEntry, effects: Array[EffectDefinition], events: Array[DuelEvent]
+) -> void:
+	for effect: EffectDefinition in effects:
+		if effect.timing == EffectDefinition.EffectTiming.RESOLVE:
+			resolve_effect(state, entry, effect, events)
+		if state.is_ended():
+			return
 
 
 ## 207.6.4, 207.6.5, 207.6.6 : le Spell `spell` quitte la pile sans se résoudre ; sa carte va
