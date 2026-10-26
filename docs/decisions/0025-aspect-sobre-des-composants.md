@@ -1,6 +1,6 @@
 # 0025 — Aspect sobre des composants
 
-- Statut : remplacée par 0027 (aspect des cartes et des pièces)
+- Statut : remplacée par 0027 (aspect des cartes et des pièces) ; modifiée par 0070
 - Date : 2026-10-18
 - Décideur : créateur du projet
 - Périmètre : habillage des composants de vue (`ui/components/`, `ui/theme/`)

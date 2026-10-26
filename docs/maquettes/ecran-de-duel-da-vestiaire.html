@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction A : Vestiaire</title>
+<!-- Maquette de direction artistique de l'écran de duel (étape 2b.4), version 1 du 2026-10-25.
+     Géométrie du gabarit validé (décision 0053, docs/maquettes/ecran-de-duel-gabarit.html) ;
+     style selon docs/direction-artistique/bible.md. Illustrations factices : formes à remplacer par l'IA. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..900&family=Source+Serif+4:opsz,wght@8..60,400..700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #0d0c0b; color: #e8e2d6;
+    font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { padding: 12px 16px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  header h1 { font-size: 18px; margin: 0 12px 0 0; }
+  header label { display: inline-flex; gap: 6px; align-items: center; color: #a39a8b; }
+  #frame { margin: 0 16px 16px; position: relative; }
+  #screen { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px;
+    transform-origin: 0 0; overflow: hidden; outline: 1px solid #000; }
+  #screen div { position: absolute; }
+  .t { white-space: nowrap; }
+  .num { font-variant-numeric: tabular-nums; }
+  #charte { margin: 0 16px 32px; display: grid; gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .doc { background: #1a1816; border: 1px solid #2f2a24; padding: 12px 14px; }
+  .doc h2 { font-size: 15px; margin: 0 0 8px; }
+  .doc p, .doc li { margin: 0 0 4px; color: #b5ab9a; }
+  .doc ul { margin: 0; padding-left: 18px; }
+  .sw { display: inline-flex; align-items: center; gap: 6px; margin: 0 10px 6px 0; font-size: 12px;
+    color: #b5ab9a; }
+  .sw i { display: inline-block; width: 18px; height: 18px; border: 1px solid #000; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Écran de duel · Direction A : Vestiaire</h1>
+  <label>Échelle
+    <select id="scale">
+      <option value="fit">ajustée à la fenêtre</option>
+      <option value="1">1920×1080 (100 %)</option>
+      <option value="0.6667">1280×720 (2/3)</option>
+    </select>
+  </label>
+  <label><input type="checkbox" id="prev" checked> Aperçu au survol</label>
+</header>
+
+<div id="frame"><div id="screen"></div></div>
+
+<section id="charte"></section>
+
+<script>
+const T = {
+  "fontTitle": "'Archivo', sans-serif",
+  "fontText": "'Source Serif 4', serif",
+  "table": "#1c1916",
+  "swTable": "#1c1916",
+  "light": "radial-gradient(ellipse 60% 70% at 50% 0%, rgba(255,226,170,.07), transparent 70%)",
+  "arena": "radial-gradient(closest-side, #3d362e, #2b2620 80%, transparent)",
+  "ink": "#15120f",
+  "paper": "#efe5cf",
+  "paperDark": "#c7b896",
+  "muted": "#8b8274",
+  "panel": "#26221d",
+  "textOnPanel": "#cdbfa6",
+  "coord": "#8b8274",
+  "hole": "#1f1b17",
+  "holeShadow": "#0e0c0a",
+  "grout": "#15120f",
+  "cell": "#e0d3b6",
+  "cellAlt": "#e6dabf",
+  "cellEdge": "#c7b896",
+  "track": "#2f2a24",
+  "a": "#2f6fd6",
+  "b": "#d43b2f",
+  "essence": "#f4c542",
+  "yellow": "#f4c542",
+  "green": "#57c77a",
+  "forceUp": "#2d7a2f",
+  "forceDown": "#b0560f",
+  "heart": "#b0644e",
+  "heroHue": "#c79aa3",
+  "type": {
+    "unit": "#a8b88f",
+    "building": "#cfae74",
+    "spell": "#9ea6c4",
+    "gear": "#c98f72",
+    "hero": "#c79aa3"
+  },
+  "tintShade": "#00000022",
+  "band": "hatch",
+  "artDot": "rgba(21,18,15,.16)",
+  "backFill": "#2f2a24",
+  "backLine": "rgba(239,229,207,.10)",
+  "decoInk": "#2f2a24",
+  "decoOpacity": 0.55,
+  "cut": 8,
+  "line": 2,
+  "shadow": 6,
+  "charte": "<div class=\"doc\"><h2>Intention</h2><p>« Vestiaire » : la bible telle quelle. Table sombre et chaude, plateau et cartes en papier sous la lumière de l'arène, trait d'encre, ombres en aplat, bandes de type hachurées. Le calme d'une partie d'échecs, la chaleur d'une table entre amis.</p></div><div class=\"doc\"><h2>Palette</h2><span class=\"sw\"><i style=\"background:#1c1916\"></i>table #1c1916</span><span class=\"sw\"><i style=\"background:#efe5cf\"></i>papier #efe5cf</span><span class=\"sw\"><i style=\"background:#15120f\"></i>encre #15120f</span><span class=\"sw\"><i style=\"background:#2f6fd6\"></i>A #2f6fd6</span><span class=\"sw\"><i style=\"background:#d43b2f\"></i>B #d43b2f</span><span class=\"sw\"><i style=\"background:#f4c542\"></i>Essence #f4c542</span><span class=\"sw\"><i style=\"background:#f4c542\"></i>surligné #f4c542</span><span class=\"sw\"><i style=\"background:#57c77a\"></i>choisi #57c77a</span><p style=\"margin-top:6px\">Teintes de type :</p><span class=\"sw\"><i style=\"background:#a8b88f\"></i>unit #a8b88f</span><span class=\"sw\"><i style=\"background:#cfae74\"></i>building #cfae74</span><span class=\"sw\"><i style=\"background:#9ea6c4\"></i>spell #9ea6c4</span><span class=\"sw\"><i style=\"background:#c98f72\"></i>gear #c98f72</span><span class=\"sw\"><i style=\"background:#c79aa3\"></i>hero #c79aa3</span></div><div class=\"doc\"><h2>Polices (OFL)</h2><p><b style=\"font-family:Archivo;font-weight:800\">Archivo</b> : titres, chiffres (même largeur), bandeaux en capitales espacées.</p><p><span style=\"font-family:'Source Serif 4'\">Source Serif 4</span> : textes de règles et bulles.</p></div><div class=\"doc\"><h2>Ce qu'elle apporte</h2><ul><li>Reposant sur un long duel, lisible dans une pièce sombre.</li><li>Les couleurs franches (A, B, Essence, surligné, choisi) ressortent seules sur le fond.</li><li>Proche du gabarit en gris : peu de risque à l'habillage (2b.5).</li></ul></div><div class=\"doc\"><h2>Ce qu'elle coûte</h2><ul><li>Plus classique : beaucoup de jeux de cartes sont sombres.</li><li>Le papier des cartes doit porter tout le caractère ; les illustrations comptent beaucoup.</li></ul></div>"
+};
+
+const screen = document.getElementById("screen");
+screen.style.background = T.table;
+screen.style.color = T.ink;
+
+// ---------- Outils de dessin ----------
+function el(parent, x, y, w, h, style) {
+  const node = document.createElement("div");
+  Object.assign(node.style, { left: x + "px", top: y + "px", width: w + "px", height: h + "px" }, style || {});
+  parent.appendChild(node);
+  return node;
+}
+function text(parent, x, y, content, style) {
+  const node = el(parent, x, y, 0, 0, Object.assign({ width: "auto", height: "auto" }, style));
+  node.className = "t";
+  node.textContent = content;
+  return node;
+}
+function cut(size) {
+  return `polygon(${size}px 0, 100% 0, 100% calc(100% - ${size}px), calc(100% - ${size}px) 100%, 0 100%, 0 ${size}px)`;
+}
+// Plaque à coins coupés : trait d'encre, remplissage, ombre en aplat décalé.
+function plate(parent, x, y, w, h, o) {
+  const c = o.cut === undefined ? T.cut : o.cut, lw = o.lw === undefined ? T.line : o.lw;
+  if (o.shadow) el(parent, x + o.shadow, y + o.shadow, w, h, { background: T.ink, clipPath: cut(c) });
+  const outer = el(parent, x, y, w, h, { background: o.line || T.ink, clipPath: cut(c), opacity: o.opacity || 1 });
+  return el(outer, lw, lw, w - 2 * lw, h - 2 * lw, { background: o.fill, clipPath: cut(Math.max(0, c - lw * 0.6)) });
+}
+function ring(parent, x, y, w, h, color, double) {
+  if (double) {
+    plate(parent, x - 9, y - 9, w + 18, h + 18, { fill: "transparent", line: T.green, lw: 3, cut: T.cut + 4 });
+    plate(parent, x - 4, y - 4, w + 8, h + 8, { fill: "transparent", line: T.green, lw: 3, cut: T.cut + 2 });
+  } else {
+    plate(parent, x - 5, y - 5, w + 10, h + 10, { fill: "transparent", line: color, lw: 4, cut: T.cut + 2 });
+  }
+}
+function svg(parent, x, y, w, h, body, viewBox, style) {
+  const node = el(parent, x, y, w, h, style);
+  node.innerHTML = `<svg width="${w}" height="${h}" viewBox="${viewBox || "0 0 24 24"}" preserveAspectRatio="xMidYMid meet">${body}</svg>`;
+  return node;
+}
+const dots = (color, step) => `radial-gradient(${color} 22%, transparent 24%) 0 0 / ${step}px ${step}px`;
+const hatch = (a, b) => `repeating-linear-gradient(135deg, ${a} 0 3px, ${b} 3px 5px)`;
+
+// ---------- Icônes (grille 24, une couleur) ----------
+const ICONS = {
+  unit: '<circle cx="12" cy="7" r="4"/><path d="M4 22v-4c0-3 3-5 8-5s8 2 8 5v4z"/>',
+  building: '<path d="M3 22V9l3-2v3l3-2v3l3-2v3l3-2v3l3-2v3l3-2v13z"/>',
+  spell: '<path d="M12 1l2.6 8.4L23 12l-8.4 2.6L12 23l-2.6-8.4L1 12l8.4-2.6z"/>',
+  gear: '<path d="M18 2h4v4L10 18l-4-4zM3 15l6 6-2 2-2-2-2 2-2-2 2-2-2-2z"/>',
+  hero: '<path d="M2 7l5 4 5-7 5 7 5-4-2 13H4z"/>',
+  essence: '<path d="M12 1C9 7 5 11 5 15a7 7 0 0 0 14 0c0-4-4-8-7-14z"/>',
+};
+function icon(parent, x, y, size, kind, color) {
+  return svg(parent, x, y, size, size, `<g fill="${color}">${ICONS[kind]}</g>`);
+}
+
+// ---------- Illustrations factices ----------
+// Figure d'encre sur fond teinté tramé : remplace l'illustration IA (bible : même trait, même papier).
+const FIGURES = {
+  unit: s => `<rect x="${34 - s}" y="44" width="${32 + 2 * s}" height="50" fill="${T.paper}" stroke="${T.ink}" stroke-width="4"/>
+    <rect x="34" y="14" width="32" height="32" fill="${T.paper}" stroke="${T.ink}" stroke-width="4"/>
+    <rect x="34" y="24" width="32" height="8" fill="${T.ink}"/><circle cx="43" cy="28" r="2.5" fill="${T.paper}"/><circle cx="57" cy="28" r="2.5" fill="${T.paper}"/>`,
+  building: () => `<path d="M24 94V38h10v8h10v-8h12v8h10v-8h10v56z" fill="${T.paper}" stroke="${T.ink}" stroke-width="4"/>
+    <path d="M42 94V70a8 8 0 0 1 16 0v24z" fill="${T.ink}"/>`,
+  spell: () => `<path d="M50 8l9 28 29 6-25 14 6 30-19-20-19 20 6-30-25-14 29-6z" fill="${T.paper}" stroke="${T.ink}" stroke-width="4"/>`,
+  gear: () => `<path d="M70 10h18v18L44 72l-16-16z" fill="${T.paper}" stroke="${T.ink}" stroke-width="4"/>
+    <path d="M18 62l20 20-8 8-6-6-8 8-8-8 8-8-6-6z" fill="${T.ink}"/>`,
+  hero: () => `<path d="M30 94l6-46h28l6 46z" fill="${T.paper}" stroke="${T.ink}" stroke-width="4"/>
+    <circle cx="50" cy="32" r="16" fill="${T.paper}" stroke="${T.ink}" stroke-width="4"/>
+    <path d="M34 18l6 6 10-12 10 12 6-6v-4H34z" fill="${T.essence}" stroke="${T.ink}" stroke-width="3"/>
+    <rect x="42" y="30" width="16" height="4" fill="${T.ink}"/>`,
+};
+function art(parent, x, y, w, h, card, asleep) {
+  const box = el(parent, x, y, w, h, { background: `${dots(T.artDot, 6)}, ${card.hue || T.type[card.type]}`,
+    overflow: "hidden", filter: asleep ? "grayscale(1) contrast(.8)" : "none", opacity: asleep ? 0.7 : 1 });
+  svg(box, 0, 0, w, h, FIGURES[card.type](card.force ? card.force * 2 : 4), "0 0 100 100");
+  return box;
+}
+
+// ---------- Pastilles (0033, 0034) ----------
+function costDrop(parent, x, y, size, value) {
+  svg(parent, x, y, size, size, `<path d="M12 1C9 7 4.5 11 4.5 15a7.5 7.5 0 0 0 15 0C19.5 11 15 7 12 1z" fill="${T.essence}" stroke="${T.ink}" stroke-width="1.6"/>`);
+  text(parent, x, y + size * 0.3, value, { width: size + "px", textAlign: "center", font: `800 ${size * 0.5}px ${T.fontTitle}`, color: T.ink });
+}
+function forceDiamond(parent, x, y, size, value, color) {
+  svg(parent, x, y, size, size, `<path d="M12 1l11 11-11 11L1 12z" fill="${T.paper}" stroke="${T.ink}" stroke-width="1.8"/>`);
+  text(parent, x, y + size * 0.22, value, { width: size + "px", textAlign: "center", font: `800 ${size * 0.52}px ${T.fontTitle}`, color: color || T.ink });
+}
+function heart(parent, x, y, size, value) {
+  svg(parent, x, y, size, size, `<path d="M12 22L2.5 12.5A5.5 5.5 0 0 1 12 5a5.5 5.5 0 0 1 9.5 7.5z" fill="${T.heart}" stroke="${T.ink}" stroke-width="1.6"/>`);
+  text(parent, x, y + size * 0.22, value, { width: size + "px", textAlign: "center", font: `800 ${size * 0.42}px ${T.fontTitle}`, color: T.paper });
+}
+function keyword(parent, x, y, label, size) {
+  const tag = text(parent, x, y, label, { font: `800 ${size}px ${T.fontTitle}`, letterSpacing: ".08em",
+    textTransform: "uppercase", background: T.ink, color: T.paper, padding: "1px 4px" });
+  return tag;
+}
+
+// ---------- Carte 158×220 (0027) ----------
+const LABELS = { unit: "Unit", building: "Building", spell: "Spell", gear: "Gear", hero: "Hero" };
+function card(parent, x, y, c, scale) {
+  const holder = el(parent, x, y, 158, 220, { transform: `scale(${scale || 1})`, transformOrigin: "0 0" });
+  const tint = T.type[c.type];
+  const face = plate(holder, 0, 0, 158, 220, { fill: T.band === "hatch" ? hatch(tint, T.tintShade) : tint, shadow: T.shadow / 2 });
+  const panel = plate(face, 4, 4, 146, 208, { fill: T.paper, lw: 1.5, cut: T.cut - 3 });
+  costDrop(panel, 3, 3, 28, c.cost);
+  text(panel, 33, 9, c.name, { font: `800 13px ${T.fontTitle}`, letterSpacing: ".02em", color: T.ink });
+  if (c.force) forceDiamond(panel, 115, 3, 26, c.force);
+  if (c.health) heart(panel, 115, 3, 26, c.health);
+  art(panel, 3, 34, 137, 70, c);
+  el(panel, 3, 34, 137, 70, { boxShadow: `inset 0 0 0 2px ${T.ink}` });
+  const band = el(panel, 3, 107, 137, 17, { background: tint, boxShadow: `inset 0 0 0 1.5px ${T.ink}` });
+  icon(band, 4, 2, 13, c.type, T.ink);
+  text(band, 20, 2, LABELS[c.type] + (c.token ? " · Jeton" : ""), { font: `800 9px ${T.fontTitle}`, letterSpacing: ".12em", textTransform: "uppercase", color: T.ink });
+  if (c.speed) text(band, 0, 2, c.speed, { right: "5px", left: "auto", font: `700 9px ${T.fontTitle}`, letterSpacing: ".08em", textTransform: "uppercase", color: T.ink });
+  const body = el(panel, 5, 128, 133, 74, { font: `400 10.5px/1.3 ${T.fontText}`, color: T.ink, whiteSpace: "normal" });
+  if (c.keyword) {
+    const k = document.createElement("span");
+    Object.assign(k.style, { font: `800 8.5px ${T.fontTitle}`, letterSpacing: ".1em", textTransform: "uppercase",
+      background: T.ink, color: T.paper, padding: "1px 4px", marginRight: "4px" });
+    k.textContent = c.keyword;
+    body.appendChild(k);
+  }
+  body.appendChild(document.createTextNode(c.text || ""));
+  return holder;
+}
+function back(parent, x, y, w, h, player) {
+  const face = plate(parent, x, y, w, h, { fill: T.backFill, line: T.ink, shadow: w > 100 ? T.shadow / 2 : 0, cut: w > 100 ? T.cut : 4 });
+  el(face, 0, 0, w, h, { background: `repeating-linear-gradient(45deg, ${T.backLine} 0 1.5px, transparent 1.5px 12px), repeating-linear-gradient(-45deg, ${T.backLine} 0 1.5px, transparent 1.5px 12px)` });
+  el(face, 0, 0, w, h, { boxShadow: `inset 0 0 0 ${w > 100 ? 4 : 2}px ${player === "a" ? T.a : T.b}` });
+  const s = Math.min(w, h) * 0.42;
+  const emblem = plate(face, (w - 6) / 2 - s / 2, (h - 6) / 2 - s / 2, s, s, { fill: T.paper, lw: 1.5, cut: s / 6 });
+  for (let i = 0; i < 25; i++) el(emblem, 2 + (i % 5) * (s - 7) / 5, 2 + Math.floor(i / 5) * (s - 7) / 5, (s - 7) / 5 - 1, (s - 7) / 5 - 1, { background: i === 12 ? T.essence : T.ink, opacity: i === 12 ? 1 : 0.8 });
+}
+
+// ---------- Pièce 125×125 (mini-carte, 0027) ----------
+function piece(parent, x, y, c, player, o) {
+  o = o || {};
+  if (o.ring === "yellow") ring(parent, x, y, 125, 125, T.yellow);
+  if (o.ring === "green") ring(parent, x, y, 125, 125, T.green, true);
+  const tint = T.type[c.type];
+  const face = plate(parent, x, y, 125, 125, { fill: player === "a" ? T.a : T.b, lw: 2, shadow: T.shadow / 2 });
+  const panel = plate(face, 4, 4, 113, 113, { fill: T.paper, lw: 1.5, cut: T.cut - 3 });
+  text(panel, 4, 4, c.name, { font: `800 12px ${T.fontTitle}`, color: T.ink, letterSpacing: ".02em" });
+  if (c.force) forceDiamond(panel, 82, 1, 26, c.force, o.forceColor);
+  if (c.health) heart(panel, 82, 1, 26, c.health);
+  art(panel, 2, 26, 107, 64, c, o.asleep);
+  el(panel, 2, 26, 107, 64, { boxShadow: `inset 0 0 0 1.5px ${T.ink}` });
+  const band = el(panel, 2, 92, 107, 17, { background: tint, boxShadow: `inset 0 0 0 1.5px ${T.ink}` });
+  icon(band, 3, 2, 13, c.type, T.ink);
+  if (c.keyword) keyword(band, 19, 3, c.keyword, 8);
+  else text(band, 19, 3, LABELS[c.type], { font: `800 8px ${T.fontTitle}`, letterSpacing: ".12em", textTransform: "uppercase", color: T.ink });
+  if (o.asleep) text(panel, 0, 46, "endormie", { width: "109px", textAlign: "center", font: `800 9px ${T.fontTitle}`, letterSpacing: ".14em", textTransform: "uppercase", color: T.paper, textShadow: `0 0 3px ${T.ink}, 0 0 2px ${T.ink}` });
+}
+
+// ---------- Cartes du deck de test ----------
+const C = {
+  capitaine: { name: "Capitaine", type: "hero", cost: 0, health: 15, hue: T.heroHue },
+  recrue: { name: "Recrue", type: "unit", cost: 1, force: 2 },
+  soldat: { name: "Soldat", type: "unit", cost: 2, force: 3 },
+  colosse: { name: "Colosse", type: "unit", cost: 5, force: 6, text: "" },
+  pillard: { name: "Pillard", type: "unit", cost: 2, force: 2, keyword: "Assaut 1", text: "" },
+  gardien: { name: "Gardien", type: "unit", cost: 2, force: 2, keyword: "Rempart 1", text: "" },
+  heraut: { name: "Héraut", type: "unit", cost: 3, force: 3, keyword: "Arrivée", text: "Une Unit ennemie ciblée a −1 Force jusqu'à la fin du tour." },
+  martyr: { name: "Martyr", type: "unit", cost: 3, force: 3, keyword: "Dernier souffle", text: "Une Unit alliée ciblée a +1 Force tant que la pièce est en jeu." },
+  palissade: { name: "Palissade", type: "building", cost: 2, force: 4 },
+  campement: { name: "Campement", type: "building", cost: 3, force: 4, keyword: "Avant-poste", text: "" },
+  renfort: { name: "Renfort", type: "spell", cost: 1, speed: "Réaction", text: "Une Unit alliée ciblée a +2 Force jusqu'à la fin du tour." },
+  frappe: { name: "Frappe", type: "spell", cost: 3, speed: "Action", text: "Détruisez une Unit ennemie ciblée de Force 3 ou moins." },
+  lame: { name: "Lame", type: "gear", cost: 1, text: "La Unit qui porte ce Gear a +1 Force." },
+};
+
+// ---------- Couche 0 : fond ----------
+el(screen, 0, 0, 1920, 1080, { background: T.light });
+// Décor de la place libre (Q9 de la fiche) : emblème du tournoi, très discret.
+const deco = el(screen, 1578, 264, 326, 552, { opacity: T.decoOpacity });
+for (let i = 0; i < 25; i++) el(deco, 38 + (i % 5) * 52, 150 + Math.floor(i / 5) * 52, 46, 46, { background: i === 12 ? T.essence : T.decoInk, clipPath: cut(8) });
+
+// ---------- Couche 1 : jeu ----------
+// E12 main adverse
+for (let i = 0; i < 5; i++) back(screen, 993 - 141 + i * 58, 16, 50, 70, "b");
+
+// E13 à E15 Sources
+function sources(gridY, chipY, counts, essence, player) {
+  const states = [];
+  [["up", counts[0]], ["tilted", counts[1]], ["reserve", counts[2]], ["fonte", counts[3]]]
+    .forEach(([s, n]) => { for (let i = 0; i < n; i++) states.push(s); });
+  states.forEach((s, i) => {
+    const x = 16 + (i % 5) * 80, y = gridY + Math.floor(i / 5) * 114;
+    if (s === "up" || s === "tilted") {
+      const f = plate(screen, x, y, 74, 106, { fill: s === "up" ? T.paper : T.paperDark, shadow: s === "up" ? T.shadow / 2 : 0, opacity: s === "up" ? 1 : 0.55 });
+      el(f, 0, 0, 74, 106, { boxShadow: `inset 0 0 0 3px ${player === "a" ? T.a : T.b}`, opacity: 0.9 });
+      icon(f, 20, 34, 30, "essence", s === "up" ? T.essence : T.muted);
+      if (s === "up") svg(f, 20, 34, 30, 30, `<path d="${"M12 1C9 7 5 11 5 15a7 7 0 0 0 14 0c0-4-4-8-7-14z"}" fill="none" stroke="${T.ink}" stroke-width="1.5"/>`);
+    } else {
+      const hole = el(screen, x, y, 74, 106, { background: T.hole, clipPath: cut(T.cut), boxShadow: `inset 3px 3px 0 ${T.holeShadow}`, opacity: s === "fonte" ? 0.55 : 1 });
+      if (s === "fonte") svg(hole, 0, 0, 74, 106, `<path d="M14 14L60 92M60 14L14 92" stroke="${T.ink}" stroke-width="4"/>`, "0 0 74 106");
+    }
+  });
+  const chip = plate(screen, 16, chipY, 124, 32, { fill: T.panel, cut: 6 });
+  icon(chip, 8, 6, 18, "essence", T.essence);
+  text(chip, 32, 6, "ESSENCE", { font: `700 11px ${T.fontTitle}`, letterSpacing: ".12em", color: T.textOnPanel, opacity: 0.75 });
+  text(chip, 96, 2, essence, { font: `800 20px ${T.fontTitle}`, color: T.textOnPanel }).classList.add("num");
+}
+sources(16, 244, [2, 1, 6, 1], "2", "b");
+sources(844, 806, [2, 2, 4, 2], "2", "a");
+
+// E03 à E06 plateau
+const gx = 615, gy = 98, step = 143, grid = 711;
+el(screen, gx - 90, gy - 70, grid + 180, grid + 140, { background: T.arena });
+if (T.shadow) el(screen, gx + T.shadow, gy + T.shadow, grid, grid, { background: T.ink, clipPath: cut(T.cut + 4) });
+el(screen, gx, gy, grid, grid, { background: T.grout, clipPath: cut(T.cut + 4) });
+const cells = [];
+for (let r = 0; r < 5; r++) for (let c = 0; c < 5; c++) {
+  const x = gx + 2 + c * step, y = gy + 2 + r * step;
+  cells.push(el(screen, x, y, 135, 135, { background: (r + c) % 2 ? T.cell : T.cellAlt, clipPath: cut(T.cut), boxShadow: `inset 0 -3px 0 ${T.cellEdge}` }));
+}
+"ABCDE".split("").forEach((l, c) => text(screen, gx + c * step + 64, gy + grid + 9, l, { font: `700 13px ${T.fontTitle}`, color: T.coord }));
+for (let r = 0; r < 5; r++) text(screen, gx - 18, gy + r * step + 60, String(5 - r), { font: `700 13px ${T.fontTitle}`, color: T.coord });
+const at = (col, row) => [gx + col * step + 7, gy + (5 - row) * step + 7];
+// Cases légales du Soldat en B2 : point jaune (bible, États).
+[[0, 2], [1, 3], [2, 2]].forEach(([c, r]) => {
+  const [x, y] = at(c, r);
+  el(screen, x + 46, y + 46, 34, 34, { background: T.yellow, clipPath: cut(8), boxShadow: `inset 0 0 0 3px ${T.ink}` });
+});
+piece(screen, ...at(2, 1), C.capitaine, "a");
+piece(screen, ...at(1, 2), C.soldat, "a", { ring: "yellow" });
+piece(screen, ...at(0, 1), C.palissade, "a");
+piece(screen, ...at(4, 3), C.gardien, "a", { forceColor: T.forceUp });
+piece(screen, ...at(2, 5), C.capitaine, "b");
+piece(screen, ...at(3, 4), C.pillard, "b", { ring: "green" });
+piece(screen, ...at(1, 4), C.recrue, "b", { asleep: true, forceColor: T.forceDown });
+
+// E17 barres de temps
+function timeBar(y, fraction, color, secs, alpha) {
+  el(screen, gx, y, 615, 6, { background: T.track, opacity: alpha, clipPath: cut(2) });
+  el(screen, gx, y, 615 * fraction, 6, { background: color, opacity: alpha, clipPath: cut(2) });
+  if (secs) text(screen, gx + 623, y - 6, secs, { font: `800 15px ${T.fontTitle}`, color: color }).classList.add("num");
+  if (secs) text(screen, gx + 662, y - 3, "· tour", { font: `600 11px ${T.fontTitle}`, color: T.coord, opacity: 0.8 });
+}
+timeBar(89, 0, T.b, "", 0.3);
+timeBar(812, 0.6, T.a, "54 s", 1);
+
+// E16 à E20 colonne de duel
+const col = plate(screen, 1342, 98, 220, 711, { fill: T.panel, shadow: T.shadow, cut: T.cut + 4 });
+text(col, 12, 10, "TOUR 4", { font: `700 11px ${T.fontTitle}`, letterSpacing: ".18em", color: T.textOnPanel, opacity: 0.7 });
+el(col, 12, 37, 10, 10, { background: T.a, clipPath: cut(2), boxShadow: `inset 0 0 0 1.5px ${T.ink}` });
+text(col, 28, 30, "À toi de jouer", { font: `800 16px ${T.fontTitle}`, color: T.textOnPanel });
+const flag = plate(col, 180, 10, 26, 26, { fill: T.panel, line: T.textOnPanel, lw: 1.5, cut: 5 });
+svg(flag, 4, 4, 16, 16, `<path d="M5 2v20M5 3h12l-3 4 3 4H5" fill="none" stroke="${T.textOnPanel}" stroke-width="2"/>`);
+el(col, 10, 62, 196, 2, { background: T.textOnPanel, opacity: 0.18 });
+const stack = el(col, 10, 76, 196, 545, { background: T.hole, clipPath: cut(T.cut), boxShadow: `inset 3px 3px 0 ${T.holeShadow}` });
+text(stack, 0, 262, "PILE VIDE", { width: "196px", textAlign: "center", font: `700 12px ${T.fontTitle}`, letterSpacing: ".2em", color: T.coord });
+const btn = plate(col, 8, 635, 200, 64, { fill: T.a, shadow: T.shadow / 2 || 0 });
+text(btn, 0, 12, "TERMINER LE TOUR", { width: "196px", textAlign: "center", font: `800 17px ${T.fontTitle}`, letterSpacing: ".06em", color: "#fff" });
+text(btn, 0, 36, "Fin du tour 4", { width: "196px", textAlign: "center", font: `500 11px ${T.fontText}`, color: "#fff", opacity: 0.85 });
+
+// E10, E11 main
+[C.recrue, C.heraut, C.renfort, C.campement, C.frappe, C.lame, C.colosse].forEach((c, i) => {
+  if (i === 1 || i === 2 || i === 5) ring(screen, 425 + i * 163, 844, 158, 220, T.yellow);
+  card(screen, 425 + i * 163, 844, c);
+});
+
+// E22 coins deck et défausse
+function corner(labelY, pilesY, player, count, top) {
+  text(screen, 1578, labelY, "DECK · DÉFAUSSE", { font: `700 11px ${T.fontTitle}`, letterSpacing: ".18em", color: T.coord });
+  back(screen, 1578, pilesY, 158, 220, player);
+  const plaque = plate(screen, 1617, pilesY + 72, 80, 76, { fill: T.paper, cut: 8 });
+  text(plaque, 0, 14, count, { width: "76px", textAlign: "center", font: `800 28px ${T.fontTitle}`, color: T.ink }).classList.add("num");
+  card(screen, 1746, pilesY, top);
+}
+corner(16, 40, "b", "18", C.martyr);
+corner(820, 844, "a", "21", C.frappe);
+
+// ---------- Couche 3 : informations ----------
+const info = el(screen, 0, 0, 1920, 1080, { pointerEvents: "none" });
+info.id = "preview";
+card(info, 120, 301, C.heraut, 2.2);
+const tip = plate(info, 478, 301, 260, 118, { fill: T.paper, shadow: T.shadow / 2 });
+keyword(tip, 12, 12, "Arrivée", 11);
+el(tip, 12, 38, 232, 66, { font: `400 13px/1.35 ${T.fontText}`, color: T.ink, whiteSpace: "normal" }).textContent =
+  "Texte de rappel du mot-clé, posé par le jeu (libellé à confirmer).";
+const tip2 = plate(info, 478, 427, 260, 96, { fill: T.paper, shadow: T.shadow / 2 });
+text(tip2, 12, 12, "CASE B2", { font: `800 11px ${T.fontTitle}`, letterSpacing: ".14em", color: T.ink });
+el(tip2, 12, 34, 232, 50, { font: `400 13px/1.35 ${T.fontText}`, color: T.ink, whiteSpace: "normal" }).textContent =
+  "Bulle d'information : même plaque que l'aperçu, ombre en aplat.";
+
+// ---------- Charte ----------
+const charte = document.getElementById("charte");
+charte.innerHTML = T.charte;
+
+// ---------- Échelle ----------
+const frame = document.getElementById("frame");
+function fit() {
+  const choice = document.getElementById("scale").value;
+  const available = Math.max(320, frame.parentElement.clientWidth - 32);
+  const scale = choice === "fit" ? Math.min(1, available / 1920) : Number(choice);
+  screen.style.transform = "scale(" + scale + ")";
+  frame.style.width = 1920 * scale + "px";
+  frame.style.height = 1080 * scale + "px";
+}
+document.getElementById("scale").addEventListener("change", fit);
+document.getElementById("prev").addEventListener("change", e => { info.style.display = e.target.checked ? "" : "none"; });
+window.addEventListener("resize", fit);
+fit();
+</script>
+</body>
+</html>

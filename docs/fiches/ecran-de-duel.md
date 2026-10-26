@@ -139,7 +139,7 @@ Le compteur garde le comportement actuel (203.6, décision 0032) : pendant son t
 | ID | Élément | Node | Taille | Place | Alpha | États | Asset attendu |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | E13 | Bloc Sources | SourcesView (VBoxContainer) | 394×220 de grille, plus le compteur E15 | du bas : x 16, y 844, compteur au-dessus (y 806) ; du haut : x 16, y 16, compteur dessous (y 244) | 1 | — | — |
-| E14 | Emplacement de Source | PanelContainer | 74×106, écarts 6 et 8, 5 colonnes × 2 rangées (10 emplacements selon `DuelConfig`) | grille | inclinée : 0,55 ; réserve : contour pointillé seul ; Fonte : 0,55, barrée | en jeu redressée (survol `#46505e`, cliquable), en jeu inclinée (bordure grise, estompée, « Recycler +1 » au survol), en réserve (pointillé), en Fonte (barrée d'une croix, estompée) | `ui/source_upright.png`, `ui/source_tilted.png`, `ui/source_reserve.png`, `ui/source_fonte.png`, 74×106 ; icône `icons/source.svg` 30 px |
+| E14 | Emplacement de Source | PanelContainer | 74×106, écarts 6 et 8, 5 colonnes × 2 rangées (10 emplacements selon `DuelConfig`) | grille | inclinée : 0,55 ; réserve : alvéole creusée seule (0070) ; Fonte : 0,55, barrée | en jeu redressée (survol `#46505e`, cliquable), en jeu inclinée (bordure grise, estompée, « Recycler +1 » au survol), en réserve (alvéole creusée), en Fonte (barrée d'une croix, estompée) | `ui/source_upright.png`, `ui/source_tilted.png`, `ui/source_reserve.png`, `ui/source_fonte.png`, 74×106 ; icône `icons/source.svg` 30 px |
 | E15 | Compteur d'Essence (réserve, ou paiement préparé pendant le tour adverse) | PanelContainer avec icône et Label | 124×32, police 17 | au-dessus de la grille pour soi, dessous pour l'adversaire, aligné à gauche | 1 | — | fond 9-patch `ui/counter.png` ; icône `icons/essence.svg` 18 px (nouvelle icône à ajouter à `DuelIcons.Icon`) |
 
 ### 5.5 Colonne de duel et barres de temps (décisions 0029, 0030, 0032, 0045)
@@ -195,12 +195,12 @@ Les marques restent dessinées en code : elles doivent rester nettes à toute ta
 
 | Rôle | Tailles actuelles (px) | Asset attendu |
 | --- | --- | --- |
-| Titres (fin de partie) | 40 | `fonts/<titre>.woff2` ou `.ttf`, libre (OFL) |
-| Chiffres (deck 28, pastilles 15 à 19, secondes 15) | 15 à 28 | police à chiffres de même largeur |
-| Texte courant et boutons | 11 à 22 | `fonts/<texte>.ttf` |
-| Texte des cartes | 9 à 14 | lisible en 1280×720, soit 6 à 9 px réels (décision 0035) |
+| Titres (fin de partie) | 40 | `fonts/archivo.ttf` (Archivo, gras), libre (OFL) |
+| Chiffres (deck 28, pastilles 15 à 19, secondes 15) | 15 à 28 | Archivo, chiffres de même largeur |
+| Texte courant et boutons | 11 à 22 | Archivo (boutons, bandeaux), Source Serif 4 (phrases) |
+| Texte des cartes | 9 à 14 | Source Serif 4, `fonts/source_serif_4.ttf` ; lisible en 1280×720, soit 6 à 9 px réels (décision 0035) |
 
-Deux polices au plus (`ui/CLAUDE.md`), choisies à l'étape 2b.4.
+Deux polices au plus (`ui/CLAUDE.md`), choisies à l'étape 2b.4 (décision 0070) : Archivo et Source Serif 4.
 
 ## 7. Inventaire des assets de l'écran de duel
 
