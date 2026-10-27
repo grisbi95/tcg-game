@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+<!-- palissade : pieux taillés en pointe, deux traverses ligaturées. Silhouette provisoire (décision 0072). -->
+<rect x="0" y="0" width="1024" height="1024" fill="#cfae74"/>
+<g id="ombre">
+  <polygon points="116,482 956,442 956,512 116,552" fill="#15120f" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="116,702 956,672 956,742 116,772" fill="#15120f" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="136,902 286,902 286,432 211,342 136,432" fill="#15120f" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="298,902 448,902 448,352 373,262 298,352" fill="#15120f" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="460,902 610,902 610,392 535,302 460,392" fill="#15120f" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="622,902 772,902 772,312 697,222 622,312" fill="#15120f" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="784,902 934,902 934,412 859,322 784,412" fill="#15120f" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+</g>
+<g id="dessin">
+  <polygon points="92,460 932,420 932,490 92,530" fill="#5c554b" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="92,680 932,650 932,720 92,750" fill="#5c554b" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="112,880 262,880 262,410 187,320 112,410" fill="#e0d3b6" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polyline points="167,820 177,460" fill="none" stroke="#15120f" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="274,880 424,880 424,330 349,240 274,330" fill="#efe5cf" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polyline points="329,820 339,380" fill="none" stroke="#15120f" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="436,880 586,880 586,370 511,280 436,370" fill="#e0d3b6" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polyline points="491,820 501,420" fill="none" stroke="#15120f" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="598,880 748,880 748,290 673,200 598,290" fill="#efe5cf" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polyline points="653,820 663,340" fill="none" stroke="#15120f" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="760,880 910,880 910,390 835,300 760,390" fill="#e0d3b6" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polyline points="815,820 825,440" fill="none" stroke="#15120f" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="238,445 298,445 298,525 238,525" fill="#c39a55" stroke="#15120f" stroke-width="18" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="238,665 298,665 298,745 238,745" fill="#c39a55" stroke="#15120f" stroke-width="18" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="400,445 460,445 460,525 400,525" fill="#c39a55" stroke="#15120f" stroke-width="18" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="400,665 460,665 460,745 400,745" fill="#c39a55" stroke="#15120f" stroke-width="18" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="562,445 622,445 622,525 562,525" fill="#c39a55" stroke="#15120f" stroke-width="18" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="562,665 622,665 622,745 562,745" fill="#c39a55" stroke="#15120f" stroke-width="18" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="724,445 784,445 784,525 724,525" fill="#c39a55" stroke="#15120f" stroke-width="18" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="724,665 784,665 784,745 724,745" fill="#c39a55" stroke="#15120f" stroke-width="18" stroke-linejoin="round" stroke-linecap="round"/>
+</g>
+</svg>

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+<!-- martyr : pâle et sans jambes, yeux clos, auréole de papier (Dernier souffle). Silhouette provisoire (décision 0072). -->
+<rect x="0" y="0" width="1024" height="1024" fill="#a8b88f"/>
+<g id="ombre">
+  <polygon points="365,742 707,742 689,832 635,886 590,823 536,904 482,823 428,895 378.5,832" fill="#15120f" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="365,751 707,751 729.5,508 671,463 401,463 342.5,508" fill="#15120f" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="360.5,476.5 293,508 279.5,616 351.5,625" fill="#15120f" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="711.5,476.5 779,508 792.5,616 720.5,625" fill="#15120f" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="315.5,544 756.5,544 792.5,580 792.5,607 756.5,643 315.5,643 279.5,607 279.5,580" fill="#15120f" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="450.5,215.5 621.5,215.5 684.5,278.5 684.5,409 621.5,472 450.5,472 387.5,409 387.5,278.5" fill="#15120f" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="450.5,215.5 621.5,215.5 684.5,278.5 684.5,373 387.5,373 387.5,278.5" fill="#15120f" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="514.4,215.5 557.6,215.5 557.6,373 514.4,373" fill="#15120f" stroke="#15120f" stroke-width="18" stroke-linejoin="round" stroke-linecap="round"/>
+  <ellipse cx="536" cy="130" rx="135" ry="36" fill="#15120f" stroke="#15120f" stroke-width="24" stroke-linejoin="round" stroke-linecap="round"/>
+</g>
+<g id="dessin">
+  <polygon points="341,720 683,720 665,810 611,864 566,801 512,882 458,801 404,873 354.5,810" fill="#efe5cf" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="341,729 683,729 705.5,486 647,441 377,441 318.5,486" fill="#9a8cab" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="336.5,454.5 269,486 255.5,594 327.5,603" fill="#efe5cf" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="687.5,454.5 755,486 768.5,594 696.5,603" fill="#efe5cf" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="291.5,522 732.5,522 768.5,558 768.5,585 732.5,621 291.5,621 255.5,585 255.5,558" fill="#efe5cf" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polyline points="476,522 521,621" fill="none" stroke="#15120f" stroke-width="20" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="426.5,193.5 597.5,193.5 660.5,256.5 660.5,387 597.5,450 426.5,450 363.5,387 363.5,256.5" fill="#efe5cf" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="426.5,193.5 597.5,193.5 660.5,256.5 660.5,351 363.5,351 363.5,256.5" fill="#9a8cab" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="490.4,193.5 533.6,193.5 533.6,351 490.4,351" fill="#efe5cf" stroke="#15120f" stroke-width="18" stroke-linejoin="round" stroke-linecap="round"/>
+  <polyline points="407.6,313.2 438.2,324 468.8,313.2" fill="none" stroke="#15120f" stroke-width="18" stroke-linejoin="round" stroke-linecap="round"/>
+  <polyline points="555.2,313.2 585.8,324 616.4,313.2" fill="none" stroke="#15120f" stroke-width="18" stroke-linejoin="round" stroke-linecap="round"/>
+  <polyline points="470.6,396 553.4,396" fill="none" stroke="#15120f" stroke-width="18" stroke-linejoin="round" stroke-linecap="round"/>
+  <ellipse cx="512" cy="108" rx="135" ry="36" fill="#efe5cf" stroke="#15120f" stroke-width="24" stroke-linejoin="round" stroke-linecap="round"/>
+  <ellipse cx="512" cy="108" rx="76.5" ry="12.6" fill="#a8b88f" stroke="#15120f" stroke-width="18" stroke-linejoin="round" stroke-linecap="round"/>
+</g>
+</svg>

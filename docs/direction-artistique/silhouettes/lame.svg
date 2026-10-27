@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+<!-- lame : épée courte simple. Silhouette provisoire (décision 0072). -->
+<rect x="0" y="0" width="1024" height="1024" fill="#c98f72"/>
+<g id="ombre">
+  <polygon points="435.6,546.7 523.3,634.4 813.2,344.5 840.1,229.9 725.5,256.8" fill="#15120f" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="345.1,456.2 613.8,724.9 567.8,770.9 299.1,502.2" fill="#15120f" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="403.8,606.8 463.2,666.2 332.4,797 273,737.6" fill="#15120f" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <ellipse cx="270.8" cy="799.2" rx="62" ry="62" fill="#15120f" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+</g>
+<g id="dessin">
+  <polygon points="411.6,524.7 499.3,612.4 789.2,322.5 816.1,207.9 701.5,234.8" fill="#efe5cf" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polyline points="469.6,554.4 766.6,257.4" fill="none" stroke="#15120f" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="321.1,434.2 589.8,702.9 543.8,748.9 275.1,480.2" fill="#5c554b" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polygon points="379.8,584.8 439.2,644.2 308.4,775 249,715.6" fill="#b0644e" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polyline points="344.4,620.2 421.5,661.9" fill="none" stroke="#15120f" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/>
+  <polyline points="309.1,655.5 386.1,697.3" fill="none" stroke="#15120f" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/>
+  <polyline points="273.7,690.9 350.8,732.6" fill="none" stroke="#15120f" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/>
+  <ellipse cx="246.8" cy="777.2" rx="62" ry="62" fill="#c39a55" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+</g>
+</svg>

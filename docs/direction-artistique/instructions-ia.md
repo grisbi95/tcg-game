@@ -35,7 +35,7 @@ Jamais de nom d'auteur ou d'artiste vivant dans une demande (bible, Interdits). 
 
 | Famille | Fichier (fiche § 7) | Format à demander | Consignes propres |
 | --- | --- | --- | --- |
-| Illustration de carte ou de jeton | `cards/art/<id>.webp` | carré, `--ar 1:1`, livré en 1024 au plus | un seul personnage ou objet, entier, dans les 90 % centraux ; fond uni de la teinte du champion ou de la teinte de type ; lisible réduit à 40 px de haut (taille d'une pièce, 125 px, moins le cadre) |
+| Illustration de carte ou de jeton | `cards/art/<id>.webp` | carré, `--ar 1:1`, livré en 1024 au plus | un seul personnage ou objet, entier, dans les 90 % centraux ; fond uni de la teinte du champion ou de la teinte de type ; lisible réduit à 40 px de haut ; affiché en entier, jamais recadré, à deux tailles : 110×110 px sur la pièce, 142×142 px sur la carte en main (312×312 en aperçu à ×2,2), trait d'encre compris |
 | Illustration du Hero | `cards/art/<id>.webp` | carré, `--ar 1:1`, 1024 | portrait en pied, plus soigné : sert aussi à la pièce Hero et à l'aperçu (348×484) |
 | Fond de table | `ui/table.webp` | `--ar 16:9`, ramené à 1920×1080 | matière seule (papier sombre, bois ou feutre chaud), très peu de contraste, lumière venant d'en haut au centre ; aucun objet sous le plateau (x 615 à 1326, y 98 à 809), ni sous les mains et les Sources |
 | Matières (papier, trame, hachures) | servent à fabriquer cadres, cases, panneaux | carré, motif répétable (`--tile` dans Midjourney) | grain léger ; la teinte se règle ensuite, pas dans la demande |

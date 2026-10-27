@@ -45,7 +45,12 @@ func show_piece(piece_id: int) -> void:
 		DuelViewModel.PieceForm.CARD:
 			definition = _model.piece_definition(piece)
 			_preview.show_card(definition, gear)
-	_show_bubbles(definition, gear, DuelViewModel.is_shown_asleep(piece))
+	var keywords := CardText.piece_keywords(_engine.get_state(), piece, definition)
+	if _tooltips != null:
+		_tooltips.show_bubbles(
+			InfoBubble.list_for_piece(keywords, gear, DuelViewModel.is_shown_asleep(piece)),
+			gear != null
+		)
 
 
 func show_stack_entry(stack_entry_id: int) -> void:

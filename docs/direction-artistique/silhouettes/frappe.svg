@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+<!-- frappe : éclair massif. Silhouette provisoire (décision 0072). -->
+<rect x="0" y="0" width="1024" height="1024" fill="#9ea6c4"/>
+<g id="ombre">
+  <polygon points="624,92 354,492 524,502 354,972 744,422 564,412 744,92" fill="#15120f" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+</g>
+<g id="dessin">
+  <polygon points="600,70 330,470 500,480 330,950 720,400 540,390 720,70" fill="#efe5cf" stroke="#15120f" stroke-width="28" stroke-linejoin="round" stroke-linecap="round"/>
+  <polyline points="560,140 440,380" fill="none" stroke="#15120f" stroke-width="16" stroke-linejoin="round" stroke-linecap="round"/>
+</g>
+</svg>

@@ -71,6 +71,24 @@ func test_210_1_gear_keywords_come_after_those_of_the_card() -> void:
 	assert_array(_titles(bubbles)).contains_exactly(["Arrivée", "Rempart 3"])
 
 
+func test_decision_0073_hovered_piece_shows_its_granted_keywords() -> void:
+	var keywords: Dictionary[CardDefinition.Keyword, int] = {
+		CardDefinition.Keyword.ASSAULT: ASSAULT_VALUE
+	}
+	var bubbles := InfoBubble.list_for_piece(keywords, null, false)
+	assert_array(_titles(bubbles)).contains_exactly(["Assaut 2"])
+
+
+func test_decision_0073_gear_keyword_already_carried_by_the_piece_is_not_repeated() -> void:
+	var gear := _catalog.get_card(GEAR)
+	gear.keywords[CardDefinition.Keyword.RAMPART] = RAMPART_VALUE
+	var keywords: Dictionary[CardDefinition.Keyword, int] = {
+		CardDefinition.Keyword.RAMPART: RAMPART_VALUE + 1
+	}
+	var bubbles := InfoBubble.list_for_piece(keywords, gear, true)
+	assert_array(_titles(bubbles)).contains_exactly(["Rempart 4", "Endormie"])
+
+
 func test_205_5_3_asleep_piece_gets_the_asleep_bubble_last() -> void:
 	var unit := _catalog.get_card(SOLDIER)
 	unit.keywords[CardDefinition.Keyword.ARRIVAL] = CardDefinition.NO_KEYWORD_VALUE

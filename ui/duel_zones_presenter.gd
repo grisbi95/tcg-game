@@ -101,8 +101,3 @@ func _fill_piece(piece_view: PieceView, piece: Piece, model: DuelViewModel) -> v
 			var definition := model.piece_definition(piece)
 			piece_view.show_card_piece(piece.piece_id, definition, piece.owner)
 			piece_view.show_force(force, definition.force)
-	if piece.kind == Piece.PieceKind.UNIT:
-		var definition := model.piece_definition(piece)
-		piece_view.show_keywords(
-			CardText.granted_keywords_line(_engine.get_state(), piece, definition)
-		)

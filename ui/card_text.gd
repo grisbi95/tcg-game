@@ -50,22 +50,9 @@ const TOKEN_NAME: String = "Jeton"
 const KEYWORD_SEPARATOR: String = ":"
 
 
-## « Assaut 2 · Avant-poste » ; vide sans mot-clé.
-static func keywords_line(definition: CardDefinition) -> String:
-	var parts := PackedStringArray()
-	for keyword: CardDefinition.Keyword in definition.keywords:
-		parts.append(keyword_label(keyword, definition.keywords[keyword]))
-	return SEPARATOR.join(parts)
-
-
 ## « Unit », « Building », « Spell », « Gear ».
 static func type_name(card_type: CardDefinition.CardType) -> String:
 	return TYPE_NAMES[card_type]
-
-
-## 202.4.2, décision 0027 : « Unit · Jeton » ou « Building · Jeton ».
-static func token_type_name(card_type: CardDefinition.CardType) -> String:
-	return type_name(card_type) + SEPARATOR + TOKEN_NAME
 
 
 ## « Action » ou « Réaction » pour un Spell (207.1.2) ; vide sinon.
@@ -86,37 +73,59 @@ static func order_button_text(order_index: int, order: HeroOrder) -> String:
 
 ## Mots-clés de `piece` d'une carte `definition` (null : jeton, Hero), Assaut et Rempart accordés
 ## compris (210.4, décision 0058) : les valeurs viennent de `KeywordRules`, un jeton n'en porte que
-## s'il en reçoit (202.4.13a).
-static func granted_keywords_line(
+## s'il en reçoit (202.4.13a). Montrés au survol, la pièce épurée n'en porte pas (décision 0073).
+static func piece_keywords(
 	state: DuelState, piece: Piece, definition: CardDefinition
-) -> String:
+) -> Dictionary[CardDefinition.Keyword, int]:
 	var totals: Dictionary[CardDefinition.Keyword, int] = {
 		CardDefinition.Keyword.ASSAULT: KeywordRules.assault_value(state, piece),
 		CardDefinition.Keyword.RAMPART: KeywordRules.rampart_value(state, piece),
 	}
-	var printed: Dictionary[CardDefinition.Keyword, int] = {}
+	var result: Dictionary[CardDefinition.Keyword, int] = {}
 	if definition != null:
-		printed = definition.keywords
-	var parts := PackedStringArray()
-	for keyword: CardDefinition.Keyword in printed:
-		var value: int = totals.get(keyword, printed[keyword])
-		parts.append(keyword_label(keyword, value))
+		for keyword: CardDefinition.Keyword in definition.keywords:
+			result[keyword] = totals.get(keyword, definition.keywords[keyword])
 	for keyword: CardDefinition.Keyword in totals:
-		if totals[keyword] > 0 and not printed.has(keyword):
-			parts.append(keyword_label(keyword, totals[keyword]))
-	return SEPARATOR.join(parts)
+		if totals[keyword] > 0 and not result.has(keyword):
+			result[keyword] = totals[keyword]
+	return result
 
 
-## Décision 0027 : texte en BBCode, chaque mot-clé en étiquette en tête ; le nom du mot-clé déjà
-## écrit au début du texte n'est pas répété.
-static func body_bbcode(definition: CardDefinition) -> String:
-	var chips := PackedStringArray()
-	var text := definition.text.strip_edges()
+## Étiquette en tête du texte d'une carte (décision 0027) : un mot-clé, avec son icône, ou la
+## vitesse d'un Spell (207.1.2), sans icône ; la vitesse n'est pas un mot-clé de règle.
+class Chip:
+	extends RefCounted
+	var label: String
+	var has_icon: bool
+	var icon: DuelIcons.Icon
+
+	func _init(chip_label: String, chip_icon: int = -1) -> void:
+		label = chip_label
+		has_icon = chip_icon >= 0
+		if has_icon:
+			icon = chip_icon as DuelIcons.Icon
+
+
+## Les étiquettes en tête du texte de `definition` : sa vitesse s'il s'agit d'un Spell, puis chaque
+## mot-clé, en capitales.
+static func chips(definition: CardDefinition) -> Array[Chip]:
+	var result: Array[Chip] = []
+	var speed := speed_name(definition)
+	if not speed.is_empty():
+		result.append(Chip.new(speed.to_upper()))
 	for keyword: CardDefinition.Keyword in definition.keywords:
 		var label := keyword_label(keyword, definition.keywords[keyword])
-		chips.append(chip(label))
-		text = _without_prefix(text, label)
-	return _joined(chips, text)
+		result.append(Chip.new(label.to_upper(), DuelIcons.keyword_icon(keyword)))
+	return result
+
+
+## Décision 0027 : texte en BBCode, sans les étiquettes (`chips`) ; le nom du mot-clé déjà écrit
+## au début du texte n'est pas répété.
+static func body_bbcode(definition: CardDefinition) -> String:
+	var text := definition.text.strip_edges()
+	for keyword: CardDefinition.Keyword in definition.keywords:
+		text = _without_prefix(text, keyword_label(keyword, definition.keywords[keyword]))
+	return escaped(text)
 
 
 ## Décision 0027, édition 0.42 (décision de design 0208) : le texte d'un Hero est son passif,
@@ -136,18 +145,6 @@ static func keyword_reminder(keyword: CardDefinition.Keyword, value: int) -> Str
 	return KEYWORD_REMINDERS[keyword].replace(VALUE_PLACEHOLDER, str(value))
 
 
-## Étiquette sombre, la même pour tous les mots-clés (décision 0027).
-static func chip(label: String) -> String:
-	return (
-		"[bgcolor=#%s][color=#%s] %s [/color][/bgcolor]"
-		% [
-			DuelPalette.KEYWORD_BACKGROUND.to_html(false),
-			DuelPalette.KEYWORD_INK.to_html(false),
-			escaped(label),
-		]
-	)
-
-
 ## Texte affiché tel quel par un RichTextLabel en BBCode.
 static func escaped(text: String) -> String:
 	return text.replace("[", "[lb]")
@@ -160,10 +157,3 @@ static func _without_prefix(text: String, label: String) -> String:
 	if rest.begins_with(KEYWORD_SEPARATOR):
 		rest = rest.substr(KEYWORD_SEPARATOR.length()).strip_edges()
 	return rest
-
-
-static func _joined(chips: PackedStringArray, text: String) -> String:
-	var parts := chips.duplicate()
-	if not text.is_empty():
-		parts.append(escaped(text))
-	return " ".join(parts)

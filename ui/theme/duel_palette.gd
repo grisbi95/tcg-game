@@ -194,6 +194,11 @@ static func tint_of(card_type: CardDefinition.CardType) -> Tint:
 	return CARD_TINTS[card_type]
 
 
+## Nom de `tint` en minuscules (`unit`, `hero`…) : celui des fichiers de cadre de `assets/cards/`.
+static func tint_name(tint: Tint) -> String:
+	return str(Tint.find_key(tint)).to_lower()
+
+
 ## Cadre d'un composant, bordé de `border`.
 static func panel_style(border: Color) -> StyleBoxFlat:
 	return framed_style(PANEL_COLOR, border, BORDER_WIDTH, CONTENT_MARGIN)
@@ -246,15 +251,6 @@ static func hole_style(margin: float) -> StyleBoxFlat:
 	style.border_color = HOLE_SHADOW_COLOR
 	style.border_width_left = THICK_BORDER_WIDTH
 	style.border_width_top = THICK_BORDER_WIDTH
-	return style
-
-
-## Cadre de la zone d'illustration d'une carte ou d'une pièce : voile clair sur la teinte, trait
-## d'encre, coins coupés de `cut` px, marge `margin`.
-static func art_style(cut: int, margin: float) -> StyleBoxFlat:
-	var style := fill_style(ART_COLOR, cut, margin)
-	style.border_color = INK_COLOR
-	style.set_border_width_all(BORDER_WIDTH)
 	return style
 
 

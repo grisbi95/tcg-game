@@ -4,20 +4,22 @@ extends RefCounted
 ## agrandie les multiplie. Ajuste aussi la taille de police du texte pour qu'il tienne dans la place
 ## restante, jusqu'à un minimum, puis le coupe. Aucune règle ici.
 
-const COST_BADGE_SIZE: float = 34.0
-const STAT_BADGE_SIZE: float = 42.0
-const ART_ICON_SIZE: float = 40.0
-const BAND_ICON_SIZE: float = 14.0
-const TEXT_HEIGHT: float = 84.0
-const TEXT_MARGIN: float = 5.0
-const ART_CUT: int = 6
+const COST_BADGE_SIZE: float = 32.0
+const STAT_BADGE_SIZE: float = 34.0
+## Marge des pastilles contre le coin de l'illustration.
+const BADGE_INSET: float = 4.0
+const ART_ICON_SIZE: float = 50.0
+## Côté de la zone d'illustration carrée : la largeur intérieure de la carte, à l'échelle 1.
+const ART_SIDE: float = 142.0
+const TEXT_HEIGHT: float = 40.0
+const TEXT_MARGIN: float = 1.0
 ## Taille de police la plus petite du texte, à l'échelle 1.
 const TEXT_MIN_FONT_SIZE: int = 9
 const HIGHLIGHT_PADDING_NAMES: Array[StringName] = [
 	&"text_highlight_h_padding", &"text_highlight_v_padding"
 ]
-## Le Layout compte quatre rangées : en-tête, illustration, bandeau et texte.
-const LAYOUT_GAP_COUNT: int = 3
+## Le Layout compte deux rangées : l'illustration et le texte.
+const LAYOUT_GAP_COUNT: int = 1
 
 var _card: PanelContainer
 var _parts: Parts
@@ -31,20 +33,17 @@ var _is_text_fit_pending: bool = false
 class Parts:
 	extends RefCounted
 	var layout: VBoxContainer
-	var header: HBoxContainer
-	var band: HBoxContainer
+	var art_frame: Control
+	var art_icon: Control
+	var art: PanelContainer
 	var cost_badge: Control
 	var stat_badge: Control
-	var art_icon: Control
-	var band_icon: Control
-	var art: PanelContainer
+	var name_banner: PanelContainer
 	var text_panel: PanelContainer
 	var text_label: RichTextLabel
 	var cost_label: Label
 	var stat_label: Label
 	var name_label: Label
-	var type_label: Label
-	var speed_label: Label
 
 
 ## `card` est la carte mise à l'échelle, de taille `card_size` à l'échelle 1.
@@ -56,35 +55,21 @@ func setup(card: PanelContainer, parts: Parts, card_size: Vector2) -> void:
 
 
 ## Applique l'échelle `card_scale` aux textes, formes et marges, puis redemande l'ajustement du
-## texte. Le cadre de la carte (ses marges) suit l'échelle dans `CardView`.
+## texte. Le cadre de la carte, de son bandeau de nom, de son illustration et de son texte suit
+## l'échelle dans `CardView`, qui connaît la teinte.
 func apply_scale(card_scale: float) -> void:
 	_scale = card_scale
 	_card.custom_minimum_size = _card_size * _scale
-	_scale_constant(_parts.layout, &"CardColumn", &"separation")
-	for row: HBoxContainer in [_parts.header, _parts.band]:
-		_scale_constant(row, &"CardRow", &"separation")
+	_scale_constant(_parts.layout, &"CardTightColumn", &"separation")
 	for label: Label in [_parts.cost_label, _parts.stat_label]:
 		_scale_font(label, &"CardPillLabel", &"font_size")
 	_scale_font(_parts.name_label, &"CardNameLabel", &"font_size")
-	for label: Label in [_parts.type_label, _parts.speed_label]:
-		_scale_font(label, &"CardBandLabel", &"font_size")
 	_parts.text_label.theme_type_variation = &"CardBodyText"
-	_parts.cost_badge.custom_minimum_size = Vector2.ONE * COST_BADGE_SIZE * _scale
-	_parts.header.custom_minimum_size.y = STAT_BADGE_SIZE * _scale
-	_parts.stat_badge.custom_minimum_size = Vector2.ONE * STAT_BADGE_SIZE * _scale
+	_parts.art_frame.custom_minimum_size = Vector2.ONE * ART_SIDE * _scale
 	_parts.art_icon.custom_minimum_size = Vector2.ONE * ART_ICON_SIZE * _scale
-	_parts.band_icon.custom_minimum_size = Vector2.ONE * BAND_ICON_SIZE * _scale
+	_place_badge(_parts.cost_badge, COST_BADGE_SIZE, false)
+	_place_badge(_parts.stat_badge, STAT_BADGE_SIZE, true)
 	_parts.text_panel.custom_minimum_size.y = TEXT_HEIGHT * _scale
-	var cut := roundi(ART_CUT * _scale)
-	var border_width := roundi(DuelPalette.BORDER_WIDTH * _scale)
-	var art_style := DuelPalette.art_style(cut, DuelPalette.BORDER_WIDTH * _scale)
-	art_style.set_border_width_all(border_width)
-	_parts.art.add_theme_stylebox_override("panel", art_style)
-	var text_style := DuelPalette.framed_style(
-		DuelPalette.CARD_FACE_COLOR, DuelPalette.INK_COLOR, border_width, TEXT_MARGIN * _scale
-	)
-	text_style.set_corner_radius_all(cut)
-	_parts.text_panel.add_theme_stylebox_override("panel", text_style)
 	_request_text_fit()
 
 
@@ -95,6 +80,17 @@ func _request_text_fit() -> void:
 		return
 	_is_text_fit_pending = true
 	_fit_text.call_deferred()
+
+
+# Pastille dans un coin haut de l'illustration : à gauche, ou à droite si `is_right`.
+func _place_badge(badge: Control, badge_size: float, is_right: bool) -> void:
+	var side := badge_size * _scale
+	var inset := BADGE_INSET * _scale
+	badge.custom_minimum_size = Vector2.ONE * side
+	badge.offset_top = inset
+	badge.offset_bottom = inset + side
+	badge.offset_left = -inset - side if is_right else inset
+	badge.offset_right = -inset if is_right else inset + side
 
 
 func _scale_font(control: Control, variation: StringName, font_size_name: StringName) -> void:
@@ -148,17 +144,14 @@ func _fit_text() -> void:
 		text_label.add_theme_font_size_override(&"normal_font_size", font_size)
 	_follow_highlight_padding(font_size, theme_font_size)
 	var text_height := minf(text_label.get_content_height(), max_text_height)
-	_parts.text_panel.custom_minimum_size.y = maxf(TEXT_HEIGHT * _scale, text_height + panel_margin)
+	var content_height := text_height + panel_margin
+	_parts.text_panel.custom_minimum_size.y = maxf(TEXT_HEIGHT * _scale, content_height)
 
 
-# Place laissée au texte : la carte moins le cadre, l'en-tête, l'illustration à sa taille minimale,
-# le bandeau et les écarts.
+# Place laissée au texte : la carte moins le cadre, l'illustration et l'écart.
 func _max_text_panel_height() -> float:
 	var frame_height := _card.get_theme_stylebox(&"panel").get_minimum_size().y
-	var rows_height := (
-		_parts.header.get_combined_minimum_size().y
-		+ _parts.art.get_combined_minimum_size().y
-		+ _parts.band.get_combined_minimum_size().y
-	)
 	var gaps_height := _parts.layout.get_theme_constant(&"separation") * LAYOUT_GAP_COUNT
-	return _card_size.y * _scale - frame_height - rows_height - gaps_height
+	return (
+		_card_size.y * _scale - frame_height - _parts.art_frame.custom_minimum_size.y - gaps_height
+	)
