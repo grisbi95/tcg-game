@@ -29,7 +29,7 @@ static func apply_end_turn(state: DuelState, intent: EndTurn, events: Array[Duel
 	state.phase = DuelState.DuelPhase.TURN_END
 	state.triggers_allow_response = false
 	events.append(TurnEnded.new(intent.player))
-	TriggerRules.trigger_end_of_turn(state, events)
+	trigger_end_of_turn(state, events)
 
 
 ## 204.5.6, 204.5.7 : la fin du tour se poursuit quand sa pile est vide et qu'aucun choix
@@ -76,6 +76,12 @@ static func start_turn(
 	draw_cards(state, side, state.config.cards_drawn_per_turn, events)
 	if not state.is_ended():
 		state.phase = DuelState.DuelPhase.MAIN
+
+
+## 204.5.3 : quand le joueur actif termine son tour, chaque pièce en jeu réagit à la fin du tour.
+static func trigger_end_of_turn(state: DuelState, events: Array[DuelEvent]) -> void:
+	for piece: Piece in state.pieces_on_board():
+		TriggerRules.trigger(state, piece, EffectDefinition.TriggerEvent.END_OF_TURN, events)
 
 
 ## 201.3.5, 209.5.2, 209.5.4 : `side` pioche `count` cartes, chacune séparément ; 209.2.2 : rien

@@ -1,7 +1,8 @@
 class_name EffectRules
 extends RefCounted
 ## Effets qui passent par la pile (207) : cibles et validité (207.5), application à la
-## résolution (207.4), Contrecarrer (207.6), suite d'effets d'un texte (207.7, `resolve_text`).
+## résolution (207.4), Contrecarrer (207.6), suite d'effets d'un texte
+## (207.7, `resolve_text`).
 ## SpellRules les appelle, jamais l'inverse ; TriggerRules ajoute les effets déclenchés,
 ## TriggerTargets lit les cibles légales et juge celles d'une annonce.
 ##
@@ -43,18 +44,16 @@ static func is_legal_piece(
 static func spec_anchor(
 	state: DuelState, owner: DuelState.PlayerSide, spec: TargetSpec
 ) -> FilterAnchor:
-	if spec.piece_filter.relative_to == PieceFilter.RelativeTo.OWN_HERO:
-		return _hero_anchor(state, owner)
-	return FilterAnchor.new(owner, spec.source_piece_id, spec.source_cell)
+	return ModifierRules.reference_anchor(
+		state, spec.piece_filter, owner, spec.source_piece_id, spec.source_cell
+	)
 
 
 ## 207.4.11, 207.3.14, 205.2.5 : point de référence de `filter` pour `entry` : le Hero du joueur, ou
 ## la pièce source de l'entrée, sur le plateau ou à sa dernière case.
 static func entry_anchor(state: DuelState, entry: StackEntry, filter: PieceFilter) -> FilterAnchor:
-	if filter.relative_to == PieceFilter.RelativeTo.OWN_HERO:
-		return _hero_anchor(state, entry.owner)
 	var cell := state.cell_of_piece(entry.source_piece_id)
-	return FilterAnchor.new(entry.owner, entry.source_piece_id, cell)
+	return ModifierRules.reference_anchor(state, filter, entry.owner, entry.source_piece_id, cell)
 
 
 ## 202.4.12, 207.5.11, 215.1.1 : une case ciblée est libre, dans la zone qu'exige `spec` et, si
@@ -110,21 +109,6 @@ static func resolve_effect(
 	return context.took_place
 
 
-## 207.7.1, 207.7.1a, 207.7.1b, 207.7.2, 207.3.13 : vrai si `condition` est absente ou vraie pour le
-## joueur `owner`, à qui appartient l'effet, à l'état courant. Un texte déclenché la lit à
-## l'événement (207.3.13, jamais à la résolution, 207.3.13b), l'effet d'un Spell ou d'un Ordre quand
-## il vient dans l'ordre du texte. Pur.
-static func condition_holds(
-	state: DuelState, condition: EffectCondition, owner: DuelState.PlayerSide
-) -> bool:
-	if condition == null:
-		return true
-	match condition.kind:
-		EffectCondition.ConditionKind.HAND_SIZE_AT_MOST:
-			return state.get_player(owner).hand.size() <= condition.amount
-	return false
-
-
 ## 207.7.4, 207.7.1a, 207.7.2, 207.7.3, 207.7.5, 207.7.5a, 207.7.6, 207.7.6a, 208.3.2 : applique,
 ## dans l'ordre où le texte les écrit, les effets de `text`. Un effet dont la condition « si » est
 ## fausse à son tour n'a pas lieu, les autres si ; « si vous le faites » n'a lieu que si l'effet
@@ -139,18 +123,22 @@ static func resolve_text(
 	while state.resolving_effect_index < text.effects.size():
 		var effect := text.effects[state.resolving_effect_index]
 		state.resolving_effect_index += 1
+		state.previous_effect_discarded_count = state.current_effect_discarded_count
+		state.current_effect_discarded_count = 0
 		state.previous_effect_took_place = _resolve_in_order(state, entry, effect, events)
 		if state.is_ended() or state.pending_decision != null:
 			return
 
 
-## 207.6.4, 207.6.5, 207.6.6 : le Spell `spell` quitte la pile sans se résoudre ; sa carte va
-## dans la défausse de son joueur, son coût reste dépensé.
+## 207.6.4, 207.6.5, 207.6.6, 207.3.1 : le Spell `spell` quitte la pile sans se résoudre ; sa carte
+## va dans la défausse de son joueur, son coût reste dépensé ; les effets « un Spell est
+## contrecarré » se déclenchent ensuite (décision 0065).
 static func counter_spell(state: DuelState, spell: StackEntry, events: Array[DuelEvent]) -> void:
 	state.stack.erase(spell)
 	state.get_player(spell.card.owner).discard.append(spell.card)
 	events.append(SpellCountered.new(spell.owner, spell.stack_entry_id))
 	events.append(CardDiscarded.new(spell.card.owner, spell.card.card_instance_id))
+	TriggerRules.trigger_spell_countered(state, spell, events)
 
 
 ## 213.1.10, 213.1.11, 207.3.14 : `spec` où « X » vaut celui de `entry` et où la case de la pièce
@@ -248,10 +236,7 @@ static func lose_all_targets(entry: StackEntry, events: Array[DuelEvent]) -> voi
 static func _resolve_by_kind(context: EffectContext) -> bool:
 	match context.effect.kind:
 		EffectDefinition.EffectKind.DRAW_CARDS:
-			var amount := context.effect.amount
-			context.took_place = (
-				TurnRules.draw_cards(context.state, context.entry.owner, amount, context.events) > 0
-			)
+			_resolve_draw(context)
 		EffectDefinition.EffectKind.DISCARD_CARDS:
 			DiscardRules.resolve(context)
 		EffectDefinition.EffectKind.LOOK_AT_TOP_CARD:
@@ -290,8 +275,8 @@ static func _resolve_on_targets(context: EffectContext) -> void:
 				lose_all_targets(entry, context.events)
 				return
 			var amount := ValueRules.read_amount(state, entry, context.effect, pieces)
-			for piece: Piece in pieces:
-				_apply_to_piece(context, piece, amount)
+			if not ValueRules.is_unreadable_amount(context.effect, amount):
+				_apply_to_pieces(context, pieces, amount)
 		TargetSpec.TargetWhat.CELL:
 			var cells := _valid_cells(state, entry, spec)
 			if cells.is_empty():
@@ -317,7 +302,7 @@ static func _resolve_in_order(
 ) -> bool:
 	if effect.if_you_do and not state.previous_effect_took_place:
 		return false
-	if not condition_holds(state, effect.condition, entry.owner):
+	if not ValueRules.condition_holds(state, effect.condition, ValueReading.of_entry(state, entry)):
 		return false
 	return resolve_effect(state, entry, effect, events)
 
@@ -331,7 +316,8 @@ static func _resolve_on_source_piece(context: EffectContext) -> void:
 		return
 	var pieces: Array[Piece] = [source]
 	var amount := ValueRules.read_amount(context.state, context.entry, context.effect, pieces)
-	_apply_to_piece(context, source, amount)
+	if not ValueRules.is_unreadable_amount(context.effect, amount):
+		_apply_to_piece(context, source, amount)
 
 
 # 207.4.11, 207.4.11a, 207.4.11c, 207.5.18, décision 0064 : l'ensemble se calcule une seule fois,
@@ -340,21 +326,36 @@ static func _resolve_on_source_piece(context: EffectContext) -> void:
 static func _resolve_on_matching_pieces(context: EffectContext) -> void:
 	var filter := context.effect.affected
 	var anchor := entry_anchor(context.state, context.entry, filter)
-	var pieces := ModifierRules.matching_pieces(context.state, filter, anchor)
+	var matching := ModifierRules.matching_pieces(context.state, filter, anchor)
+	var pieces: Array[Piece] = matching.filter(
+		func(piece: Piece) -> bool: return BoardGeometry.is_on_board(piece.cell)
+	)
 	if pieces.is_empty():
 		return
 	var amount := ValueRules.read_amount(context.state, context.entry, context.effect, pieces)
-	for piece: Piece in pieces:
-		if BoardGeometry.is_on_board(piece.cell):
+	if not ValueRules.is_unreadable_amount(context.effect, amount):
+		_apply_to_pieces(context, pieces, amount)
+
+
+# 201.3.2, 213.2.1 : piocher autant que `amount`, lu une seule fois ; X illisible, l'effet n'a pas
+# lieu (200.4.1).
+static func _resolve_draw(context: EffectContext) -> void:
+	var amount := ValueRules.read_amount(context.state, context.entry, context.effect)
+	if ValueRules.is_unreadable_amount(context.effect, amount):
+		return
+	var drawn := TurnRules.draw_cards(context.state, context.entry.owner, amount, context.events)
+	context.took_place = drawn > 0
+
+
+# 207.3.15 : les pièces détruites par un même effet le sont en même temps ; tout autre effet se pose
+# pièce par pièce.
+static func _apply_to_pieces(context: EffectContext, pieces: Array[Piece], amount: int) -> void:
+	if context.effect.kind != EffectDefinition.EffectKind.DESTROY:
+		for piece: Piece in pieces:
 			_apply_to_piece(context, piece, amount)
-
-
-# 205.2.5 : le Hero du joueur, point de référence d'un filtre `own_hero`.
-static func _hero_anchor(state: DuelState, owner: DuelState.PlayerSide) -> FilterAnchor:
-	var hero := state.find_hero(owner)
-	if hero == null:
-		return FilterAnchor.new(owner)
-	return FilterAnchor.new(owner, hero.piece_id, hero.cell)
+		return
+	context.took_place = true
+	CombatRules.destroy_pieces(context.state, pieces, context.events)
 
 
 # 207.4.2, 206.5.1, 206.3.2, 205.5 : MODIFY_FORCE à durée ; DESTROY ; WAKE ; SLEEP. L'effet a eu

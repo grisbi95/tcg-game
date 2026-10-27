@@ -160,6 +160,8 @@ func _build_full_state() -> DuelState:
 	state.resolving_entry = _make_trigger(builder, unit_id, spell_entry_id)
 	state.resolving_effect_index = 2
 	state.previous_effect_took_place = true
+	state.previous_effect_discarded_count = 3
+	state.current_effect_discarded_count = 2
 	for player: PlayerState in state.players:
 		player.announced_this_turn = true
 	state.waiting_triggers.append(_make_trigger(builder, token_id, spell_entry_id))

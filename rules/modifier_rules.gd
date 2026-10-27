@@ -120,7 +120,7 @@ static func end_effects_on_piece(state: DuelState, piece: Piece, events: Array[D
 ## rapport à `anchor` (côté, genre, jeton, zone, relation, « autres »). Seule évaluation d'un
 ## PieceFilter, pour une cible comme pour une portée. Pur.
 static func matches_filter(filter: PieceFilter, anchor: FilterAnchor, piece: Piece) -> bool:
-	if not _is_on_side(filter.side, anchor.owner, piece):
+	if not is_on_side(filter.side, anchor.owner, piece.owner):
 		return false
 	if not filter.piece_kinds.is_empty() and not filter.piece_kinds.has(piece.kind):
 		return false
@@ -149,16 +149,35 @@ static func is_in_row_zone(
 	return true
 
 
-# Glossaire (Allié, Ennemi) : côté de `piece` par rapport au joueur à qui appartient l'effet.
-static func _is_on_side(
-	side: PieceFilter.SideFilter, owner: DuelState.PlayerSide, piece: Piece
+## Glossaire (Allié, Ennemi) : `other` est du côté `side` par rapport au joueur `owner`, à qui
+## appartient l'effet. Pur.
+static func is_on_side(
+	side: PieceFilter.SideFilter, owner: DuelState.PlayerSide, other: DuelState.PlayerSide
 ) -> bool:
 	match side:
 		PieceFilter.SideFilter.ALLY:
-			return piece.owner == owner
+			return other == owner
 		PieceFilter.SideFilter.ENEMY:
-			return piece.owner != owner
+			return other != owner
 	return true
+
+
+## 205.2.5, 207.3.14, décision 0062 : point de référence de `filter` pour un effet du joueur `owner`
+## porté par la pièce `piece_id` sur la case `cell` : le Hero du joueur pour un filtre `own_hero`,
+## cette pièce sinon. Pur.
+static func reference_anchor(
+	state: DuelState,
+	filter: PieceFilter,
+	owner: DuelState.PlayerSide,
+	piece_id: int,
+	cell: Vector2i
+) -> FilterAnchor:
+	if filter.relative_to != PieceFilter.RelativeTo.OWN_HERO:
+		return FilterAnchor.new(owner, piece_id, cell)
+	var hero := state.find_hero(owner)
+	if hero == null:
+		return FilterAnchor.new(owner)
+	return FilterAnchor.new(owner, hero.piece_id, hero.cell)
 
 
 # 205.2.5, 201.2.3 : relation de `piece` à la pièce de l'ancre, par sa case ou son identifiant.

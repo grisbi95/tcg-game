@@ -35,7 +35,7 @@ var what: TargetWhat = TargetWhat.PIECE
 var piece_filter: PieceFilter = PieceFilter.new()
 ## Borne haute de la Force actuelle de la cible (« de Force 3 ou moins »).
 var max_force: int = NO_FORCE_LIMIT
-## Décision 0058, 213.1.10 : `max_force` s'écrit « X » ; la valeur vient de `x_source` de l'effet,
+## Décision 0058, 213.1.10 : `max_force` s'écrit « X » ; la valeur vient de `x_from` de l'effet,
 ## et `with_x()` en fait une borne chiffrée.
 var max_force_is_x: bool = false
 ## Zone de la case visée (205.1.2 à 205.1.4), pour une case seulement ; celle d'une pièce est dans

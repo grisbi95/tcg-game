@@ -105,7 +105,7 @@ func test_207_7_6_if_you_do_is_read_as_a_boolean() -> void:
 func test_decision_0064_if_you_do_does_not_combine_with_an_if_condition() -> void:
 	var follower := _draw()
 	follower["if_you_do"] = true
-	follower["condition"] = {"kind": "hand_size_at_most", "amount": 1}
+	follower["condition"] = CatalogSamples.hand_size_condition("at_most", 1)
 	var errors := _text_errors(_resolve_text([_draw(), follower]))
 	assert_bool(_mentions(errors, "207.7.6b")).is_true()
 
@@ -119,7 +119,7 @@ func test_207_7_6_a_static_effect_depends_on_no_other() -> void:
 
 func test_207_7_1_if_condition_is_for_the_text_of_a_spell_or_an_order() -> void:
 	var conditioned := _draw()
-	conditioned["condition"] = {"kind": "hand_size_at_most", "amount": 2}
+	conditioned["condition"] = CatalogSamples.hand_size_condition("at_most", 2)
 	var spell := CatalogSamples.with_field(
 		CatalogSamples.spell(), "texts", [_resolve_text([_draw(), conditioned])]
 	)
@@ -132,7 +132,7 @@ func test_decision_0064_if_condition_of_an_effect_of_a_triggered_text_is_refused
 	# Limite en attente d'une question du ruleset : 207.7.1 ne nomme que le Spell et l'Ordre ; la
 	# condition d'un texte déclenché se lit à l'événement (207.3.13) et s'écrit sur le texte.
 	var conditioned := _draw()
-	conditioned["condition"] = {"kind": "hand_size_at_most", "amount": 2}
+	conditioned["condition"] = CatalogSamples.hand_size_condition("at_most", 2)
 	var triggered := TextSamples.text_of(
 		[_draw(), conditioned], "triggered", {"trigger": "end_of_turn"}
 	)
@@ -141,13 +141,13 @@ func test_decision_0064_if_condition_of_an_effect_of_a_triggered_text_is_refused
 
 func test_207_7_1_if_condition_is_read_as_a_closed_object() -> void:
 	var conditioned := _draw()
-	conditioned["condition"] = {"kind": "hand_empty", "amount": 0}
+	conditioned["condition"] = CatalogSamples.condition({"kind": "hand_empty"}, "at_most", 0)
 	var errors := _text_errors(_resolve_text([conditioned]))
 	assert_bool(_mentions(errors, "« hand_empty » inconnu")).is_true()
 
 
 func test_207_3_13_event_condition_stays_on_the_triggered_text() -> void:
-	var condition := {"kind": "hand_size_at_most", "amount": 1}
+	var condition := CatalogSamples.hand_size_condition("at_most", 1)
 	var triggered := TextSamples.text_of(
 		[_draw()], "triggered", {"trigger": "start_of_own_turn", "condition": condition}
 	)

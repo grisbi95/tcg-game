@@ -1,6 +1,6 @@
 # 0058 — Valeur X d'un effet et mots-clés accordés
 
-- Statut : acceptée, complétée par 0061
+- Statut : acceptée, complétée par 0061, modifiée par 0065
 - Date : 2026-10-27
 - Décideur : créateur du projet, en conversation
 - Périmètre : `CardDefinition`, `EffectDefinition`, `TargetSpec`, `CastSpell`, `StackEntry`, `EffectRules`, `KeywordRules` ; étape c.5a du jalon J2c

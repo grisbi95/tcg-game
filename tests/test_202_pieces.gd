@@ -181,7 +181,7 @@ func test_202_4_5_token_carries_no_effect() -> void:
 		EffectDefinition.TriggerEvent.ARRIVAL, EffectDefinition.TriggerEvent.DESTROYED
 	]:
 		TriggerRules.trigger(state, token, trigger_event, events)
-	TriggerRules.trigger_end_of_turn(state, events)
+	TurnRules.trigger_end_of_turn(state, events)
 	assert_array(events).is_empty()
 	assert_array(state.waiting_triggers).is_empty()
 	assert_int(ForceRules.current_force(state, token)).is_equal(TOKEN_FORCE)

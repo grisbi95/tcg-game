@@ -14,6 +14,11 @@ var once_per_turn: bool = false
 ## 207.3.13 : condition « si » lue quand survient l'événement, pour un texte déclenché seulement ;
 ## null sans condition.
 var condition: EffectCondition
+## 207.3.1, décision 0065 : pour OTHER_PIECE_DESTROYED, filtre de la pièce détruite, relatif à la
+## pièce qui porte l'effet ; pour SPELL_COUNTERED, côté du joueur à qui appartient le Spell
+## contrecarré (seul `side` s'écrit) ; null : tout objet. Pour un texte déclenché par l'un de ces
+## deux événements seulement.
+var event_object: PieceFilter
 var effects: Array[EffectDefinition] = []
 ## Erreurs de lecture du JSON, reprises par `find_errors()`.
 var parse_errors: PackedStringArray = PackedStringArray()
@@ -34,6 +39,8 @@ static func from_dict(data: Dictionary) -> EffectText:
 	text.once_per_turn = reader.read_bool("once_per_turn", false)
 	if reader.has("condition"):
 		text.condition = EffectCondition.from_dict(reader.read_object("condition"))
+	if reader.has("object"):
+		text.event_object = PieceFilter.from_dict(reader.read_object("object"))
 	for entry: Dictionary in reader.read_objects("effects"):
 		text.effects.append(EffectDefinition.from_dict(entry))
 	text.parse_errors = reader.finish()
@@ -106,8 +113,24 @@ func find_errors() -> PackedStringArray:
 	if condition != null:
 		for message: String in condition.find_errors():
 			errors.append("condition : " + message)
+	_check_event_object(errors)
 	_check_effects(errors)
+	errors.append_array(EffectValueChecks.text_errors(self))
 	return errors
+
+
+## Décision 0065 : les valeurs du jeu que lisent la condition du texte et celles de ses effets
+## (conditions « si » et « X »).
+func game_values() -> Array[GameValue]:
+	var values: Array[GameValue] = []
+	if condition != null:
+		values.append(condition.value)
+	for effect: EffectDefinition in effects:
+		if effect.condition != null:
+			values.append(effect.condition.value)
+		if effect.x_from != null:
+			values.append(effect.x_from)
+	return values
 
 
 ## 206.3.7, 207.3.12 : message d'erreur si le texte se déclenche quand l'Unit détruit son défenseur
@@ -124,6 +147,24 @@ func targeting_effect() -> EffectDefinition:
 		if effect.target != null:
 			return effect
 	return null
+
+
+# 207.3.1, décision 0065 : l'objet qualifie la pièce détruite ou le Spell contrecarré, par rapport à
+# la pièce qui porte l'effet.
+func _check_event_object(errors: PackedStringArray) -> void:
+	if event_object == null:
+		return
+	for message: String in event_object.find_object_errors():
+		errors.append("object : " + message)
+	match trigger:
+		EffectDefinition.TriggerEvent.OTHER_PIECE_DESTROYED:
+			if event_object.relative_to != PieceFilter.RelativeTo.SOURCE_PIECE:
+				errors.append("0065 : object se lit par rapport à la pièce qui porte l'effet")
+		EffectDefinition.TriggerEvent.SPELL_COUNTERED:
+			if not event_object.is_side_only():
+				errors.append("0065 : le Spell contrecarré se qualifie par son côté, side seul")
+		_:
+			errors.append("0065 : object ne vaut que pour other_piece_destroyed et spell_countered")
 
 
 func _check_effects(errors: PackedStringArray) -> void:

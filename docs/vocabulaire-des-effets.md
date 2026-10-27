@@ -2,7 +2,7 @@
 
 > Inventaire de travail du **27 octobre 2026**, à valider par le créateur. Il ne vaut ni règle ni décision : le ruleset fait foi, et un point qu'il ne tranche pas reste une question de règle, jamais un comportement du moteur.
 >
-> Édition suivie : **ruleset 0.54**, mise à jour en **0.55** par la note de la section 5 (b), puis à la clôture de c.5c (axes T, F, P codés, décision 0062) et de c.5d (axes K et C, ensemble figé, décision 0064) (`docs/ruleset/README.md`). Sources : `docs/catalogue-cartes-playtest.md` §2 et §3 ; chapitres 200 à 217, glossaire et questions ouvertes du ruleset ; catalogue `docs/ruleset/50-cartes/` ; `rules/catalog/` (`effect_definition.gd`, `target_spec.gd`, `effect_condition.gd`, `card_definition.gd`, `hero_definition.gd`, `hero_order.gd`, `effect_target_checks.gd`, `effect_value_checks.gd`), `rules/active_effect.gd`, `rules/keyword_rules.gd`, `rules/effect_rules.gd`, `rules/CLAUDE.md` ; décisions 0055 à 0060 ; `docs/roadmap.md` (étapes c.5c et c.6).
+> Édition suivie : **ruleset 0.54**, mise à jour en **0.55** par la note de la section 5 (b), puis à la clôture de c.5c (axes T, F, P codés, décision 0062) et de c.5d (axes K et C, ensemble figé, décision 0064) et de c.5e (axes M, C, X, décision 0065) (`docs/ruleset/README.md`). Sources : `docs/catalogue-cartes-playtest.md` §2 et §3 ; chapitres 200 à 217, glossaire et questions ouvertes du ruleset ; catalogue `docs/ruleset/50-cartes/` ; `rules/catalog/` (`effect_definition.gd`, `target_spec.gd`, `effect_condition.gd`, `card_definition.gd`, `hero_definition.gd`, `hero_order.gd`, `effect_target_checks.gd`, `effect_value_checks.gd`), `rules/active_effect.gd`, `rules/keyword_rules.gd`, `rules/effect_rules.gd`, `rules/CLAUDE.md` ; décisions 0055 à 0060 ; `docs/roadmap.md` (étapes c.5c et c.6).
 
 États : **codé** (code et tests présents) ; **codé en partie** (ce qui manque est dit) ; **à coder** (la règle existe, le code non) ; **en attente d'une règle** (le ruleset ne tranche pas). Une **pratique de rédaction** est ce que le texte de la carte dit sans capacité nouvelle du moteur (207.5.18 « ciblée », « puis », « distinctes », valeur d'un mot-clé 210.1.3) ; elle ne se code pas, elle s'écrit.
 
@@ -11,15 +11,15 @@
 | Verbe | Statut au catalogue | Règles du ruleset | `kind` du moteur | État |
 | --- | --- | --- | --- | --- |
 | Déplacer | retenu (case libre précisée) | 215.1.1 à 215.2.6 ; 207.3.14 | `MOVE_UNIT` + `destination` | codé (Units, case libre ciblée) |
-| Renforcer | retenu | 206.5.1, 206.5.4, 206.5.5, 207.2, 207.4, 209.1.1 | `MODIFY_FORCE` (montant positif) | codé en partie : portées statiques de c.5c, sujet « cette Unit » |
-| Affaiblir | retenu | mêmes règles ; 209.1.2, 209.1.3 | `MODIFY_FORCE` (montant négatif) | codé en partie : portée sur Units ennemies (Obélisque) ; Hero : Q-097 |
-| Détruire | retenu | glossaire Détruire, 206.3.2, 206.3.2a, 210.3.2, 216.2.1 | `DESTROY` | codé en partie : sujet pièce source (« détruisez ce Building »), déclencheur « une autre pièce est détruite » |
-| Créer | retenu | 202.4.1 à 202.4.13a, 205.5.4a, 209.1.1a | `CREATE_TOKEN` | codé en partie : filtres de case (rangées) |
-| Piocher | retenu | glossaire Piocher, 201.3.5, 201.3.6, 209.5.2, 209.5.4 | `DRAW_CARDS` | codé en partie : nombre X, conditions |
-| Consulter | retenu | 217.1.1 à 217.1.7, 201.4.1a (carte du dessus seulement) | `LOOK_AT_TOP_CARD` | codé en partie : 4 variantes sur 5 en attente d'une règle |
-| Contrecarrer | retenu | 207.6.1 à 207.6.6, 207.5.14 à 207.5.16 | `COUNTER_SPELL` | codé en partie : filtres sur le Spell, déclencheur |
+| Renforcer | retenu | 206.5.1, 206.5.4, 206.5.5, 207.2, 207.4, 209.1.1 | `MODIFY_FORCE` (montant positif) | codé (cible, pièce source, portées, ensemble ; c.5c, c.5d) |
+| Affaiblir | retenu | mêmes règles ; 209.1.2, 209.1.3 | `MODIFY_FORCE` (montant négatif) | codé ; Hero : Q-097 |
+| Détruire | retenu | glossaire Détruire, 206.3.2, 206.3.2a, 210.3.2, 216.2.1 | `DESTROY` | codé (pièce source c.5c, déclencheur « une autre pièce est détruite » c.5e) ; Hero : Q-097 |
+| Créer | retenu | 202.4.1 à 202.4.13a, 205.5.4a, 209.1.1a | `CREATE_TOKEN` | codé |
+| Piocher | retenu | glossaire Piocher, 201.3.5, 201.3.6, 209.5.2, 209.5.4 | `DRAW_CARDS` | codé (X et conditions par `GameValue`, c.5e) |
+| Consulter | retenu | 217.1.1 à 217.1.7, 201.4.1a (carte du dessus seulement) | `LOOK_AT_TOP_CARD` | codé (carte du dessus seulement, 217.1.8) ; 3 variantes non retenues (0247) |
+| Contrecarrer | retenu | 207.6.1 à 207.6.6, 207.5.14 à 207.5.16 | `COUNTER_SPELL` | codé (filtres c.5c, déclencheur c.5e) |
 | Réveiller | retenu | glossaire Réveiller, 205.5.1 à 205.5.5, 204.3.10, 204.3.11 | `WAKE` (cible ou pièce source) | codé |
-| Endormir | retenu | état seulement : 205.5.1 à 205.5.6 ; Hero par son Ordre : 211.2.2, 211.2.3 | aucun | en attente d'une règle (verbe absent du glossaire) |
+| Endormir | retenu | 205.5.7 à 205.5.7c ; Hero par son Ordre : 211.2.2, 211.2.3 | `SLEEP` (cible, pièce source, ensemble) | codé (c.5c) |
 | Défausser | retenu | 212.1.1 à 212.2.5 | `DISCARD_CARDS` | codé |
 | Renvoyer | retenu | 216.1.1 à 216.2.2 | `RETURN_TO_HAND` | codé (Units) |
 | Permuter | retenu ; « Échanger » au ruleset | 214.1.1 à 214.2.5, 207.5.4a, 200.4.2a | `SWAP_CELLS` | codé |
@@ -38,28 +38,28 @@ Axes (section 3) : **T** touché, **F** filtres, **P** portées, **M** moments e
 | Renforcer/Affaiblir — déclenché | M événement nommé ; D | 207.3.1, 207.4.7 | codé |
 | Détruire — directe conditionnelle | F Force bornée, X, adjacence ; C hors cible | 207.5.6, 213.1.10 | codé (filtres ; condition « si » d'un Spell, c.5d) |
 | Détruire — sacrifice volontaire | T Unit alliée ciblée ou pièce source ; K | glossaire Détruire, 203.0.1 | codé (cible alliée, pièce source : c.5c) |
-| Détruire — déclenché par une destruction | M destruction de cette pièce ou d'une autre | 210.3.2, 207.3.1 | codé (Dernier souffle) ; en attente (autre pièce, Q-B5) |
+| Détruire — déclenché par une destruction | M destruction de cette pièce ou d'une autre | 210.3.2, 207.3.1 | codé (Dernier souffle ; autre pièce et destruction simultanée 207.3.15, c.5e) ; Gear : Q-161 |
 | Détruire — synergie avec la position | M détruit son défenseur ; F adjacence à la source | 206.3.7, 207.3.14 | codé |
 | Créer — simple | T case libre ciblée ; jeton Unit, Force | 202.4.8, 202.4.9, 202.4.12 | codé |
-| Créer — conditionnelle | F rangées ; C | 202.4.12, 205.1.3, 205.1.4 ; 207.3.13 | codé (filtres de rangées, c.5c ; condition « si », c.5d) ; à coder (conditions de position, c.5e) |
-| Créer — déclenchée par une destruction | M destruction | 210.3.2, 202.4.6 | codé (Dernier souffle) ; en attente (autre pièce) |
+| Créer — conditionnelle | F rangées ; C | 202.4.12, 205.1.3, 205.1.4 ; 207.3.13 | codé (filtres de rangées c.5c ; condition « si » c.5d ; conditions par `GameValue` c.5e) |
+| Créer — déclenchée par une destruction | M destruction | 210.3.2, 202.4.6, 207.3.1 | codé (Dernier souffle ; autre pièce, c.5e) |
 | Créer — Buildings | jeton Building | 202.4.8, 202.4.11 | codé |
 | Créer — par sacrifice | K créer puis détruire la source (Chantier) | 202.4.6, glossaire Détruire | codé (texte d'effets, ordre « puis » 207.7.4, « si vous le faites », c.5d, décision 0064) |
 | Piocher — directe | T joueur à qui appartient l'effet | glossaire, 201.3.5, 209.5.2 | codé |
 | Piocher — conditionnelle | C | 207.3.13 | codé (déclenché, main ; Spell et Ordre, c.5d) |
 | Piocher — déclenchée | M | 207.3.1 | codé |
 | Piocher — avec contrepartie | K piocher puis défausser (Étude) | 212.1.5, 203.0.1 | codé (suite d'effets ; « si vous le faites », c.5d) |
-| Piocher — territoriale | C ou Z position de pièces | 207.3.13, 207.7.1 | à coder (conditions de position, c.5e) |
+| Piocher — territoriale | C ou Z position de pièces | 207.3.13, 207.7.1 | codé (compte de pièces d'un `PieceFilter`, c.5e) |
 | Consulter — simple | T joueur ; choix dessus ou dessous | 217.1.1 à 217.1.7 | codé |
-| Consulter — avec réorganisation | plusieurs cartes, ordre choisi | aucune | en attente d'une règle |
-| Consulter — avec sélection | prendre une carte en main | aucune | en attente d'une règle |
-| Consulter — avec filtrage | chercher ou révéler selon un type | aucune (201.4.1) | en attente d'une règle |
-| Consulter — conditionnelle | C | 217, 207.3.13, 207.7.1 | codé (condition « si », c.5d) ; à coder (nouvelles conditions, c.5e) |
+| Consulter — avec réorganisation | plusieurs cartes, ordre choisi | 217.1.8 | non retenu (0247) |
+| Consulter — avec sélection | prendre une carte en main | 217.1.8 | non retenu (0247) |
+| Consulter — avec filtrage | chercher ou révéler selon un type | 201.4.1, 217.1.8 | non retenu (0247) |
+| Consulter — conditionnelle | C | 217, 207.3.13, 207.7.1 | codé (condition « si » c.5d ; `GameValue` c.5e) |
 | Contrecarrer — simple | T Spell de la pile | 207.6.2 | codé |
 | Contrecarrer — conditionnel | F coût, vitesse du Spell ciblé | 207.5.6, 213.1.6, 207.1.2 | codé (`spell_max_cost`, `spell_speeds`, c.5c) |
 | Contrecarrer — avec contrepartie | K suite d'effets | 207.5.5, 207.7.6 | codé (suite ; « si vous le faites », c.5d) |
 | Contrecarrer — récompensé | K récompense après le contrecarrage | 207.5.5, 207.7.6a | codé (« si vous le faites » : pas de récompense si la cible est perdue, c.5d) |
-| Contrecarrer — déclencheur | M « un Spell est contrecarré » | 207.3.1, 207.6.4 | à coder |
+| Contrecarrer — déclencheur | M « un Spell est contrecarré » | 207.3.1, 207.6.4 | codé (`SPELL_COUNTERED`, côté du Spell, c.5e) |
 | Réveiller — simple | T Unit ou Hero ciblé | 205.5.1, 205.5.2 | codé |
 | Réveiller — conditionnel | F adjacence au Hero, Force ; C | 207.5.6, 207.3.13 | codé (filtres, déclenché ; Spell, c.5d) |
 | Réveiller — déclenché | M Arrivée ; T pièce source | 210.3.1 | codé |
@@ -70,7 +70,7 @@ Axes (section 3) : **T** touché, **F** filtres, **P** portées, **M** moments e
 | Endormir — auto-endormissement | T pièce source ou Hero | 211.2.2, 205.5.7 | codé (Ordre ; carte, sujet pièce source, c.5c) |
 | Défausser — simple | T joueur ; choix à la résolution | 212.1.1 à 212.1.7 | codé |
 | Défausser — avec contrepartie | K jamais un coût | 212.1.5 | codé (suite d'effets) |
-| Défausser — avec renouvellement | K défausser puis piocher ; X « autant » | 212.2.3, 213.2.1 | codé (nombre fixe) ; à coder (X lu) |
+| Défausser — avec renouvellement | K défausser puis piocher ; X « autant » | 212.2.3, 213.2.1 | codé (nombre fixe ; X par `GameValue`, c.5e) |
 | Défausser — déclencheur | M défausse, une par carte | 212.2.4, 212.2.5 | codé |
 | Défausser — conditionnelle | C | 207.3.13, 207.7.1 | codé (déclenché ; Spell, c.5d) |
 | Renvoyer — simple | T Unit | 216.1.1 à 216.2.2 | codé |
@@ -100,17 +100,17 @@ Axes (section 3) : **T** touché, **F** filtres, **P** portées, **M** moments e
 - Existe (c.5c, décision 0062) : la portée est un `PieceFilter` relatif au porteur (207.2.8), évalué par `ModifierRules` (206.5.5) : porteur, autres Units alliées adjacentes (Porte-enseigne), même rangée (Ancien du bosquet), Units ennemies adjacentes (Obélisque), Units alliées adjacentes au porteur d'un Gear (Bannière). Rien ne manque.
 
 **M — Moments et déclencheurs.**
-- Existe : `EffectTiming` `RESOLVE`, `STATIC`, `TRIGGERED` ; `TriggerEvent` `NONE`, `ARRIVAL`, `DESTROYED`, `END_OF_TURN`, `START_OF_OWN_TURN`, `OWN_SPELL_ANNOUNCED`, `OWN_CARD_DISCARDED`, `DESTROYS_DEFENDER` ; `once_per_turn` ; Ordre (`HeroOrder` : vitesse, coût, effets `RESOLVE`) ; effets déclenchés du Hero et du Gear.
+- Existe : `EffectTiming` `RESOLVE`, `STATIC`, `TRIGGERED` ; `TriggerEvent` `NONE`, `ARRIVAL`, `DESTROYED`, `END_OF_TURN`, `START_OF_OWN_TURN`, `OWN_SPELL_ANNOUNCED`, `OWN_CARD_DISCARDED`, `DESTROYS_DEFENDER`, `OTHER_PIECE_DESTROYED` (objet qualifié par un `PieceFilter`), `SPELL_COUNTERED` (côté du Spell) — décision 0065, c.5e ; `once_per_turn` ; Ordre (`HeroOrder` : vitesse, coût, effets `RESOLVE`) ; effets déclenchés du Hero et du Gear.
 - Auteur : « vous » ou « cette pièce » seulement (décision 0060, réexamen au premier auteur adverse). Rien n'attend « adversaire » ni « quiconque » dans les variantes retenues ; 208.4.7 en règle déjà l'ordre.
-- Manque, règle existante : « une autre pièce est détruite » (207.3.1, glossaire Détruire), « un Spell est contrecarré » (207.3.1, 207.6.4).
 - Existe aussi (c.5c) : décompte de « une fois par tour » par effet (207.3.7b, 207.3.7c).
-- Manque : une pièce détruite en même temps que celle dont elle attend la destruction (207.3.15, c.5d) ; Q-145 pour le Hero.
+- Existe aussi (c.5e) : destructions simultanées (207.3.15).
+- En attente : Gear et « une autre pièce est détruite » (Q-161, refusé par le catalogue) ; Q-145 pour le Hero ; l'auteur d'une destruction ou d'un contrecarrage (« quand vous détruisez… ») n'est pas qualifié, aucune variante ne le demande.
 
 **C — Conditions « si ».**
-- Existe : `ConditionKind` `HAND_SIZE_AT_MOST`, lue à l'événement, pour un effet déclenché seulement (207.3.13 à 207.3.13b ; décision 0060, vocabulaire fermé, réexamen à la troisième condition).
+- Existe (décision 0065, c.5e) : une condition est une comparaison `{value: GameValue, comparison: AT_LEAST | AT_MOST, amount}` ; `GameValue` : taille de la main, nombre de pièces d'un `PieceFilter`, Force de la cible, cartes défaussées par l'effet précédent, X choisi, coût du Spell de l'événement ; lue à l'événement pour un texte déclenché (207.3.13 à 207.3.13b).
 - Demandé : conditions de position (territorial), de pièces contrôlées, de Force, de coût, sur des Spells, des Ordres et des effets déclenchés.
 - Existe aussi (c.5d, 0064) : condition « si » d'un effet d'un Spell ou d'un Ordre, lue dans l'ordre du texte (207.7.1 à 207.7.3, 211.1.5).
-- Manque : chaque nouvelle `ConditionKind` (c.5e) ; une condition « si » sur un effet qui suit un autre effet dans un texte déclenché (Q-156, refusée par le catalogue).
+- En attente : une condition « si » sur un effet qui suit un autre effet dans un texte déclenché (Q-156) ; la Force de la pièce source (Q-162) ; refusées par le catalogue.
 - Une condition qui borne une cible est un filtre (F, 207.5.6), pas une condition « si ».
 
 **D — Durées.**
@@ -118,10 +118,10 @@ Axes (section 3) : **T** touché, **F** filtres, **P** portées, **M** moments e
 - Règle : 207.4.2 n'admet que ces deux durées. « Jusqu'à la fin du combat » n'est pas validé. Rien ne manque pour les variantes retenues.
 
 **X — Valeur X.**
-- Existe : coût X d'un Spell (`has_x_cost`, 213.1) ; `XSource` `NONE`, `CHOSEN`, `TARGET_FORCE` ; « X » admis dans `max_force` et dans `amount` de `MODIFY_FORCE` et `GRANT_KEYWORD`.
+- Existe : coût X d'un Spell (`has_x_cost`, 213.1) ; X d'un effet lu sur une `GameValue` (`x_from`, décision 0065) ; « X » admis dans `max_force` (X choisi seulement, 213.1.10) et dans `amount` de `MODIFY_FORCE`, `GRANT_KEYWORD`, `DRAW_CARDS` et `DISCARD_CARDS` (c.5e).
 - Demandé : « piochez X cartes », « défaussez X », « autant que de cartes défaussées », X lu sur un compte du plateau.
 - Règle : 213.1.8 (X choisi lu par l'effet) et 213.2.1 (X défini par une valeur du jeu) ; seule la Force a sa règle de lecture propre (213.2.3, 213.2.4).
-- Manque : `amount` « X » pour piocher et défausser ; une `XSource` par valeur lue (à coder, une par carte).
+- En attente : X lu sur la Force de la pièce source (Q-162, refusé par le catalogue). Une valeur nouvelle s'ajoute à `GameValue` par décision (0065).
 
 **K — Contrepartie.**
 - Ruleset : l'Essence est la seule ressource qui paie un coût (203.0.1) ; défausser n'est jamais un coût (212.1.5) ; endormir le Hero par son Ordre n'est pas un coût (211.2.3). Un sacrifice, une défausse ou un endormissement ne se paient donc jamais à l'annonce : une contrepartie est un **effet** du même texte.
@@ -156,9 +156,9 @@ Un mot-clé accordé n'est codé que pour Assaut et Rempart (décision 0058). Au
 2. Portées statiques : autres Units alliées adjacentes, même rangée, Units ennemies adjacentes, adjacentes au porteur d'un Gear (206.5.4, 206.5.5, 207.2.8). Codé en c.5c (0062).
 3. Filtres : hors rangée centrale (205.1.4), deux rangées les plus proches (205.1.3), rangée d'une pièce, « distinctes » écrit par la carte, « non jeton » (207.5.6, 202.4.1). Codé en c.5c (0062).
 4. Filtres sur le Spell ciblé : coût, X compris, et vitesse (207.5.6, 213.1.6, 213.1.7, 207.1.2). Codé en c.5c.
-5. Déclencheurs « une autre pièce est détruite » (207.3.1, 206.3.1) et « un Spell est contrecarré » (207.3.1, 207.6.4), auteur « vous » (0060).
-6. Nouvelles `ConditionKind` pour les effets déclenchés, une par carte (207.3.13, 0060).
-7. X sur le nombre de cartes piochées ou défaussées, X lu sur une valeur du jeu (213.1.8, 213.2.1).
+5. Déclencheurs « une autre pièce est détruite » (207.3.1, 206.3.1) et « un Spell est contrecarré » (207.3.1, 207.6.4), auteur « vous » (0060). Codé en c.5e (0065).
+6. Conditions pour les effets déclenchés (207.3.13). Codé en c.5e par `GameValue` (0065, qui modifie 0060).
+7. X sur le nombre de cartes piochées ou défaussées, X lu sur une valeur du jeu (213.1.8, 213.2.1). Codé en c.5e (0065).
 
 ### (b) À trancher dans le ruleset avant tout code
 

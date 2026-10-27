@@ -11,58 +11,55 @@ extends RefCounted
 const MIN_EFFECTS_TO_ORDER: int = 2
 
 
-## 207.3.1, 207.3.3, 207.3.4, 207.3.12, 208.4.2 : les effets de `piece` et ceux de son Gear
-## déclenchés par `trigger_event` attendent leur ajout à la pile. Un Hero porte les siens
-## (202.3.20), un jeton aucun (202.4.5) ; le Gear ne déclenche que tant qu'il est attaché à une
-## Unit en jeu (207.3.12a).
+## 207.3.1, 207.3.3, 207.3.4, 207.3.12, 208.4.2 : les effets de `piece` et de son Gear déclenchés
+## par `trigger_event` attendent leur ajout à la pile. Un Hero porte les siens (202.3.20), un jeton
+## aucun (202.4.5) ; le Gear ne déclenche que tant qu'il est attaché à une Unit en jeu (207.3.12a).
 static func trigger(
 	state: DuelState,
 	piece: Piece,
 	trigger_event: EffectDefinition.TriggerEvent,
 	events: Array[DuelEvent]
 ) -> void:
-	if not piece.is_token():
-		_trigger_card(state, piece, piece.card, trigger_event, events)
-	var gear := piece.attached_gear
-	if gear != null and state.pieces.has(piece):
-		_trigger_card(state, piece, gear, trigger_event, events)
+	_trigger_piece(state, piece, TriggerOccurrence.of_event(trigger_event), events)
 
 
-## 204.3.12, 212.2.4, 208.4.4 : chaque pièce en jeu de `side` réagit à `trigger_event`, événement
-## qui nomme son auteur (décision 0060).
+## 204.3.12, 212.2.4 : chaque pièce en jeu de `side` réagit à `trigger_event` (décision 0060).
 static func trigger_for_player(
 	state: DuelState,
 	side: DuelState.PlayerSide,
 	trigger_event: EffectDefinition.TriggerEvent,
 	events: Array[DuelEvent]
 ) -> void:
-	for piece: Piece in _pieces_on_board(state):
-		if piece.owner == side:
-			trigger(state, piece, trigger_event, events)
+	_trigger_side(state, side, TriggerOccurrence.of_event(trigger_event), events)
 
 
-## 205.6.3, 205.6.5, 205.6.6, 208.7.14 : `combat` attend la fin de la résolution qui l'a fait
-## naître, comme un effet déclenché du joueur à qui appartient l'attaquant. Il reçoit un identifiant
-## d'entrée dès maintenant (décision 0017) et peut recevoir une réponse.
-static func wait_pending_combat(
-	state: DuelState, combat: StackEntry, events: Array[DuelEvent]
+## 208.4.4 : les pièces en jeu du joueur qui annonce `spell` réagissent à son annonce.
+static func trigger_spell_announced(
+	state: DuelState, spell: StackEntry, events: Array[DuelEvent]
 ) -> void:
-	combat.stack_entry_id = state.allocate_stack_entry_id()
-	combat.kind = StackEntry.StackEntryKind.PENDING_COMBAT
-	combat.allows_response = true
-	state.waiting_triggers.append(combat)
-	var held := CombatPutOnHold.new(
-		combat.owner, combat.stack_entry_id, combat.source_piece_id, combat.target_cells[0]
-	)
-	if combat.card != null:
-		held.card_instance_id = combat.card.card_instance_id
-	events.append(held)
+	var announced := EffectDefinition.TriggerEvent.OWN_SPELL_ANNOUNCED
+	_trigger_side(state, spell.owner, TriggerOccurrence.of_spell(announced, spell), events)
 
 
-## 204.5.3 : quand le joueur actif termine son tour, chaque pièce en jeu réagit à la fin du tour.
-static func trigger_end_of_turn(state: DuelState, events: Array[DuelEvent]) -> void:
-	for piece: Piece in _pieces_on_board(state):
-		trigger(state, piece, EffectDefinition.TriggerEvent.END_OF_TURN, events)
+## 207.3.1, 207.6.4 : toutes les pièces en jeu réagissent au contrecarrage de `spell`.
+static func trigger_spell_countered(
+	state: DuelState, spell: StackEntry, events: Array[DuelEvent]
+) -> void:
+	var countered := EffectDefinition.TriggerEvent.SPELL_COUNTERED
+	var occurrence := TriggerOccurrence.of_spell(countered, spell)
+	for piece: Piece in state.pieces_on_board():
+		_trigger_piece(state, piece, occurrence, events)
+
+
+## 207.3.1, 207.3.15 : les pièces `destroyed` en même temps sont l'objet de « une autre pièce est
+## détruite » pour chacune des `reactors`, les pièces en jeu avant la destruction.
+static func trigger_other_destroyed(
+	state: DuelState, destroyed: Array[Piece], reactors: Array[Piece], events: Array[DuelEvent]
+) -> void:
+	for piece: Piece in destroyed:
+		var occurrence := TriggerOccurrence.of_destruction(piece)
+		for reactor: Piece in reactors:
+			_trigger_piece(state, reactor, occurrence, events)
 
 
 ## Décision 0017 ; 208.4.3, 208.4.6, 208.4.7 : ajoute à la pile les effets en attente, ceux du
@@ -191,13 +188,26 @@ static func targeting_effect_of(state: DuelState, entry: StackEntry) -> EffectDe
 	return text_of(state, entry).targeting_effect()
 
 
-# Pièces en jeu, dans l'ordre de `state.pieces`.
-static func _pieces_on_board(state: DuelState) -> Array[Piece]:
-	var on_board: Array[Piece] = []
-	for piece: Piece in state.pieces:
-		if BoardGeometry.is_on_board(piece.cell):
-			on_board.append(piece)
-	return on_board
+# 207.3.12a : le texte de la carte de `piece` et celui de son Gear, tant que la pièce est en jeu.
+static func _trigger_piece(
+	state: DuelState, piece: Piece, occurrence: TriggerOccurrence, events: Array[DuelEvent]
+) -> void:
+	if not piece.is_token():
+		_trigger_card(state, piece, piece.card, occurrence, events)
+	var gear := piece.attached_gear
+	if gear != null and state.pieces.has(piece):
+		_trigger_card(state, piece, gear, occurrence, events)
+
+
+static func _trigger_side(
+	state: DuelState,
+	side: DuelState.PlayerSide,
+	occurrence: TriggerOccurrence,
+	events: Array[DuelEvent]
+) -> void:
+	for piece: Piece in state.pieces_on_board():
+		if piece.owner == side:
+			_trigger_piece(state, piece, occurrence, events)
 
 
 # 207.3.13 : la condition « si » du texte se lit ici, à l'événement ; fausse, le texte ne se
@@ -206,16 +216,46 @@ static func _trigger_card(
 	state: DuelState,
 	piece: Piece,
 	card: CardInstance,
-	trigger_event: EffectDefinition.TriggerEvent,
+	occurrence: TriggerOccurrence,
 	events: Array[DuelEvent]
 ) -> void:
 	var texts := state.catalog.triggerable_texts(card.definition_id)
+	var reading := ValueReading.of_event(card.owner, piece, occurrence.spell)
 	for index: int in texts.size():
 		var text := texts[index]
 		var is_triggered := text.timing == EffectDefinition.EffectTiming.TRIGGERED
-		if is_triggered and text.trigger == trigger_event:
-			if EffectRules.condition_holds(state, text.condition, card.owner):
-				_wait(state, piece, card, index, events)
+		if not is_triggered or text.trigger != occurrence.event:
+			continue
+		var has_object := _has_object(state, text, piece, card.owner, occurrence)
+		if has_object and ValueRules.condition_holds(state, text.condition, reading):
+			_wait(state, piece, card, index, events)
+
+
+# 207.3.1, décision 0065 : l'objet est celui que qualifie le texte pour `carrier`, la pièce qui le
+# porte ; « une autre pièce » n'est jamais `carrier`. Dernière case d'une pièce partie : 207.3.14.
+static func _has_object(
+	state: DuelState,
+	text: EffectText,
+	carrier: Piece,
+	owner: DuelState.PlayerSide,
+	occurrence: TriggerOccurrence
+) -> bool:
+	var object := text.event_object
+	match occurrence.event:
+		EffectDefinition.TriggerEvent.OTHER_PIECE_DESTROYED:
+			var destroyed := occurrence.destroyed_piece
+			if destroyed == carrier:
+				return false
+			if object == null:
+				return true
+			var anchor := ModifierRules.reference_anchor(
+				state, object, owner, carrier.piece_id, carrier.cell
+			)
+			return ModifierRules.matches_filter(object, anchor, destroyed)
+		EffectDefinition.TriggerEvent.SPELL_COUNTERED:
+			var side := PieceFilter.SideFilter.ANY if object == null else object.side
+			return ModifierRules.is_on_side(side, owner, occurrence.spell.owner)
+	return true
 
 
 # 207.3.4, 207.3.12b : l'effet appartient au joueur à qui appartient la carte qui le porte, Gear

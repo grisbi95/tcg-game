@@ -70,7 +70,7 @@ func test_207_3_12b_gear_effect_belongs_to_the_player_who_owns_the_gear() -> voi
 	var enemy_id := _place(B, SOLDIER, "D4")
 	var gear_id := _builder.attach_gear(enemy_id, LANTERN)
 	var state := _builder.build()
-	TriggerRules.trigger_end_of_turn(state, _events)
+	TurnRules.trigger_end_of_turn(state, _events)
 	assert_int(state.waiting_triggers.size()).is_equal(1)
 	assert_int(state.waiting_triggers[0].owner).is_equal(B)
 	assert_int(state.waiting_triggers[0].source_card_instance_id).is_equal(gear_id)
@@ -103,13 +103,13 @@ func test_207_3_7_once_per_turn_of_a_gear_is_counted_by_the_gear_card() -> void:
 	var first_gear := _builder.attach_gear(first_unit, LANTERN)
 	var second_gear := _builder.attach_gear(second_unit, LANTERN)
 	var state := _builder.build()
-	TriggerRules.trigger_end_of_turn(state, _events)
+	TurnRules.trigger_end_of_turn(state, _events)
 	TriggerRules.add_waiting_triggers(state, _events)
 	assert_array(state.once_per_turn_texts).contains_exactly_in_any_order(
 		[Vector2i(first_gear, 0), Vector2i(second_gear, 0)]
 	)
 	_events.clear()
-	TriggerRules.trigger_end_of_turn(state, _events)
+	TurnRules.trigger_end_of_turn(state, _events)
 	TriggerRules.add_waiting_triggers(state, _events)
 	assert_array(EventLog.describe(_events)).contains_exactly(
 		["EffectTriggered:A", "EffectTriggered:B", "TriggerSkipped:A", "TriggerSkipped:B"]

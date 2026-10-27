@@ -182,6 +182,19 @@ Un effet qui touche un ensemble sans le cibler (207.4.11, 207.5.18), par exemple
 - Option B : l'effet a lieu, sans pièce touchée ; compromis : un effet « si vous le faites » qui suit s'exécute alors que rien n'a été touché.
 Manque pour trancher : le choix du créateur. Aucune carte de `50-cartes/` ne l'emploie au 27 octobre 2026. Origine : étape c.5d du code (décision de code 0064, texte d'effets `EffectText`), le code n'a rien tranché ; le catalogue refuse ce cas en attendant la réponse.
 
+**Q-161 · Gear et destruction simultanée d'une autre pièce** · chapitre 207 · ouverte le 27 octobre 2026
+L'effet déclenché d'un Gear par la destruction d'une autre pièce se déclenche-t-il quand l'Unit qui porte le Gear est détruite en même temps que cette pièce, et « autre » exclut-il l'Unit qui porte le Gear, alors que 207.3.12 fait porter l'effet déclenché par le Gear, que 207.3.12a ne le fait se déclencher que tant que le Gear est attaché à une Unit en jeu, et que 207.3.15 dit qu'un effet déclenché par la destruction d'une autre pièce se déclenche même si « la pièce qui le porte » est détruite en même temps, alors qu'un Gear n'est pas une pièce ?
+- Option A : 207.3.15 vaut pour un Gear comme pour l'Unit qui le porte, l'Unit porteuse est la pièce de référence et « autre » l'exclut ; compromis : une extension de 207.3.15 au Gear, qui prime sur la lecture stricte de 207.3.12a.
+- Option B : un Gear ne réagit pas à la destruction simultanée de son Unit porteuse (207.3.12a prime), et « autre » se lit par rapport à l'Unit porteuse ; compromis : un Gear perd son effet exactement quand l'Unit qui le porte meurt avec une autre pièce, à la différence d'une Unit (207.3.15).
+Manque pour trancher : le choix du créateur. Aucune carte de `50-cartes/` ne l'emploie au 27 octobre 2026. Origine : étape c.5e du code (décision de code 0065, déclencheurs à objet), le code n'a rien tranché ; le catalogue refuse ce cas en attendant la réponse.
+
+**Q-162 · Force d'une pièce source partie du plateau** · chapitres 207 et 213 · ouverte le 27 octobre 2026
+Que vaut la Force de la pièce source partie du plateau quand un effet la lit, en X ou dans une condition, alors que 207.3.3 maintient l'effet déclenché d'une pièce qui a quitté le plateau, que 207.3.14 fait lire à un effet la dernière case de cette pièce, que 213.2.3 définit X par la Force d'une Unit au moment de la lecture, lue une seule fois à la résolution (213.2.1), et que 200.4.1 dit que ce qui ne peut pas se faire n'a pas lieu ?
+- Option A : la dernière Force qu'elle avait sur le plateau, lecture semblable à 207.3.14 ; compromis : une valeur lue sur une pièce qui n'est plus en jeu, avec ses modificateurs d'alors, à fixer par une règle.
+- Option B : la valeur ne se lit pas, et l'effet qui en dépend n'a pas lieu (200.4.1) ; compromis : un Dernier souffle fondé sur la Force de sa source ne fait rien, ce qui prive de leur intérêt les cartes de ce genre.
+Le Hero n'a pas de Force (202.3.9) : une pièce source qui est un Hero ne peut donc pas être lue, lien avec Q-097 sur la Force du Hero, à trancher en cohérence.
+Manque pour trancher : le choix du créateur. Aucune carte de `50-cartes/` ne l'emploie au 27 octobre 2026. Origine : étape c.5e du code (décision de code 0065, valeur du jeu partagée), le code n'a rien tranché ; le catalogue refuse ce cas en attendant la réponse.
+
 ## Tranchées
 
 | Question | Décision |
