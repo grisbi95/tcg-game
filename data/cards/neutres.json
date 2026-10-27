@@ -1,0 +1,107 @@
+{
+	"edition": "0.55",
+	"heroes": [],
+	"cards": [
+		{
+			"id": "inspiration",
+			"name": "Inspiration",
+			"cost": 1,
+			"type": "spell",
+			"speed": "reaction",
+			"text": "Piochez une carte.",
+			"texts": [
+				{
+					"timing": "resolve",
+					"effects": [
+						{
+							"kind": "draw_cards",
+							"subject": "owner_player",
+							"amount": 1
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "choc",
+			"name": "Choc",
+			"cost": 2,
+			"type": "spell",
+			"speed": "reaction",
+			"text": "Une Unit ennemie ciblée a −2 Force jusqu'à la fin du tour.",
+			"texts": [
+				{
+					"timing": "resolve",
+					"effects": [
+						{
+							"kind": "modify_force",
+							"amount": -2,
+							"duration": "until_end_of_turn",
+							"target": {
+								"what": "piece",
+								"filter": {
+									"side": "enemy",
+									"piece_kinds": [
+										"unit"
+									]
+								}
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "execution",
+			"name": "Exécution",
+			"cost": "X",
+			"type": "spell",
+			"speed": "action",
+			"text": "Détruisez une Unit ennemie ciblée de Force X ou moins.",
+			"texts": [
+				{
+					"timing": "resolve",
+					"effects": [
+						{
+							"kind": "destroy",
+							"x_from": {
+								"kind": "chosen_x"
+							},
+							"target": {
+								"what": "piece",
+								"filter": {
+									"side": "enemy",
+									"piece_kinds": [
+										"unit"
+									]
+								},
+								"max_force": "X"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "trophee",
+			"name": "Trophée",
+			"cost": 2,
+			"type": "gear",
+			"text": "Quand l'Unit qui porte ce Gear détruit son défenseur, elle a +1 Force tant que la pièce est en jeu.",
+			"texts": [
+				{
+					"timing": "triggered",
+					"trigger": "destroys_defender",
+					"effects": [
+						{
+							"kind": "modify_force",
+							"subject": "source_piece",
+							"amount": 1,
+							"duration": "while_piece_in_play"
+						}
+					]
+				}
+			]
+		}
+	]
+}

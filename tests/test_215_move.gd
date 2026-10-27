@@ -339,13 +339,10 @@ func test_decision_0056_adjacency_filters_fit_the_kind_of_target() -> void:
 		. is_empty()
 	)
 	(
-		assert_bool(
-			CatalogSamples.mentions(
-				MovementSamples.target_errors({"what": "cell", "adjacent_to": "own_hero"}),
-				"own_hero"
-			)
+		assert_array(
+			Array(MovementSamples.target_errors({"what": "cell", "adjacent_to": "own_hero"}))
 		)
-		. is_true()
+		. is_empty()
 	)
 	var spell := {"what": "spell_on_stack", "adjacent_to": "target_piece"}
 	assert_bool(CatalogSamples.mentions(MovementSamples.target_errors(spell), "207.5.14")).is_true()

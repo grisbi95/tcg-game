@@ -1,0 +1,24 @@
+{
+	"edition": "0.55",
+	"id": "grimoire",
+	"name": "Grimoire",
+	"hero": "pilleuse",
+	"cards": {
+		"apprenti": 3,
+		"spectre_des_archives": 2,
+		"lame_sort": 2,
+		"lettre": 1,
+		"etude": 3,
+		"contre": 2,
+		"observatoire": 1,
+		"grimoire": 2,
+		"eclaireur": 2,
+		"charge": 2,
+		"furie": 1,
+		"recrue": 2,
+		"soldat": 2,
+		"inspiration": 1,
+		"renfort": 2,
+		"choc": 2
+	}
+}

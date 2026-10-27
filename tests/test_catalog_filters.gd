@@ -132,6 +132,12 @@ func test_207_5_11_adjacent_to_is_for_cells_only() -> void:
 		{"what": "cell", "adjacent_to": "source_piece", "row": "not_central"}
 	)
 	assert_array(Array(cell)).is_empty()
+	var hero_cell := _target_errors({"what": "cell", "adjacent_to": "own_hero"})
+	assert_array(Array(hero_cell)).is_empty()
+	var hero_piece := _target_errors(
+		{"what": "piece", "filter": {"piece_kinds": ["unit"]}, "adjacent_to": "own_hero"}
+	)
+	assert_bool(_mentions(hero_piece, "adjacent_to ne vaut que pour une case")).is_true()
 
 
 func test_205_1_4_cell_target_reads_the_named_zones() -> void:

@@ -1,7 +1,11 @@
 extends GdUnitTestSuite
-## GameLibrary : catalogue et deck de test lus au lancement (ruleset 0.36, décisions 0037 et 0036).
+## GameLibrary : catalogue et decks lus au lancement (ruleset 0.55, décisions 0036, 0037 et 0066).
 
 const UNKNOWN_DECK_ID: StringName = &"deck_inexistant"
+## Décision 0066 : les decks proposés à l'hôte, deck de test et decks du catalogue de playtest.
+const EXPECTED_DECK_IDS: Array[StringName] = [
+	&"deck_de_test", &"echiquier", &"grimoire", &"percee", &"phalange"
+]
 
 
 func test_decision_0037_library_loads_the_catalog_without_error() -> void:
@@ -37,3 +41,18 @@ func test_decision_0037_unknown_deck_id_gives_null_and_reports_an_error() -> voi
 	)
 	assert_array(found).has_size(1)
 	assert_object(found[0]).is_null()
+
+
+func test_decision_0066_library_lists_every_deck() -> void:
+	var catalog := GameLibrary.load_catalog()
+	var ids: Array[StringName] = []
+	for deck: DeckList in GameLibrary.load_decks(catalog):
+		ids.append(deck.deck_id)
+	assert_array(ids).contains_exactly_in_any_order(EXPECTED_DECK_IDS)
+
+
+func test_decision_0066_every_listed_deck_is_valid_for_a_duel_setup() -> void:
+	var catalog := GameLibrary.load_catalog()
+	for deck: DeckList in GameLibrary.load_decks(catalog):
+		var duel_setup := DuelSeries.new(deck, deck).make_setup(1)
+		assert_array(Array(duel_setup.find_errors(catalog, DuelConfig.new()))).is_empty()

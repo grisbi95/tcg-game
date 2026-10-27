@@ -1,0 +1,129 @@
+{
+	"edition": "0.55",
+	"heroes": [
+		{
+			"id": "chef_de_guerre",
+			"name": "Chef de guerre",
+			"health": 13,
+			"text": "Ordre (Action) — Endormez le Hero : réveillez une Unit alliée ciblée adjacente au Hero.",
+			"orders": [
+				{
+					"speed": "action",
+					"cost": 0,
+					"texts": [
+						{
+							"timing": "resolve",
+							"effects": [
+								{
+									"kind": "wake",
+									"target": {
+										"what": "piece",
+										"filter": {
+											"side": "ally",
+											"piece_kinds": [
+												"unit"
+											],
+											"relation": "adjacent",
+											"relative_to": "own_hero"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "recruteuse",
+			"name": "Recruteuse",
+			"health": 16,
+			"text": "Ordre (Action) — Endormez le Hero, payez 2 Essence : créez un jeton Unit de Force 1 sur une case libre ciblée adjacente au Hero.",
+			"orders": [
+				{
+					"speed": "action",
+					"cost": 2,
+					"texts": [
+						{
+							"timing": "resolve",
+							"effects": [
+								{
+									"kind": "create_token",
+									"token_piece_kind": "unit",
+									"token_force": 1,
+									"target": {
+										"what": "cell",
+										"adjacent_to": "own_hero"
+									}
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "stratege",
+			"name": "Stratège",
+			"health": 15,
+			"text": "Ordre (Réaction) — Endormez le Hero : échangez les cases de deux Units alliées ciblées distinctes adjacentes au Hero.",
+			"orders": [
+				{
+					"speed": "reaction",
+					"cost": 0,
+					"texts": [
+						{
+							"timing": "resolve",
+							"effects": [
+								{
+									"kind": "swap_cells",
+									"target": {
+										"what": "piece",
+										"filter": {
+											"side": "ally",
+											"piece_kinds": [
+												"unit"
+											],
+											"relation": "adjacent",
+											"relative_to": "own_hero"
+										},
+										"count_min": 2,
+										"count_max": 2,
+										"distinct": true
+									}
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "pilleuse",
+			"name": "Pilleuse",
+			"health": 15,
+			"text": "Au début de votre tour, si vous avez une carte ou moins en main, piochez deux cartes.",
+			"triggered": [
+				{
+					"timing": "triggered",
+					"trigger": "start_of_own_turn",
+					"condition": {
+						"value": {
+							"kind": "hand_size"
+						},
+						"comparison": "at_most",
+						"amount": 1
+					},
+					"effects": [
+						{
+							"kind": "draw_cards",
+							"subject": "owner_player",
+							"amount": 2
+						}
+					]
+				}
+			]
+		}
+	],
+	"cards": []
+}

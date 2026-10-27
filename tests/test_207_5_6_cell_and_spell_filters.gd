@@ -65,6 +65,55 @@ func test_207_3_14_cell_adjacent_to_the_source_outside_the_central_row() -> void
 	)
 
 
+func test_205_2_5_cell_adjacent_to_the_hero_of_the_owner_is_accepted() -> void:
+	var state := _builder.build()
+	var spec := _cell_spec({"adjacent_to": "own_hero"})
+	assert_bool(_cell_legal(state, spec, "B1")).is_true()
+	assert_bool(_cell_legal(state, spec, "D1")).is_true()
+	assert_bool(_cell_legal(state, spec, "C2")).is_true()
+	(
+		assert_array(TriggerTargets.legal_cells(state, A, spec))
+		. contains_exactly_in_any_order(
+			[
+				DuelStateBuilder.cell("B1"),
+				DuelStateBuilder.cell("D1"),
+				DuelStateBuilder.cell("C2"),
+			]
+		)
+	)
+
+
+func test_205_2_5_cell_not_adjacent_to_the_hero_or_occupied_is_refused() -> void:
+	_unit(A, "B1")
+	var state := _builder.build()
+	var spec := _cell_spec({"adjacent_to": "own_hero"})
+	assert_bool(_cell_legal(state, spec, "C1")).is_false()
+	assert_bool(_cell_legal(state, spec, "B2")).is_false()
+	assert_bool(_cell_legal(state, spec, "C3")).is_false()
+	assert_bool(_cell_legal(state, spec, "B1")).is_false()
+	var entry := _cells_entry(["B2"])
+	var snapshot := state.clone()
+	assert_int(EffectRules.validate_targets(state, entry, spec)).is_equal(REASON.ILLEGAL_TARGET)
+	assert_array(DeepCompare.find_clone_defects(snapshot, state)).is_empty()
+
+
+func test_205_2_5_cell_adjacent_to_the_hero_is_read_for_the_owner_of_the_effect() -> void:
+	var state := _builder.build()
+	var spec := _cell_spec({"adjacent_to": "own_hero"})
+	assert_bool(_cell_legal(state, spec, "B1", B)).is_false()
+	assert_bool(_cell_legal(state, spec, "B5", B)).is_true()
+
+
+func test_207_5_6_cell_adjacent_to_the_hero_is_judged_again_after_the_hero_moves() -> void:
+	var state := _builder.build()
+	var spec := _cell_spec({"adjacent_to": "own_hero"})
+	var entry := _cells_entry(["B1"])
+	assert_int(EffectRules.validate_targets(state, entry, spec)).is_equal(REASON.NONE)
+	state.find_hero(A).cell = DuelStateBuilder.cell("C2")
+	assert_int(EffectRules.validate_targets(state, entry, spec)).is_equal(REASON.ILLEGAL_TARGET)
+	assert_bool(_cell_legal(state, spec, "C3")).is_true()
+
+
 func test_207_5_6_distinct_cells_refuse_the_same_cell_twice() -> void:
 	var state := _builder.build()
 	var spec := _cell_spec({"row": "own_near", "distinct": true, "count_min": 2, "count_max": 2})

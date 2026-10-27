@@ -73,9 +73,18 @@ static func is_legal_cell(
 	if spec.adjacent_to == TargetSpec.AdjacentTo.SOURCE_PIECE:
 		if not BoardGeometry.are_adjacent(spec.source_cell, cell):
 			return false  # 207.3.14
+	if spec.adjacent_to == TargetSpec.AdjacentTo.OWN_HERO:
+		if not _is_next_to_hero(state, owner, cell):
+			return false  # 205.2.5, 207.5.6
 	if not ModifierRules.is_in_row_zone(spec.row, owner, cell):
 		return false
 	return state.piece_at(cell) == null
+
+
+# 205.2.5 : `cell` touche la case du Hero de `owner`, lue sur le plateau du moment.
+static func _is_next_to_hero(state: DuelState, owner: DuelState.PlayerSide, cell: Vector2i) -> bool:
+	var hero := state.find_hero(owner)
+	return hero != null and BoardGeometry.are_adjacent(hero.cell, cell)
 
 
 ## 207.5.14, 207.5.15, 207.5.16, 207.5.6 : seul un Spell de la pile se cible, jamais l'entrée qui

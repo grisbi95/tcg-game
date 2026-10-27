@@ -1,0 +1,22 @@
+{
+	"edition": "0.55",
+	"id": "percee",
+	"name": "Percée",
+	"hero": "chef_de_guerre",
+	"cards": {
+		"eclaireur": 3,
+		"pillard": 3,
+		"maraudeur": 2,
+		"furieux": 2,
+		"charge": 3,
+		"furie": 2,
+		"forge": 1,
+		"hache_de_guerre": 2,
+		"glissement": 2,
+		"passeur": 1,
+		"recrue": 3,
+		"soldat": 3,
+		"renfort": 2,
+		"campement": 1
+	}
+}

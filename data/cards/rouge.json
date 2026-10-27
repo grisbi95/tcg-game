@@ -1,0 +1,213 @@
+{
+	"edition": "0.55",
+	"heroes": [],
+	"cards": [
+		{
+			"id": "eclaireur",
+			"name": "Éclaireur",
+			"cost": 1,
+			"type": "unit",
+			"text": "Arrivée : réveillez cette Unit.",
+			"force": 1,
+			"keywords": [
+				{
+					"keyword": "arrival"
+				}
+			],
+			"texts": [
+				{
+					"timing": "triggered",
+					"trigger": "arrival",
+					"effects": [
+						{
+							"kind": "wake",
+							"subject": "source_piece"
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "maraudeur",
+			"name": "Maraudeur",
+			"cost": 3,
+			"type": "unit",
+			"text": "Assaut 2",
+			"force": 3,
+			"keywords": [
+				{
+					"keyword": "assault",
+					"value": 2
+				}
+			]
+		},
+		{
+			"id": "furieux",
+			"name": "Furieux",
+			"cost": 4,
+			"type": "unit",
+			"text": "Assaut 1. Arrivée : réveillez cette Unit.",
+			"force": 4,
+			"keywords": [
+				{
+					"keyword": "assault",
+					"value": 1
+				},
+				{
+					"keyword": "arrival"
+				}
+			],
+			"texts": [
+				{
+					"timing": "triggered",
+					"trigger": "arrival",
+					"effects": [
+						{
+							"kind": "wake",
+							"subject": "source_piece"
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "charge",
+			"name": "Charge",
+			"cost": 1,
+			"type": "spell",
+			"speed": "action",
+			"text": "Réveillez une Unit alliée ciblée.",
+			"texts": [
+				{
+					"timing": "resolve",
+					"effects": [
+						{
+							"kind": "wake",
+							"target": {
+								"what": "piece",
+								"filter": {
+									"side": "ally",
+									"piece_kinds": [
+										"unit"
+									]
+								}
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "furie",
+			"name": "Furie",
+			"cost": 3,
+			"type": "spell",
+			"speed": "action",
+			"text": "Une Unit alliée ciblée a Assaut X jusqu'à la fin du tour, X étant sa Force à la résolution.",
+			"texts": [
+				{
+					"timing": "resolve",
+					"effects": [
+						{
+							"kind": "grant_keyword",
+							"keyword": "assault",
+							"amount": "X",
+							"x_from": {
+								"kind": "target_force"
+							},
+							"duration": "until_end_of_turn",
+							"target": {
+								"what": "piece",
+								"filter": {
+									"side": "ally",
+									"piece_kinds": [
+										"unit"
+									]
+								}
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "forge",
+			"name": "Forge",
+			"cost": 2,
+			"type": "building",
+			"text": "Au début de votre tour, une Unit alliée ciblée a +2 Force jusqu'à la fin du tour.",
+			"force": 2,
+			"texts": [
+				{
+					"timing": "triggered",
+					"trigger": "start_of_own_turn",
+					"effects": [
+						{
+							"kind": "modify_force",
+							"amount": 2,
+							"duration": "until_end_of_turn",
+							"target": {
+								"what": "piece",
+								"filter": {
+									"side": "ally",
+									"piece_kinds": [
+										"unit"
+									]
+								}
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "tambour_de_guerre",
+			"name": "Tambour de guerre",
+			"cost": 3,
+			"type": "building",
+			"text": "Les Units alliées adjacentes à ce Building ont Assaut 1.",
+			"force": 3,
+			"texts": [
+				{
+					"timing": "static",
+					"effects": [
+						{
+							"kind": "grant_keyword",
+							"keyword": "assault",
+							"amount": 1,
+							"scope": {
+								"side": "ally",
+								"piece_kinds": [
+									"unit"
+								],
+								"relation": "adjacent"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "hache_de_guerre",
+			"name": "Hache de guerre",
+			"cost": 1,
+			"type": "gear",
+			"text": "La Unit qui porte ce Gear a Assaut 2.",
+			"texts": [
+				{
+					"timing": "static",
+					"effects": [
+						{
+							"kind": "grant_keyword",
+							"keyword": "assault",
+							"amount": 2,
+							"scope": {
+								"relation": "self"
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}

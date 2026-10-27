@@ -1,0 +1,24 @@
+{
+	"edition": "0.55",
+	"id": "echiquier",
+	"name": "Échiquier",
+	"hero": "stratege",
+	"cards": {
+		"ombre": 3,
+		"sentinelle": 3,
+		"passeur": 2,
+		"manipulateur": 2,
+		"glissement": 2,
+		"reflux": 2,
+		"obelisque": 1,
+		"poudriere": 1,
+		"cape_d_ombre": 1,
+		"seve": 2,
+		"compagnon_tenace": 2,
+		"gardien": 2,
+		"veteran": 2,
+		"champion": 2,
+		"colosse": 2,
+		"execution": 1
+	}
+}

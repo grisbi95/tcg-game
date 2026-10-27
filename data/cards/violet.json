@@ -1,0 +1,269 @@
+{
+	"edition": "0.55",
+	"heroes": [],
+	"cards": [
+		{
+			"id": "ombre",
+			"name": "Ombre",
+			"cost": 2,
+			"type": "unit",
+			"text": "Arrivée : échangez les cases de deux Units alliées ciblées distinctes.",
+			"force": 2,
+			"keywords": [
+				{
+					"keyword": "arrival"
+				}
+			],
+			"texts": [
+				{
+					"timing": "triggered",
+					"trigger": "arrival",
+					"effects": [
+						{
+							"kind": "swap_cells",
+							"target": {
+								"what": "piece",
+								"filter": {
+									"side": "ally",
+									"piece_kinds": [
+										"unit"
+									]
+								},
+								"count_min": 2,
+								"count_max": 2,
+								"distinct": true
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "sentinelle",
+			"name": "Sentinelle",
+			"cost": 3,
+			"type": "unit",
+			"text": "Rempart 2",
+			"force": 3,
+			"keywords": [
+				{
+					"keyword": "rampart",
+					"value": 2
+				}
+			]
+		},
+		{
+			"id": "passeur",
+			"name": "Passeur",
+			"cost": 3,
+			"type": "unit",
+			"text": "Arrivée : renvoyez une Unit ennemie ciblée de Force 2 ou moins dans la main de son joueur.",
+			"force": 2,
+			"keywords": [
+				{
+					"keyword": "arrival"
+				}
+			],
+			"texts": [
+				{
+					"timing": "triggered",
+					"trigger": "arrival",
+					"effects": [
+						{
+							"kind": "return_to_hand",
+							"target": {
+								"what": "piece",
+								"filter": {
+									"side": "enemy",
+									"piece_kinds": [
+										"unit"
+									]
+								},
+								"max_force": 2
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "manipulateur",
+			"name": "Manipulateur",
+			"cost": 4,
+			"type": "unit",
+			"text": "Arrivée : déplacez une Unit ennemie ciblée sur une case libre ciblée adjacente à cette Unit ennemie.",
+			"force": 3,
+			"keywords": [
+				{
+					"keyword": "arrival"
+				}
+			],
+			"texts": [
+				{
+					"timing": "triggered",
+					"trigger": "arrival",
+					"effects": [
+						{
+							"kind": "move_unit",
+							"target": {
+								"what": "piece",
+								"filter": {
+									"side": "enemy",
+									"piece_kinds": [
+										"unit"
+									]
+								}
+							},
+							"destination": {
+								"what": "cell",
+								"adjacent_to": "target_piece"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "glissement",
+			"name": "Glissement",
+			"cost": 1,
+			"type": "spell",
+			"speed": "action",
+			"text": "Déplacez une Unit ennemie ciblée sur une case libre ciblée adjacente à cette Unit.",
+			"texts": [
+				{
+					"timing": "resolve",
+					"effects": [
+						{
+							"kind": "move_unit",
+							"target": {
+								"what": "piece",
+								"filter": {
+									"side": "enemy",
+									"piece_kinds": [
+										"unit"
+									]
+								}
+							},
+							"destination": {
+								"what": "cell",
+								"adjacent_to": "target_piece"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "reflux",
+			"name": "Reflux",
+			"cost": 2,
+			"type": "spell",
+			"speed": "action",
+			"text": "Renvoyez une Unit ennemie ciblée de Force 3 ou moins dans la main de son joueur.",
+			"texts": [
+				{
+					"timing": "resolve",
+					"effects": [
+						{
+							"kind": "return_to_hand",
+							"target": {
+								"what": "piece",
+								"filter": {
+									"side": "enemy",
+									"piece_kinds": [
+										"unit"
+									]
+								},
+								"max_force": 3
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "obelisque",
+			"name": "Obélisque",
+			"cost": 3,
+			"type": "building",
+			"text": "Les Units ennemies adjacentes à ce Building ont −1 Force.",
+			"force": 4,
+			"texts": [
+				{
+					"timing": "static",
+					"effects": [
+						{
+							"kind": "modify_force",
+							"amount": -1,
+							"scope": {
+								"side": "enemy",
+								"piece_kinds": [
+									"unit"
+								],
+								"relation": "adjacent"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "poudriere",
+			"name": "Poudrière",
+			"cost": 2,
+			"type": "building",
+			"text": "Dernier souffle : détruisez une Unit ennemie ciblée de Force 4 ou moins adjacente à la case de ce Building.",
+			"force": 3,
+			"keywords": [
+				{
+					"keyword": "last_breath"
+				}
+			],
+			"texts": [
+				{
+					"timing": "triggered",
+					"trigger": "destroyed",
+					"effects": [
+						{
+							"kind": "destroy",
+							"target": {
+								"what": "piece",
+								"filter": {
+									"side": "enemy",
+									"piece_kinds": [
+										"unit"
+									],
+									"relation": "adjacent"
+								},
+								"max_force": 4
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "cape_d_ombre",
+			"name": "Cape d'ombre",
+			"cost": 1,
+			"type": "gear",
+			"text": "La Unit qui porte ce Gear a Rempart 2.",
+			"texts": [
+				{
+					"timing": "static",
+					"effects": [
+						{
+							"kind": "grant_keyword",
+							"keyword": "rampart",
+							"amount": 2,
+							"scope": {
+								"relation": "self"
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}
