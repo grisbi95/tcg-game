@@ -1,6 +1,6 @@
 # 0017 — Effets déclenchés en attente, une liste d'entrées de pile
 
-- Statut : acceptée ; complétée par 0057
+- Statut : acceptée ; complétée par 0057 ; complétée par 0060
 - Date : 2026-10-17
 - Décideur : créateur du projet
 - Périmètre : effets déclenchés (ruleset 207.3, 208.4, 204.5.3 à 204.5.7) ; complète les décisions 0004 et 0009

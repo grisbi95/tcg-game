@@ -48,7 +48,7 @@ static func _granted_value(state: DuelState, piece: Piece, keyword: CardDefiniti
 	var kind := EffectDefinition.EffectKind.GRANT_KEYWORD
 	return (
 		ModifierRules.active_total(state, piece, kind, keyword)
-		+ StaticEffects.total_for(state, piece, kind, keyword)
+		+ ModifierRules.total_for(state, piece, kind, keyword)
 	)
 
 

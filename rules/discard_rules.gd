@@ -74,7 +74,9 @@ static func discard_at_random(state: DuelState, events: Array[DuelEvent]) -> voi
 	apply_choice(state, ChooseDiscard.new(side, chosen), events)
 
 
-# 212.1.1, 212.2.1, 212.2.4 : un événement par carte, dans l'ordre du choix.
+# 212.1.1, 212.2.1, 212.2.4 : un événement par carte, dans l'ordre du choix, chacun déclenchant les
+# effets « quand vous défaussez une carte » ; 212.2.5 : « une fois par tour » ne les ajoute qu'une
+# fois à la pile (TriggerRules).
 static func _discard(
 	state: DuelState, side: DuelState.PlayerSide, card_ids: Array[int], events: Array[DuelEvent]
 ) -> void:
@@ -84,6 +86,8 @@ static func _discard(
 		player.hand.erase(card)
 		player.discard.append(card)
 		events.append(CardDiscardedFromHand.new(side, card_id))
+		var trigger_event := EffectDefinition.TriggerEvent.OWN_CARD_DISCARDED
+		TriggerRules.trigger_for_player(state, side, trigger_event, events)
 
 
 static func _card_ids(cards: Array[CardInstance]) -> Array[int]:

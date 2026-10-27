@@ -92,6 +92,9 @@ func _check_triggered(errors: PackedStringArray) -> void:
 			errors.append("triggered %d : %s" % [index + 1, message])
 		if triggered[index].timing != EffectDefinition.EffectTiming.TRIGGERED:
 			errors.append("triggered %d : timing refusé pour un effet déclenché" % (index + 1))
+		var attack_error := EffectDefinition.destroys_defender_error(triggered[index], false)
+		if not attack_error.is_empty():
+			errors.append("triggered %d : %s" % [index + 1, attack_error])
 	var once_error := EffectDefinition.once_per_turn_error(triggered)
 	if not once_error.is_empty():
 		errors.append(once_error)

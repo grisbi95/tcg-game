@@ -14,9 +14,10 @@ const TEST_PATTERN: String = "(?m)^func (test_\\w+)\\("
 ## 207.3.4a, 207.3.7a, 207.3.11, 207.3.11a : un jeton ne porte aucun effet déclenché.
 const TOKEN_HAS_NO_TRIGGERED_EFFECT: String = (
 	"Sans test possible : un jeton ne porte aucun effet à sa création (202.4.5) et n'en "
-	+ "reçoit un que d'un Gear, d'un Spell ou d'une aura (202.4.5a) ; un Gear ne porte que "
-	+ "du statique (CardDefinition._allowed_timings) et aucun EffectKind ne donne d'effet "
-	+ "déclenché."
+	+ "reçoit un que d'un Gear, d'un Spell ou d'une aura (202.4.5a) ; l'effet déclenché d'un "
+	+ "Gear est celui du Gear, à son joueur (207.3.12b, "
+	+ "test_207_3_12b_gear_effect_belongs_to_the_player_who_owns_the_gear), et aucun "
+	+ "EffectKind ne donne d'effet déclenché à un jeton."
 )
 
 ## Règle sans test à son nom, et pourquoi : règle de structure, ou vérifiée sous d'autres
@@ -121,16 +122,10 @@ const RULES_WITHOUT_OWN_TEST: Dictionary[String, String] = {
 	),
 	"208.2.4a":
 	(
-		"Sans test possible : aucun déclencheur ne réagit à une annonce (décision 0017 ; "
-		+ "TriggerEvent : ARRIVAL, DESTROYED, END_OF_TURN)."
-	),
-	"208.4.4": "Sans test possible : aucun déclencheur ne réagit à une annonce (décision 0017).",
-	"208.4.10":
-	"Sans test possible : aucun déclencheur ne réagit au début du tour (décision 0017).",
-	"208.4.11":
-	(
-		"Sans test possible : aucun déclencheur ne réagit au début du tour (décision 0017) ; "
-		+ "DuelEngine ajoute les effets en attente après chaque intention, sans rien à ajouter."
+		"Sans test possible : aucun déclencheur ne réagit à l'annonce de l'adversaire, "
+		+ "OWN_SPELL_ANNOUNCED nomme son auteur (décision 0060, réexamen au premier déclencheur "
+		+ "dont l'auteur est l'adversaire) ; le cas de l'auteur lui-même est vérifié sous 208.2.4 "
+		+ "(test_208_2_4_opponent_answers_first_the_trigger_of_an_announcement)."
 	),
 	"210.1.2":
 	(
@@ -140,26 +135,12 @@ const RULES_WITHOUT_OWN_TEST: Dictionary[String, String] = {
 	),
 }
 
-## Règles consignées par les éditions 0.45 à 0.53 du ruleset et pas encore codées, avec l'étape du
+## Règles consignées par les éditions 0.45 à 0.54 du ruleset et pas encore codées, avec l'étape du
 ## jalon J2c qui les code (décision 0054) : chaque étape retire ses lignes en écrivant leurs tests,
 ## la liste est vide à la sortie de c.8.
 const RULES_AWAITING_IMPLEMENTATION: Dictionary[String, String] = {
 	"201.4.1a": "c.7",
-	"204.3.12": "c.5b",
-	"204.3.12a": "c.5b",
-	"206.3.7": "c.5b",
-	"206.3.7a": "c.5b",
-	"206.3.7b": "c.5b",
-	"207.3.12": "c.5b",
-	"207.3.12a": "c.5b",
-	"207.3.12b": "c.5b",
-	"207.3.12c": "c.5b",
-	"207.3.13": "c.5b",
-	"207.3.13a": "c.5b",
-	"207.3.13b": "c.5b",
-	"207.3.14": "c.5b",
-	"207.5.18": "c.5b",
-	"212.2.5": "c.5b",
+	"207.5.18": "c.6",
 	"217.1.5": "c.7",
 }
 

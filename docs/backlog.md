@@ -12,8 +12,7 @@ Priorité : **haute** = écart au ruleset ou défaut visible en partie ; **moyen
 | Ruleset 0.46 sans code : coût X (213.1) et valeur X fixée à la résolution (213.2). | 0214 à 0216 | moyenne | avant les cartes du catalogue |
 | Ruleset 0.47 sans code : X choisi avant les cibles (213.1.9 à 213.1.11), Force lue pour X sans Assaut ni Rempart (213.2.4). | 0217 à 0222 | moyenne | avant les cartes du catalogue |
 | Ruleset 0.49 sans code : abandon de l'annonce à l'expiration pendant le choix de X (209.4.4h, 209.4.11b). Le catalogue de `ruleset/50-cartes/` attend Q-132 à Q-139 avant tout codage de ses cartes. | 0226 à 0228 | haute | avant J3 |
-| Ruleset 0.51 sans code : condition « si » lue à l'événement (204.3.12, 207.3.13), effet déclenché d'un Gear (207.3.12) ; aucun `EffectKind` correspondant. | 0233 à 0237 | haute | avant J3 |
-| Ruleset 0.52 sans code : événement « détruit son défenseur » (206.3.7), dernière case d'une pièce partie du plateau (207.3.14 ; à relire avec le déplacement dont l'Unit a quitté le plateau avant la résolution, `test_215_1_1_unit_gone_at_resolution_loses_the_effect`), seul « ciblée » désigne une cible (207.5.18). | 0238 à 0241 | haute | avant J3 |
+| `MoveRules` juge une destination « adjacente à la pièce ciblée » invalide quand l'Unit ciblée a quitté le plateau (`test_215_1_1_unit_gone_at_resolution_loses_the_effect`) ; à reprendre selon la réponse à Q-147 du ruleset (207.3.14 vaut-elle pour une pièce ciblée ?). | 207.3.14, 207.5.5, Q-147 | moyenne | Q-147 tranchée |
 | Si `max_recycles_per_turn` devient borné, le paiement préparé pendant le tour adverse l'ignore (203.4.2 PROVISOIRE : illimité aujourd'hui). | 203.4.2 | moyenne | si 203.4.2 est borné |
 | Une carte qui porte « une fois par tour » et plusieurs effets déclenchés est refusée par le catalogue. | 207.3.5, 207.3.7 | moyenne | J4 (`50-cartes/`) |
 | `ActiveEffect.effect_kind` est une `StringName` alors que l'enum `EffectKind` existe. | 0010 | basse | J4 |

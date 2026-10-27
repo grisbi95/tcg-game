@@ -106,7 +106,7 @@ static func validate_destination_targets(
 		return IntentRejected.RejectReason.ILLEGAL_TARGET
 	if effect.destination == null:
 		return IntentRejected.RejectReason.NONE
-	var spec := effect.destination
+	var spec := resolved_spec(state, entry, effect.destination)
 	var cell_count := chosen_count(entry, spec)
 	if cell_count < spec.count_min or cell_count > spec.count_max:
 		return IntentRejected.RejectReason.WRONG_TARGET_COUNT
@@ -165,6 +165,9 @@ static func is_legal_piece(
 		and not _is_next_to_hero(state, owner, piece)
 	):
 		return false
+	if spec.adjacent_to == TargetSpec.AdjacentTo.SOURCE_PIECE:
+		if not BoardGeometry.are_adjacent(spec.source_cell, piece.cell):
+			return false  # 207.3.14
 	var limited := spec.max_force != TargetSpec.NO_FORCE_LIMIT
 	return not limited or ForceRules.current_force(state, piece) <= spec.max_force
 
@@ -183,6 +186,9 @@ static func is_legal_cell(
 	if spec.adjacent_to == TargetSpec.AdjacentTo.TARGET_PIECE:
 		if anchor == null or not BoardGeometry.are_adjacent(anchor.cell, cell):
 			return false
+	if spec.adjacent_to == TargetSpec.AdjacentTo.SOURCE_PIECE:
+		if not BoardGeometry.are_adjacent(spec.source_cell, cell):
+			return false  # 207.3.14
 	if spec.row == TargetSpec.CellRow.OWN_FIRST and not BoardGeometry.is_in_first_row(owner, cell):
 		return false
 	return state.piece_at(cell) == null
@@ -278,6 +284,13 @@ static func counter_spell(state: DuelState, spell: StackEntry, events: Array[Due
 	events.append(CardDiscarded.new(spell.card.owner, spell.card.card_instance_id))
 
 
+## 213.1.10, 213.1.11, 207.3.14 : `spec` où « X » vaut celui de `entry` et où la case de la pièce
+## source est celle de `entry.source_piece_id`, sur le plateau ou la dernière qu'elle a occupée.
+static func resolved_spec(state: DuelState, entry: StackEntry, spec: TargetSpec) -> TargetSpec:
+	var cell := state.cell_of_piece(entry.source_piece_id)
+	return spec.with_x(entry.x_value).with_source_cell(cell)
+
+
 ## 207.5.10 : nombre de cibles du genre que vise `spec` portées par `entry`.
 static func chosen_count(entry: StackEntry, spec: TargetSpec) -> int:
 	match spec.what:
@@ -323,7 +336,7 @@ static func _has_duplicates(entry: StackEntry) -> bool:
 ## 207.5.3, 207.5.6, 207.5.6a : pièces ciblées par `entry` restées valides pour `spec`.
 static func valid_pieces(state: DuelState, entry: StackEntry, spec: TargetSpec) -> Array[Piece]:
 	var pieces: Array[Piece] = []
-	var limits := spec.with_x(entry.x_value)  # 213.1.10, 213.1.11
+	var limits := resolved_spec(state, entry, spec)
 	for piece_id: int in entry.target_piece_ids:
 		var piece := state.find_piece(piece_id)
 		if piece != null and is_legal_piece(state, entry.owner, limits, piece):
@@ -334,8 +347,9 @@ static func valid_pieces(state: DuelState, entry: StackEntry, spec: TargetSpec) 
 # 202.4.12b
 static func _valid_cells(state: DuelState, entry: StackEntry, spec: TargetSpec) -> Array[Vector2i]:
 	var cells: Array[Vector2i] = []
+	var limits := resolved_spec(state, entry, spec)
 	for cell: Vector2i in entry.target_cells:
-		if is_legal_cell(state, entry.owner, spec, cell):
+		if is_legal_cell(state, entry.owner, limits, cell):
 			cells.append(cell)
 	return cells
 

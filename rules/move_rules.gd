@@ -18,10 +18,9 @@ static func resolve(context: EffectContext) -> void:
 	var pieces := EffectRules.valid_pieces(context.state, entry, context.effect.target)
 	var anchor: Piece = pieces[0] if not pieces.is_empty() else null
 	var cells: Array[Vector2i] = []
+	var destination := EffectRules.resolved_spec(context.state, entry, context.effect.destination)
 	for cell: Vector2i in entry.target_cells:
-		if EffectRules.is_legal_cell(
-			context.state, entry.owner, context.effect.destination, cell, anchor
-		):
+		if EffectRules.is_legal_cell(context.state, entry.owner, destination, cell, anchor):
 			cells.append(cell)
 	if pieces.is_empty() and cells.is_empty():
 		EffectRules.lose_all_targets(entry, context.events)

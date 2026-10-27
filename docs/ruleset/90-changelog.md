@@ -525,3 +525,8 @@
 - Expiration du temps pendant le choix de laisser la carte du dessus du deck ou de la mettre sous le deck : identifiants ajoutés 209.4.7d et 209.4.14 ([209-controles-d-etat.md](20-regles-completes/209-controles-d-etat.md)). Décision [0242](40-decisions/0242-expiration-du-temps-pendant-le-regard-sur-le-deck.md). Q-143 tranchée, option C.
 - [50-cartes/bleu.md](50-cartes/bleu.md) : Observatoire sans question ouverte, texte inchangé.
 - [README.md](README.md) : édition courante passée à 0.53.
+
+## 0.54 · 27 octobre 2026 · majeure · place de l'événement « début du tour »
+
+- L'événement « début du tour » survient après le réveil, après le redressement des Sources et après la Source reçue, avant la pioche : identifiant ajouté 204.3.12b ([204-tour.md](20-regles-completes/204-tour.md)). 204.3.8, 204.3.12 et 204.3.12a inchangées. Décision [0243](40-decisions/0243-place-de-l-evenement-debut-du-tour.md). Q-144 tranchée, option B.
+- [README.md](README.md) : édition courante passée à 0.54.

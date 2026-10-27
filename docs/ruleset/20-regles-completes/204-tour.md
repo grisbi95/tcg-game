@@ -102,6 +102,8 @@ Aucun Invariant.
 
 **204.3.12a** [ACTÉ] La condition « si » d'un effet déclenché par le début du tour se lit à cet événement, avant la pioche de 204.3.6 (décision 0236 ; voir 204.3.12 et 207.3.13).
 
+**204.3.12b** [ACTÉ] L'événement « début du tour » survient après le réveil de 204.3.10 et de 204.3.11, après 204.3.2 et après 204.3.1 (décision 0243 ; voir 204.3.8 et 204.3.12).
+
 ## 204.4 Phase principale
 
 **204.4.1** [ACTÉ] Après le début du tour vient la phase principale (décision 0035).

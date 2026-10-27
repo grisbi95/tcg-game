@@ -205,6 +205,11 @@ func _check_effects(errors: PackedStringArray) -> void:
 		if not allowed.has(effect.timing):
 			var type_name := str(CardType.find_key(card_type)).to_lower()
 			errors.append("effet %d : timing refusé pour %s" % [index + 1, type_name])
+		var attack_error := EffectDefinition.destroys_defender_error(
+			effect, card_type in [CardType.UNIT, CardType.GEAR]
+		)
+		if not attack_error.is_empty():
+			errors.append("effet %d : %s" % [index + 1, attack_error])
 	_check_once_per_turn(errors)
 	var is_unit_bearer := card_type in [CardType.UNIT, CardType.GEAR]
 	var bearer_error := EffectValueChecks.bearer_grant_error(effects, is_unit_bearer)
@@ -219,13 +224,10 @@ func _check_once_per_turn(errors: PackedStringArray) -> void:
 
 
 # 202.2.20 : un Spell se résout ; 207.2.2, 207.3 : une pièce porte du statique et du déclenché ;
-# 207.2.8 : un Gear porte du statique.
+# 207.2.8, 207.3.12 : un Gear aussi.
 func _allowed_timings() -> Array[EffectDefinition.EffectTiming]:
-	match card_type:
-		CardType.SPELL:
-			return [EffectDefinition.EffectTiming.RESOLVE]
-		CardType.GEAR:
-			return [EffectDefinition.EffectTiming.STATIC]
+	if card_type == CardType.SPELL:
+		return [EffectDefinition.EffectTiming.RESOLVE]
 	return [EffectDefinition.EffectTiming.STATIC, EffectDefinition.EffectTiming.TRIGGERED]
 
 

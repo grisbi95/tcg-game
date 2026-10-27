@@ -11,22 +11,34 @@ extends RefCounted
 const MIN_EFFECTS_TO_ORDER: int = 2
 
 
-## 207.3.1, 207.3.3, 207.3.4, 208.4.2 : les effets de `piece` déclenchés par `trigger_event`
-## attendent leur ajout à la pile. Un Hero porte les siens (202.3.20), un jeton aucun (202.4.5).
+## 207.3.1, 207.3.3, 207.3.4, 207.3.12, 208.4.2 : les effets de `piece` et ceux de son Gear
+## déclenchés par `trigger_event` attendent leur ajout à la pile. Un Hero porte les siens
+## (202.3.20), un jeton aucun (202.4.5) ; le Gear ne déclenche que tant qu'il est attaché à une
+## Unit en jeu (207.3.12a).
 static func trigger(
 	state: DuelState,
 	piece: Piece,
 	trigger_event: EffectDefinition.TriggerEvent,
 	events: Array[DuelEvent]
 ) -> void:
-	if piece.is_token():
-		return
-	var effects := state.catalog.triggerable_effects(piece.card.definition_id)
-	for index: int in effects.size():
-		var effect := effects[index]
-		var is_triggered := effect.timing == EffectDefinition.EffectTiming.TRIGGERED
-		if is_triggered and effect.trigger == trigger_event:
-			_wait(state, piece, index, events)
+	if not piece.is_token():
+		_trigger_card(state, piece, piece.card, trigger_event, events)
+	var gear := piece.attached_gear
+	if gear != null and state.pieces.has(piece):
+		_trigger_card(state, piece, gear, trigger_event, events)
+
+
+## 204.3.12, 212.2.4, 208.4.4 : chaque pièce en jeu de `side` réagit à `trigger_event`, événement
+## qui nomme son auteur (décision 0060).
+static func trigger_for_player(
+	state: DuelState,
+	side: DuelState.PlayerSide,
+	trigger_event: EffectDefinition.TriggerEvent,
+	events: Array[DuelEvent]
+) -> void:
+	for piece: Piece in _pieces_on_board(state):
+		if piece.owner == side:
+			trigger(state, piece, trigger_event, events)
 
 
 ## 205.6.3, 205.6.5, 205.6.6, 208.7.14 : `combat` attend la fin de la résolution qui l'a fait
@@ -49,9 +61,8 @@ static func wait_pending_combat(
 
 ## 204.5.3 : quand le joueur actif termine son tour, chaque pièce en jeu réagit à la fin du tour.
 static func trigger_end_of_turn(state: DuelState, events: Array[DuelEvent]) -> void:
-	for piece: Piece in state.pieces:
-		if BoardGeometry.is_on_board(piece.cell):
-			trigger(state, piece, EffectDefinition.TriggerEvent.END_OF_TURN, events)
+	for piece: Piece in _pieces_on_board(state):
+		trigger(state, piece, EffectDefinition.TriggerEvent.END_OF_TURN, events)
 
 
 ## Décision 0017 ; 208.4.3, 208.4.6, 208.4.7 : ajoute à la pile les effets en attente, ceux du
@@ -105,7 +116,7 @@ static func validate_targets_choice(
 	if reason != IntentRejected.RejectReason.NONE:
 		return reason
 	var entry := _targeted_entry(state).clone()
-	_assign_targets(entry, intent)
+	TriggerTargets.assign_chosen(entry, intent)
 	var effect := effect_of(state, entry)
 	reason = EffectRules.validate_effect_targets(state, entry, effect)
 	if reason != IntentRejected.RejectReason.NONE:
@@ -121,7 +132,7 @@ static func apply_targets_choice(
 ) -> void:
 	var entry := _targeted_entry(state)
 	state.pending_decision = null
-	_assign_targets(entry, intent)
+	TriggerTargets.assign_chosen(entry, intent)
 	events.append(TargetsChosen.new(intent.player, entry.stack_entry_id))
 
 
@@ -172,18 +183,59 @@ static func effect_of(state: DuelState, entry: StackEntry) -> EffectDefinition:
 	return state.catalog.triggerable_effects(entry.source_definition_id)[entry.effect_index]
 
 
-# 207.3.4 : l'effet appartient au joueur à qui appartient la carte ; son identifiant d'entrée
-# lui est donné dès maintenant (décision 0017).
+## 207.3.13, 207.3.13a, 204.3.12a : vrai si `condition` est absente ou vraie pour le joueur
+## `owner`, à qui appartient l'effet. Lue quand survient l'événement, jamais à la résolution
+## (207.3.13b). Pur.
+static func condition_holds(
+	state: DuelState, condition: EffectCondition, owner: DuelState.PlayerSide
+) -> bool:
+	if condition == null:
+		return true
+	match condition.kind:
+		EffectCondition.ConditionKind.HAND_SIZE_AT_MOST:
+			return state.get_player(owner).hand.size() <= condition.amount
+	return false
+
+
+# Pièces en jeu, dans l'ordre de `state.pieces`.
+static func _pieces_on_board(state: DuelState) -> Array[Piece]:
+	var on_board: Array[Piece] = []
+	for piece: Piece in state.pieces:
+		if BoardGeometry.is_on_board(piece.cell):
+			on_board.append(piece)
+	return on_board
+
+
+# 207.3.13 : la condition « si » se lit ici, à l'événement ; fausse, l'effet ne se déclenche pas et
+# ne compte donc pas pour « une fois par tour » (207.3.6).
+static func _trigger_card(
+	state: DuelState,
+	piece: Piece,
+	card: CardInstance,
+	trigger_event: EffectDefinition.TriggerEvent,
+	events: Array[DuelEvent]
+) -> void:
+	var effects := state.catalog.triggerable_effects(card.definition_id)
+	for index: int in effects.size():
+		var effect := effects[index]
+		var is_triggered := effect.timing == EffectDefinition.EffectTiming.TRIGGERED
+		if is_triggered and effect.trigger == trigger_event:
+			if condition_holds(state, effect.condition, card.owner):
+				_wait(state, piece, card, index, events)
+
+
+# 207.3.4, 207.3.12b : l'effet appartient au joueur à qui appartient la carte qui le porte, Gear
+# compris ; son identifiant d'entrée lui est donné dès maintenant (décision 0017).
 static func _wait(
-	state: DuelState, piece: Piece, effect_index: int, events: Array[DuelEvent]
+	state: DuelState, piece: Piece, card: CardInstance, effect_index: int, events: Array[DuelEvent]
 ) -> void:
 	var entry := StackEntry.new()
 	entry.stack_entry_id = state.allocate_stack_entry_id()
 	entry.kind = StackEntry.StackEntryKind.TRIGGERED_EFFECT
-	entry.owner = piece.card.owner
+	entry.owner = card.owner
 	entry.source_piece_id = piece.piece_id
-	entry.source_card_instance_id = piece.card.card_instance_id
-	entry.source_definition_id = piece.card.definition_id
+	entry.source_card_instance_id = card.card_instance_id
+	entry.source_definition_id = card.definition_id
 	entry.effect_index = effect_index
 	entry.allows_response = state.triggers_allow_response  # 208.7.8 à 208.7.11
 	state.waiting_triggers.append(entry)
@@ -195,7 +247,7 @@ static func _wait(
 static func _order_next_group(state: DuelState, events: Array[DuelEvent]) -> void:
 	var addable: Array[StackEntry] = []
 	for entry: StackEntry in _next_group(state):
-		if _can_be_added(state, entry):
+		if _can_be_added(state, entry) and not _repeats_once_per_turn(state, entry, addable):
 			addable.append(entry)
 		else:
 			_skip(state.waiting_triggers, entry, events)
@@ -236,10 +288,12 @@ static func _add_next(state: DuelState, events: Array[DuelEvent]) -> void:
 		return
 	var effect := effect_of(state, entry)
 	if effect.target != null and EffectRules.chosen_effect_count(entry, effect) == 0:
-		if not _has_unique_targets(state, entry, effect):
-			StackRules.request_decision(state, _make_targets_decision(state, entry, effect), events)
+		if not TriggerTargets.has_unique_targets(state, entry, effect):
+			StackRules.request_decision(
+				state, TriggerTargets.make_decision(state, entry, effect), events
+			)
 			return
-		_assign_unique_targets(state, entry, effect, events)
+		TriggerTargets.assign_unique_targets(state, entry, effect, events)
 	state.triggers_to_add.pop_front()
 	if effect.once_per_turn:
 		state.once_per_turn_card_ids.append(entry.source_card_instance_id)
@@ -255,40 +309,22 @@ static func _can_be_added(state: DuelState, entry: StackEntry) -> bool:
 		return false
 	if effect.target == null:
 		return true  # décision 0057 : un effet sans cible n'attend aucune cible légale
-	var legal_count := _legal_target_count(state, entry, effect)
-	return legal_count >= effect.target.count_min
+	return TriggerTargets.legal_count(state, entry, effect) >= effect.target.count_min
 
 
-# 207.5.2, 207.5.10, décision 0004 : autant de cibles légales que le minimum exigé, un seul
-# choix est possible ; sinon le joueur à qui appartient l'effet choisit ses cibles. Un déplacement
-# n'a qu'un choix si une seule pièce est déplaçable, vers une seule case (décision 0056).
-static func _has_unique_targets(
-	state: DuelState, entry: StackEntry, effect: EffectDefinition
+# 207.3.5, 207.3.5a, 212.2.5 : un second effet « une fois par tour » de la même carte, déjà dans
+# `kept`, ne s'ajoutera pas à la pile.
+static func _repeats_once_per_turn(
+	state: DuelState, entry: StackEntry, kept: Array[StackEntry]
 ) -> bool:
-	var spec := effect.target
-	var piece_ids := _candidate_ids(state, entry, effect)
-	var legal_count := piece_ids.size()
-	legal_count += EffectRules.legal_cells(state, entry.owner, spec).size()
-	if legal_count != spec.count_min:
+	if entry.kind == StackEntry.StackEntryKind.PENDING_COMBAT:
 		return false
-	if effect.destination == null:
-		return true
-	return _candidate_cells(state, entry, effect, piece_ids).size() == 1
-
-
-# 207.5.1b, décision 0004 : le moteur prend toutes les cibles légales, sans demander.
-static func _assign_unique_targets(
-	state: DuelState, entry: StackEntry, effect: EffectDefinition, events: Array[DuelEvent]
-) -> void:
-	var spec := effect.target
-	var target_ids := _candidate_ids(state, entry, effect)
-	entry.target_cells.assign(_candidate_cells(state, entry, effect, target_ids))
-	if spec.what == TargetSpec.TargetWhat.SPELL_ON_STACK:
-		entry.target_stack_entry_ids.assign(target_ids)
-	else:
-		entry.target_piece_ids.assign(target_ids)
-	var targeting := PendingDecision.DecisionKind.CHOOSE_TARGETS
-	events.append(DecisionResolvedAutomatically.new(entry.owner, targeting))
+	if not effect_of(state, entry).once_per_turn:
+		return false
+	return kept.any(
+		func(other: StackEntry) -> bool:
+			return other.source_card_instance_id == entry.source_card_instance_id
+	)
 
 
 # 207.3.5a, 207.5.9, 207.5.10 : l'effet est retiré sans avoir lieu, et l'événement le dit.
@@ -305,70 +341,6 @@ static func _make_order_decision(entries: Array[StackEntry]) -> PendingDecision:
 	for entry: StackEntry in entries:
 		decision.candidate_ids.append(entry.stack_entry_id)
 	return decision
-
-
-# 207.5.1b, 207.5.2 : le joueur à qui appartient l'effet choisit ses cibles parmi les légales.
-static func _make_targets_decision(
-	state: DuelState, entry: StackEntry, effect: EffectDefinition
-) -> PendingDecision:
-	var decision := PendingDecision.new()
-	decision.kind = PendingDecision.DecisionKind.CHOOSE_TARGETS
-	decision.awaited_players.append(entry.owner)
-	decision.subject_stack_entry_id = entry.stack_entry_id
-	decision.candidate_ids.assign(_candidate_ids(state, entry, effect))
-	decision.candidate_cells.assign(_candidate_cells(state, entry, effect, decision.candidate_ids))
-	return decision
-
-
-# 207.5.9, 207.5.10, 215.1.1 : nombre de cibles légales de l'effet ; pour un déplacement, une pièce
-# ne compte que si une case lui est légale.
-static func _legal_target_count(
-	state: DuelState, entry: StackEntry, effect: EffectDefinition
-) -> int:
-	if effect.destination == null:
-		return EffectRules.legal_target_count(state, entry.owner, effect.target)
-	return _candidate_ids(state, entry, effect).size()
-
-
-# 207.5.9, 215.1.1 : cibles légales de l'effet ; un déplacement ne propose que les pièces qui ont
-# au moins une case de destination légale.
-static func _candidate_ids(
-	state: DuelState, entry: StackEntry, effect: EffectDefinition
-) -> Array[int]:
-	var ids := EffectRules.legal_target_ids(state, entry.owner, effect.target, entry.stack_entry_id)
-	if effect.destination == null:
-		return ids
-	var movable: Array[int] = []
-	for piece_id: int in ids:
-		var piece := state.find_piece(piece_id)
-		if not EffectRules.legal_cells(state, entry.owner, effect.destination, piece).is_empty():
-			movable.append(piece_id)
-	return movable
-
-
-# 207.5.1b, 215.1.1 : cases que l'entrée peut cibler ; pour un déplacement, les cases légales pour
-# au moins l'une des pièces `piece_ids`.
-static func _candidate_cells(
-	state: DuelState, entry: StackEntry, effect: EffectDefinition, piece_ids: Array[int]
-) -> Array[Vector2i]:
-	if effect.destination == null:
-		return EffectRules.legal_cells(state, entry.owner, effect.target)
-	var cells: Array[Vector2i] = []
-	for piece_id: int in piece_ids:
-		var piece := state.find_piece(piece_id)
-		for cell: Vector2i in EffectRules.legal_cells(
-			state, entry.owner, effect.destination, piece
-		):
-			if not cells.has(cell):
-				cells.append(cell)
-	return cells
-
-
-# 207.5.1b : l'effet reçoit les cibles choisies.
-static func _assign_targets(entry: StackEntry, intent: ChooseTargets) -> void:
-	entry.target_piece_ids.assign(intent.target_piece_ids)
-	entry.target_cells.assign(intent.target_cells)
-	entry.target_stack_entry_ids.assign(intent.target_stack_entry_ids)
 
 
 # 208.4.6, 208.4.7 : l'effet en attente que désigne `entry_id`.

@@ -152,7 +152,8 @@ func test_decision_0058_with_x_copies_every_field_of_the_target_spec() -> void:
 	var spec := TargetSpec.from_dict(data)
 	var fresh := TargetSpec.new()
 	var bound := spec.with_x(4)
-	var rebound := ["max_force", "max_force_is_x", "parse_errors"]
+	# source_cell : valeur d'exécution, jamais lue du JSON (207.3.14).
+	var rebound := ["max_force", "max_force_is_x", "parse_errors", "source_cell"]
 	for field: String in ScriptFields.of(spec):
 		if rebound.has(field):
 			continue
@@ -160,6 +161,32 @@ func test_decision_0058_with_x_copies_every_field_of_the_target_spec() -> void:
 		assert_bool(spec.get(field) != fresh.get(field)).override_failure_message(message).is_true()
 		assert_bool(bound.get(field) == spec.get(field)).override_failure_message(message).is_true()
 	assert_int(bound.max_force).is_equal(4)
+
+
+func test_207_3_14_with_source_cell_copies_every_field_of_the_target_spec() -> void:
+	var data := {
+		"what": "cell",
+		"side": "enemy",
+		"piece_kinds": ["unit"],
+		"max_force": "X",
+		"row": "own_first",
+		"adjacent_to": "source_piece",
+		"count_min": 2,
+		"count_max": 3,
+	}
+	var spec := TargetSpec.from_dict(data)
+	var fresh := TargetSpec.new()
+	var cell := DuelStateBuilder.cell("C3")
+	var bound := spec.with_source_cell(cell)
+	var rebound := ["source_cell", "parse_errors", "max_force"]
+	for field: String in ScriptFields.of(spec):
+		if rebound.has(field):
+			continue
+		var message := "« %s » : champ non renseigné par le test ou non recopié" % field
+		assert_bool(spec.get(field) != fresh.get(field)).override_failure_message(message).is_true()
+		assert_bool(bound.get(field) == spec.get(field)).override_failure_message(message).is_true()
+	assert_int(bound.max_force).is_equal(spec.max_force)
+	assert_vector(bound.source_cell).is_equal(cell)
 
 
 func test_decision_0058_an_unresolved_x_limit_admits_no_piece() -> void:
