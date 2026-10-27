@@ -16,6 +16,8 @@ Priorité : **haute** = écart au ruleset ou défaut visible en partie ; **moyen
 | Si `max_recycles_per_turn` devient borné, le paiement préparé pendant le tour adverse l'ignore (203.4.2 PROVISOIRE : illimité aujourd'hui). | 203.4.2 | moyenne | si 203.4.2 est borné |
 | `distinct` de `TargetSpec` ne compare que les cibles d'un même `TargetSpec` ; une pièce et sa case de destination, ou deux cibles de deux effets, ne se comparent pas. À reprendre selon Q-098. | 207.5.10, Q-098, 0062 | moyenne | Q-098 tranchée |
 | La clé « une fois par tour » (`DuelState.once_per_turn_effects`) est un `Vector2i` (carte, rang de l'effet) sans nom de champ ; une petite classe typée clonée serait plus lisible. | 207.3.7c | basse | J4 |
+| Un texte déclenché ne porte qu'un seul effet qui cible (le catalogue refuse sinon), alors qu'un Spell peut en porter plusieurs : limite du moteur, pas du ruleset ; à lever quand une carte en demande. | 0064, 207.5 | basse | première carte qui le demande |
+| Les échantillons de test gardent une « forme à plat » (`CatalogSamples.flat_text_of`) convertie en textes par heuristique (effets `resolve` consécutifs fusionnés) ; à réduire au profit de `TextSamples`. | 0064 | basse | J4 |
 | `ActiveEffect.effect_kind` est une `StringName` alors que l'enum `EffectKind` existe. | 0010 | basse | J4 |
 | Le test de 209.2.3 part d'un Hero déjà à 0 PV au lieu de l'y amener. | 209.2.3 | basse | J4 |
 | Rien ne garantit que la suite tire la décision `OrderTriggers` (ordre des déclencheurs). | 0017 | basse | J4 |

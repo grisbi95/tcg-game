@@ -2,7 +2,7 @@
 
 > Inventaire de travail du **27 octobre 2026**, à valider par le créateur. Il ne vaut ni règle ni décision : le ruleset fait foi, et un point qu'il ne tranche pas reste une question de règle, jamais un comportement du moteur.
 >
-> Édition suivie : **ruleset 0.54**, mise à jour en **0.55** par la note de la section 5 (b), puis à la clôture de c.5c (axes T, F, P codés, décision 0062) (`docs/ruleset/README.md`). Sources : `docs/catalogue-cartes-playtest.md` §2 et §3 ; chapitres 200 à 217, glossaire et questions ouvertes du ruleset ; catalogue `docs/ruleset/50-cartes/` ; `rules/catalog/` (`effect_definition.gd`, `target_spec.gd`, `effect_condition.gd`, `card_definition.gd`, `hero_definition.gd`, `hero_order.gd`, `effect_target_checks.gd`, `effect_value_checks.gd`), `rules/active_effect.gd`, `rules/keyword_rules.gd`, `rules/effect_rules.gd`, `rules/CLAUDE.md` ; décisions 0055 à 0060 ; `docs/roadmap.md` (étapes c.5c et c.6).
+> Édition suivie : **ruleset 0.54**, mise à jour en **0.55** par la note de la section 5 (b), puis à la clôture de c.5c (axes T, F, P codés, décision 0062) et de c.5d (axes K et C, ensemble figé, décision 0064) (`docs/ruleset/README.md`). Sources : `docs/catalogue-cartes-playtest.md` §2 et §3 ; chapitres 200 à 217, glossaire et questions ouvertes du ruleset ; catalogue `docs/ruleset/50-cartes/` ; `rules/catalog/` (`effect_definition.gd`, `target_spec.gd`, `effect_condition.gd`, `card_definition.gd`, `hero_definition.gd`, `hero_order.gd`, `effect_target_checks.gd`, `effect_value_checks.gd`), `rules/active_effect.gd`, `rules/keyword_rules.gd`, `rules/effect_rules.gd`, `rules/CLAUDE.md` ; décisions 0055 à 0060 ; `docs/roadmap.md` (étapes c.5c et c.6).
 
 États : **codé** (code et tests présents) ; **codé en partie** (ce qui manque est dit) ; **à coder** (la règle existe, le code non) ; **en attente d'une règle** (le ruleset ne tranche pas). Une **pratique de rédaction** est ce que le texte de la carte dit sans capacité nouvelle du moteur (207.5.18 « ciblée », « puis », « distinctes », valeur d'un mot-clé 210.1.3) ; elle ne se code pas, elle s'écrit.
 
@@ -36,59 +36,59 @@ Axes (section 3) : **T** touché, **F** filtres, **P** portées, **M** moments e
 | Renforcer/Affaiblir — temporaire | T pièce ciblée ou « cette Unit » ; D fin du tour | 207.4.2, 207.4.3, 206.5.1 | codé (cible, pièce source : c.5c) |
 | Renforcer/Affaiblir — continu selon la position | P porteur, adjacentes, même rangée, ennemies | 206.5.4, 206.5.5, 207.2.8 | codé (portée `PieceFilter`, décision 0062, c.5c) |
 | Renforcer/Affaiblir — déclenché | M événement nommé ; D | 207.3.1, 207.4.7 | codé |
-| Détruire — directe conditionnelle | F Force bornée, X, adjacence ; C hors cible | 207.5.6, 213.1.10 | codé (filtres) ; en attente (condition sur un Spell) |
+| Détruire — directe conditionnelle | F Force bornée, X, adjacence ; C hors cible | 207.5.6, 213.1.10 | codé (filtres ; condition « si » d'un Spell, c.5d) |
 | Détruire — sacrifice volontaire | T Unit alliée ciblée ou pièce source ; K | glossaire Détruire, 203.0.1 | codé (cible alliée, pièce source : c.5c) |
 | Détruire — déclenché par une destruction | M destruction de cette pièce ou d'une autre | 210.3.2, 207.3.1 | codé (Dernier souffle) ; en attente (autre pièce, Q-B5) |
 | Détruire — synergie avec la position | M détruit son défenseur ; F adjacence à la source | 206.3.7, 207.3.14 | codé |
 | Créer — simple | T case libre ciblée ; jeton Unit, Force | 202.4.8, 202.4.9, 202.4.12 | codé |
-| Créer — conditionnelle | F rangées ; C | 202.4.12, 205.1.3, 205.1.4 ; 207.3.13 | codé (filtres de rangées, c.5c) ; à coder (condition, c.5d) |
+| Créer — conditionnelle | F rangées ; C | 202.4.12, 205.1.3, 205.1.4 ; 207.3.13 | codé (filtres de rangées, c.5c ; condition « si », c.5d) ; à coder (conditions de position, c.5e) |
 | Créer — déclenchée par une destruction | M destruction | 210.3.2, 202.4.6 | codé (Dernier souffle) ; en attente (autre pièce) |
 | Créer — Buildings | jeton Building | 202.4.8, 202.4.11 | codé |
-| Créer — par sacrifice | K créer puis détruire la source (Chantier) | 202.4.6, glossaire Détruire | à coder (ordre « puis » 207.7.4 et « si vous le faites », c.5d ; le sujet « ce Building » est codé en c.5c) |
+| Créer — par sacrifice | K créer puis détruire la source (Chantier) | 202.4.6, glossaire Détruire | codé (texte d'effets, ordre « puis » 207.7.4, « si vous le faites », c.5d, décision 0064) |
 | Piocher — directe | T joueur à qui appartient l'effet | glossaire, 201.3.5, 209.5.2 | codé |
-| Piocher — conditionnelle | C | 207.3.13 | codé (déclenché, main) ; en attente (Spell, Ordre) |
+| Piocher — conditionnelle | C | 207.3.13 | codé (déclenché, main ; Spell et Ordre, c.5d) |
 | Piocher — déclenchée | M | 207.3.1 | codé |
-| Piocher — avec contrepartie | K piocher puis défausser (Étude) | 212.1.5, 203.0.1 | codé (suite d'effets) ; en attente (dépendance) |
-| Piocher — territoriale | C ou Z position de pièces | 207.3.13 seul | à coder (déclenché) ; en attente (Spell) |
+| Piocher — avec contrepartie | K piocher puis défausser (Étude) | 212.1.5, 203.0.1 | codé (suite d'effets ; « si vous le faites », c.5d) |
+| Piocher — territoriale | C ou Z position de pièces | 207.3.13, 207.7.1 | à coder (conditions de position, c.5e) |
 | Consulter — simple | T joueur ; choix dessus ou dessous | 217.1.1 à 217.1.7 | codé |
 | Consulter — avec réorganisation | plusieurs cartes, ordre choisi | aucune | en attente d'une règle |
 | Consulter — avec sélection | prendre une carte en main | aucune | en attente d'une règle |
 | Consulter — avec filtrage | chercher ou révéler selon un type | aucune (201.4.1) | en attente d'une règle |
-| Consulter — conditionnelle | C | 217, 207.3.13 | à coder (déclenché) ; en attente (Spell) |
+| Consulter — conditionnelle | C | 217, 207.3.13, 207.7.1 | codé (condition « si », c.5d) ; à coder (nouvelles conditions, c.5e) |
 | Contrecarrer — simple | T Spell de la pile | 207.6.2 | codé |
 | Contrecarrer — conditionnel | F coût, vitesse du Spell ciblé | 207.5.6, 213.1.6, 207.1.2 | codé (`spell_max_cost`, `spell_speeds`, c.5c) |
-| Contrecarrer — avec contrepartie | K suite d'effets | 207.5.5 | codé (suite) ; en attente (dépendance) |
-| Contrecarrer — récompensé | K récompense après le contrecarrage | 207.5.5 | en attente (récompense si la cible est perdue, Q-B2) |
+| Contrecarrer — avec contrepartie | K suite d'effets | 207.5.5, 207.7.6 | codé (suite ; « si vous le faites », c.5d) |
+| Contrecarrer — récompensé | K récompense après le contrecarrage | 207.5.5, 207.7.6a | codé (« si vous le faites » : pas de récompense si la cible est perdue, c.5d) |
 | Contrecarrer — déclencheur | M « un Spell est contrecarré » | 207.3.1, 207.6.4 | à coder |
 | Réveiller — simple | T Unit ou Hero ciblé | 205.5.1, 205.5.2 | codé |
-| Réveiller — conditionnel | F adjacence au Hero, Force ; C | 207.5.6, 207.3.13 | codé (filtres, déclenché) ; en attente (Spell) |
+| Réveiller — conditionnel | F adjacence au Hero, Force ; C | 207.5.6, 207.3.13 | codé (filtres, déclenché ; Spell, c.5d) |
 | Réveiller — déclenché | M Arrivée ; T pièce source | 210.3.1 | codé |
-| Réveiller — avec contrepartie | K Hero endormi par l'Ordre | 211.2.2, 211.2.3 | codé (Ordre) ; en attente (carte, Q-B2) |
+| Réveiller — avec contrepartie | K Hero endormi par l'Ordre | 211.2.2, 211.2.3 | codé (Ordre ; carte, suite d'effets, c.5d) ; en attente (« si vous le faites » après réveiller, Q-159) |
 | Endormir — simple | T Unit ou Hero ; jamais un Building | 205.5.7 à 205.5.7c | codé (`SLEEP`, c.5c) |
-| Endormir — conditionnel | idem ; C | idem, 207.3.13 | codé (effet) ; à coder (condition, c.5d) |
-| Endormir — avec contrepartie | idem ; K | idem, 203.0.1 | codé (effet) ; à coder (suite d'effets, c.5d) |
+| Endormir — conditionnel | idem ; C | idem, 207.3.13, 207.7.1 | codé (effet, condition « si », c.5d) |
+| Endormir — avec contrepartie | idem ; K | idem, 203.0.1, 207.7.6a | codé (effet, suite d'effets, c.5d) |
 | Endormir — auto-endormissement | T pièce source ou Hero | 211.2.2, 205.5.7 | codé (Ordre ; carte, sujet pièce source, c.5c) |
 | Défausser — simple | T joueur ; choix à la résolution | 212.1.1 à 212.1.7 | codé |
 | Défausser — avec contrepartie | K jamais un coût | 212.1.5 | codé (suite d'effets) |
 | Défausser — avec renouvellement | K défausser puis piocher ; X « autant » | 212.2.3, 213.2.1 | codé (nombre fixe) ; à coder (X lu) |
 | Défausser — déclencheur | M défausse, une par carte | 212.2.4, 212.2.5 | codé |
-| Défausser — conditionnelle | C | 207.3.13 | codé (déclenché) ; en attente (Spell) |
+| Défausser — conditionnelle | C | 207.3.13, 207.7.1 | codé (déclenché ; Spell, c.5d) |
 | Renvoyer — simple | T Unit | 216.1.1 à 216.2.2 | codé |
 | Renvoyer — conditionnel | F Force, jeton exclu | 207.5.6, 216.1.3 | codé (Force, « non jeton », c.5c) |
 | Renvoyer — déclenché | M | 207.3.1 | codé |
-| Renvoyer — avec contrepartie | T Unit alliée ; K | 216.1.2 | codé (cible alliée) ; en attente (dépendance) |
+| Renvoyer — avec contrepartie | T Unit alliée ; K | 216.1.2 | codé (cible alliée ; « si vous le faites », c.5d) |
 | Renvoyer — territorial | F rangée d'une pièce | 207.5.6 | codé (`PieceFilter.row`, c.5c) |
 | Permuter — simple | T deux Units alliées distinctes | 214.1.3, 214.1.4, 214.2.1 | codé |
 | Permuter — conditionnelle | F adjacence au Hero, Force | 207.5.6 | codé |
 | Permuter — déclenchée | M Arrivée | 210.3.1 | codé |
-| Permuter — avec contrepartie | K | 214.2.1 | codé (Ordre « endormez le Hero ») ; en attente (carte) |
+| Permuter — avec contrepartie | K | 214.2.1 | codé (Ordre « endormez le Hero » ; carte, suite d'effets, c.5d) |
 | Permuter — territoriale | F rangée d'une pièce | 207.5.6 | codé (`PieceFilter.row`, c.5c) |
 
 ## 3. Axes génériques
 
 **T — Qui ou quoi est touché.**
 - Existe : `EffectSubject` `TARGETS`, `OWNER_PLAYER`, `SOURCE_PIECE` ; `TargetWhat` `PIECE`, `CELL`, `SPELL_ON_STACK` ; pièces filtrées par `PieceFilter` (décision 0062). `SOURCE_PIECE` admis pour `WAKE`, `SLEEP`, `MODIFY_FORCE` et `DESTROY`, en effet déclenché ; pour un Gear, la pièce source est l'Unit qui le porte (207.2.8, 207.3.12) ; une pièce source partie du plateau ne subit rien (200.4.1). Codé en c.5c : Apprenti, Spectre des archives, Trophée, « détruisez ce Building ».
-- Manque : effet sur un ensemble sans « ciblée » (« les Units ennemies »), ensemble figé 207.4.11 (c.5d).
+- Existe aussi (c.5d, décision 0064) : sujet `MATCHING_PIECES`, ensemble décrit par un `PieceFilter` et figé à la résolution (207.4.11 à 207.4.11c).
 - Hero : refusé comme cible de `MODIFY_FORCE` et de `DESTROY`, comme sujet pièce source de ces deux kinds et comme porteur d'un passif de Force (`_check_passive`), tant que Q-097 est ouverte.
 
 **F — Filtres de cible.**
@@ -109,7 +109,8 @@ Axes (section 3) : **T** touché, **F** filtres, **P** portées, **M** moments e
 **C — Conditions « si ».**
 - Existe : `ConditionKind` `HAND_SIZE_AT_MOST`, lue à l'événement, pour un effet déclenché seulement (207.3.13 à 207.3.13b ; décision 0060, vocabulaire fermé, réexamen à la troisième condition).
 - Demandé : conditions de position (territorial), de pièces contrôlées, de Force, de coût, sur des Spells, des Ordres et des effets déclenchés.
-- Manque : chaque nouvelle `ConditionKind` (à coder pour un effet déclenché) ; toute condition sur un effet non déclenché (Q-B1).
+- Existe aussi (c.5d, 0064) : condition « si » d'un effet d'un Spell ou d'un Ordre, lue dans l'ordre du texte (207.7.1 à 207.7.3, 211.1.5).
+- Manque : chaque nouvelle `ConditionKind` (c.5e) ; une condition « si » sur un effet qui suit un autre effet dans un texte déclenché (Q-156, refusée par le catalogue).
 - Une condition qui borne une cible est un filtre (F, 207.5.6), pas une condition « si ».
 
 **D — Durées.**
@@ -126,7 +127,8 @@ Axes (section 3) : **T** touché, **F** filtres, **P** portées, **M** moments e
 - Ruleset : l'Essence est la seule ressource qui paie un coût (203.0.1) ; défausser n'est jamais un coût (212.1.5) ; endormir le Hero par son Ordre n'est pas un coût (211.2.3). Un sacrifice, une défausse ou un endormissement ne se paient donc jamais à l'annonce : une contrepartie est un **effet** du même texte.
 - Existe : effets appliqués dans l'ordre de la définition (`resolve_all`) ; 207.5.5 jugé effet par effet ; Ordre « Endormez le Hero : » (211.2.2) avec coût en Essence (211.1.3).
 - Pratique de rédaction : l'ordre écrit par « puis » (Étude, Chantier, Grimoire).
-- En attente : aucune règle ne fixe l'ordre des effets d'un même texte ni ne permet « si vous le faites » ; un effet dont la cible est perdue n'empêche pas les suivants, ce qui rend une contrepartie gratuite (Q-B2).
+- Existe aussi (c.5d, décision 0064) : `EffectText`, ordre du texte (207.7.4), « puis » sans dépendance (207.7.5, 207.7.5a), « si vous le faites » (`if_you_do`, 207.7.6 à 207.7.6b), coût dépensé et carte en défausse si la condition est fausse (207.7.7, 207.7.8).
+- En attente (Q-157 à Q-160, refusées par le catalogue) : « si vous le faites » avec une condition « si » sur le même effet ; plusieurs textes sur un Spell ou un Ordre ; « a eu lieu » pour réveiller une pièce éveillée et pour un ensemble vide.
 
 **Z — Territorial.**
 - Existe : aura (206.5.4, 206.5.5), adjacence (au Hero, à la source, à la cible), première rangée.
