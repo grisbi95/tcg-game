@@ -1,6 +1,6 @@
 # 0060 — Déclencheurs nommés avec leur auteur et condition à vocabulaire fermé
 
-- Statut : acceptée
+- Statut : acceptée, complétée par 0061
 - Date : 2026-10-27
 - Décideur : créateur du projet, en conversation
 - Périmètre : `EffectDefinition.TriggerEvent`, condition « si », étape c.5b du jalon J2c

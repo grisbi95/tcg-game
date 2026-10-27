@@ -31,6 +31,7 @@
 | Combat en attente | Combat qui naît à la résolution d'un déploiement ou d'une action normale annoncée vers une case libre, et qui attend la fin de cette résolution avant de s'ajouter à la pile ; voir 205.1.6, 205.2.3a, 205.6.1 à 205.6.17 et 208.7.14. | |
 | Compteur de fatigue | Valeur propre à chaque joueur, qui augmente chaque fois qu'il doit piocher alors que son deck est vide et fixe les PV que perd alors son Hero ; voir 209.5.1, 209.5.2, 209.5.2a, 209.5.3, 209.5.4 et 209.5.4a. | |
 | Condition de fin de partie | Condition, fixée par les règles du jeu, qui fait gagner, perdre ou finir la partie sur un nul ; voir 201.0.4, 201.1.2, 201.1.2a, 201.1.3a, 201.1.3d, 209.2.10 et 209.3.1. | |
+| Condition « si » | Partie du texte d'un effet, introduite par « si », dont dépend que cet effet ait lieu ; voir 207.3.13, 207.3.13a, 207.3.13b, 207.7.1, 207.7.1a, 207.7.1b, 207.7.2, 207.7.3, 207.7.7 et 207.7.8. | |
 | Contrecarrer | Effet qui fait qu'un Spell qui se trouve sur la pile n'a pas lieu ; voir 207.6.1, 207.6.2, 207.6.4 et 207.6.5. | |
 | Contrôler | Relation d'un joueur avec chaque carte et chaque jeton qui lui appartiennent ; voir 201.5.2 et 201.5.2a. | |
 | Couleur | Famille de cartes de deck du catalogue de playtest, parmi rouge, vert, violet et bleu, que porte aussi chaque Hero du catalogue ; voir `50-cartes/` et décision 0228. | |
@@ -48,17 +49,18 @@
 | Détaché | Se dit d'un Gear qui n'est plus attaché à une pièce, parce qu'il a été remplacé ou que sa pièce a quitté le plateau ; voir 202.2.12, 202.2.13, 207.2.9a, 207.2.9b et 207.4.8. | |
 | Détruire | Envoyer une pièce dans la défausse du joueur à qui elle appartient ; pour un jeton, voir 202.4.3 ; voir 206.3.1, 206.3.2, 206.3.2a, 206.3.6 et 210.3.2. | |
 | Détruire son défenseur | Pour une Unit, attaquer dans un combat dont le défenseur est détruit sans qu'elle le soit ; voir 206.3.7, 206.3.7a et 206.3.7b. | |
-| Durée | Mention du texte d'un effet qui fixe jusqu'à quand il dure, parmi « jusqu'à la fin du tour » et « tant que la pièce est en jeu » ; voir 207.4.1, 207.4.2, 207.4.3, 207.4.7, 207.4.7a, 207.4.7b, 207.4.8 et 207.4.10. | |
+| Durée | Mention du texte d'un effet qui fixe jusqu'à quand il dure, parmi « jusqu'à la fin du tour » et « tant que la pièce est en jeu » ; voir 207.4.1, 207.4.2, 207.4.3, 207.4.7, 207.4.7a, 207.4.7b, 207.4.8, 207.4.10, 207.4.11 et 207.4.11c. | |
 | Écart | Zone temporaire hors du plateau, propre à chaque joueur et face cachée, qui existe pendant le mulligan et accueille les cartes écartées ; voir 201.3.9, 201.3.10, 201.4.9, 204.2.10 et 204.2.11. | |
 | Écarter | Choisir, pendant son mulligan, une carte de sa main à remettre dans son deck, la carte allant alors dans l'Écart ; voir 204.2.4, 204.2.6, 204.2.8 et 204.2.10. | |
 | Échanger | Faire occuper à chacune de deux pièces la case de l'autre, en même temps, sans que ce soit un déplacement ; voir 214.1.1, 214.1.2, 214.1.3, 214.2.1, 214.2.5 et 200.4.2a. | |
 | Échouer | Pour une action annoncée, ne pas avoir lieu à sa résolution ; voir 205.4.6. | |
 | Effet | Instruction du texte d'une carte qui change l'état de la partie ou les règles qui s'y appliquent. | |
-| Effet déclenché | Effet qui a lieu quand survient un événement indiqué par son texte ; voir 204.5.3, 207.3.1, 207.3.2, 207.3.3, 207.3.4, 207.3.4a, 207.3.5, 207.3.7a, 207.3.11, 207.3.11a, 208.3.2a, 208.4.2, 208.4.3, 208.4.4, 208.4.5, 208.4.6, 208.4.7, 208.4.8, 208.4.10, 208.4.11, 208.5.1a, 208.7.8, 208.7.9, 208.7.10, 208.7.11, 208.7.15, 208.7.16, 210.3.1b et 210.3.2a. | |
-| Effet ponctuel | Effet qui n'est pas statique, dont le texte ne porte aucune durée et qui change l'état de la partie une fois ; voir 202.2.21, 207.4.9 et 207.4.6. | |
-| Effet statique | Effet qui s'applique sans passer par la pile, tant que la pièce qui le porte est en jeu ; voir 207.2.1, 207.2.2, 207.2.3, 207.2.3a, 207.2.4, 207.2.5, 207.2.7, 207.2.8, 207.2.9, 207.2.9a et 207.2.9b ; le Passif d'un Hero et l'aura en sont des cas ; voir 202.3.18 et 206.5.4. | |
+| Effet déclenché | Effet qui a lieu quand survient un événement indiqué par son texte ; voir 204.5.3, 207.3.1, 207.3.2, 207.3.3, 207.3.4, 207.3.4a, 207.3.5, 207.3.7a, 207.3.7b, 207.3.7c, 207.3.11, 207.3.11a, 207.3.15, 208.3.2a, 208.4.2, 208.4.3, 208.4.4, 208.4.5, 208.4.6, 208.4.7, 208.4.8, 208.4.10, 208.4.11, 208.5.1a, 208.7.8, 208.7.9, 208.7.10, 208.7.11, 208.7.15, 208.7.16, 210.3.1b et 210.3.2a. | |
+| Effet ponctuel | Effet qui n'est pas statique, dont le texte ne porte aucune durée et qui change l'état de la partie une fois ; voir 202.2.21, 207.4.9, 207.4.6, 207.4.11 et 207.4.11c. | |
+| Effet statique | Effet qui s'applique sans passer par la pile, tant que la pièce qui le porte est en jeu ; voir 207.2.1, 207.2.2, 207.2.3, 207.2.3a, 207.2.4, 207.2.5, 207.2.7, 207.2.8, 207.2.9, 207.2.9a, 207.2.9b et 207.4.11b ; le Passif d'un Hero et l'aura en sont des cas ; voir 202.3.18 et 206.5.4. | |
 | En jeu | État d'une pièce sur le plateau, ou d'une Source qui n'est ni dans la réserve ni dans la Fonte de son joueur ; voir 202.2.2, 202.2.3 et 203.5.4. | |
 | Endormie | État d'une Unit ou d'un Hero qui ne peut pas faire d'action normale, et d'un Hero qui ne peut pas annoncer son Ordre, jusqu'à son prochain réveil ; voir 204.1.18, 205.5.1, 205.5.2, 205.5.3, 205.5.4, 205.5.4a, 205.5.4b, 205.5.5 et 211.2.1. | |
+| Endormir | Faire passer une Unit ou un Hero de l'état éveillé à l'état endormi, ce que 205.5.6 exclut pour un Building ; voir 205.5.7, 205.5.7a, 205.5.7b, 205.5.7c et 211.2.2. | |
 | Ennemi | Se dit d'une pièce que contrôle l'adversaire du joueur concerné ; voir 205.1.6 et 205.2.3. | |
 | Entrée de la pile | Annonce, effet déclenché ou combat en attente qui se trouve sur la pile, et qui appartient au joueur qui a fait l'annonce ou, pour un effet déclenché, au joueur de 207.3.4 ou de 207.3.4a ou, pour un combat en attente, au joueur de 205.6.5 ; voir 201.3.7, 201.5.4, 202.4.6, 208.1.1, 208.2.4 et 211.2.8. | |
 | Essence | Ressource du jeu ; voir 203.1.1, 203.3.1 et 203.3.3. | |
@@ -111,7 +113,7 @@
 | Réaction (vitesse) | Vitesse d'un Spell ou d'un Ordre que son joueur peut annoncer pendant sa phase principale, quand la pile est vide, et aussi chaque fois qu'il peut répondre ; voir 207.1.2, 207.1.5, 207.1.6, 208.2.3, 211.2.6 et 211.2.7. | |
 | Recycler | Faire quitter le jeu à une Source inclinée ; voir 203.2.2, 203.2.3, 203.2.6 et 203.2.7. | |
 | Redresser | Faire passer une Source de l'état incliné à l'état redressé ; une Source dans cet état est dite redressée ; voir 203.2.1 et 204.1.17. | |
-| Regarder | Pour un joueur, voir la carte du dessus de son deck par un effet qui le dit, sans que son adversaire la voie ; voir 217.1.1, 217.1.4 et 217.1.5. | |
+| Regarder | Pour un joueur, voir la carte du dessus de son deck par un effet qui le dit, sans que son adversaire la voie ; voir 217.1.1, 217.1.4, 217.1.5 et 217.1.8. | |
 | Règle du jeu | Règle numérotée des règles complètes, par opposition au texte d'une carte ; voir 200.2.1 et 200.3.1b. | |
 | Rempart | Mot-clé de combat à valeur X, qui donne à la pièce X de Force de plus quand elle défend ; voir 210.4.2, 210.4.2a, 210.4.2b et 210.4.2c. | |
 | Renvoyer | Faire quitter le plateau à une Unit pour que sa carte revienne dans la main de son joueur, ce qui n'est pas la détruire ; voir 216.1.1, 216.1.2, 216.1.3 et 216.2.1. | |
@@ -121,6 +123,7 @@
 | Résoudre | Faire avoir lieu une annonce ou un effet déclenché de la pile ; voir 208.3.1, 208.3.2 et 208.3.2a. | |
 | Réveiller | Faire passer une Unit ou un Hero de l'état endormi à l'état éveillé, ce passage étant le réveil ; voir 204.3.8, 204.3.10 et 204.3.11. | |
 | Sans réponse | Se dit d'une entrée de la pile, annonce ou effet déclenché, à laquelle aucun joueur ne peut répondre et qui se résout aussitôt ; voir 208.7.3, 208.7.4, 208.7.5, 208.7.6, 208.7.8, 208.7.9, 208.7.12, 208.7.13, 208.7.15 et 208.7.16. | |
+| Si vous le faites | Formule écrite au début d'un effet, qui le fait dépendre de l'effet qui le précède immédiatement dans le même texte ; voir 207.7.6, 207.7.6a et 207.7.6b. | |
 | Source | Élément d'un joueur qui produit l'Essence ; voir 203.1.2. | |
 | Sous-règle | Règle dont l'identifiant ajoute une lettre à celui de la règle qu'elle précise ; voir 200.1.1. | |
 | Sous son deck | Position d'une carte placée après toutes les autres cartes du deck de son joueur, qu'elle quitte en dernier en piochant ; voir 217.1.3. | |
