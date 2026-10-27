@@ -8,7 +8,7 @@ Priorité : **haute** = écart au ruleset ou défaut visible en partie ; **moyen
 
 | Dette | Référence | Priorité | Cible |
 | --- | --- | --- | --- |
-| `CombatRules`, `EffectRules` et `TriggerRules` forment le dernier groupe de modules qui s'appellent en boucle : la destruction (`CombatRules.destroy_piece`) termine les effets de la pièce (`ModifierRules.end_effects_on_piece`, déplacée en c.5c) et déclenche ses effets (`TriggerRules.trigger`), dont la résolution passe par `EffectRules.resolve_effect`, qui peut détruire. Remède ouvert, à trancher par une décision. | 206.3.2, 206.3.2a, 207.4.7a | basse | J4 |
+| `CombatRules`, `EffectRules` et `TriggerRules` forment le dernier groupe de modules qui s'appellent en boucle : la destruction (`CombatRules.destroy_piece`) termine les effets de la pièce (`ModifierRules.end_effects_on_piece`, déplacée en c.5c) et déclenche ses effets (`TriggerRules.trigger`), dont la résolution passe par `EffectRules.resolve_effect`, qui peut détruire. Depuis c.5e, `EffectRules.counter_spell` appelle aussi `TriggerRules` (`SPELL_COUNTERED`, décision 0065). Remède ouvert, à trancher par une décision (par exemple un déclenchement relayé par `DuelEngine`). | 206.3.2, 206.3.2a, 207.4.7a | basse | J4 |
 | Ruleset 0.46 sans code : coût X (213.1) et valeur X fixée à la résolution (213.2). | 0214 à 0216 | moyenne | avant les cartes du catalogue |
 | Ruleset 0.47 sans code : X choisi avant les cibles (213.1.9 à 213.1.11), Force lue pour X sans Assaut ni Rempart (213.2.4). | 0217 à 0222 | moyenne | avant les cartes du catalogue |
 | Ruleset 0.49 sans code : abandon de l'annonce à l'expiration pendant le choix de X (209.4.4h, 209.4.11b). Le catalogue de `ruleset/50-cartes/` attend Q-132 à Q-139 avant tout codage de ses cartes. | 0226 à 0228 | haute | avant J3 |
@@ -18,6 +18,7 @@ Priorité : **haute** = écart au ruleset ou défaut visible en partie ; **moyen
 | La clé « une fois par tour » (`DuelState.once_per_turn_effects`) est un `Vector2i` (carte, rang de l'effet) sans nom de champ ; une petite classe typée clonée serait plus lisible. | 207.3.7c | basse | J4 |
 | Un texte déclenché ne porte qu'un seul effet qui cible (le catalogue refuse sinon), alors qu'un Spell peut en porter plusieurs : limite du moteur, pas du ruleset ; à lever quand une carte en demande. | 0064, 207.5 | basse | première carte qui le demande |
 | Les échantillons de test gardent une « forme à plat » (`CatalogSamples.flat_text_of`) convertie en textes par heuristique (effets `resolve` consécutifs fusionnés) ; à réduire au profit de `TextSamples`. | 0064 | basse | J4 |
+| `rules/trigger_rules.gd` est à 400 lignes, la limite de `.gdlintrc` : le prochain ajout devra en sortir une responsabilité. | 0059, `.gdlintrc` | moyenne | prochaine étape qui touche 207.3 |
 | `ActiveEffect.effect_kind` est une `StringName` alors que l'enum `EffectKind` existe. | 0010 | basse | J4 |
 | Le test de 209.2.3 part d'un Hero déjà à 0 PV au lieu de l'y amener. | 209.2.3 | basse | J4 |
 | Rien ne garantit que la suite tire la décision `OrderTriggers` (ordre des déclencheurs). | 0017 | basse | J4 |
