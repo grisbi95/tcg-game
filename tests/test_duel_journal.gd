@@ -302,6 +302,27 @@ func test_decision_0055_codec_round_trips_an_order_announcement() -> void:
 	assert_array(order.target_cells).contains_exactly([Vector2i(2, 3)])
 
 
+func test_decision_0057_codec_round_trips_the_resolution_choices() -> void:
+	var card_ids: Array[int] = [4, 9]
+	var discard := ChooseDiscard.new(B, card_ids)
+	var decoded_discard := IntentCodec.decode(IntentCodec.encode(discard))
+	assert_bool(decoded_discard is ChooseDiscard).is_true()
+	assert_array((decoded_discard as ChooseDiscard).card_ids).contains_exactly([4, 9])
+	assert_int(decoded_discard.player).is_equal(B)
+	var place := ChooseTopCardPlace.new(A, ChooseTopCardPlace.TopCardPlace.BELOW)
+	var decoded_place := IntentCodec.decode(IntentCodec.encode(place))
+	assert_bool(decoded_place is ChooseTopCardPlace).is_true()
+	assert_int((decoded_place as ChooseTopCardPlace).place).is_equal(
+		ChooseTopCardPlace.TopCardPlace.BELOW
+	)
+	var parsed: Variant = JSON.parse_string(JSON.stringify(IntentCodec.encode(place)))
+	var through_json: Dictionary = parsed if parsed is Dictionary else {}
+	assert_bool(IntentCodec.decode(through_json) is ChooseTopCardPlace).is_true()
+	var malformed := IntentCodec.encode(place)
+	malformed["place"] = "dessous"
+	assert_object(IntentCodec.decode(malformed)).is_null()
+
+
 # Deux agents jouent au plus HOST_TICKS images par l'hôte ; `events` reçoit leurs événements.
 func _play_agents(engine: DuelEngine, events: Array[DuelEvent]) -> DuelJournal:
 	var clock := ManualClock.new()

@@ -1,9 +1,8 @@
 # gdlint: disable=max-public-methods
 
 extends GdUnitTestSuite
-## Catalogue : effets, cibles et mots-clés (ruleset 0.52, décisions 0002, 0010 et 0056).
-## Ne résout aucun effet : le moteur les code aux étapes 1.6 et 1.7. Ces tests vérifient que le
-## catalogue refuse une définition incohérente.
+## Catalogue : effets, cibles et mots-clés (ruleset 0.53, décisions 0002, 0010, 0056 et 0057).
+## Ne résout aucun effet : ces tests vérifient que le catalogue refuse une définition incohérente.
 
 
 func _effect_errors(data: Dictionary) -> PackedStringArray:
@@ -40,6 +39,7 @@ func test_every_effect_kind_has_a_valid_sample() -> void:
 		CatalogSamples.move_unit_effect(),
 		CatalogSamples.return_to_hand_effect(),
 	]
+	samples.append_array(HandEffectSamples.effect_samples())
 	assert_int(EffectDefinition.EffectKind.size()).is_equal(samples.size())
 	for sample: Dictionary in samples:
 		assert_array(Array(_effect_errors(sample))).is_empty()

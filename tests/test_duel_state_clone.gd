@@ -1,6 +1,6 @@
 extends GdUnitTestSuite
 ## DuelState.clone() : copie de chaque champ, indépendance, compteurs et RNG
-## (décisions 0001, 0004, 0008 et 0009 ; ruleset 0.28).
+## (décisions 0001, 0004, 0008, 0009 et 0057 ; ruleset 0.53).
 
 const STATE_CLASSES: Array[String] = [
 	"DuelState",
@@ -157,6 +157,8 @@ func _build_full_state() -> DuelState:
 	var state := builder.build()
 	state.first_player_imposed = true
 	state.triggers_allow_response = false
+	state.resolving_entry = _make_trigger(builder, unit_id, spell_entry_id)
+	state.resolving_effect_index = 2
 	for player: PlayerState in state.players:
 		player.announced_this_turn = true
 	state.waiting_triggers.append(_make_trigger(builder, token_id, spell_entry_id))
@@ -221,6 +223,7 @@ func _make_decision(entry_id: int, piece_id: int) -> PendingDecision:
 	decision.candidate_ids.append(piece_id)
 	decision.candidate_cells.append(DuelStateBuilder.cell("A3"))
 	decision.set_aside_card_ids.append(piece_id)
+	decision.required_count = 2
 	return decision
 
 

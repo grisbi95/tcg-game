@@ -202,6 +202,20 @@ static func resolve_effect(
 ) -> void:
 	var context := EffectContext.new(state, entry, effect, events)
 	match effect.kind:
+		EffectDefinition.EffectKind.DRAW_CARDS:
+			TurnRules.draw_cards(state, entry.owner, effect.amount, events)
+			return
+		EffectDefinition.EffectKind.DISCARD_CARDS:
+			DiscardRules.resolve(context)
+			return
+		EffectDefinition.EffectKind.LOOK_AT_TOP_CARD:
+			LookRules.resolve(context)
+			return
+		EffectDefinition.EffectKind.WAKE when (
+			effect.subject == EffectDefinition.EffectSubject.SOURCE_PIECE
+		):
+			ActionRules.wake_source_piece(state, entry.source_piece_id, events)
+			return
 		EffectDefinition.EffectKind.SWAP_CELLS:
 			SwapRules.resolve(context)
 			return
@@ -237,14 +251,18 @@ static func resolve_effect(
 
 
 ## 207.4.1, 208.3.2 : applique, dans l'ordre, les effets à la résolution (`RESOLVE`) d'un Spell ou
-## d'un Ordre ; s'arrête dès que la partie s'arrête (209.2.2).
+## d'un Ordre ; s'arrête dès que la partie s'arrête (209.2.2). Décision 0057 : s'arrête aussi quand
+## un effet pose une attente (212.1.3, 217.1.2) ; l'appel suivant reprend au rang retenu par
+## `DuelState.resolving_effect_index`.
 static func resolve_all(
 	state: DuelState, entry: StackEntry, effects: Array[EffectDefinition], events: Array[DuelEvent]
 ) -> void:
-	for effect: EffectDefinition in effects:
+	while state.resolving_effect_index < effects.size():
+		var effect := effects[state.resolving_effect_index]
+		state.resolving_effect_index += 1
 		if effect.timing == EffectDefinition.EffectTiming.RESOLVE:
 			resolve_effect(state, entry, effect, events)
-		if state.is_ended():
+		if state.is_ended() or state.pending_decision != null:
 			return
 
 
@@ -269,7 +287,7 @@ static func chosen_count(entry: StackEntry, spec: TargetSpec) -> int:
 
 ## 207.5.10, 215.1.1 : nombre de cibles que porte `entry` pour `effect`, destination comprise.
 static func chosen_effect_count(entry: StackEntry, effect: EffectDefinition) -> int:
-	var target_count := chosen_count(entry, effect.target)
+	var target_count := 0 if effect.target == null else chosen_count(entry, effect.target)
 	if effect.destination != null:
 		target_count += chosen_count(entry, effect.destination)
 	return target_count
@@ -335,13 +353,15 @@ static func lose_all_targets(entry: StackEntry, events: Array[DuelEvent]) -> voi
 	events.append(EffectLostAllTargets.new(entry.owner, entry.stack_entry_id))
 
 
-# 207.4.2, 206.5.1, 206.3.2 : MODIFY_FORCE à durée ; DESTROY.
+# 207.4.2, 206.5.1, 206.3.2, 205.5 : MODIFY_FORCE à durée ; DESTROY ; WAKE.
 static func _apply_to_piece(context: EffectContext, piece: Piece) -> void:
 	match context.effect.kind:
 		EffectDefinition.EffectKind.MODIFY_FORCE:
 			_add_force_modifier(context, piece)
 		EffectDefinition.EffectKind.DESTROY:
 			CombatRules.destroy_piece(context.state, piece, context.events)
+		EffectDefinition.EffectKind.WAKE:
+			ActionRules.wake_pieces([piece], context.events)
 
 
 # 207.4.2 : le modificateur de Force vit dans l'état avec sa durée.

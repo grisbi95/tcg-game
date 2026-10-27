@@ -100,14 +100,11 @@ static func _reset_turn_counters(state: DuelState) -> void:
 static func _awaken_pieces(
 	state: DuelState, side: DuelState.PlayerSide, events: Array[DuelEvent]
 ) -> void:
-	var awakened_ids: Array[int] = []
+	var own_pieces: Array[Piece] = []
 	for piece: Piece in state.pieces:
-		if piece.owner == side and piece.is_asleep():
-			piece.is_awake = true
-			awakened_ids.append(piece.piece_id)
-	if awakened_ids.is_empty():
-		return
-	events.append(PiecesAwakened.new(side, awakened_ids))
+		if piece.owner == side:
+			own_pieces.append(piece)
+	ActionRules.wake_pieces(own_pieces, events)
 
 
 # 204.3.2

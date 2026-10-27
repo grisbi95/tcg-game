@@ -1,6 +1,6 @@
 class_name TimeExpired
 extends PlayerEvent
-## 209.4.9 à 209.4.12 : le temps de tour ou le temps de réponse du joueur atteint 0 seconde ;
+## 209.4.9 à 209.4.14 : le temps de tour ou le temps de réponse du joueur atteint 0 seconde ;
 ## `consequence` dit ce que l'expiration produit, et ses événements suivent.
 
 ## Conséquence d'une expiration.
@@ -9,6 +9,8 @@ enum Consequence {
 	PRIORITY_PASSED,  # 209.4.10
 	TARGETS_ABANDONED,  # 209.4.11a
 	TRIGGERS_ORDERED,  # 209.4.12
+	CARDS_DISCARDED_AT_RANDOM,  # 209.4.13 : cartes tirées au sort parmi la main
+	TOP_CARD_PLACE_DRAWN_AT_RANDOM,  # 209.4.14 : dessus ou dessous tiré au sort
 }
 
 var kind: DuelState.ClockKind = DuelState.ClockKind.TURN

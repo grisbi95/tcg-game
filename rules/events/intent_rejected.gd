@@ -41,6 +41,8 @@ enum RejectReason {
 	PIECE_ASLEEP,  # 205.5.3, 211.2.1 : une pièce endormie ne fait pas d'action normale ni d'Ordre
 	CELL_OCCUPIED_BY_ENEMY_HERO,  # 205.1.11 : une Unit ne s'annonce pas sur la case du Hero ennemi
 	ORDER_NOT_FOUND,  # 202.3.19, 202.3.21 : le Hero ne porte pas d'Ordre de ce rang
+	WRONG_DISCARD_COUNT,  # 212.1.7, 212.2.3 : autre nombre de cartes que celui à défausser
+	UNKNOWN_CARD_PLACE,  # 217.1.2, 217.1.3 : ni au dessus ni sous le deck
 }
 
 ## Intention refusée, telle que soumise ; null si le refus ne vient pas d'une intention.

@@ -15,6 +15,10 @@ enum EffectKind {
 	SWAP_CELLS,  # 214 : cible deux Units alliées (count 2), distinctes
 	MOVE_UNIT,  # 215 : cible une Unit et, par `destination`, une case libre (décision 0056)
 	RETURN_TO_HAND,  # 216 : cible une Unit
+	DRAW_CARDS,  # amount ; sujet : le joueur à qui appartient l'effet (201.3.2, 209.5.2)
+	DISCARD_CARDS,  # 212 : amount ; sujet : le joueur à qui appartient l'effet
+	LOOK_AT_TOP_CARD,  # 217 : sujet : le joueur à qui appartient l'effet
+	WAKE,  # 205.5 : cible une Unit, ou sujet : la pièce source (« cette Unit »)
 }
 
 ## Quand l'effet a lieu.
@@ -39,6 +43,13 @@ enum StaticScope {
 	ADJACENT_ALLIED_UNITS,  # les Units alliées adjacentes à la pièce qui porte l'effet
 }
 
+## Ce que touche l'effet (décision 0057). Enum journalisable : ajouter à la fin.
+enum EffectSubject {
+	TARGETS,  # les cibles de `target` ; défaut, seul sujet d'un effet qui cible
+	OWNER_PLAYER,  # le joueur à qui appartient l'effet, sans cible (212.1.2, 217.1.1)
+	SOURCE_PIECE,  # la pièce qui porte l'effet (« cette Unit »), sans cible
+}
+
 ## Valeur de `token_force` quand l'effet ne crée pas de jeton.
 const NO_TOKEN_FORCE: int = -1
 ## `token_piece_kind` non renseigné : un jeton n'est jamais un Hero (202.4.8).
@@ -58,7 +69,10 @@ var trigger: TriggerEvent = TriggerEvent.NONE
 var scope: StaticScope = StaticScope.NONE
 ## 207.3.5 : mention « une fois par tour », pour un effet déclenché seulement.
 var once_per_turn: bool = false
-## Null pour un effet statique, qui ne cible pas (207.2.1).
+## Décision 0057 : ce que touche l'effet ; TARGETS quand il cible.
+var subject: EffectSubject = EffectSubject.TARGETS
+## Null pour un effet statique, qui ne cible pas (207.2.1), et pour un effet de sujet autre que
+## TARGETS.
 var target: TargetSpec
 ## 215.1.1, décision 0056 : case libre que cible MOVE_UNIT en plus de sa pièce ; null sinon.
 var destination: TargetSpec
@@ -134,6 +148,9 @@ func _read_conditions(reader: CatalogReader) -> void:
 	if scope_value != CatalogReader.NOT_SET:
 		scope = scope_value as StaticScope
 	once_per_turn = reader.read_bool("once_per_turn", false)
+	var subject_value := reader.read_enum("subject", EffectSubject)
+	if subject_value != CatalogReader.NOT_SET:
+		subject = subject_value as EffectSubject
 	if reader.has("target"):
 		target = TargetSpec.from_dict(reader.read_object("target"))
 	if reader.has("destination"):
@@ -182,8 +199,39 @@ func _check_conditions(errors: PackedStringArray) -> void:
 		errors.append("207.2.1 : scope ne vaut que pour un effet statique")
 	if timing == EffectTiming.STATIC and target != null:
 		errors.append("207.5.1 : un effet statique ne cible pas")
-	if timing != EffectTiming.STATIC and target == null:
+	if timing == EffectTiming.STATIC and subject != EffectSubject.TARGETS:
+		errors.append("0057 : un effet statique ne nomme pas de sujet")
+	var needs_target := timing != EffectTiming.STATIC and subject == EffectSubject.TARGETS
+	if needs_target and target == null:
 		errors.append("207.5.1 : un effet qui passe par la pile nomme sa cible")
+	if subject != EffectSubject.TARGETS and target != null:
+		errors.append("0057 : un effet dont le sujet n'est pas TARGETS ne nomme pas de cible")
+	_check_subject(errors)
+
+
+# Décision 0057 : piocher, défausser et regarder touchent le joueur ; réveiller, ses cibles ou la
+# pièce source, celle-ci seulement pour un effet déclenché (un Spell n'a pas de pièce, un Ordre a
+# celle du Hero, qui n'est pas une Unit) ; les autres kinds ciblent.
+func _check_subject(errors: PackedStringArray) -> void:
+	var allowed := _subjects_for_kind()
+	if allowed.has(subject):
+		var source_without_trigger := (
+			subject == EffectSubject.SOURCE_PIECE and timing != EffectTiming.TRIGGERED
+		)
+		if source_without_trigger:
+			errors.append("0057 : le sujet source_piece ne vaut que pour un effet déclenché")
+		return
+	var subject_name := str(EffectSubject.find_key(subject)).to_lower()
+	errors.append("0057 : %s n'admet pas le sujet %s" % [String(kind_id(kind)), subject_name])
+
+
+func _subjects_for_kind() -> Array[EffectSubject]:
+	match kind:
+		EffectKind.DRAW_CARDS, EffectKind.DISCARD_CARDS, EffectKind.LOOK_AT_TOP_CARD:
+			return [EffectSubject.OWNER_PLAYER]
+		EffectKind.WAKE:
+			return [EffectSubject.TARGETS, EffectSubject.SOURCE_PIECE]
+	return [EffectSubject.TARGETS]
 
 
 func _check_duration(errors: PackedStringArray) -> void:
@@ -197,8 +245,7 @@ func _check_duration(errors: PackedStringArray) -> void:
 
 
 func _check_parameters(errors: PackedStringArray) -> void:
-	if (kind == EffectKind.MODIFY_FORCE) == (amount == 0):
-		errors.append("206.5.1 : amount est exigé non nul pour MODIFY_FORCE, absent sinon")
+	_check_amount(errors)
 	var creates_token := kind == EffectKind.CREATE_TOKEN
 	if creates_token and token_piece_kind == NO_TOKEN_KIND:
 		errors.append("202.4.8 : un jeton est une Unit ou un Building, token_piece_kind le dit")
@@ -209,6 +256,17 @@ func _check_parameters(errors: PackedStringArray) -> void:
 	_check_target_what(errors)
 	_check_hero_target(errors)
 	_check_movement(errors)
+	_check_wake(errors)
+
+
+# 206.5.1 : MODIFY_FORCE exige un modificateur non nul ; 201.3.2, 212.1.7 : piocher et défausser
+# exigent un nombre de cartes positif ; les autres kinds n'ont pas d'amount.
+func _check_amount(errors: PackedStringArray) -> void:
+	if kind in [EffectKind.DRAW_CARDS, EffectKind.DISCARD_CARDS]:
+		if amount < 1:
+			errors.append("212.1.7 : amount est le nombre de cartes, au moins 1")
+	elif (kind == EffectKind.MODIFY_FORCE) == (amount == 0):
+		errors.append("206.5.1 : amount est exigé non nul pour MODIFY_FORCE, absent sinon")
 
 
 func _check_target_what(errors: PackedStringArray) -> void:
@@ -248,6 +306,18 @@ func _check_movement(errors: PackedStringArray) -> void:
 		_check_swap(errors)
 	if kind == EffectKind.MOVE_UNIT:
 		_check_move(errors)
+
+
+# Glossaire (Réveiller), 205.5.1, 205.5.2, 205.5.6 : un effet réveille une Unit ou un Hero, jamais
+# un Building, qui n'est ni endormi ni éveillé ; `piece_kinds` le dit.
+func _check_wake(errors: PackedStringArray) -> void:
+	if kind != EffectKind.WAKE or target == null or target.what != TargetSpec.TargetWhat.PIECE:
+		return
+	var wakeable := not target.piece_kinds.is_empty()
+	for piece_kind: Piece.PieceKind in target.piece_kinds:
+		wakeable = wakeable and piece_kind != Piece.PieceKind.BUILDING
+	if not wakeable:
+		errors.append("205.5.6 : wake ne cible que des Units ou des Heroes, nommés par piece_kinds")
 
 
 # 214.1.3, 214.1.4 : exactement deux Units alliées.

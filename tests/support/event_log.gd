@@ -33,6 +33,14 @@ static func rejection_reason(events: Array[DuelEvent]) -> int:
 	return (events[0] as IntentRejected).reason
 
 
+## Décrit chaque intention de `intents` par `describe_intent`.
+static func describe_intents(intents: Array[DuelIntent]) -> Array[String]:
+	var descriptions: Array[String] = []
+	for intent: DuelIntent in intents:
+		descriptions.append(describe_intent(intent))
+	return descriptions
+
+
 ## Décrit une intention par sa classe, son joueur et ses champs, pour rapporter un écart :
 ## « DeployCard:A card_instance_id=12 cell=(1, 0) payment=2+0 ».
 static func describe_intent(intent: DuelIntent) -> String:

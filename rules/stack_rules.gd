@@ -4,7 +4,8 @@ extends RefCounted
 ##
 ## Une annonce s'ajoute par `add_to_stack`, appelée par le module de son chapitre ; un effet
 ## déclenché, par TriggerRules (décision 0017). La boucle de résolution vit dans DuelEngine, qui
-## aiguille chaque entrée vers le module de son genre : StackRules n'appelle aucun autre module.
+## aiguille chaque entrée vers le module de son genre et la reprend après un choix (décision 0057) :
+## StackRules n'appelle aucun autre module.
 
 
 ## 208.4.1, 208.2.4, 208.7.12 : ajoute `entry` au sommet de la pile ; l'adversaire du joueur à
@@ -82,10 +83,31 @@ static func apply_pass(_state: DuelState, intent: PassPriority, events: Array[Du
 	events.append(PriorityPassed.new(intent.player))
 
 
-## 208.3.2 : retire de la pile l'entrée du sommet, la dernière ajoutée, et la renvoie.
-## Suppose la pile non vide.
+## 208.3.2, décision 0057 : retire de la pile l'entrée du sommet, la dernière ajoutée, la renvoie
+## et la tient pour en cours de résolution, au premier de ses effets. Suppose la pile non vide.
 static func take_top_entry(state: DuelState) -> StackEntry:
-	return state.stack.pop_back()
+	var entry: StackEntry = state.stack.pop_back()
+	state.resolving_entry = entry
+	state.resolving_effect_index = 0
+	return entry
+
+
+## Décision 0057 : l'entrée en cours de résolution a appliqué tous ses effets. Suppose la partie
+## en cours : une partie arrêtée garde l'entrée en l'état (209.2.2).
+static func end_resolution(state: DuelState) -> void:
+	state.resolving_entry = null
+	state.resolving_effect_index = 0
+
+
+## 207.5.2, 208.4.6, 209.4.6, 209.4.7c, 209.4.7d : le moteur attend le choix de `decision` ; chaque
+## joueur attendu reçoit un temps de réponse complet (décisions 0009 et 0017).
+static func request_decision(
+	state: DuelState, decision: PendingDecision, events: Array[DuelEvent]
+) -> void:
+	state.pending_decision = decision
+	for side: DuelState.PlayerSide in decision.awaited_players:
+		state.get_player(side).response_time_remaining_msec = state.config.response_time_msec
+	events.append(DecisionRequested.new(decision.awaited_players[0], decision.kind))
 
 
 ## 208.3.2, 209.2.2 : annonce que l'entrée est résolue, sauf si la partie s'est arrêtée pendant

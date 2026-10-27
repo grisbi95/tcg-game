@@ -45,6 +45,11 @@ static func write(journal: DuelJournal, fingerprint: ReplayFingerprint) -> bool:
 	)
 
 
+## Vrai si le fichier d'empreinte est écrit ; le journal reste en place.
+static func write_fingerprint(fingerprint: ReplayFingerprint) -> bool:
+	return _write_text(FINGERPRINT_PATH, JSON.stringify(fingerprint.to_dict(), "\t"))
+
+
 static func read_journal_text() -> String:
 	return FileAccess.get_file_as_string(JOURNAL_PATH)
 

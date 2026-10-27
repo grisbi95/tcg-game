@@ -156,9 +156,14 @@ static func order_as_triggered(state: DuelState, events: Array[DuelEvent]) -> vo
 
 
 ## 208.3.2a, 207.3.3, 207.5.3 à 207.5.5 : l'effet a lieu même si sa pièce a quitté le plateau.
+## Décision 0057 : l'effet est le seul de son entrée ; après une attente qu'il a posée, la reprise
+## ne l'applique pas une seconde fois.
 static func resolve_triggered(
 	state: DuelState, entry: StackEntry, events: Array[DuelEvent]
 ) -> void:
+	if state.resolving_effect_index > 0:
+		return
+	state.resolving_effect_index += 1
 	EffectRules.resolve_effect(state, entry, effect_of(state, entry), events)
 
 
@@ -195,7 +200,7 @@ static func _order_next_group(state: DuelState, events: Array[DuelEvent]) -> voi
 		else:
 			_skip(state.waiting_triggers, entry, events)
 	if addable.size() >= MIN_EFFECTS_TO_ORDER:
-		_request(state, _make_order_decision(addable), events)
+		StackRules.request_decision(state, _make_order_decision(addable), events)
 		return
 	for entry: StackEntry in addable:
 		var ordering := PendingDecision.DecisionKind.ORDER_TRIGGERS
@@ -230,9 +235,9 @@ static func _add_next(state: DuelState, events: Array[DuelEvent]) -> void:
 		_skip(state.triggers_to_add, entry, events)
 		return
 	var effect := effect_of(state, entry)
-	if EffectRules.chosen_effect_count(entry, effect) == 0:
+	if effect.target != null and EffectRules.chosen_effect_count(entry, effect) == 0:
 		if not _has_unique_targets(state, entry, effect):
-			_request(state, _make_targets_decision(state, entry, effect), events)
+			StackRules.request_decision(state, _make_targets_decision(state, entry, effect), events)
 			return
 		_assign_unique_targets(state, entry, effect, events)
 	state.triggers_to_add.pop_front()
@@ -248,6 +253,8 @@ static func _can_be_added(state: DuelState, entry: StackEntry) -> bool:
 	var effect := effect_of(state, entry)
 	if effect.once_per_turn and state.once_per_turn_card_ids.has(entry.source_card_instance_id):
 		return false
+	if effect.target == null:
+		return true  # décision 0057 : un effet sans cible n'attend aucune cible légale
 	var legal_count := _legal_target_count(state, entry, effect)
 	return legal_count >= effect.target.count_min
 
@@ -288,14 +295,6 @@ static func _assign_unique_targets(
 static func _skip(list: Array[StackEntry], entry: StackEntry, events: Array[DuelEvent]) -> void:
 	list.erase(entry)
 	events.append(TriggerSkipped.new(entry.owner, entry.stack_entry_id))
-
-
-# 207.5.2, 208.4.6, 208.4.7 : le moteur attend le choix du joueur (décisions 0009 et 0017).
-static func _request(state: DuelState, decision: PendingDecision, events: Array[DuelEvent]) -> void:
-	state.pending_decision = decision
-	for side: DuelState.PlayerSide in decision.awaited_players:
-		state.get_player(side).response_time_remaining_msec = state.config.response_time_msec
-	events.append(DecisionRequested.new(decision.awaited_players[0], decision.kind))
 
 
 # 208.4.6, 208.4.7 : le joueur à qui appartiennent les effets choisit leur ordre.

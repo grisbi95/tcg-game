@@ -95,6 +95,12 @@ var once_per_turn_card_ids: Array[int] = []
 var triggers_allow_response: bool = true
 ## Null hors attente d'un choix (décision 0009).
 var pending_decision: PendingDecision
+## Décision 0057 ; 208.3.2 : entrée sortie de la pile et en cours de résolution, null hors
+## résolution. Elle reste en place pendant une attente posée par l'un de ses effets (212.1.3,
+## 217.1.2), jusqu'à la fin de ses effets.
+var resolving_entry: StackEntry
+## Décision 0057 : rang du prochain effet de `resolving_entry` à appliquer ; 0 hors résolution.
+var resolving_effect_index: int = 0
 var active_player: PlayerSide = PlayerSide.A
 ## 208.2.4 : joueur qui peut répondre ou passer.
 var priority_player: PlayerSide = PlayerSide.A
@@ -209,6 +215,8 @@ func clone() -> DuelState:
 	copy.once_per_turn_card_ids.assign(once_per_turn_card_ids)
 	copy.triggers_allow_response = triggers_allow_response
 	copy.pending_decision = pending_decision.clone() if pending_decision != null else null
+	copy.resolving_entry = resolving_entry.clone() if resolving_entry != null else null
+	copy.resolving_effect_index = resolving_effect_index
 	copy.active_player = active_player
 	copy.priority_player = priority_player
 	copy.turn_number = turn_number

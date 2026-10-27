@@ -95,18 +95,19 @@ static func clock_owners(state: DuelState) -> Array[DuelState.PlayerSide]:
 	return awaited_players(state)
 
 
-## 209.4.4, 209.4.7, 209.4.7b, 209.4.8 : le temps de `side` qui s'écoule quand une décision est
-## attendue de lui : son temps de tour si c'est le joueur actif et que la pile est vide, sinon son
-## temps de réponse. Pur.
+## 209.4.4, 209.4.7, 209.4.7b à 209.4.7d, 209.4.8 : le temps de `side` qui s'écoule quand une
+## décision est attendue de lui : son temps de tour si c'est le joueur actif et que la pile est
+## vide, sinon son temps de réponse ; l'entrée en cours de résolution compte encore dans la pile
+## (décision 0057). Pur.
 static func clock_kind(state: DuelState, side: DuelState.PlayerSide) -> DuelState.ClockKind:
-	if side == state.active_player and state.stack.is_empty():
+	if side == state.active_player and _is_stack_empty(state):
 		return DuelState.ClockKind.TURN
 	return DuelState.ClockKind.RESPONSE
 
 
 ## 209.4.8 : le temps de tour du joueur actif est en pause tant que la pile n'est pas vide. Pur.
 static func is_turn_time_paused(state: DuelState, side: DuelState.PlayerSide) -> bool:
-	return side == state.active_player and not state.stack.is_empty()
+	return side == state.active_player and not _is_stack_empty(state)
 
 
 ## 209.4.3, 209.4.6 : temps restant du compteur de `side` qui s'écoule (ou s'écoulerait) ; un
@@ -168,6 +169,12 @@ static func record_turn_expired(
 		return
 	events.append(IdleDefeat.new(side))
 	_end_duel(state, _win_for(DuelState.opponent_of(side)), DuelState.EndReason.IDLE_TURNS, events)
+
+
+# 209.4.7c, 209.4.7d, décision 0242 du ruleset : l'entrée dont un effet attend un choix a quitté
+# la pile mais n'a pas fini de se résoudre.
+static func _is_stack_empty(state: DuelState) -> bool:
+	return state.stack.is_empty() and state.resolving_entry == null
 
 
 # 209.2.2, 209.2.3, 209.2.7 : plus rien n'est attendu ni résolu ; la pile reste en l'état.

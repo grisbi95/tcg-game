@@ -7,6 +7,7 @@ extends RefCounted
 const SENTENCES: Dictionary[StringName, String] = {
 	&"ActiveEffectEnded": "Un effet prend fin.",
 	&"CardDiscarded": "Le joueur %s défausse une carte.",
+	&"CardDiscardedFromHand": "Le joueur %s défausse une carte de sa main.",
 	&"CardDrawn": "Le joueur %s pioche une carte.",
 	&"CardReturnedToDeck": "Le joueur %s remet une carte dans son deck.",
 	&"CardReturnedToHand": "Une carte revient dans la main du joueur %s.",
@@ -59,6 +60,8 @@ const SENTENCES: Dictionary[StringName, String] = {
 	&"TargetsChosen": "Le joueur %s choisit ses cibles.",
 	&"TimeExpired": "Le temps du joueur %s est écoulé.",
 	&"TokenCreated": "Le joueur %s crée un jeton.",
+	&"TopCardLooked": "Le joueur %s regarde la carte du dessus de son deck.",
+	&"TopCardPlaceChosen": "Le joueur %s a choisi où mettre la carte du dessus de son deck.",
 	&"TriggerSkipped": "Un effet déclenché du joueur %s ne se produit pas.",
 	&"TriggersOrdered": "Le joueur %s ordonne ses effets déclenchés.",
 	&"TurnEnded": "Le joueur %s termine son tour.",

@@ -1,6 +1,7 @@
 class_name PiecesAwakened
 extends PlayerEvent
 ## 204.3.10, 204.3.11 : au début de son tour, le joueur réveille ses Units et son Hero endormis.
+## Un effet qui réveille une Unit (205.5, décision 0057) l'émet aussi, pour cette seule pièce.
 ## `piece_ids` liste les seules pièces qui dormaient, dans l'ordre de `DuelState.pieces` ; une
 ## pièce déjà éveillée (205.5.5) n'y figure pas. Jamais vide : sans pièce endormie, l'événement
 ## n'est pas émis.
