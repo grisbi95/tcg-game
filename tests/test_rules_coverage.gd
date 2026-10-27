@@ -64,11 +64,6 @@ const RULES_WITHOUT_OWN_TEST: Dictionary[String, String] = {
 		"Vérifiée sous 202.2.14 et 202.2.24 (tests : test_202_2_14_gear_only_on_own_unit, "
 		+ "test_202_2_24_gear_not_attached_when_unit_is_gone)."
 	),
-	"202.4.13a":
-	(
-		"Sans test possible : aucun Gear, Spell ni aura ne donne de mot-clé (aucun EffectKind "
-		+ "ne le fait) ; KeywordRules ne lit que la carte de la pièce."
-	),
 	"203.0.1":
 	(
 		"Invariant : tout coût se paie par EssencePayment, aucune autre ressource n'existe "
@@ -150,40 +145,21 @@ const RULES_WITHOUT_OWN_TEST: Dictionary[String, String] = {
 ## la liste est vide à la sortie de c.8.
 const RULES_AWAITING_IMPLEMENTATION: Dictionary[String, String] = {
 	"201.4.1a": "c.7",
-	"204.3.12": "c.5",
-	"204.3.12a": "c.5",
-	"206.3.7": "c.5",
-	"206.3.7a": "c.5",
-	"206.3.7b": "c.5",
-	"207.3.12": "c.5",
-	"207.3.12a": "c.5",
-	"207.3.12b": "c.5",
-	"207.3.12c": "c.5",
-	"207.3.13": "c.5",
-	"207.3.13a": "c.5",
-	"207.3.13b": "c.5",
-	"207.3.14": "c.5",
-	"207.5.18": "c.5",
-	"209.4.4h": "c.5",
-	"209.4.11b": "c.5",
-	"212.2.5": "c.5",
-	"213.1.1": "c.5",
-	"213.1.2": "c.5",
-	"213.1.3": "c.5",
-	"213.1.4": "c.5",
-	"213.1.5": "c.5",
-	"213.1.6": "c.5",
-	"213.1.7": "c.5",
-	"213.1.8": "c.5",
-	"213.1.9": "c.5",
-	"213.1.10": "c.5",
-	"213.1.11": "c.5",
-	"213.1.12": "c.5",
-	"213.2.1": "c.5",
-	"213.2.2": "c.5",
-	"213.2.3": "c.5",
-	"213.2.4": "c.5",
-	"213.2.5": "c.5",
+	"204.3.12": "c.5b",
+	"204.3.12a": "c.5b",
+	"206.3.7": "c.5b",
+	"206.3.7a": "c.5b",
+	"206.3.7b": "c.5b",
+	"207.3.12": "c.5b",
+	"207.3.12a": "c.5b",
+	"207.3.12b": "c.5b",
+	"207.3.12c": "c.5b",
+	"207.3.13": "c.5b",
+	"207.3.13a": "c.5b",
+	"207.3.13b": "c.5b",
+	"207.3.14": "c.5b",
+	"207.5.18": "c.5b",
+	"212.2.5": "c.5b",
 	"217.1.5": "c.7",
 }
 

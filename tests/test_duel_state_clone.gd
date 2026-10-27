@@ -194,6 +194,7 @@ func _make_effect(piece_id: int) -> ActiveEffect:
 	effect.affected_piece_id = piece_id
 	effect.effect_kind = &"force_modifier"
 	effect.amount = 2
+	effect.keyword = CardDefinition.Keyword.RAMPART
 	return effect
 
 
@@ -212,6 +213,7 @@ func _make_trigger(
 	entry.target_cells.append(DuelStateBuilder.cell("C3"))
 	entry.target_piece_ids.append(source_piece_id)
 	entry.target_stack_entry_ids.append(target_entry_id)
+	entry.x_value = 3
 	return entry
 
 

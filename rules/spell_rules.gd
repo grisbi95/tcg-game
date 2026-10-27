@@ -5,8 +5,8 @@ extends RefCounted
 ## avec l'effet COUNTER dans EffectRules.
 
 
-## 207.1.3 à 207.1.6, 208.1.3, 208.2.3, 203.3.2, 207.5.1a, 207.5.8 : raison du refus de
-## `intent`, ou NONE. L'attente est contrôlée par DuelEngine. Pur.
+## 207.1.3 à 207.1.6, 208.1.3, 208.2.3, 203.3.2, 207.5.1a, 207.5.8, 213.1.3 à 213.1.5, 213.1.9 :
+## raison du refus de `intent`, ou NONE. L'attente est contrôlée par DuelEngine. Pur.
 static func validate_cast(state: DuelState, intent: CastSpell) -> IntentRejected.RejectReason:
 	var card := state.get_player(intent.player).find_card_in_hand(intent.card_instance_id)
 	if card == null:
@@ -17,24 +17,29 @@ static func validate_cast(state: DuelState, intent: CastSpell) -> IntentRejected
 	var reason := StackRules.validate_speed(state, intent.player, definition.speed)
 	if reason != IntentRejected.RejectReason.NONE:
 		return reason
-	reason = EssenceRules.validate_payment(state, intent.player, intent.payment, definition.cost)
+	reason = ValueRules.validate_x_value(definition, intent.x_value)
 	if reason != IntentRejected.RejectReason.NONE:
 		return reason
-	return EffectRules.validate_announced_targets(
-		state, _make_spell_entry(intent, card), definition.effects
-	)
+	var entry := _make_spell_entry(intent, card)
+	var cost := ValueRules.current_cost(definition, entry)
+	reason = EssenceRules.validate_payment(state, intent.player, intent.payment, cost)
+	if reason != IntentRejected.RejectReason.NONE:
+		return reason
+	return EffectRules.validate_announced_targets(state, entry, definition.effects)
 
 
-## 203.3.2, 203.3.2a, 201.3.8, 207.5.1a, 208.4.1, 208.7.1 : paie le coût ; la carte quitte la main
-## pour la pile avec ses cibles. Suppose l'intention validée.
+## 203.3.2, 203.3.2a, 201.3.8, 207.5.1a, 208.4.1, 208.7.1, 213.1.5 : paie le coût (X Essence pour un
+## coût X) ; la carte quitte la main pour la pile avec ses cibles et la valeur de X. Suppose
+## l'intention validée.
 static func announce_spell(state: DuelState, intent: CastSpell, events: Array[DuelEvent]) -> void:
 	var player := state.get_player(intent.player)
 	var card := player.find_card_in_hand(intent.card_instance_id)
-	var cost := state.catalog.get_card(card.definition_id).cost
+	var entry := _make_spell_entry(intent, card)
+	var cost := ValueRules.current_cost(state.catalog.get_card(card.definition_id), entry)
 	events.append_array(EssenceRules.pay_cost(state, intent.player, intent.payment, cost))
 	player.hand.erase(card)
 	events.append(SpellAnnounced.new(intent.player, card.card_instance_id))
-	StackRules.add_to_stack(state, _make_spell_entry(intent, card), events)
+	StackRules.add_to_stack(state, entry, events)
 
 
 ## 202.2.20, 208.3.2 : le Spell se résout une fois ; 207.1.7, 207.1.7a : sa carte va ensuite
@@ -50,12 +55,13 @@ static func resolve_spell(state: DuelState, entry: StackEntry, events: Array[Due
 	events.append(CardDiscarded.new(entry.card.owner, entry.card.card_instance_id))
 
 
-# 207.5.1a : l'entrée porte les cibles choisies à l'annonce.
+# 207.5.1a, 213.1.8 : l'entrée porte les cibles et la valeur de X choisies à l'annonce.
 static func _make_spell_entry(intent: CastSpell, card: CardInstance) -> StackEntry:
 	var entry := StackEntry.new()
 	entry.kind = StackEntry.StackEntryKind.SPELL
 	entry.owner = intent.player
 	entry.card = card
+	entry.x_value = intent.x_value
 	return entry.with_targets(
 		intent.target_piece_ids, intent.target_cells, intent.target_stack_entry_ids
 	)

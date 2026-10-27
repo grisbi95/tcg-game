@@ -40,4 +40,7 @@ func find_errors() -> PackedStringArray:
 			errors.append("effet %d : %s" % [index + 1, message])
 		if effects[index].timing != EffectDefinition.EffectTiming.RESOLVE:
 			errors.append("effet %d : timing refusé pour un Ordre" % (index + 1))
+	var chosen_error := EffectValueChecks.chosen_x_error(effects, false)
+	if not chosen_error.is_empty():
+		errors.append(chosen_error)
 	return errors

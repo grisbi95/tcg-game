@@ -3,7 +3,7 @@
 ## IMPORTANT
 
 - **Le ruleset fait foi.** Il vit dans `docs/ruleset/` (édition dans son `README.md`, décision 0014) et ne s'édite que par l'agent `ruleset-editor`, selon sa `CHARTE.md`. Un point non tranché par le ruleset ne devient jamais un comportement implicite : arrêter, et le signaler comme question ouverte du ruleset.
-- **Une décision avant un système nouveau** : 2 ou 3 options avec compromis, choix du créateur, consignation dans `docs/decisions/`. Décisions acceptées : `0001` à `0057` ; les respecter.
+- **Une décision avant un système nouveau** : 2 ou 3 options avec compromis, choix du créateur, consignation dans `docs/decisions/`. Décisions acceptées : `0001` à `0059` ; les respecter.
 - **GDScript typé partout** : paramètres, retours, variables, collections. Les warnings `untyped_declaration`, `unsafe_*`, `shadowed_*`, `integer_division` et `unused_private_class_variable` sont des erreurs à corriger ; `tools/check_typing.sh` les contrôle.
 - **Un identifiant de règle sur chaque fonction de règle et chaque test de règle** : `# 206.3.6`, `test_206_3_6_tie_destroys_both`.
 
@@ -22,11 +22,11 @@
 - Lint et format : gdtoolkit 4 dans `.venv/` (`tools/setup_gdtoolkit.sh`), configuration `.gdlintrc`.
 - Scène principale `ui/main.tscn` (0036) ; preset « Web » dans `export_presets.cfg` (sans threads, filtres d'export, 0005), déployé sur GitHub Pages par la CI depuis `main` ; `project.godot` ne se modifie que sur demande explicite.
 
-## 3. Architecture (décisions 0001 à 0057)
+## 3. Architecture (décisions 0001 à 0059)
 
 - **Couches** : `data/` (cartes et decks JSON) ← `rules/` (moteur pur, `RefCounted`, sans Node) ← `ai/` ← `app/` (hôte, horloge, journal) ← `ui/` (scènes). Une couche ne connaît que celles qui la précèdent. `rules/` ne lit jamais l'heure, n'importe aucun Node, ne tire au hasard que par `state.rng`.
 - **Flux** : intentions → `DuelEngine.submit(intent) -> Array[DuelEvent]` → événements. Seul le moteur et ses modules modifient `DuelState`. Une intention illégale produit un unique `IntentRejected` avec sa raison et ne change rien. `validate(intent)` est public et pur. Un duel démarre par `start_new_duel` avec un `DuelSetup` : decks, Heroes, graine, premier joueur optionnel, sinon tiré (0012).
-- **Un module de règles par chapitre** du ruleset (`EssenceRules` 203, `ActionRules` 205, `StackRules` 208…), deux pour un chapitre long, découpé par sections (0007 : `PreparationRules` et `TurnRules` 204, `SpellRules` et `EffectRules` 207) ; carte dans `rules/CLAUDE.md`.
+- **Un module de règles par chapitre** du ruleset (`EssenceRules` 203, `ActionRules` 205, `StackRules` 208…), un par section ou groupe de sections pour un chapitre long, jamais hors du chapitre (0007, 0059 : `PreparationRules` et `TurnRules` 204 ; `SpellRules`, `StaticEffects`, `ModifierRules` et `EffectRules` 207) ; carte dans `rules/CLAUDE.md`.
 - **État** en classes typées avec `clone()` complet ; identifiants entiers jamais réutilisés ; une seule classe `Piece` pour Hero, Units, Buildings et jetons (0008) ; `PendingDecision`, objet nul hors attente (0009), quand le moteur attend un choix d'un joueur (ordre des déclencheurs, cibles) ; mulligans exécutés à la dernière réponse, joueur A puis B (0013, 0015) ; `DuelConfig` porte une valeur par règle PROVISOIRE.
 - **Paiement** porté par l'intention : `{incliner, recycler}` (0003). **Choix unique** pris par le moteur sans demander (0004).
 - **Cartes en JSON** (`data/cards/`), vocabulaire fermé d'`EffectKind` interprété par le moteur ; un nouveau `kind` = code et tests avant toute carte (0002, forme précisée en 0010).

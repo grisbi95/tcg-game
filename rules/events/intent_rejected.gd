@@ -43,6 +43,8 @@ enum RejectReason {
 	ORDER_NOT_FOUND,  # 202.3.19, 202.3.21 : le Hero ne porte pas d'Ordre de ce rang
 	WRONG_DISCARD_COUNT,  # 212.1.7, 212.2.3 : autre nombre de cartes que celui à défausser
 	UNKNOWN_CARD_PLACE,  # 217.1.2, 217.1.3 : ni au dessus ni sous le deck
+	X_VALUE_TOO_LOW,  # 213.1.4 : la valeur choisie pour X d'un coût X est au moins 1
+	UNEXPECTED_X_VALUE,  # 213.1.2, 213.2.5 : un Spell sans coût X n'a pas de valeur de X
 }
 
 ## Intention refusée, telle que soumise ; null si le refus ne vient pas d'une intention.

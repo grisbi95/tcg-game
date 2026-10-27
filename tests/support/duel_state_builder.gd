@@ -276,9 +276,10 @@ func push_normal_action(piece_id: int, at_cell: Vector2i, allows_response: bool 
 
 
 ## Empile le Spell `card` et ses cibles, comme une annonce déjà payée (203.3.2).
-func push_spell(card: CardInstance, target_piece_ids: Array[int] = []) -> int:
+func push_spell(card: CardInstance, target_piece_ids: Array[int] = [], x_value: int = 0) -> int:
 	var entry := _make_entry(StackEntry.StackEntryKind.SPELL, card.owner)
 	entry.card = card
+	entry.x_value = x_value
 	entry.target_piece_ids.assign(target_piece_ids)
 	return push_stack_entry(entry)
 

@@ -20,6 +20,9 @@ const INTENT_SCRIPTS: Dictionary[StringName, GDScript] = {
 	&"ProduceEssence": preload("res://rules/intents/produce_essence.gd"),
 	&"TakeNormalAction": preload("res://rules/intents/take_normal_action.gd"),
 }
+## Champs que le journal peut ne pas écrire : un journal ancien se relit avec la valeur par
+## défaut du champ (`x_value`, décision 0058, absent avant l'étape c.5a).
+const OPTIONAL_FIELDS: Array[String] = ["x_value"]
 
 
 static func encode(intent: DuelIntent) -> Dictionary:
@@ -65,7 +68,11 @@ static func _encode_value(value: Variant) -> Variant:
 
 static func _decode_fields(object: Object, data: Dictionary) -> bool:
 	for field: String in ScriptFields.of(object):
-		if not data.has(field) or not _decode_field(object, field, data[field]):
+		if not data.has(field):
+			if OPTIONAL_FIELDS.has(field):
+				continue
+			return false
+		if not _decode_field(object, field, data[field]):
 			return false
 	return true
 

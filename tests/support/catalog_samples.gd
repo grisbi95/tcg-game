@@ -110,6 +110,33 @@ static func create_token_effect() -> Dictionary:
 	}
 
 
+## Un effet valide par kind des décisions 0002, 0056 et 0058 (ceux des effets de main :
+## HandEffectSamples.effect_samples()).
+static func effect_samples() -> Array[Dictionary]:
+	return [
+		modify_force_resolve(),
+		destroy_effect(),
+		counter_spell_effect(),
+		create_token_effect(),
+		swap_cells_effect(),
+		move_unit_effect(),
+		return_to_hand_effect(),
+		grant_keyword_effect(),
+	]
+
+
+## 210.4, décision 0058 : une Unit alliée ciblée a Assaut 2 jusqu'à la fin du tour.
+static func grant_keyword_effect() -> Dictionary:
+	return {
+		"kind": "grant_keyword",
+		"timing": "resolve",
+		"keyword": "assault",
+		"amount": 2,
+		"duration": "until_end_of_turn",
+		"target": ally_unit_target(),
+	}
+
+
 ## 214 : échange les cases de deux Units alliées ciblées.
 static func swap_cells_effect() -> Dictionary:
 	var target := ally_unit_target()

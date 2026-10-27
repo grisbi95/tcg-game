@@ -12,6 +12,8 @@ enum CombatRole {
 	DEFENDER,
 }
 
+const FORCE_KIND: EffectDefinition.EffectKind = EffectDefinition.EffectKind.MODIFY_FORCE
+
 
 ## 209.1.1, 209.1.1a, 209.1.2, 206.2.3, 206.5.1 : Force imprimée (ou donnée au jeton) plus
 ## les modificateurs en cours, jamais sous 0. Un Hero n'a pas de Force (202.3.9) : le moteur
@@ -40,8 +42,8 @@ static func combat_force(state: DuelState, piece: Piece, role: CombatRole) -> in
 static func _force_before_floor(state: DuelState, piece: Piece) -> int:
 	return (
 		_printed_force(state, piece)
-		+ _active_modifiers(state, piece)
-		+ _static_modifiers(state, piece)
+		+ ModifierRules.active_total(state, piece, FORCE_KIND)
+		+ StaticEffects.total_for(state, piece, FORCE_KIND)
 	)
 
 
@@ -50,58 +52,3 @@ static func _printed_force(state: DuelState, piece: Piece) -> int:
 	if piece.is_token():
 		return piece.token_force
 	return state.catalog.get_card(piece.card.definition_id).force
-
-
-# 207.4.2 : effets à durée en cours qui modifient `piece`.
-static func _active_modifiers(state: DuelState, piece: Piece) -> int:
-	var modify_force := EffectDefinition.kind_id(EffectDefinition.EffectKind.MODIFY_FORCE)
-	var total := 0
-	for effect: ActiveEffect in state.active_effects:
-		if effect.affected_piece_id == piece.piece_id and effect.effect_kind == modify_force:
-			total += effect.amount
-	return total
-
-
-# 207.2.1, 207.2.2, 207.2.4 : effets statiques des pièces en jeu qui touchent `piece`.
-static func _static_modifiers(state: DuelState, piece: Piece) -> int:
-	var total := 0
-	for bearer: Piece in state.pieces:
-		if not BoardGeometry.is_on_board(bearer.cell):
-			continue
-		for effect: EffectDefinition in _static_force_effects(state, bearer):
-			if _scope_touches(effect.scope, bearer, piece):
-				total += effect.amount
-	return total
-
-
-# 207.2.8, 207.2.9, 202.3.18 ; 202.4.5 : un jeton ne porte aucun effet.
-static func _static_force_effects(state: DuelState, bearer: Piece) -> Array[EffectDefinition]:
-	var carried: Array[EffectDefinition] = []
-	if bearer.kind == Piece.PieceKind.HERO:
-		carried.append_array(state.catalog.get_hero(bearer.card.definition_id).passive)
-	elif bearer.card != null:
-		carried.append_array(state.catalog.get_card(bearer.card.definition_id).effects)
-	if bearer.attached_gear != null:
-		carried.append_array(state.catalog.get_card(bearer.attached_gear.definition_id).effects)
-	var force_effects: Array[EffectDefinition] = []
-	for effect: EffectDefinition in carried:
-		var is_static := effect.timing == EffectDefinition.EffectTiming.STATIC
-		if is_static and effect.kind == EffectDefinition.EffectKind.MODIFY_FORCE:
-			force_effects.append(effect)
-	return force_effects
-
-
-# 206.5.5 : une aura ne touche une pièce que tant qu'elle remplit sa condition de position.
-static func _scope_touches(
-	scope: EffectDefinition.StaticScope, bearer: Piece, piece: Piece
-) -> bool:
-	match scope:
-		EffectDefinition.StaticScope.BEARER:
-			return piece == bearer
-		EffectDefinition.StaticScope.ADJACENT_ALLIED_UNITS:
-			return (
-				piece.kind == Piece.PieceKind.UNIT
-				and piece.owner == bearer.owner
-				and BoardGeometry.are_adjacent(bearer.cell, piece.cell)
-			)
-	return false
