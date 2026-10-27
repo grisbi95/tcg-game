@@ -51,7 +51,7 @@ static func _spell(id: StringName, effect: Dictionary) -> Dictionary:
 	data = CatalogSamples.with_field(data, "name", "Spell %s" % id)
 	data = CatalogSamples.with_field(data, "speed", "action")
 	data = CatalogSamples.with_field(data, "cost", SPELL_COST)
-	return CatalogSamples.with_field(data, "effects", [effect])
+	return CatalogSamples.with_effects(data, [effect])
 
 
 static func _arrival_unit(id: StringName, effect: Dictionary) -> Dictionary:
@@ -60,7 +60,7 @@ static func _arrival_unit(id: StringName, effect: Dictionary) -> Dictionary:
 	var data := CatalogSamples.with_field(CatalogSamples.unit(), "id", String(id))
 	data = CatalogSamples.with_field(data, "name", "Carte %s" % id)
 	data = CatalogSamples.with_field(data, "force", ARRIVAL_UNIT_FORCE)
-	data = CatalogSamples.with_field(data, "effects", [triggered])
+	data = CatalogSamples.with_effects(data, [triggered])
 	return CatalogSamples.with_field(data, "keywords", [{"keyword": "arrival"}])
 
 
@@ -86,7 +86,7 @@ static func choose(
 
 ## Erreurs de `find_errors()` de l'effet décrit par `data`.
 static func effect_errors(data: Dictionary) -> PackedStringArray:
-	return EffectDefinition.from_dict(data).find_errors()
+	return CatalogSamples.effect_errors(data)
 
 
 ## Erreurs de `find_errors()` de la cible décrite par `data`.

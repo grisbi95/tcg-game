@@ -1,8 +1,9 @@
 class_name SpellRules
 extends RefCounted
-## Spells (207.1) : vitesses, annonce, résolution. Les cibles et l'application des effets sont
-## dans EffectRules (207.4, 207.5), qui n'appelle jamais ce module ; Contrecarrer (207.6) reste
-## avec l'effet COUNTER dans EffectRules.
+## Spells (207.1) : vitesses, annonce, résolution. L'application des effets et la suite d'effets du
+## texte sont dans EffectRules (207.4, 207.7), les cibles de l'annonce dans TriggerTargets
+## (207.5.1a) ; ni l'un ni l'autre n'appelle ce module. Contrecarrer (207.6) reste avec l'effet
+## COUNTER dans EffectRules.
 
 
 ## 207.1.3 à 207.1.6, 208.1.3, 208.2.3, 203.3.2, 207.5.1a, 207.5.8, 213.1.3 à 213.1.5, 213.1.9 :
@@ -25,7 +26,9 @@ static func validate_cast(state: DuelState, intent: CastSpell) -> IntentRejected
 	reason = EssenceRules.validate_payment(state, intent.player, intent.payment, cost)
 	if reason != IntentRejected.RejectReason.NONE:
 		return reason
-	return EffectRules.validate_announced_targets(state, entry, definition.effects)
+	return TriggerTargets.validate_announced_targets(
+		state, entry, EffectText.effects_of(EffectText.resolution_of(definition.texts))
+	)
 
 
 ## 203.3.2, 203.3.2a, 201.3.8, 207.5.1a, 208.4.1, 208.7.1, 213.1.5 : paie le coût (X Essence pour un
@@ -45,13 +48,14 @@ static func announce_spell(state: DuelState, intent: CastSpell, events: Array[Du
 	TriggerRules.trigger_for_player(state, intent.player, trigger_event, events)  # 208.4.4
 
 
-## 202.2.20, 208.3.2 : le Spell se résout une fois ; 207.1.7, 207.1.7a : sa carte va ensuite
-## dans la défausse de son joueur, que son effet ait eu lieu ou non. Si la partie s'arrête
-## pendant ses effets (209.2.2), la carte ne bouge plus. Décision 0057 : un effet qui attend un
-## choix suspend la résolution, la carte reste sur l'entrée ; la reprise rappelle cette fonction.
+## 202.2.20, 208.3.2 : le Spell se résout une fois ; 207.1.7, 207.1.7a, 207.7.8 : sa carte va
+## ensuite dans la défausse de son joueur, que son effet ait eu lieu ou non, une condition « si »
+## fausse comprise. Si la partie s'arrête pendant ses effets (209.2.2), la carte ne bouge plus.
+## Décision 0057 : un effet qui attend un choix suspend la résolution, la carte reste sur l'entrée ;
+## la reprise rappelle cette fonction.
 static func resolve_spell(state: DuelState, entry: StackEntry, events: Array[DuelEvent]) -> void:
 	var definition := state.catalog.get_card(entry.card.definition_id)
-	EffectRules.resolve_all(state, entry, definition.effects, events)
+	EffectRules.resolve_text(state, entry, EffectText.resolution_of(definition.texts), events)
 	if state.is_ended() or state.pending_decision != null:
 		return
 	state.get_player(entry.card.owner).discard.append(entry.card)

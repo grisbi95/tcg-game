@@ -148,7 +148,7 @@ func test_200_4_1_destroy_effect_on_a_source_piece_that_left_the_board_does_not_
 	entry.source_piece_id = worksite_id
 	entry.owner = A
 	state.pieces.erase(state.find_piece(worksite_id))
-	var effect := _catalog.triggerable_effects(FilterSamples.DEMOLITION)[0]
+	var effect := _catalog.triggerable_texts(FilterSamples.DEMOLITION)[0].effects[0]
 	EffectRules.resolve_effect(state, entry, effect, _events)
 	assert_array(_events).is_empty()
 

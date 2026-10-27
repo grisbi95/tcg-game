@@ -209,7 +209,7 @@ func _is_last_breath(triggered: EffectTriggered) -> bool:
 	var entry := _find_trigger_entry(triggered.stack_entry_id)
 	if entry != null:
 		var definition := _catalog.get_card(entry.source_definition_id)
-		return definition != null and _is_destroyed_trigger(definition, entry.effect_index)
+		return definition != null and _is_destroyed_trigger(definition, entry.text_index)
 	var definition_id: StringName = _before.piece_definition_ids.get(triggered.source_piece_id, &"")
 	var card := _catalog.get_card(definition_id)
 	return card != null and card.has_keyword(CardDefinition.Keyword.LAST_BREATH)
@@ -224,10 +224,10 @@ func _find_trigger_entry(stack_entry_id: int) -> StackEntry:
 	return null
 
 
-static func _is_destroyed_trigger(definition: CardDefinition, effect_index: int) -> bool:
-	if effect_index < 0 or effect_index >= definition.effects.size():
+static func _is_destroyed_trigger(definition: CardDefinition, text_index: int) -> bool:
+	if text_index < 0 or text_index >= definition.texts.size():
 		return false
-	return definition.effects[effect_index].trigger == EffectDefinition.TriggerEvent.DESTROYED
+	return definition.texts[text_index].trigger == EffectDefinition.TriggerEvent.DESTROYED
 
 
 # 209.4.9, 209.4.10, décision 0205 du ruleset : un tour terminé ou une passe par l'expiration ;

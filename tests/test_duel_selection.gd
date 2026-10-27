@@ -34,9 +34,9 @@ func before_test() -> void:
 	SetupSamples.add_unit(catalog, UNIT, UNIT_FORCE)
 	catalog.add_card(CardDefinition.from_dict(CatalogSamples.spell()))
 	var plain := CatalogSamples.with_field(CatalogSamples.spell(), "id", String(PLAIN_SPELL))
-	catalog.add_card(CardDefinition.from_dict(CatalogSamples.with_field(plain, "effects", [])))
+	catalog.add_card(CardDefinition.from_dict(CatalogSamples.with_effects(plain, [])))
 	var free := CatalogSamples.with_field(plain, "id", String(FREE_SPELL))
-	free = CatalogSamples.with_field(free, "effects", [])
+	free = CatalogSamples.with_effects(free, [])
 	catalog.add_card(CardDefinition.from_dict(CatalogSamples.with_field(free, "cost", 0)))
 	var targeted := CatalogSamples.with_field(
 		CatalogSamples.spell(), "id", String(FREE_TARGETED_SPELL)

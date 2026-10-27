@@ -19,7 +19,7 @@ var _engine: DuelEngine
 func before_test() -> void:
 	var catalog := Catalog.new()
 	var plain_spell := CatalogSamples.with_field(CatalogSamples.spell(), "id", String(CARD))
-	plain_spell = CatalogSamples.with_field(plain_spell, "effects", [])
+	plain_spell = CatalogSamples.with_effects(plain_spell, [])
 	catalog.add_card(CardDefinition.from_dict(plain_spell))
 	_builder = DuelStateBuilder.new(DuelConfig.new(), catalog)
 	_engine = DuelEngine.new(SetupSamples.catalog())

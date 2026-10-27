@@ -15,7 +15,7 @@ func _with_trigger(card: Dictionary, trigger: String) -> Dictionary:
 	var effect := HandEffectSamples.draw_effect(1)
 	effect["timing"] = "triggered"
 	effect["trigger"] = trigger
-	return CatalogSamples.with_field(card, "effects", [effect])
+	return CatalogSamples.with_effects(card, [effect])
 
 
 func test_decision_0060_new_trigger_events_are_appended_after_the_existing_ones() -> void:
@@ -57,7 +57,7 @@ func test_decision_0060_hero_effect_cannot_destroy_a_defender() -> void:
 	var effect := HandEffectSamples.draw_effect(1)
 	effect["timing"] = "triggered"
 	effect["trigger"] = "destroys_defender"
-	var data := CatalogSamples.with_field(
+	var data := CatalogSamples.with_flats(
 		NamedTriggerSamples.hero_data(&"x_hero", false), "triggered", [effect]
 	)
 	var errors := HeroDefinition.from_dict(data).find_errors()
@@ -76,10 +76,10 @@ func test_decision_0060_condition_is_read_from_the_json_effect() -> void:
 	effect["timing"] = "triggered"
 	effect["trigger"] = "start_of_own_turn"
 	effect["condition"] = {"kind": "hand_size_at_most", "amount": 1}
-	var definition := EffectDefinition.from_dict(effect)
-	assert_array(Array(definition.find_errors())).is_empty()
-	assert_int(definition.condition.amount).is_equal(1)
-	assert_object(EffectDefinition.from_dict(HandEffectSamples.draw_effect(1)).condition).is_null()
+	var text := CatalogSamples.text_from(effect)
+	assert_array(Array(text.find_errors())).is_empty()
+	assert_int(text.condition.amount).is_equal(1)
+	assert_object(CatalogSamples.text_from(HandEffectSamples.draw_effect(1)).condition).is_null()
 
 
 func test_decision_0060_condition_must_be_an_object() -> void:
@@ -90,7 +90,7 @@ func test_decision_0060_condition_must_be_an_object() -> void:
 	(
 		assert_bool(
 			CatalogSamples.mentions(
-				EffectDefinition.from_dict(effect).find_errors(), "« condition » doit être un objet"
+				CatalogSamples.effect_errors(effect), "« condition » doit être un objet"
 			)
 		)
 		. is_true()

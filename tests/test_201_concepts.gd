@@ -215,7 +215,7 @@ func _token_maker() -> CardDefinition:
 	effect["timing"] = "triggered"
 	effect["trigger"] = "arrival"
 	var data := CatalogSamples.with_field(CatalogSamples.unit(), "id", String(MAKER))
-	data = CatalogSamples.with_field(data, "effects", [effect])
+	data = CatalogSamples.with_effects(data, [effect])
 	data = CatalogSamples.with_field(data, "keywords", [{"keyword": "arrival"}])
 	var definition := CardDefinition.from_dict(data)
 	assert_array(Array(definition.find_errors())).is_empty()

@@ -6,7 +6,7 @@ extends GdUnitTestSuite
 
 
 func _effect_errors(data: Dictionary) -> PackedStringArray:
-	return EffectDefinition.from_dict(data).find_errors()
+	return CatalogSamples.effect_errors(data)
 
 
 func _target_errors(data: Dictionary) -> PackedStringArray:
@@ -22,7 +22,7 @@ func _mentions(errors: PackedStringArray, fragment: String) -> bool:
 
 
 func _with_effects(card: Dictionary, effects: Array) -> Dictionary:
-	return CatalogSamples.with_field(card, "effects", effects)
+	return CatalogSamples.with_effects(card, effects)
 
 
 func _with_keywords(card: Dictionary, keywords: Array) -> Dictionary:
@@ -94,13 +94,13 @@ func test_204_5_3_end_of_turn_is_a_trigger_event() -> void:
 	assert_array(Array(_effect_errors(CatalogSamples.triggered("end_of_turn")))).is_empty()
 
 
-func test_207_3_5_once_per_turn_is_read_for_a_triggered_effect() -> void:
+func test_207_3_5_once_per_turn_is_read_for_a_triggered_text() -> void:
 	var data := CatalogSamples.triggered("arrival", {"once_per_turn": true})
-	var effect := EffectDefinition.from_dict(data)
-	assert_array(Array(effect.find_errors())).is_empty()
-	assert_bool(effect.once_per_turn).is_true()
+	var text := CatalogSamples.text_from(data)
+	assert_array(Array(text.find_errors())).is_empty()
+	assert_bool(text.once_per_turn).is_true()
 	(
-		assert_bool(EffectDefinition.from_dict(CatalogSamples.triggered("arrival")).once_per_turn)
+		assert_bool(CatalogSamples.text_from(CatalogSamples.triggered("arrival")).once_per_turn)
 		. is_false()
 	)
 

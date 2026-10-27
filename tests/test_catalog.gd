@@ -117,25 +117,25 @@ func test_202_2_1_unknown_type_is_refused() -> void:
 
 
 func test_202_2_20_spell_effect_resolves() -> void:
-	var data := CatalogSamples.with_field(
-		CatalogSamples.spell(), "effects", [CatalogSamples.modify_force_static()]
+	var data := CatalogSamples.with_effects(
+		CatalogSamples.spell(), [CatalogSamples.modify_force_static()]
 	)
 	assert_bool(_mentions(_card_errors(data), "timing refusé pour spell")).is_true()
 
 
 func test_207_2_8_gear_effect_is_static() -> void:
-	var data := CatalogSamples.with_field(
-		CatalogSamples.gear(), "effects", [CatalogSamples.modify_force_resolve()]
+	var data := CatalogSamples.with_effects(
+		CatalogSamples.gear(), [CatalogSamples.modify_force_resolve()]
 	)
 	assert_bool(_mentions(_card_errors(data), "timing refusé pour gear")).is_true()
 
 
 func test_207_2_2_unit_effect_is_static_or_triggered() -> void:
-	var resolve := CatalogSamples.with_field(
-		CatalogSamples.unit(), "effects", [CatalogSamples.modify_force_resolve()]
+	var resolve := CatalogSamples.with_effects(
+		CatalogSamples.unit(), [CatalogSamples.modify_force_resolve()]
 	)
-	var static_effect := CatalogSamples.with_field(
-		CatalogSamples.unit(), "effects", [CatalogSamples.modify_force_static()]
+	var static_effect := CatalogSamples.with_effects(
+		CatalogSamples.unit(), [CatalogSamples.modify_force_static()]
 	)
 	assert_bool(_mentions(_card_errors(resolve), "timing refusé pour unit")).is_true()
 	assert_array(Array(_card_errors(static_effect))).is_empty()
@@ -202,13 +202,13 @@ func test_202_3_20_hero_text_may_carry_a_triggered_effect() -> void:
 	var data := OrderSamples.hero_data(OrderSamples.HERO, false)
 	var hero := HeroDefinition.from_dict(data)
 	assert_array(hero.triggered).has_size(1)
-	var untimed := CatalogSamples.with_field(
+	var untimed := CatalogSamples.with_flats(
 		data, "triggered", [CatalogSamples.modify_force_resolve()]
 	)
 	assert_bool(_mentions(_hero_errors(untimed), "triggered 1 : timing refusé")).is_true()
 	var no_event := CatalogSamples.triggered("end_of_turn")
 	no_event.erase("trigger")
-	var unnamed := CatalogSamples.with_field(data, "triggered", [no_event])
+	var unnamed := CatalogSamples.with_flats(data, "triggered", [no_event])
 	assert_bool(_mentions(_hero_errors(unnamed), "207.3.1")).is_true()
 
 
@@ -228,7 +228,7 @@ func test_202_3_22_hero_text_carries_at_least_one_ability() -> void:
 	data["triggered"] = []
 	assert_bool(_mentions(_hero_errors(data), "202.3.22")).is_true()
 	assert_bool(_mentions(_hero_errors(CatalogSamples.hero()), "202.3.22")).is_false()
-	data["triggered"] = [CatalogSamples.triggered("end_of_turn")]
+	data["triggered"] = CatalogSamples.texts_of([CatalogSamples.triggered("end_of_turn")])
 	assert_array(Array(_hero_errors(data))).is_empty()
 
 
@@ -245,7 +245,7 @@ func test_211_1_2_order_carries_a_speed() -> void:
 
 
 func test_211_1_3_order_cost_is_nil_by_default() -> void:
-	var order := HeroOrder.from_dict({"speed": "action", "effects": []})
+	var order := HeroOrder.from_dict({"speed": "action", "texts": []})
 	assert_int(order.cost).is_equal(0)
 	assert_array(Array(order.find_errors())).is_empty()
 	var negative := HeroOrder.from_dict({"speed": "action", "cost": -1})
@@ -256,14 +256,14 @@ func test_decision_0055_order_effects_resolve_like_a_spell() -> void:
 	var data := OrderSamples.hero_data(OrderSamples.HERO, false)
 	var orders: Array = data["orders"]
 	var order: Dictionary = orders[0]
-	order["effects"] = [CatalogSamples.modify_force_static()]
+	order["texts"] = CatalogSamples.texts_of([CatalogSamples.modify_force_static()])
 	assert_bool(_mentions(_hero_errors(data), "timing refusé pour un Ordre")).is_true()
-	order["effects"] = [CatalogSamples.modify_force_resolve({"amount": 0})]
-	assert_bool(_mentions(_hero_errors(data), "order 1 : effet 1")).is_true()
+	order["texts"] = CatalogSamples.texts_of([CatalogSamples.modify_force_resolve({"amount": 0})])
+	assert_bool(_mentions(_hero_errors(data), "order 1 : texte 1 : effet 1")).is_true()
 
 
 func test_202_3_18_hero_passive_is_static() -> void:
-	var data := CatalogSamples.with_field(
+	var data := CatalogSamples.with_flats(
 		CatalogSamples.hero(), "passive", [CatalogSamples.modify_force_resolve()]
 	)
 	assert_bool(_mentions(_hero_errors(data), "passive 1 : timing refusé")).is_true()

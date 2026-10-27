@@ -93,11 +93,11 @@ func test_207_3_14_source_piece_adjacency_is_only_for_triggered_effects() -> voi
 	var data := CatalogSamples.destroy_effect()
 	var target: Dictionary = data["target"]
 	target["filter"]["relation"] = "adjacent"
-	var errors := EffectDefinition.from_dict(data).find_errors()
+	var errors := CatalogSamples.effect_errors(data)
 	assert_bool(CatalogSamples.mentions(errors, "207.3.14")).is_true()
 	var triggered := CatalogSamples.with_field(data, "timing", "triggered")
 	triggered = CatalogSamples.with_field(triggered, "trigger", "destroyed")
-	assert_array(Array(EffectDefinition.from_dict(triggered).find_errors())).is_empty()
+	assert_array(Array(CatalogSamples.effect_errors(triggered))).is_empty()
 
 
 func _place(

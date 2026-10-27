@@ -25,6 +25,36 @@ static func _check_target_what(effect: EffectDefinition, errors: PackedStringArr
 		errors.append("%s : %s cible %s" % [_target_rule(effect), kind_name, expected_name])
 
 
+## Décision 0064, 207.4.11, 207.5.18 : l'ensemble d'un effet de sujet MATCHING_PIECES se décrit dans
+## `affected`, que rien d'autre n'emploie. Q-097 : un Hero reste hors de l'ensemble pour la Force et
+## la destruction ; 210.4.1c : un mot-clé n'est accordé qu'à des Units ; 205.5.6 : un Building ne se
+## réveille pas.
+static func check_affected(effect: EffectDefinition, errors: PackedStringArray) -> void:
+	var matching := effect.subject == EffectDefinition.EffectSubject.MATCHING_PIECES
+	if matching and effect.affected == null:
+		errors.append("207.4.11 : le sujet matching_pieces décrit son ensemble dans affected")
+	if not matching and effect.affected != null:
+		errors.append("207.4.11 : affected ne vaut que pour le sujet matching_pieces")
+	if effect.affected == null:
+		return
+	for message: String in effect.affected.find_errors():
+		errors.append("affected : " + message)
+	var piece_kinds := effect.affected.piece_kinds
+	var kind_name := String(EffectDefinition.kind_id(effect.kind))
+	match effect.kind:
+		EffectDefinition.EffectKind.MODIFY_FORCE, EffectDefinition.EffectKind.DESTROY:
+			if piece_kinds.is_empty() or piece_kinds.has(Piece.PieceKind.HERO):
+				errors.append(
+					"202.3.9 : %s ne vise pas de Hero, affected nomme ses genres" % kind_name
+				)
+		EffectDefinition.EffectKind.GRANT_KEYWORD:
+			if piece_kinds != [Piece.PieceKind.UNIT]:
+				errors.append("210.4.1c : grant_keyword ne touche que des Units")
+		EffectDefinition.EffectKind.WAKE:
+			if piece_kinds.is_empty() or piece_kinds.has(Piece.PieceKind.BUILDING):
+				errors.append("205.5.6 : wake ne touche que des Units ou des Heroes, nommés")
+
+
 # 202.3.9, 206.4.3 : ni la Force ni la destruction d'un Hero ne sont tranchées par le ruleset ;
 # un effet de Force ou de destruction ne vise donc pas de Hero.
 static func _check_hero_target(effect: EffectDefinition, errors: PackedStringArray) -> void:

@@ -8,6 +8,8 @@ var state: DuelState
 var entry: StackEntry
 var effect: EffectDefinition
 var events: Array[DuelEvent]
+## 200.4.2, 207.7.6a : l'effet a eu lieu, au moins en partie ; posé par le module qui l'applique.
+var took_place: bool = false
 
 
 func _init(

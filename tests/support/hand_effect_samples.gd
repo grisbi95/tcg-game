@@ -109,8 +109,8 @@ static func waking_hero_data() -> Dictionary:
 	var effect := wake_source_effect()
 	effect["trigger"] = "end_of_turn"
 	var data := CatalogSamples.with_field(CatalogSamples.hero(), "id", String(WAKING_HERO))
-	data = CatalogSamples.with_field(data, "passive", [])
-	return CatalogSamples.with_field(data, "triggered", [effect])
+	data = CatalogSamples.with_flats(data, "passive", [])
+	return CatalogSamples.with_flats(data, "triggered", [effect])
 
 
 ## 205.5 : réveille la pièce qui porte l'effet, déclenché à l'arrivée.
@@ -129,14 +129,14 @@ static func _spell(id: StringName, speed: String, effects: Array[Dictionary]) ->
 	data = CatalogSamples.with_field(data, "name", "Spell %s" % id)
 	data = CatalogSamples.with_field(data, "speed", speed)
 	data = CatalogSamples.with_field(data, "cost", SPELL_COST)
-	return CatalogSamples.with_field(data, "effects", effects)
+	return CatalogSamples.with_effects(data, effects)
 
 
 static func _arrival_unit(id: StringName, effect: Dictionary) -> Dictionary:
 	var data := CatalogSamples.with_field(CatalogSamples.unit(), "id", String(id))
 	data = CatalogSamples.with_field(data, "name", "Carte %s" % id)
 	data = CatalogSamples.with_field(data, "force", UNIT_FORCE)
-	data = CatalogSamples.with_field(data, "effects", [effect])
+	data = CatalogSamples.with_effects(data, [effect])
 	return CatalogSamples.with_field(data, "keywords", [{"keyword": "arrival"}])
 
 

@@ -21,7 +21,8 @@ static func validate_announce(
 	reason = EssenceRules.validate_payment(state, intent.player, intent.payment, order.cost)
 	if reason != IntentRejected.RejectReason.NONE:
 		return reason
-	return EffectRules.validate_announced_targets(state, _make_entry(state, intent), order.effects)
+	var effects := EffectText.effects_of(EffectText.resolution_of(order.texts))
+	return TriggerTargets.validate_announced_targets(state, _make_entry(state, intent), effects)
 
 
 ## 211.2.2, 211.2.3, 211.3.1, 211.4.1, 208.1.12, 208.7.17 : le Hero s'endort dès l'annonce, sans
@@ -38,11 +39,13 @@ static func apply_announce(
 	StackRules.add_to_stack(state, _make_entry(state, intent), events)
 
 
-## 211.2.8, 211.3.2, 208.3.2 : l'Ordre se résout comme un Spell, par ses effets ; l'Essence payée
-## reste dépensée, même si l'Ordre n'a pas lieu. Aucune carte ne va en défausse (211.1.4).
+## 211.2.8, 211.3.2, 211.1.5, 207.7.7, 208.3.2 : l'Ordre se résout comme un Spell, par son texte
+## (207.7 vaut pour lui) ; l'Essence payée reste dépensée, même si l'Ordre ou l'un de ses effets n'a
+## pas lieu. Aucune carte ne va en défausse (211.1.4).
 static func resolve_order(state: DuelState, entry: StackEntry, events: Array[DuelEvent]) -> void:
 	var hero := state.catalog.get_hero(entry.source_definition_id)
-	EffectRules.resolve_all(state, entry, hero.orders[entry.effect_index].effects, events)
+	var text := EffectText.resolution_of(hero.orders[entry.text_index].texts)
+	EffectRules.resolve_text(state, entry, text, events)
 
 
 ## 202.3.21 : nombre d'Ordres du Hero de `side`, 0 si le Hero n'existe pas. Pur.
@@ -74,7 +77,7 @@ static func _make_entry(state: DuelState, intent: AnnounceOrder) -> StackEntry:
 	entry.source_piece_id = hero.piece_id
 	entry.source_card_instance_id = hero.card.card_instance_id
 	entry.source_definition_id = hero.card.definition_id
-	entry.effect_index = intent.order_index
+	entry.text_index = intent.order_index
 	return entry.with_targets(
 		intent.target_piece_ids, intent.target_cells, intent.target_stack_entry_ids
 	)

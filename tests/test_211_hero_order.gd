@@ -25,7 +25,7 @@ func test_211_1_1_order_is_an_effect_the_hero_card_carries() -> void:
 	var unit_id := _place(A, "B2")
 	_start()
 	var definition := _engine.get_state().catalog.get_hero(OrderSamples.HERO)
-	assert_int(definition.orders[OrderSamples.BOOST_ORDER].effects[0].kind).is_equal(
+	assert_int(definition.orders[OrderSamples.BOOST_ORDER].texts[0].effects[0].kind).is_equal(
 		EffectDefinition.EffectKind.MODIFY_FORCE
 	)
 	_engine.submit(OrderSamples.boost_order(A, unit_id))

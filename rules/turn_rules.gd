@@ -79,21 +79,27 @@ static func start_turn(
 
 
 ## 201.3.5, 209.5.2, 209.5.4 : `side` pioche `count` cartes, chacune séparément ; 209.2.2 : rien
-## après la fin de la partie.
+## après la fin de la partie. Renvoie le nombre de cartes entrées en main (200.4.1, 200.4.2,
+## 201.3.5).
 static func draw_cards(
 	state: DuelState, side: DuelState.PlayerSide, count: int, events: Array[DuelEvent]
-) -> void:
+) -> int:
+	var drawn := 0
 	for index: int in count:
-		if ZoneRules.draw_card(state, side, events) == ZoneRules.DrawOutcome.DECK_EMPTY:
+		var outcome := ZoneRules.draw_card(state, side, events)
+		if outcome == ZoneRules.DrawOutcome.DECK_EMPTY:
 			StateCheckRules.apply_fatigue(state, side, events)
+		if outcome == ZoneRules.DrawOutcome.DRAWN:
+			drawn += 1
 		if state.is_ended():
-			return
+			return drawn
+	return drawn
 
 
 # 203.4.2 : décomptes « par tour » des deux joueurs, remis à zéro au début
 # de chaque tour (convention de l'étape 1.3) ; 207.3.9 : « une fois par tour » aussi.
 static func _reset_turn_counters(state: DuelState) -> void:
-	state.once_per_turn_effects.clear()
+	state.once_per_turn_texts.clear()
 	for player: PlayerState in state.players:
 		player.sources_recycled_this_turn = 0
 		player.announced_this_turn = false  # 209.2.10

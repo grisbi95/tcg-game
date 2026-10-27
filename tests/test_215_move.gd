@@ -317,10 +317,10 @@ func test_decision_0056_movement_kinds_take_resolve_and_triggered_timings() -> v
 
 
 func test_decision_0056_destination_is_read_from_the_json() -> void:
-	var effect := EffectDefinition.from_dict(CatalogSamples.move_unit_effect())
+	var effect := CatalogSamples.effect_from(CatalogSamples.move_unit_effect())
 	assert_int(effect.destination.what).is_equal(TargetSpec.TargetWhat.CELL)
 	assert_int(effect.destination.adjacent_to).is_equal(TargetSpec.AdjacentTo.TARGET_PIECE)
-	assert_object(EffectDefinition.from_dict(CatalogSamples.destroy_effect()).destination).is_null()
+	assert_object(CatalogSamples.effect_from(CatalogSamples.destroy_effect()).destination).is_null()
 
 
 func test_decision_0056_adjacency_filters_fit_the_kind_of_target() -> void:

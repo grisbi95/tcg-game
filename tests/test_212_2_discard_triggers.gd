@@ -55,7 +55,7 @@ func test_212_2_5_once_per_turn_effect_is_added_once_for_all_the_discards_of_a_r
 	var state := _engine.get_state()
 	assert_bool(state.pending_decision == null).is_true()
 	var spectre_card := state.find_piece(spectre_id).card
-	assert_array(state.once_per_turn_effects).contains_exactly(
+	assert_array(state.once_per_turn_texts).contains_exactly(
 		[Vector2i(spectre_card.card_instance_id, 0)]
 	)
 

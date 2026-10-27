@@ -28,10 +28,10 @@ func before_test() -> void:
 func test_207_3_12_gear_can_carry_a_triggered_effect() -> void:
 	for data: Dictionary in NamedTriggerSamples.card_data():
 		assert_array(Array(CardDefinition.from_dict(data).find_errors())).is_empty()
-	var effects := _catalog.triggerable_effects(GRIMOIRE)
-	assert_int(effects.size()).is_equal(1)
-	assert_int(effects[0].timing).is_equal(EffectDefinition.EffectTiming.TRIGGERED)
-	assert_int(effects[0].trigger).is_equal(EffectDefinition.TriggerEvent.DESTROYS_DEFENDER)
+	var texts := _catalog.triggerable_texts(GRIMOIRE)
+	assert_int(texts.size()).is_equal(1)
+	assert_int(texts[0].timing).is_equal(EffectDefinition.EffectTiming.TRIGGERED)
+	assert_int(texts[0].trigger).is_equal(EffectDefinition.TriggerEvent.DESTROYS_DEFENDER)
 	assert_int(_catalog.get_card(GRIMOIRE).card_type).is_equal(CardDefinition.CardType.GEAR)
 
 
@@ -105,7 +105,7 @@ func test_207_3_7_once_per_turn_of_a_gear_is_counted_by_the_gear_card() -> void:
 	var state := _builder.build()
 	TriggerRules.trigger_end_of_turn(state, _events)
 	TriggerRules.add_waiting_triggers(state, _events)
-	assert_array(state.once_per_turn_effects).contains_exactly_in_any_order(
+	assert_array(state.once_per_turn_texts).contains_exactly_in_any_order(
 		[Vector2i(first_gear, 0), Vector2i(second_gear, 0)]
 	)
 	_events.clear()

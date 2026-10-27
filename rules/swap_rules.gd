@@ -15,6 +15,7 @@ static func resolve(context: EffectContext) -> void:
 	if pieces.is_empty():
 		EffectRules.lose_all_targets(context.entry, context.events)
 	elif pieces.size() == EffectDefinition.SWAP_TARGET_COUNT:
+		context.took_place = true
 		swap_cells(context.entry.owner, pieces[0], pieces[1], context.events)
 
 

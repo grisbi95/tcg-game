@@ -68,7 +68,7 @@ static func _card(
 	var data := CatalogSamples.with_field(base, "id", String(id))
 	data = CatalogSamples.with_field(data, "name", "Carte %s" % id)
 	data = CatalogSamples.with_field(data, "force", force)
-	data = CatalogSamples.with_field(data, "effects", [effect])
+	data = CatalogSamples.with_effects(data, [effect])
 	if not keyword.is_empty():
 		data = CatalogSamples.with_field(data, "keywords", [{"keyword": keyword}])
 	return data

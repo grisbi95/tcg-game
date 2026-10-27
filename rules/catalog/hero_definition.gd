@@ -15,10 +15,10 @@ var hero_name: String = ""
 var health: int = 0
 ## 202.3.8
 var text: String = ""
-## 202.3.11, 202.3.18 : effets statiques, facultatifs.
-var passive: Array[EffectDefinition] = []
-## 202.3.20 : effets déclenchés (indexés par `StackEntry.effect_index`, voir Catalog).
-var triggered: Array[EffectDefinition] = []
+## 202.3.11, 202.3.18 : textes statiques, facultatifs.
+var passive: Array[EffectText] = []
+## 202.3.20 : textes déclenchés (indexés par `StackEntry.text_index`, voir Catalog).
+var triggered: Array[EffectText] = []
 ## 202.3.19, 202.3.21 : Ordres, dans l'ordre du texte ; l'intention désigne un Ordre par son rang.
 var orders: Array[HeroOrder] = []
 ## Erreurs de lecture du JSON, reprises par `find_errors()`.
@@ -38,8 +38,8 @@ static func from_dict(data: Dictionary) -> HeroDefinition:
 	hero.hero_name = reader.read_string("name")
 	hero.health = reader.read_int("health", CatalogReader.NON_NEGATIVE_MINIMUM, 0)
 	hero.text = reader.read_string("text")
-	hero.passive = hero._read_effects(reader, "passive")
-	hero.triggered = hero._read_effects(reader, "triggered")
+	hero.passive = EffectText.read_all(reader, "passive")
+	hero.triggered = EffectText.read_all(reader, "triggered")
 	hero._read_orders(reader)
 	hero.parse_errors = reader.finish()
 	return hero
@@ -63,13 +63,6 @@ func find_errors() -> PackedStringArray:
 	return errors
 
 
-func _read_effects(reader: CatalogReader, key: String) -> Array[EffectDefinition]:
-	var effects: Array[EffectDefinition] = []
-	for entry: Dictionary in reader.read_objects(key):
-		effects.append(EffectDefinition.from_dict(entry))
-	return effects
-
-
 func _read_orders(reader: CatalogReader) -> void:
 	for entry: Dictionary in reader.read_objects("orders"):
 		orders.append(HeroOrder.from_dict(entry))
@@ -77,32 +70,30 @@ func _read_orders(reader: CatalogReader) -> void:
 
 # 202.3.11 : le passif est facultatif ; 202.3.18 : il est statique.
 func _check_passive(errors: PackedStringArray) -> void:
+	errors.append_array(EffectText.find_all_errors(passive, "passive"))
 	for index: int in passive.size():
-		for message: String in passive[index].find_errors():
-			errors.append("passive %d : %s" % [index + 1, message])
-		if _touches_hero_force(passive[index]):
-			errors.append(
-				"passive %d : 202.3.9, Q-097 : ni Force ni destruction du Hero" % (index + 1)
-			)
 		if passive[index].timing != EffectDefinition.EffectTiming.STATIC:
 			errors.append("passive %d : timing refusé pour le Hero" % (index + 1))
+		for effect: EffectDefinition in passive[index].effects:
+			if _touches_hero_force(effect):
+				errors.append(
+					"passive %d : 202.3.9, Q-097 : ni Force ni destruction du Hero" % (index + 1)
+				)
 
 
-# 202.3.20, 207.3.1 : effets déclenchés ; Q-097 : la pièce source d'un effet du Hero est le Hero,
+# 202.3.20, 207.3.1 : textes déclenchés ; Q-097 : la pièce source d'un effet du Hero est le Hero,
 # que ni la Force ni la destruction ne visent.
 func _check_triggered(errors: PackedStringArray) -> void:
+	errors.append_array(EffectText.find_all_errors(triggered, "triggered"))
 	for index: int in triggered.size():
-		for message: String in triggered[index].find_errors():
-			errors.append("triggered %d : %s" % [index + 1, message])
+		var label := "triggered %d" % (index + 1)
 		if triggered[index].timing != EffectDefinition.EffectTiming.TRIGGERED:
-			errors.append("triggered %d : timing refusé pour un effet déclenché" % (index + 1))
-		var attack_error := EffectDefinition.destroys_defender_error(triggered[index], false)
+			errors.append("%s : timing refusé pour un effet déclenché" % label)
+		var attack_error := triggered[index].destroys_defender_error(false)
 		if not attack_error.is_empty():
-			errors.append("triggered %d : %s" % [index + 1, attack_error])
-		if _aims_source_hero(triggered[index]):
-			errors.append(
-				"triggered %d : 202.3.9, Q-097 : ni Force ni destruction du Hero" % (index + 1)
-			)
+			errors.append("%s : %s" % [label, attack_error])
+		if triggered[index].effects.any(_aims_source_hero):
+			errors.append("%s : 202.3.9, Q-097 : ni Force ni destruction du Hero" % label)
 
 
 # Q-097 : un passif de Force à portée « porteur » modifierait la Force du Hero.
@@ -125,7 +116,7 @@ func _aims_source_hero(effect: EffectDefinition) -> bool:
 # 213.1.2 : un Hero n'a pas de coût X, ses effets ne lisent pas de X choisi ; 210.4.1c : il n'est
 # pas une Unit, son passif n'accorde pas de mot-clé à son porteur.
 func _check_no_chosen_x(errors: PackedStringArray) -> void:
-	var carried: Array[EffectDefinition] = passive.duplicate()
+	var carried: Array[EffectText] = passive.duplicate()
 	carried.append_array(triggered)
 	var chosen_error := EffectValueChecks.chosen_x_error(carried, false)
 	if not chosen_error.is_empty():

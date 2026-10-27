@@ -20,6 +20,7 @@ static func resolve(context: EffectContext) -> void:
 	var count := mini(context.effect.amount, hand_ids.size())
 	if count == 0:
 		return
+	context.took_place = true
 	if count == hand_ids.size():
 		var kind := PendingDecision.DecisionKind.CHOOSE_DISCARD
 		context.events.append(DecisionResolvedAutomatically.new(side, kind))

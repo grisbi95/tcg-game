@@ -292,7 +292,7 @@ func _register_default_hero() -> void:
 	if _state.catalog.get_hero(HERO_DEFINITION_ID) != null:
 		return
 	var data := CatalogSamples.with_field(CatalogSamples.hero(), "id", String(HERO_DEFINITION_ID))
-	data = CatalogSamples.with_field(data, "passive", [])
+	data = CatalogSamples.with_flats(data, "passive", [])
 	_state.catalog.add_hero(HeroDefinition.from_dict(data))
 
 
