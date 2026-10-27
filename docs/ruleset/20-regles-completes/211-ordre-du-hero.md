@@ -16,6 +16,8 @@ Aucun Invariant.
 
 **211.1.4** [ACTÉ] Un Ordre n'est pas un Spell (décision 0211 ; voir 207.6.2 et 207.6.3).
 
+**211.1.5** [ACTÉ] La section 207.7 s'applique au texte d'un Ordre (décision 0244 ; voir 211.1.1 et 211.1.4).
+
 ## 211.2 Annonce
 
 **211.2.1** [ACTÉ] Un Hero endormi n'annonce pas son Ordre (décision 0211 ; voir 205.5.2 et 205.5.3).

@@ -9,7 +9,7 @@ const AGENT_SEED_B: int = 32
 const HOST_TICKS: int = 400
 const TICK_MSEC: int = 700
 const SHORT_WAIT_MSEC: int = 40
-const EDITION: String = "0.54"
+const EDITION: String = "0.55"
 const UNKNOWN_CARD_ID: int = 999_999
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A

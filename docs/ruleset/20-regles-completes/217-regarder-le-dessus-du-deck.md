@@ -21,3 +21,5 @@ Aucun Invariant.
 **217.1.6** [ACTÉ] Le choix de laisser la carte ou de la mettre sous son deck n'est pas une cible, et la section 207.5 ne s'y applique pas (décision 0235 ; voir 207.5.13 et 212.1.4).
 
 **217.1.7** [ACTÉ] Un effet qui fait regarder la carte du dessus d'un deck vide n'a pas lieu (décision 0235 ; voir 200.4.1).
+
+**217.1.8** [ACTÉ] Un effet qui fait regarder un deck ne porte que sur la carte du dessus de ce deck (décision 0247 ; voir 217.1.1).

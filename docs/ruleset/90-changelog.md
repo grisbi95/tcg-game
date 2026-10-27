@@ -530,3 +530,18 @@
 
 - L'événement « début du tour » survient après le réveil, après le redressement des Sources et après la Source reçue, avant la pioche : identifiant ajouté 204.3.12b ([204-tour.md](20-regles-completes/204-tour.md)). 204.3.8, 204.3.12 et 204.3.12a inchangées. Décision [0243](40-decisions/0243-place-de-l-evenement-debut-du-tour.md). Q-144 tranchée, option B.
 - [README.md](README.md) : édition courante passée à 0.54.
+
+## 0.55 · 27 octobre 2026 · majeure · condition « si » d'un Spell ou d'un Ordre, suite d'effets d'un même texte, Endormir, portée du regard sur le deck, destructions simultanées
+
+- Condition « si » d'un Spell ou d'un Ordre lue à la résolution : section 207.7 créée, identifiants ajoutés 207.7.1, 207.7.2, 207.7.3 ([207-effets.md](20-regles-completes/207-effets.md)) et 211.1.5 ([211-ordre-du-hero.md](20-regles-completes/211-ordre-du-hero.md)). Décision [0244](40-decisions/0244-condition-si-d-un-spell-ou-d-un-ordre.md). Q-148 tranchée, option A. Q-155 créée.
+- Effets d'un même texte appliqués dans l'ordre du texte, « puis » sans dépendance, « si vous le faites » : identifiants ajoutés 207.7.4, 207.7.5, 207.7.5a, 207.7.6, 207.7.6a. Décision [0245](40-decisions/0245-ordre-et-dependance-des-effets-d-un-meme-texte.md). Q-149 tranchée, option B.
+- Endormir par un effet : identifiants ajoutés 205.5.7, 205.5.7a, 205.5.7b, 205.5.7c ([205-actions.md](20-regles-completes/205-actions.md)). Décision [0246](40-decisions/0246-endormir-par-un-effet.md). Q-150 tranchée, option A.
+- Portée du regard sur le deck, la carte du dessus seule : identifiant ajouté 217.1.8 ([217-regarder-le-dessus-du-deck.md](20-regles-completes/217-regarder-le-dessus-du-deck.md)). Décision [0247](40-decisions/0247-portee-du-regard-sur-le-deck.md). Q-151 tranchée, option A.
+- Destructions simultanées vues l'une par l'autre : identifiant ajouté 207.3.15. Décision [0248](40-decisions/0248-destructions-simultanees-et-declencheur-d-une-autre-destruction.md). Q-152 tranchée, option A.
+- Ensemble touché par un effet qui ne cible pas, fixé à la résolution : identifiants ajoutés 207.4.11, 207.4.11a, 207.4.11b. Décision [0249](40-decisions/0249-ensemble-touche-par-un-effet-qui-ne-cible-pas.md). Q-153 tranchée, option A.
+- « Une fois par tour » décompté pour chaque effet déclenché qui porte la mention : identifiants ajoutés 207.3.7b, 207.3.7c ; 207.3.5, 207.3.7, 207.3.7a et 207.3.10 non modifiées. Décision [0250](40-decisions/0250-une-fois-par-tour-decompte-par-effet-declenche.md). Q-154 tranchée, option A.
+- Condition « si » lue quand son effet vient dans l'ordre du texte : identifiants ajoutés 207.7.1a, 207.7.1b, 207.7.6b ; 207.7.1 non modifiée. Décision [0251](40-decisions/0251-lecture-de-la-condition-si-dans-la-suite-des-effets.md). Q-155 tranchée, option B.
+- Coût dépensé quand la condition « si » est fausse : identifiants ajoutés 207.7.7, 207.7.8. Décision [0252](40-decisions/0252-cout-depense-quand-la-condition-si-est-fausse.md).
+- Ensemble figé d'un effet qui ne cible pas : identifiant ajouté 207.4.11c. Décision [0253](40-decisions/0253-ensemble-fige-d-un-effet-qui-ne-cible-pas.md).
+- [01-glossaire.md](01-glossaire.md) : termes ajoutés Condition « si », Endormir, Si vous le faites ; renvois ajoutés à Effet déclenché (207.3.15, 207.3.7b, 207.3.7c), Regarder (217.1.8), Durée et Effet ponctuel (207.4.11, 207.4.11c), Effet statique (207.4.11b), Condition « si » (207.7.1a, 207.7.1b, 207.7.7, 207.7.8) et Si vous le faites (207.7.6b).
+- [README.md](README.md) : édition courante passée à 0.55.

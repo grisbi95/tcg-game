@@ -72,6 +72,10 @@ Aucun Invariant.
 
 **207.3.7a** [ACTÉ] Le décompte de la mention « une fois par tour » est tenu séparément pour chaque jeton qui la porte (décision 0143 ; voir 200.1.1, 202.4.5a, 207.3.7 et 207.3.11).
 
+**207.3.7b** [ACTÉ] La mention « une fois par tour » ne limite que l'effet déclenché dont le texte la porte (décision 0250 ; voir 200.1.1, 207.3.5 et 207.3.7).
+
+**207.3.7c** [ACTÉ] Sur une carte ou un jeton qui porte plusieurs effets déclenchés, le décompte de la mention « une fois par tour » est tenu séparément pour chaque effet qui la porte (décision 0250 ; voir 200.1.1, 207.3.7, 207.3.7a, 207.3.11 et 212.2.5).
+
 **207.3.8** [ACTÉ] Pour la mention « une fois par tour », un tour va du début du tour à la fin du tour d'un joueur (décision 0072 ; voir 207.3.5).
 
 **207.3.9** [ACTÉ] Le décompte de la mention « une fois par tour » repart à zéro au début de chaque tour, qu'il soit celui du joueur à qui appartient la carte ou celui de son adversaire (décision 0072 ; voir 207.3.8 et 207.3.11).
@@ -100,6 +104,8 @@ Aucun Invariant.
 
 **207.3.14** [ACTÉ] Quand un effet parle de la case d'une pièce qui a quitté le plateau, il lit la dernière case que cette pièce a occupée (décision 0239 ; voir 207.3.3 et 210.3.2b).
 
+**207.3.15** [ACTÉ] Un effet déclenché par la destruction d'une autre pièce se déclenche même si la pièce qui le porte est détruite en même temps (décision 0248 ; voir 206.3.6, 207.3.3 et 210.3.2).
+
 ## 207.4 Durées
 
 **207.4.1** [ACTÉ] Le texte d'un effet peut porter une durée (décision 0092).
@@ -125,6 +131,14 @@ Aucun Invariant.
 **207.4.9** [ACTÉ] Un effet qui n'est pas statique et dont le texte ne porte aucune durée est ponctuel (décision 0107 ; voir 207.4.1 et 207.4.10).
 
 **207.4.10** [ACTÉ] Les durées de 207.4.2 ne visent que les effets qui ne sont pas statiques (décision 0107 ; voir 207.2.7 et 207.4.9).
+
+**207.4.11** [ACTÉ] L'ensemble des pièces qu'un effet ponctuel ou à durée touche sans les cibler se fixe à la résolution de l'entrée de la pile qui porte cet effet (décision 0249 ; voir 207.4.2, 207.4.9 et 207.5.18).
+
+**207.4.11a** [ACTÉ] Une pièce arrivée sur le plateau après cette résolution n'est pas touchée par cet effet (décision 0249 ; voir 200.1.1 et 207.4.11).
+
+**207.4.11b** [ACTÉ] L'ensemble des pièces touchées par un effet statique ne se fixe pas à une résolution et reste calculé tant que la pièce qui le porte est en jeu (décision 0249 ; voir 200.1.1, 207.2.2, 207.4.10 et 207.4.11).
+
+**207.4.11c** [ACTÉ] Une pièce touchée par un effet ponctuel ou à durée qui ne cible pas reste touchée jusqu'à la fin de la durée ou jusqu'à ce qu'elle quitte le plateau, même si elle cesse de correspondre à la description de l'ensemble (décision 0253 ; voir 200.1.1, 207.4.7a et 207.4.11).
 
 ## 207.5 Cibles et validité
 
@@ -195,4 +209,32 @@ Aucun Invariant.
 **207.6.5** [ACTÉ] La carte d'un Spell contrecarré va dans la défausse du joueur à qui elle appartient (décision 0075 ; voir 201.5.1 et 207.6.4).
 
 **207.6.6** [ACTÉ] Le coût payé pour un Spell contrecarré reste dépensé (décisions 0066 et 0075 ; voir 203.3.3 et 207.6.4).
+
+## 207.7 Conditions et suite d'effets
+
+**207.7.1** [ACTÉ] La condition « si » placée dans le texte d'un Spell ou d'un Ordre se lit à la résolution de l'entrée de la pile qui porte ce texte (décision 0244 ; voir 207.3.13, 207.5.6 et 211.1.5).
+
+**207.7.1a** [ACTÉ] La condition « si » d'un effet se lit au moment où cet effet vient dans l'ordre du texte, pendant la résolution de l'entrée de la pile (décision 0251 ; voir 200.1.1, 207.7.1 et 207.7.4).
+
+**207.7.1b** [ACTÉ] La condition « si » d'un effet voit ce que les effets précédents du même texte ont changé (décision 0251 ; voir 200.1.1 et 207.7.1a).
+
+**207.7.2** [ACTÉ] L'effet dont la condition « si » est fausse à cette lecture n'a pas lieu (décision 0244 ; voir 200.4.1 et 207.7.1).
+
+**207.7.3** [ACTÉ] Les autres effets du même texte ont lieu quand la condition « si » d'un effet est fausse (décision 0244 ; voir 207.7.2).
+
+**207.7.4** [ACTÉ] Les effets écrits dans un même texte s'appliquent dans l'ordre où le texte les écrit (décision 0245).
+
+**207.7.5** [ACTÉ] Le mot « puis » entre deux effets d'un même texte ne crée aucune dépendance entre eux (décision 0245 ; voir 207.7.4).
+
+**207.7.5a** [ACTÉ] Chaque effet d'un même texte a lieu ou non selon ses propres cibles (décision 0245 ; voir 200.1.1, 207.5.5 et 207.7.5).
+
+**207.7.6** [ACTÉ] La formule « si vous le faites », écrite au début d'un effet, fait dépendre cet effet de l'effet qui le précède immédiatement (décision 0245 ; voir 207.7.4).
+
+**207.7.6a** [ACTÉ] Un effet introduit par « si vous le faites » n'a lieu que si l'effet qui le précède immédiatement a eu lieu, au moins en partie (décision 0245 ; voir 200.1.1, 200.4.2 et 207.7.6).
+
+**207.7.6b** [ACTÉ] La formule « si vous le faites » n'est pas une condition « si » au sens de 207.7.1 (décision 0251 ; voir 200.1.1, 207.7.6 et 207.7.6a).
+
+**207.7.7** [ACTÉ] Le coût payé à l'annonce reste dépensé quand un effet n'a pas lieu parce que sa condition « si » est fausse (décision 0252 ; voir 203.3.3, 207.5.7, 207.7.2 et 211.3.2).
+
+**207.7.8** [ACTÉ] La carte d'un Spell résolu dont un effet n'a pas eu lieu parce que sa condition « si » est fausse va dans la défausse du joueur à qui elle appartient (décision 0252 ; voir 207.1.7 et 207.7.2).
 

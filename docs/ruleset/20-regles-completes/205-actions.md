@@ -92,6 +92,14 @@ Aucun Invariant.
 
 **205.5.6** [ACTÉ] Un Building n'est ni endormi ni éveillé (décision 0200 ; voir 202.2.17).
 
+**205.5.7** [ACTÉ] Endormir une Unit ou un Hero éveillé la fait passer de l'état éveillé à l'état endormi (décision 0246 ; voir 205.5.1 et 205.5.2).
+
+**205.5.7a** [ACTÉ] Un effet qui endort une pièce déjà endormie n'a pas lieu pour elle (décision 0246 ; voir 200.1.1, 200.4.1 et 205.5.7).
+
+**205.5.7b** [ACTÉ] Un effet qui endort un Building n'a pas lieu pour lui (décision 0246 ; voir 200.1.1, 200.4.1, 205.5.6 et 205.5.7).
+
+**205.5.7c** [ACTÉ] Une pièce endormie par un effet se réveille au début du tour de son joueur comme toute pièce endormie (décision 0246 ; voir 200.1.1, 204.3.10, 204.3.11 et 205.5.5).
+
 ## 205.6 Combat en attente
 
 **205.6.1** [ACTÉ] Un combat en attente est le combat qui naît à la résolution d'un déploiement selon 205.1.6 ou d'une action normale selon 205.2.3a (décision 0207).
