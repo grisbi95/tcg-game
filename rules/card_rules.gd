@@ -1,7 +1,7 @@
 class_name CardRules
 extends RefCounted
 ## Cartes (202) : Gear (annonce, attachement, remplacement). Les jetons se créent par EffectRules
-## (202.4), les effets statiques se lisent dans StaticEffects (207.2), les coûts dans ValueRules.
+## (202.4), les effets statiques se lisent dans ModifierRules (207.2), les coûts dans ValueRules.
 
 
 ## 202.2.22, 202.2.23, 207.5.1a, 205.1.5 : un Gear (son Unit) et un Spell s'annoncent avec une

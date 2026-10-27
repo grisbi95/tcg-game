@@ -75,6 +75,10 @@ var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var players: Array[PlayerState] = []
 ## Hero, Units, Buildings et jetons ; la case est portée par la pièce (201.0.1).
 var pieces: Array[Piece] = []
+## 207.3.14 : dernière case occupée par chaque pièce sortie du plateau, par `piece_id` (jamais
+## réutilisé). Une entrée par pièce sortie, jamais retirée : la taille est bornée par le nombre de
+## pièces créées pendant le duel.
+var departed_cells: Dictionary[int, Vector2i] = {}
 ## Base de la pile en premier, sommet en dernier (208.3.2).
 var stack: Array[StackEntry] = []
 ## 207.4 : effets à durée en cours.
@@ -147,6 +151,15 @@ func find_piece(piece_id: int) -> Piece:
 	return null
 
 
+## 207.3.14 : case de la pièce `piece_id` si elle est sur le plateau, sinon la dernière qu'elle a
+## occupée ; NO_CELL pour une pièce inconnue.
+func cell_of_piece(piece_id: int) -> Vector2i:
+	var piece := find_piece(piece_id)
+	if piece != null:
+		return piece.cell
+	return departed_cells.get(piece_id, BoardGeometry.NO_CELL)
+
+
 ## Renvoie la pièce qui occupe `cell`, ou null si la case est libre (201.0.1).
 func piece_at(cell: Vector2i) -> Piece:
 	for piece: Piece in pieces:
@@ -207,6 +220,7 @@ func clone() -> DuelState:
 		copy.players.append(player.clone())
 	for piece: Piece in pieces:
 		copy.pieces.append(piece.clone())
+	copy.departed_cells.merge(departed_cells)
 	copy.stack = _clone_entries(stack)
 	for effect: ActiveEffect in active_effects:
 		copy.active_effects.append(effect.clone())

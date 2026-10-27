@@ -28,19 +28,32 @@ static func resolve_attack(
 		destroy_piece(state, attacker, events)
 	elif defender_destroyed:
 		ZoneRules.move_piece(attacker, defender_cell, events)
+		_trigger_destroys_defender(state, attacker, events)
 
 
 ## 206.3.2, 206.3.2a, 202.2.13 : retire `piece` du plateau ; sa carte et son Gear vont dans la
 ## défausse de leur joueur, un jeton ne va nulle part ; 207.4.7a : ses effets « tant que la
 ## pièce est en jeu » cessent ; 210.3.2 : son Dernier souffle se déclenche.
 static func destroy_piece(state: DuelState, piece: Piece, events: Array[DuelEvent]) -> void:
-	state.pieces.erase(piece)
+	ZoneRules.remove_piece(state, piece)
 	EffectRules.end_effects_on_piece(state, piece, events)
 	if piece.card != null:
 		state.get_player(piece.card.owner).discard.append(piece.card)
 	events.append(PieceDestroyed.new(piece.owner, piece.piece_id))
 	ZoneRules.discard_attached_gear(state, piece, events)
 	TriggerRules.trigger(state, piece, EffectDefinition.TriggerEvent.DESTROYED, events)
+
+
+# 206.3.7, 206.3.7a, 206.3.7b : une Unit qui attaque détruit son défenseur quand le défenseur est
+# détruit sans qu'elle le soit ; l'égalité (qui les détruit tous deux) et l'attaque d'un Hero
+# (`_attack_hero`) n'y mènent pas. L'effet de l'Unit et celui de son Gear se déclenchent (207.3.12).
+static func _trigger_destroys_defender(
+	state: DuelState, attacker: Piece, events: Array[DuelEvent]
+) -> void:
+	if attacker.kind == Piece.PieceKind.UNIT:
+		TriggerRules.trigger(
+			state, attacker, EffectDefinition.TriggerEvent.DESTROYS_DEFENDER, events
+		)
 
 
 # 206.2.1a, 206.4.2 à 206.4.5 : aucune Force comparée, rien de détruit, l'attaquant reste.

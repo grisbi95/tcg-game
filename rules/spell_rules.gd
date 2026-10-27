@@ -29,8 +29,9 @@ static func validate_cast(state: DuelState, intent: CastSpell) -> IntentRejected
 
 
 ## 203.3.2, 203.3.2a, 201.3.8, 207.5.1a, 208.4.1, 208.7.1, 213.1.5 : paie le coût (X Essence pour un
-## coût X) ; la carte quitte la main pour la pile avec ses cibles et la valeur de X. Suppose
-## l'intention validée.
+## coût X) ; la carte quitte la main pour la pile avec ses cibles et la valeur de X. 208.4.4,
+## 208.7.10 : les effets que déclenche l'annonce attendent leur ajout juste après et peuvent
+## recevoir une réponse. Suppose l'intention validée.
 static func announce_spell(state: DuelState, intent: CastSpell, events: Array[DuelEvent]) -> void:
 	var player := state.get_player(intent.player)
 	var card := player.find_card_in_hand(intent.card_instance_id)
@@ -40,6 +41,8 @@ static func announce_spell(state: DuelState, intent: CastSpell, events: Array[Du
 	player.hand.erase(card)
 	events.append(SpellAnnounced.new(intent.player, card.card_instance_id))
 	StackRules.add_to_stack(state, entry, events)
+	var trigger_event := EffectDefinition.TriggerEvent.OWN_SPELL_ANNOUNCED
+	TriggerRules.trigger_for_player(state, intent.player, trigger_event, events)  # 208.4.4
 
 
 ## 202.2.20, 208.3.2 : le Spell se résout une fois ; 207.1.7, 207.1.7a : sa carte va ensuite

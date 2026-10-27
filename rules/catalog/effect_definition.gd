@@ -35,6 +35,10 @@ enum TriggerEvent {
 	ARRIVAL,  # 210.3.1
 	DESTROYED,  # 210.3.2
 	END_OF_TURN,  # 204.5.3 : quand le joueur actif termine son tour, à chaque tour
+	START_OF_OWN_TURN,  # 204.3.12 : au début du tour du joueur à qui appartient l'effet
+	OWN_SPELL_ANNOUNCED,  # le joueur à qui appartient l'effet annonce un Spell (208.4.4)
+	OWN_CARD_DISCARDED,  # 212.2.4 : une carte de sa main est défaussée, un événement par carte
+	DESTROYS_DEFENDER,  # 206.3.7 : la pièce, ou l'Unit qui porte le Gear, détruit son défenseur
 }
 
 ## 207.2 : pièces que touche un effet statique, relativement à la pièce qui le porte.
@@ -80,6 +84,9 @@ var trigger: TriggerEvent = TriggerEvent.NONE
 var scope: StaticScope = StaticScope.NONE
 ## 207.3.5 : mention « une fois par tour », pour un effet déclenché seulement.
 var once_per_turn: bool = false
+## 207.3.13, décision 0060 : condition « si », pour un effet déclenché seulement ; null sans
+## condition.
+var condition: EffectCondition
 ## Décision 0057 : ce que touche l'effet ; TARGETS quand il cible.
 var subject: EffectSubject = EffectSubject.TARGETS
 ## Null pour un effet statique, qui ne cible pas (207.2.1), et pour un effet de sujet autre que
@@ -120,6 +127,14 @@ static func once_per_turn_error(effects: Array[EffectDefinition]) -> String:
 	var marked := triggered.any(func(effect: EffectDefinition) -> bool: return effect.once_per_turn)
 	if marked and triggered.size() > 1:
 		return "207.3.5 : « une fois par tour » exige un seul effet déclenché sur la carte"
+	return ""
+
+
+## 206.3.7, 207.3.12 : message d'erreur si `effect` se déclenche quand l'Unit détruit son défenseur
+## alors que sa carte n'est ni une Unit ni un Gear (`can_attack` faux), vide sinon.
+static func destroys_defender_error(effect: EffectDefinition, can_attack: bool) -> String:
+	if effect.trigger == TriggerEvent.DESTROYS_DEFENDER and not can_attack:
+		return "206.3.7 : seule une Unit ou un Gear détruit un défenseur"
 	return ""
 
 
@@ -166,6 +181,8 @@ func _read_conditions(reader: CatalogReader) -> void:
 	if scope_value != CatalogReader.NOT_SET:
 		scope = scope_value as StaticScope
 	once_per_turn = reader.read_bool("once_per_turn", false)
+	if reader.has("condition"):
+		condition = EffectCondition.from_dict(reader.read_object("condition"))
 	var subject_value := reader.read_enum("subject", EffectSubject)
 	if subject_value != CatalogReader.NOT_SET:
 		subject = subject_value as EffectSubject
@@ -220,6 +237,11 @@ func _check_conditions(errors: PackedStringArray) -> void:
 		errors.append("207.3.1 : trigger ne vaut que pour un effet déclenché")
 	if timing != EffectTiming.TRIGGERED and once_per_turn:
 		errors.append("207.3.5 : once_per_turn ne vaut que pour un effet déclenché")
+	if timing != EffectTiming.TRIGGERED and condition != null:
+		errors.append("207.3.13 : condition ne vaut que pour un effet déclenché")
+	if condition != null:
+		for message: String in condition.find_errors():
+			errors.append("condition : " + message)
 	if timing == EffectTiming.STATIC and scope == StaticScope.NONE:
 		errors.append("207.2.2 : un effet statique nomme les pièces qu'il touche dans scope")
 	if timing != EffectTiming.STATIC and scope != StaticScope.NONE:
@@ -234,6 +256,22 @@ func _check_conditions(errors: PackedStringArray) -> void:
 	if subject != EffectSubject.TARGETS and target != null:
 		errors.append("0057 : un effet dont le sujet n'est pas TARGETS ne nomme pas de cible")
 	_check_subject(errors)
+	_check_source_adjacency(errors)
+
+
+# 207.3.14 : « adjacente à la case de la pièce source » suppose une pièce qui porte l'effet, donc un
+# effet déclenché.
+func _check_source_adjacency(errors: PackedStringArray) -> void:
+	var specs: Array[TargetSpec] = []
+	for spec: TargetSpec in [target, destination]:
+		if spec != null:
+			specs.append(spec)
+	var uses_source := specs.any(
+		func(spec: TargetSpec) -> bool:
+			return spec.adjacent_to == TargetSpec.AdjacentTo.SOURCE_PIECE
+	)
+	if uses_source and timing != EffectTiming.TRIGGERED:
+		errors.append("207.3.14 : source_piece ne vaut que pour un effet déclenché")
 
 
 # Décision 0057 : piocher, défausser et regarder touchent le joueur ; réveiller, ses cibles ou la
@@ -282,10 +320,7 @@ func _check_parameters(errors: PackedStringArray) -> void:
 		errors.append("202.4.9 : l'effet qui crée un jeton lui donne une Force, token_force")
 	if not creates_token and (token_piece_kind != NO_TOKEN_KIND or token_force != NO_TOKEN_FORCE):
 		errors.append("202.4.1 : token_piece_kind et token_force ne valent que pour CREATE_TOKEN")
-	_check_target_what(errors)
-	_check_hero_target(errors)
-	_check_movement(errors)
-	_check_wake(errors)
+	errors.append_array(EffectTargetChecks.find_errors(self))
 
 
 # 206.5.1 : MODIFY_FORCE exige un modificateur non nul ; 201.3.2, 212.1.7 : piocher et défausser
@@ -301,99 +336,3 @@ func _check_amount(errors: PackedStringArray) -> void:
 		errors.append("206.5.1 : amount est exigé non nul pour MODIFY_FORCE, absent sinon")
 	if amount_is_x and kind not in _LASTING_KINDS:
 		errors.append("0058 : amount « X » ne vaut que pour modify_force et grant_keyword")
-
-
-func _check_target_what(errors: PackedStringArray) -> void:
-	if target == null:
-		return
-	var expected := _expected_target_what()
-	if target.what != expected:
-		var expected_name := str(TargetSpec.TargetWhat.find_key(expected)).to_lower()
-		errors.append("%s : %s cible %s" % [_target_rule(), String(kind_id(kind)), expected_name])
-
-
-# 202.3.9, 206.4.3 : ni la Force ni la destruction d'un Hero ne sont tranchées par le ruleset ;
-# un effet de Force ou de destruction ne vise donc pas de Hero.
-func _check_hero_target(errors: PackedStringArray) -> void:
-	if target == null or not target.piece_kinds.has(Piece.PieceKind.HERO):
-		return
-	if kind in [EffectKind.MODIFY_FORCE, EffectKind.DESTROY]:
-		errors.append("202.3.9 : %s ne vise pas de Hero" % String(kind_id(kind)))
-
-
-# 214.1.3, 214.1.4, 215.1.1, 216.1.1, décision 0056 : les trois effets de mouvement ciblent des
-# Units ; l'échange en cible deux alliées ; le déplacement nomme sa case de destination.
-func _check_movement(errors: PackedStringArray) -> void:
-	var is_movement := (
-		kind in [EffectKind.SWAP_CELLS, EffectKind.MOVE_UNIT, EffectKind.RETURN_TO_HAND]
-	)
-	if destination != null and kind != EffectKind.MOVE_UNIT:
-		errors.append("215.1.1 : destination ne vaut que pour MOVE_UNIT")
-	if target != null and target.adjacent_to == TargetSpec.AdjacentTo.TARGET_PIECE:
-		errors.append("215.1.1 : target_piece ne vaut que pour la destination")
-	if not is_movement or target == null:
-		return
-	var rule := _target_rule()
-	if target.what == TargetSpec.TargetWhat.PIECE and target.piece_kinds != [Piece.PieceKind.UNIT]:
-		errors.append("%s : %s ne cible que des Units" % [rule, String(kind_id(kind))])
-	if kind == EffectKind.SWAP_CELLS:
-		_check_swap(errors)
-	if kind == EffectKind.MOVE_UNIT:
-		_check_move(errors)
-
-
-# Glossaire (Réveiller), 205.5.1, 205.5.2, 205.5.6 : un effet réveille une Unit ou un Hero, jamais
-# un Building, qui n'est ni endormi ni éveillé ; `piece_kinds` le dit.
-func _check_wake(errors: PackedStringArray) -> void:
-	if kind != EffectKind.WAKE or target == null or target.what != TargetSpec.TargetWhat.PIECE:
-		return
-	var wakeable := not target.piece_kinds.is_empty()
-	for piece_kind: Piece.PieceKind in target.piece_kinds:
-		wakeable = wakeable and piece_kind != Piece.PieceKind.BUILDING
-	if not wakeable:
-		errors.append("205.5.6 : wake ne cible que des Units ou des Heroes, nommés par piece_kinds")
-
-
-# 214.1.3, 214.1.4 : exactement deux Units alliées.
-func _check_swap(errors: PackedStringArray) -> void:
-	if target.side != TargetSpec.TargetSide.ALLY:
-		errors.append("214.1.3 : swap_cells ne cible que des Units alliées")
-	if target.count_min != SWAP_TARGET_COUNT or target.count_max != SWAP_TARGET_COUNT:
-		errors.append("214.1.4 : swap_cells cible exactement deux Units")
-
-
-# 215.1.1 : une Unit et une case libre.
-func _check_move(errors: PackedStringArray) -> void:
-	if target.count_min != MOVE_TARGET_COUNT or target.count_max != MOVE_TARGET_COUNT:
-		errors.append("215.1.1 : move_unit cible une seule Unit")
-	if destination == null:
-		errors.append("215.1.1 : move_unit nomme sa case de destination dans destination")
-		return
-	if destination.what != TargetSpec.TargetWhat.CELL:
-		errors.append("215.1.1 : la destination de move_unit est une case")
-	if destination.count_min != MOVE_TARGET_COUNT or destination.count_max != MOVE_TARGET_COUNT:
-		errors.append("215.1.1 : move_unit a une seule case de destination")
-
-
-func _target_rule() -> String:
-	match kind:
-		EffectKind.SWAP_CELLS:
-			return "214.1.4"
-		EffectKind.MOVE_UNIT:
-			return "215.1.1"
-		EffectKind.RETURN_TO_HAND:
-			return "216.1.1"
-		EffectKind.COUNTER_SPELL:
-			return "207.6.2"
-		EffectKind.CREATE_TOKEN:
-			return "202.4.12"
-	return "207.5.11"
-
-
-func _expected_target_what() -> TargetSpec.TargetWhat:
-	match kind:
-		EffectKind.COUNTER_SPELL:
-			return TargetSpec.TargetWhat.SPELL_ON_STACK  # 207.6.2
-		EffectKind.CREATE_TOKEN:
-			return TargetSpec.TargetWhat.CELL  # 202.4.12
-	return TargetSpec.TargetWhat.PIECE

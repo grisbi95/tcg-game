@@ -66,6 +66,12 @@ static func return_card_to_hand(
 		events.append(CardDiscarded.new(card.owner, card.card_instance_id))
 
 
+## 207.3.14 : `piece` quitte le plateau ; sa dernière case reste lisible par `piece_id`.
+static func remove_piece(state: DuelState, piece: Piece) -> void:
+	state.departed_cells[piece.piece_id] = piece.cell
+	state.pieces.erase(piece)
+
+
 ## 202.2.13, 216.1.4 : le Gear attaché à `piece`, qui quitte le plateau, va dans la défausse de son
 ## joueur.
 static func discard_attached_gear(state: DuelState, piece: Piece, events: Array[DuelEvent]) -> void:

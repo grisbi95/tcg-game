@@ -30,6 +30,7 @@ enum AdjacentTo {
 	NONE,
 	TARGET_PIECE,  # case adjacente à la pièce que cible le même effet (destination, 215.1.1)
 	OWN_HERO,  # pièce adjacente au Hero du joueur à qui appartient l'effet (205.2.5)
+	SOURCE_PIECE,  # adjacente à la case de la pièce qui porte l'effet, ou à sa dernière (207.3.14)
 }
 
 ## Valeur de `max_force` quand la Force de la cible n'est pas bornée.
@@ -48,6 +49,9 @@ var row: CellRow = CellRow.ANY
 var adjacent_to: AdjacentTo = AdjacentTo.NONE
 var count_min: int = MIN_TARGET_COUNT
 var count_max: int = MIN_TARGET_COUNT
+## 207.3.14 : case de la pièce source pour `AdjacentTo.SOURCE_PIECE` (`with_source_cell`), lue à
+## l'exécution, jamais du JSON.
+var source_cell: Vector2i = BoardGeometry.NO_CELL
 ## Erreurs de lecture du JSON, reprises par `find_errors()`.
 var parse_errors: PackedStringArray = PackedStringArray()
 
@@ -105,21 +109,40 @@ func find_errors() -> PackedStringArray:
 func with_x(x_value: int) -> TargetSpec:
 	if not max_force_is_x:
 		return self
-	var copy := TargetSpec.new()
-	copy.what = what
-	copy.side = side
-	copy.piece_kinds.assign(piece_kinds)
+	var copy := _copy()
 	copy.max_force = x_value
-	copy.row = row
-	copy.adjacent_to = adjacent_to
-	copy.count_min = count_min
-	copy.count_max = count_max
+	copy.max_force_is_x = false
+	return copy
+
+
+## 207.3.14 : cette cible où `AdjacentTo.SOURCE_PIECE` se lit par rapport à `cell` ; `self` sinon.
+func with_source_cell(cell: Vector2i) -> TargetSpec:
+	if adjacent_to != AdjacentTo.SOURCE_PIECE:
+		return self
+	var copy := _copy()
+	copy.source_cell = cell
 	return copy
 
 
 ## Vrai si la Force de la cible est bornée, par un nombre ou par X.
 func has_force_limit() -> bool:
 	return max_force != NO_FORCE_LIMIT or max_force_is_x
+
+
+func _copy() -> TargetSpec:
+	var copy := TargetSpec.new()
+	copy.what = what
+	copy.side = side
+	copy.piece_kinds.assign(piece_kinds)
+	copy.max_force = max_force
+	copy.max_force_is_x = max_force_is_x
+	copy.row = row
+	copy.adjacent_to = adjacent_to
+	copy.count_min = count_min
+	copy.count_max = count_max
+	copy.source_cell = source_cell
+	copy.parse_errors = parse_errors.duplicate()
+	return copy
 
 
 func _read_piece_kinds(reader: CatalogReader) -> void:

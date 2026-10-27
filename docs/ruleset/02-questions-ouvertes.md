@@ -134,12 +134,6 @@ Dans quel ordre se jouent les 24 parties du plan de série, alors que le plan fi
 - Option B : un ordre différent fixé avant la série ; compromis : un second plan à écrire.
 Manque pour trancher : le nombre de parties jouables par session et le choix du créateur.
 
-**Q-144 · Place de l'événement « début du tour » par rapport au réveil, au redressement et à la Source reçue** · chapitre 204 · ouverte le 26 octobre 2026
-L'événement « début du tour » de 204.3.12 survient-il avant ou après le réveil (204.3.10, 204.3.11), le redressement (204.3.2) et la Source reçue (204.3.1), alors que 204.3.12 ne le place que par rapport à la pioche de 204.3.6 ?
-- Option A : avant toutes les étapes de 204.3.8 ; compromis : une condition « si » d'un effet du début du tour ne lit jamais l'état après le réveil, le redressement ou la Source reçue.
-- Option B : après le réveil, le redressement et la Source reçue, avant la pioche ; compromis : une condition lit les Sources redressées et les pièces réveillées de ce tour.
-Manque pour trancher : une carte du catalogue dont la condition « si » dépend d'un de ces états, et le choix du créateur.
-
 **Q-145 · Événements de déclenchement impossibles pour un Hero** · chapitres 202 et 207 · ouverte le 26 octobre 2026
 Faut-il interdire sur une carte Hero les déclencheurs que le Hero ne peut jamais produire, l'Arrivée et la destruction, alors que 202.3.20 permet au texte du Hero de porter un effet déclenché (207.3.1), que le Hero est placé à la préparation (204.1.1) sans arriver par un déploiement, et qu'il n'est pas détruit mais perd la partie à 0 PV (206.4.3, 209.2) ?
 - Option A : une règle explicite interdit ces déclencheurs sur une carte Hero ; compromis : une règle de plus, et le catalogue refuse une carte Hero mal écrite.
@@ -151,6 +145,12 @@ Un Ordre peut-il ne porter aucun effet, alors que 211.1.1 dit qu'un Ordre est un
 - Option A : un Ordre porte au moins un effet, règle explicite ; compromis : une règle de plus, évidente.
 - Option B : rien à écrire, 211.1.1 suffit ; compromis : la forme minimale d'un Ordre reste implicite.
 Manque pour trancher : le choix éditorial du créateur. Origine : étape c.2 du code (Ordre du Hero, décision 0211), le code n'a rien tranché.
+
+**Q-147 · Dernière case d'une pièce ciblée qui a quitté le plateau** · chapitres 207 et 215 · ouverte le 27 octobre 2026
+207.3.14 vaut-elle aussi pour une pièce ciblée qui a quitté le plateau avant la résolution, alors que 207.3.14 dit qu'un effet qui parle de la case d'une pièce qui a quitté le plateau lit la dernière case que cette pièce a occupée (décision 0239, renvoi à 207.3.3 et 210.3.2b, cas de la pièce source d'un Dernier souffle) ? Cas concret : Glissement et Manipulateur (`50-cartes/violet.md`), « déplacez une Unit ennemie ciblée sur une case libre ciblée adjacente à cette Unit », quand l'Unit ciblée a quitté le plateau : la case de destination reste-t-elle une cible valide, jugée sur la dernière case de l'Unit ?
+- Option A : 207.3.14 vaut pour toute pièce dont parle l'effet, ciblée ou source ; compromis : la case reste une cible valide, l'effet n'est pas privé de toutes ses cibles (207.5.5) mais ne déplace rien puisque l'Unit est partie (200.4.2), sans événement.
+- Option B : 207.3.14 ne vaut que pour la pièce source ; une case définie par rapport à une pièce ciblée partie devient une cible invalide ; compromis : l'effet perd toutes ses cibles (207.5.5), comportement actuel du moteur, mais une exception de lecture à écrire dans 207.3.14.
+Manque pour trancher : le choix du créateur. Origine : étape c.5b du code, le code n'a rien tranché (il garde le comportement actuel, noté au backlog).
 
 ## Tranchées
 
@@ -285,3 +285,4 @@ Manque pour trancher : le choix éditorial du créateur. Origine : étape c.2 du
 | Q-139 · Marque du ciblage dans le texte d'une carte · chapitres 207 et 211 · ouverte le 26 octobre 2026 · À quoi voit-on qu'un texte de carte vise une cible ? Tranchée le 26 octobre 2026 : seul le mot « ciblée » désigne une cible, option A (207.5.18) ; trois textes du catalogue de playtest corrigés. | [0240](40-decisions/0240-marque-du-ciblage-dans-le-texte-d-une-carte.md) |
 | Q-140 · Construction du deck selon la couleur et le Hero · chapitre 201 et `50-cartes/` · ouverte le 26 octobre 2026 · Le deck d'un joueur est-il contraint par sa couleur ou son Hero ? Tranchée le 26 octobre 2026 : au premier playtest, les 4 decks sont des listes fixes et 201.6.3 reste, option A ; la règle de construction par couleur s'écrira après les premières parties et avant toute construction libre de deck. | [0241](40-decisions/0241-decks-du-premier-playtest-en-listes-fixes.md) |
 | Q-143 · Expiration du temps pendant le choix de laisser la carte ou de la mettre sous son deck · chapitres 209 et 217 · ouverte le 26 octobre 2026 · Que devient le choix de 217.1.2 et 217.1.3 quand le temps d'un joueur atteint 0 seconde pendant qu'il le fait ? Tranchée le 26 octobre 2026 : le choix est fait par tirage au sort entre laisser la carte au dessus et la mettre sous le deck, option C (209.4.7d, 209.4.14). | [0242](40-decisions/0242-expiration-du-temps-pendant-le-regard-sur-le-deck.md) |
+| Q-144 · Place de l'événement « début du tour » par rapport au réveil, au redressement et à la Source reçue · chapitre 204 · ouverte le 26 octobre 2026 · L'événement « début du tour » survient-il avant ou après le réveil, le redressement et la Source reçue ? Tranchée le 27 octobre 2026 : après le réveil, après le redressement des Sources et après la Source reçue, avant la pioche, option B (204.3.12b). | [0243](40-decisions/0243-place-de-l-evenement-debut-du-tour.md) |

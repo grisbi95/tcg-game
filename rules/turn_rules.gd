@@ -51,7 +51,9 @@ static func finish_end_of_turn(state: DuelState, events: Array[DuelEvent]) -> vo
 	start_turn(state, DuelState.opponent_of(state.active_player), events)
 
 
-## 204.3.8 (réveil, redressement, Source, pioche) puis 204.4.1 ; 208.4.11, 208.7.15 : commence le
+## 204.3.8 (réveil, redressement, Source, pioche) puis 204.4.1 ; 204.3.12, 204.3.12a, 204.3.12b :
+## l'événement « début du tour » survient après le réveil, le redressement et la Source reçue, avant
+## la pioche, et les conditions « si » se lisent à cet instant ; 208.4.11, 208.7.15 : commence le
 ## tour de `side`. Les effets sans réponse qui attendaient la fin du début du tour s'ajoutent à la
 ## pile dès le début de la phase principale, par DuelEngine.
 static func start_turn(
@@ -68,6 +70,9 @@ static func start_turn(
 	_awaken_pieces(state, side, events)
 	_untap_sources(state, side, events)
 	_receive_sources(state, side, events)
+	TriggerRules.trigger_for_player(
+		state, side, EffectDefinition.TriggerEvent.START_OF_OWN_TURN, events
+	)
 	draw_cards(state, side, state.config.cards_drawn_per_turn, events)
 	if not state.is_ended():
 		state.phase = DuelState.DuelPhase.MAIN

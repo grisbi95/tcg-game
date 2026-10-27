@@ -43,7 +43,7 @@ static func _force_before_floor(state: DuelState, piece: Piece) -> int:
 	return (
 		_printed_force(state, piece)
 		+ ModifierRules.active_total(state, piece, FORCE_KIND)
-		+ StaticEffects.total_for(state, piece, FORCE_KIND)
+		+ ModifierRules.total_for(state, piece, FORCE_KIND)
 	)
 
 
