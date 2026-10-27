@@ -154,7 +154,7 @@ func test_207_5_2_targets_are_judged_for_the_entry_owner() -> void:
 
 
 func test_207_4_1_effect_text_can_carry_a_duration() -> void:
-	var lasting := EffectDefinition.from_dict(
+	var lasting := CatalogSamples.effect_from(
 		CatalogSamples.modify_force_resolve({"duration": "while_piece_in_play"})
 	)
 	assert_bool(lasting.has_duration).is_true()
@@ -375,16 +375,16 @@ func _spell_entry(side: DuelState.PlayerSide, spell_id: int) -> StackEntry:
 
 
 func _boost() -> EffectDefinition:
-	return EffectDefinition.from_dict(CatalogSamples.modify_force_resolve())
+	return CatalogSamples.effect_from(CatalogSamples.modify_force_resolve())
 
 
 func _destroy() -> EffectDefinition:
-	return EffectDefinition.from_dict(CatalogSamples.destroy_effect())
+	return CatalogSamples.effect_from(CatalogSamples.destroy_effect())
 
 
 func _token() -> EffectDefinition:
-	return EffectDefinition.from_dict(CatalogSamples.create_token_effect())
+	return CatalogSamples.effect_from(CatalogSamples.create_token_effect())
 
 
 func _counter() -> EffectDefinition:
-	return EffectDefinition.from_dict(CatalogSamples.counter_spell_effect())
+	return CatalogSamples.effect_from(CatalogSamples.counter_spell_effect())

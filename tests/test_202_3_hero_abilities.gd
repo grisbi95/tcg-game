@@ -129,7 +129,7 @@ func test_208_1_12_order_is_announced_on_the_stack() -> void:
 	assert_int(entry.source_piece_id).is_equal(hero.piece_id)
 	assert_int(entry.source_card_instance_id).is_equal(hero.card.card_instance_id)
 	assert_str(entry.source_definition_id).is_equal(OrderSamples.HERO)
-	assert_int(entry.effect_index).is_equal(OrderSamples.BOOST_ORDER)
+	assert_int(entry.text_index).is_equal(OrderSamples.BOOST_ORDER)
 	assert_array(entry.target_piece_ids).contains_exactly([unit_id])
 	assert_object(entry.card).is_null()
 
@@ -179,7 +179,7 @@ func test_207_3_7_hero_once_per_turn_effect_is_counted_by_its_card() -> void:
 	var events: Array[DuelEvent] = []
 	TriggerRules.trigger_end_of_turn(state, events)
 	TriggerRules.add_waiting_triggers(state, events)
-	assert_array(state.once_per_turn_effects).contains_exactly([Vector2i(hero_card_id, 0)])
+	assert_array(state.once_per_turn_texts).contains_exactly([Vector2i(hero_card_id, 0)])
 	assert_int(state.stack.size()).is_equal(1)
 	events.clear()
 	TriggerRules.trigger_end_of_turn(state, events)

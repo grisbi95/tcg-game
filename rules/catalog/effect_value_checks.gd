@@ -4,18 +4,20 @@ extends RefCounted
 ## EffectDefinition ; `EffectDefinition.find_errors()` les appelle, aucune règle de jeu ici.
 
 
-## Erreurs de X et de mot-clé de `effect`.
-static func find_errors(effect: EffectDefinition) -> PackedStringArray:
+## Erreurs de X et de mot-clé de `effect`, effet d'un texte de timing `timing`.
+static func find_errors(
+	effect: EffectDefinition, timing: EffectDefinition.EffectTiming
+) -> PackedStringArray:
 	var errors := PackedStringArray()
-	_check_x(effect, errors)
+	_check_x(effect, timing, errors)
 	_check_keyword(effect, errors)
 	return errors
 
 
-## 213.1.3 : message d'erreur si des `effects` lisent le X choisi à l'annonce sans que la carte ait
+## 213.1.3 : message d'erreur si des `texts` lisent le X choisi à l'annonce sans que la carte ait
 ## un coût X (`has_x_cost`), vide sinon.
-static func chosen_x_error(effects: Array[EffectDefinition], has_x_cost: bool) -> String:
-	var reads_chosen := effects.any(
+static func chosen_x_error(texts: Array[EffectText], has_x_cost: bool) -> String:
+	var reads_chosen := EffectText.all_effects(texts).any(
 		func(effect: EffectDefinition) -> bool:
 			return effect.x_source == EffectDefinition.XSource.CHOSEN
 	)
@@ -26,7 +28,9 @@ static func chosen_x_error(effects: Array[EffectDefinition], has_x_cost: bool) -
 
 # Décision 0058, 213 : un champ « X » exige une source de X ; X choisi se lit dans la borne de Force
 # d'une cible ou dans amount, X défini par un texte est la Force de l'unique Unit ciblée (213.2.3).
-static func _check_x(effect: EffectDefinition, errors: PackedStringArray) -> void:
+static func _check_x(
+	effect: EffectDefinition, timing: EffectDefinition.EffectTiming, errors: PackedStringArray
+) -> void:
 	var source := effect.x_source
 	var limit_is_x := effect.target != null and effect.target.max_force_is_x
 	var has_x_field := effect.amount_is_x or limit_is_x
@@ -35,7 +39,7 @@ static func _check_x(effect: EffectDefinition, errors: PackedStringArray) -> voi
 	if source != EffectDefinition.XSource.NONE and not has_x_field:
 		errors.append("0058 : x_source exige un champ « X » (amount ou max_force)")
 	if source != EffectDefinition.XSource.NONE:
-		if effect.timing == EffectDefinition.EffectTiming.STATIC:
+		if timing == EffectDefinition.EffectTiming.STATIC:
 			errors.append("213.2.1 : un effet statique n'a pas de X")
 	if limit_is_x and source != EffectDefinition.XSource.CHOSEN:
 		errors.append("213.1.10 : max_force « X » exige x_source chosen")
@@ -74,15 +78,17 @@ static func _check_keyword(effect: EffectDefinition, errors: PackedStringArray) 
 
 
 ## 210.4.1c, 210.4.2c : message d'erreur si un effet statique `BEARER` accordant un mot-clé figure
-## parmi les `effects` d'une carte dont le porteur n'est pas une Unit (`bearer_is_unit`), vide
-## sinon.
+## parmi les `texts` d'une carte dont le porteur n'est pas une Unit (`bearer_is_unit`), vide sinon.
 ## Un Gear s'attache à une Unit : son porteur en est une.
-static func bearer_grant_error(effects: Array[EffectDefinition], bearer_is_unit: bool) -> String:
-	var refused := effects.any(
+static func bearer_grant_error(texts: Array[EffectText], bearer_is_unit: bool) -> String:
+	var static_effects: Array[EffectDefinition] = []
+	for text: EffectText in texts:
+		if text.timing == EffectDefinition.EffectTiming.STATIC:
+			static_effects.append_array(text.effects)
+	var refused := static_effects.any(
 		func(effect: EffectDefinition) -> bool:
 			return (
 				effect.kind == EffectDefinition.EffectKind.GRANT_KEYWORD
-				and effect.timing == EffectDefinition.EffectTiming.STATIC
 				and effect.scope != null
 				and effect.scope.relation == PieceFilter.Relation.SELF
 			)

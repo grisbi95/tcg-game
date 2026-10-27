@@ -111,7 +111,7 @@ func test_210_3_2c_only_a_unit_or_a_building_carries_last_breath() -> void:
 	var effects := [CatalogSamples.triggered("destroyed")]
 	for base: Dictionary in [CatalogSamples.unit(), CatalogSamples.building()]:
 		var carrier := CatalogSamples.with_field(base, "keywords", last_breath)
-		carrier = CatalogSamples.with_field(carrier, "effects", effects)
+		carrier = CatalogSamples.with_effects(carrier, effects)
 		assert_array(Array(_errors_of(carrier))).is_empty()
 	for base: Dictionary in [CatalogSamples.spell(), CatalogSamples.gear()]:
 		var refused := CatalogSamples.with_field(base, "keywords", last_breath)

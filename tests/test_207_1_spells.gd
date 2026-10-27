@@ -306,7 +306,7 @@ func _spell(id: StringName, speed: String, cost: int, effect: Dictionary) -> Car
 	data = CatalogSamples.with_field(data, "name", "Spell %s" % id)
 	data = CatalogSamples.with_field(data, "speed", speed)
 	data = CatalogSamples.with_field(data, "cost", cost)
-	return CardDefinition.from_dict(CatalogSamples.with_field(data, "effects", [effect]))
+	return CardDefinition.from_dict(CatalogSamples.with_effects(data, [effect]))
 
 
 func _boost(side: DuelState.PlayerSide, card_id: int, target_id: int) -> CastSpell:

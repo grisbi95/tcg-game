@@ -32,9 +32,8 @@ func before_test() -> void:
 	SetupSamples.add_building(catalog, BUILDING_ID, BUILDING_FORCE)
 	var aura_unit := CatalogSamples.with_field(CatalogSamples.unit(), "id", String(AURA_UNIT_ID))
 	aura_unit = CatalogSamples.with_field(aura_unit, "name", "Unit à aura")
-	aura_unit = CatalogSamples.with_field(
+	aura_unit = CatalogSamples.with_effects(
 		aura_unit,
-		"effects",
 		[CatalogSamples.modify_force_static({"scope": CatalogSamples.adjacent_allied_scope()})]
 	)
 	catalog.add_card(CardDefinition.from_dict(aura_unit))
@@ -249,7 +248,7 @@ func _pass_once(first: DuelState.PlayerSide) -> Array[DuelEvent]:
 func _gear(id: StringName, effect: Dictionary) -> CardDefinition:
 	var data := CatalogSamples.with_field(CatalogSamples.gear(), "id", String(id))
 	data = CatalogSamples.with_field(data, "name", "Gear %s" % id)
-	return CardDefinition.from_dict(CatalogSamples.with_field(data, "effects", [effect]))
+	return CardDefinition.from_dict(CatalogSamples.with_effects(data, [effect]))
 
 
 func _place(side: DuelState.PlayerSide, definition_id: StringName, cell_name: String) -> int:

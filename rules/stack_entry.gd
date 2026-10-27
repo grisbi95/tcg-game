@@ -36,9 +36,9 @@ var source_definition_id: StringName = &""
 ## (208.7.12, 208.7.13). Vrai par défaut : Spell, attaque, combat en attente (208.7.1, 208.7.2,
 ## 208.7.14).
 var allows_response: bool = true
-## Rang de l'effet dans la définition de la carte (effet déclenché), ou rang de l'Ordre dans
-## `HeroDefinition.orders` (Ordre, 202.3.21).
-var effect_index: int = 0
+## Rang du texte dans la définition de la carte (effet déclenché, décision 0064), ou rang de l'Ordre
+## dans `HeroDefinition.orders` (Ordre, 202.3.21).
+var text_index: int = 0
 ## 205.1.5, 205.2.5, 207.5.11 : cases choisies à l'annonce (déploiement, action, cibles).
 var target_cells: Array[Vector2i] = []
 ## 207.5.11 : pièces ciblées à l'annonce.
@@ -70,7 +70,7 @@ func clone() -> StackEntry:
 	copy.source_card_instance_id = source_card_instance_id
 	copy.source_definition_id = source_definition_id
 	copy.allows_response = allows_response
-	copy.effect_index = effect_index
+	copy.text_index = text_index
 	copy.target_cells.assign(target_cells)
 	copy.target_piece_ids.assign(target_piece_ids)
 	copy.target_stack_entry_ids.assign(target_stack_entry_ids)

@@ -26,7 +26,7 @@ var _engine: DuelEngine
 func before_test() -> void:
 	var catalog := TriggerSamples.catalog()
 	var reaction := CatalogSamples.with_field(CatalogSamples.spell(), "id", String(REACTION_ID))
-	catalog.add_card(CardDefinition.from_dict(CatalogSamples.with_field(reaction, "effects", [])))
+	catalog.add_card(CardDefinition.from_dict(CatalogSamples.with_effects(reaction, [])))
 	catalog.add_card(CardDefinition.from_dict(CatalogSamples.gear()))
 	catalog.add_hero(HeroDefinition.from_dict(CatalogSamples.hero()))
 	_builder = DuelStateBuilder.new(DuelConfig.new(), catalog)

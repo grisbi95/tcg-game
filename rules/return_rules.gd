@@ -10,6 +10,7 @@ static func resolve(context: EffectContext) -> void:
 	var pieces := EffectRules.valid_pieces(context.state, context.entry, context.effect.target)
 	if pieces.is_empty():
 		EffectRules.lose_all_targets(context.entry, context.events)
+	context.took_place = not pieces.is_empty()
 	for piece: Piece in pieces:
 		return_to_hand(context.state, piece, context.events)
 

@@ -107,7 +107,7 @@ func test_210_1_3_test_cards_carry_their_keywords() -> void:
 
 func test_207_test_cards_carry_their_effects() -> void:
 	for card_id: StringName in CARDS:
-		var effects := _catalog.get_card(card_id).effects
+		var effects := EffectText.all_effects(_catalog.get_card(card_id).texts)
 		if not EFFECTS.has(card_id):
 			assert_array(effects).override_failure_message(String(card_id)).is_empty()
 			continue
@@ -123,13 +123,17 @@ func test_207_4_2_test_effects_have_their_durations() -> void:
 		&"renfort": DURATION.UNTIL_END_OF_TURN,
 	}
 	for card_id: StringName in expected:
-		var effect := _catalog.get_card(card_id).effects[0]
+		var effect := _catalog.get_card(card_id).texts[0].effects[0]
 		assert_int(effect.duration).is_equal(expected[card_id])
 
 
 func test_207_5_6_strike_and_levy_keep_their_values() -> void:
-	assert_int(_catalog.get_card(&"frappe").effects[0].target.max_force).is_equal(STRIKE_MAX_FORCE)
-	assert_int(_catalog.get_card(&"levee").effects[0].token_force).is_equal(LEVY_TOKEN_FORCE)
+	assert_int(_catalog.get_card(&"frappe").texts[0].effects[0].target.max_force).is_equal(
+		STRIKE_MAX_FORCE
+	)
+	assert_int(_catalog.get_card(&"levee").texts[0].effects[0].token_force).is_equal(
+		LEVY_TOKEN_FORCE
+	)
 
 
 func test_201_6_1_test_deck_has_thirty_cards() -> void:

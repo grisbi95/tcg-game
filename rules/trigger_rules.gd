@@ -117,12 +117,10 @@ static func validate_targets_choice(
 		return reason
 	var entry := _targeted_entry(state).clone()
 	TriggerTargets.assign_chosen(entry, intent)
-	var effect := effect_of(state, entry)
-	reason = EffectRules.validate_effect_targets(state, entry, effect)
+	reason = TriggerTargets.validate_effect_targets(state, entry, targeting_effect_of(state, entry))
 	if reason != IntentRejected.RejectReason.NONE:
 		return reason
-	var effects: Array[EffectDefinition] = [effect]
-	return EffectRules.validate_no_extra_targets(entry, effects)
+	return TriggerTargets.validate_no_extra_targets(entry, text_of(state, entry).effects)
 
 
 ## 207.5.1b : l'effet reçoit ses cibles ; son ajout à la pile, puis celui des suivants, reprend
@@ -144,7 +142,7 @@ static func can_abandon_targets_choice(state: DuelState) -> bool:
 	if entry == null:
 		return false
 	var only_one_waiting := state.triggers_to_add.size() == 1 and state.waiting_triggers.is_empty()
-	return only_one_waiting and not effect_of(state, entry).once_per_turn
+	return only_one_waiting and not text_of(state, entry).once_per_turn
 
 
 ## 209.4.11a : l'effet dont le joueur choisissait les cibles ne s'ajoute pas à la pile.
@@ -166,43 +164,31 @@ static func order_as_triggered(state: DuelState, events: Array[DuelEvent]) -> vo
 	apply_order(state, OrderTriggers.new(decision.awaited_players[0], ordered_ids), events)
 
 
-## 208.3.2a, 207.3.3, 207.5.3 à 207.5.5 : l'effet a lieu même si sa pièce a quitté le plateau.
-## Décision 0057 : l'effet est le seul de son entrée ; après une attente qu'il a posée, la reprise
-## ne l'applique pas une seconde fois.
+## 208.3.2a, 207.3.3, 207.5.3 à 207.5.5, 207.7.4 : le texte a lieu même si sa pièce a quitté le
+## plateau ; ses effets s'appliquent dans l'ordre du texte (décision 0064). Après une attente qu'un
+## effet a posée (décision 0057), la reprise continue au rang suivant.
 static func resolve_triggered(
 	state: DuelState, entry: StackEntry, events: Array[DuelEvent]
 ) -> void:
-	if state.resolving_effect_index > 0:
-		return
-	state.resolving_effect_index += 1
-	EffectRules.resolve_effect(state, entry, effect_of(state, entry), events)
+	EffectRules.resolve_text(state, entry, text_of(state, entry), events)
 
 
-## 207.3.7 à 207.3.7c, 207.3.10 : clé du décompte « une fois par tour » de l'effet que porte
-## `entry` : la carte qui le porte en x (Hero et Gear compris ; un jeton ne porte aucun effet,
-## 202.4.5, 207.3.7a n'a donc pas d'objet), le rang de l'effet sur cette carte en y. Le couple
+## 207.3.7 à 207.3.7c, 207.3.10 : clé du décompte « une fois par tour » du texte que porte `entry` :
+## la carte qui le porte en x (Hero et Gear compris ; un jeton ne porte aucun texte, 202.4.5,
+## 207.3.7a n'a donc pas d'objet), le rang du texte sur cette carte en y (décision 0064). Le couple
 ## (carte, rang) tient dans un `Vector2i` : x = `card_instance_id`, y = rang. Pur.
 static func once_per_turn_key(entry: StackEntry) -> Vector2i:
-	return Vector2i(entry.source_card_instance_id, entry.effect_index)
+	return Vector2i(entry.source_card_instance_id, entry.text_index)
 
 
-## Définition de l'effet que porte `entry`.
-static func effect_of(state: DuelState, entry: StackEntry) -> EffectDefinition:
-	return state.catalog.triggerable_effects(entry.source_definition_id)[entry.effect_index]
+## Décision 0064 : texte que porte `entry`.
+static func text_of(state: DuelState, entry: StackEntry) -> EffectText:
+	return state.catalog.triggerable_texts(entry.source_definition_id)[entry.text_index]
 
 
-## 207.3.13, 207.3.13a, 204.3.12a : vrai si `condition` est absente ou vraie pour le joueur
-## `owner`, à qui appartient l'effet. Lue quand survient l'événement, jamais à la résolution
-## (207.3.13b). Pur.
-static func condition_holds(
-	state: DuelState, condition: EffectCondition, owner: DuelState.PlayerSide
-) -> bool:
-	if condition == null:
-		return true
-	match condition.kind:
-		EffectCondition.ConditionKind.HAND_SIZE_AT_MOST:
-			return state.get_player(owner).hand.size() <= condition.amount
-	return false
+## Décision 0064, 207.5.1b : l'effet du texte de `entry` qui porte les cibles ; null si aucun.
+static func targeting_effect_of(state: DuelState, entry: StackEntry) -> EffectDefinition:
+	return text_of(state, entry).targeting_effect()
 
 
 # Pièces en jeu, dans l'ordre de `state.pieces`.
@@ -214,8 +200,8 @@ static func _pieces_on_board(state: DuelState) -> Array[Piece]:
 	return on_board
 
 
-# 207.3.13 : la condition « si » se lit ici, à l'événement ; fausse, l'effet ne se déclenche pas et
-# ne compte donc pas pour « une fois par tour » (207.3.6).
+# 207.3.13 : la condition « si » du texte se lit ici, à l'événement ; fausse, le texte ne se
+# déclenche pas et ne compte donc pas pour « une fois par tour » (207.3.6).
 static func _trigger_card(
 	state: DuelState,
 	piece: Piece,
@@ -223,19 +209,19 @@ static func _trigger_card(
 	trigger_event: EffectDefinition.TriggerEvent,
 	events: Array[DuelEvent]
 ) -> void:
-	var effects := state.catalog.triggerable_effects(card.definition_id)
-	for index: int in effects.size():
-		var effect := effects[index]
-		var is_triggered := effect.timing == EffectDefinition.EffectTiming.TRIGGERED
-		if is_triggered and effect.trigger == trigger_event:
-			if condition_holds(state, effect.condition, card.owner):
+	var texts := state.catalog.triggerable_texts(card.definition_id)
+	for index: int in texts.size():
+		var text := texts[index]
+		var is_triggered := text.timing == EffectDefinition.EffectTiming.TRIGGERED
+		if is_triggered and text.trigger == trigger_event:
+			if EffectRules.condition_holds(state, text.condition, card.owner):
 				_wait(state, piece, card, index, events)
 
 
 # 207.3.4, 207.3.12b : l'effet appartient au joueur à qui appartient la carte qui le porte, Gear
 # compris ; son identifiant d'entrée lui est donné dès maintenant (décision 0017).
 static func _wait(
-	state: DuelState, piece: Piece, card: CardInstance, effect_index: int, events: Array[DuelEvent]
+	state: DuelState, piece: Piece, card: CardInstance, text_index: int, events: Array[DuelEvent]
 ) -> void:
 	var entry := StackEntry.new()
 	entry.stack_entry_id = state.allocate_stack_entry_id()
@@ -244,7 +230,7 @@ static func _wait(
 	entry.source_piece_id = piece.piece_id
 	entry.source_card_instance_id = card.card_instance_id
 	entry.source_definition_id = card.definition_id
-	entry.effect_index = effect_index
+	entry.text_index = text_index
 	entry.allows_response = state.triggers_allow_response  # 208.7.8 à 208.7.11
 	state.waiting_triggers.append(entry)
 	events.append(EffectTriggered.new(entry.owner, entry.stack_entry_id, piece.piece_id))
@@ -294,8 +280,8 @@ static func _add_next(state: DuelState, events: Array[DuelEvent]) -> void:
 	if not _can_be_added(state, entry):
 		_skip(state.triggers_to_add, entry, events)
 		return
-	var effect := effect_of(state, entry)
-	if effect.target != null and EffectRules.chosen_effect_count(entry, effect) == 0:
+	var effect := targeting_effect_of(state, entry)
+	if effect != null and EffectRules.chosen_effect_count(entry, effect) == 0:
 		if not TriggerTargets.has_unique_targets(state, entry, effect):
 			StackRules.request_decision(
 				state, TriggerTargets.make_decision(state, entry, effect), events
@@ -303,8 +289,8 @@ static func _add_next(state: DuelState, events: Array[DuelEvent]) -> void:
 			return
 		TriggerTargets.assign_unique_targets(state, entry, effect, events)
 	state.triggers_to_add.pop_front()
-	if effect.once_per_turn:
-		state.once_per_turn_effects.append(once_per_turn_key(entry))
+	if text_of(state, entry).once_per_turn:
+		state.once_per_turn_texts.append(once_per_turn_key(entry))
 	StackRules.add_to_stack(state, entry, events)
 
 
@@ -312,22 +298,25 @@ static func _add_next(state: DuelState, events: Array[DuelEvent]) -> void:
 static func _can_be_added(state: DuelState, entry: StackEntry) -> bool:
 	if entry.kind == StackEntry.StackEntryKind.PENDING_COMBAT:
 		return true
-	var effect := effect_of(state, entry)
-	if effect.once_per_turn and state.once_per_turn_effects.has(once_per_turn_key(entry)):
+	if (
+		text_of(state, entry).once_per_turn
+		and state.once_per_turn_texts.has(once_per_turn_key(entry))
+	):
 		return false
-	if effect.target == null:
-		return true  # décision 0057 : un effet sans cible n'attend aucune cible légale
+	var effect := targeting_effect_of(state, entry)
+	if effect == null:
+		return true  # décision 0057 : un texte sans cible n'attend aucune cible légale
 	return TriggerTargets.legal_count(state, entry, effect) >= effect.target.count_min
 
 
-# 207.3.5, 207.3.5a, 207.3.7b, 212.2.5 : un second exemplaire du même effet « une fois par tour »,
-# déjà dans `kept`, ne s'ajoutera pas à la pile ; un autre effet de la même carte, si.
+# 207.3.5, 207.3.5a, 207.3.7b, 212.2.5 : un second exemplaire du même texte « une fois par tour »,
+# déjà dans `kept`, ne s'ajoutera pas à la pile ; un autre texte de la même carte, si.
 static func _repeats_once_per_turn(
 	state: DuelState, entry: StackEntry, kept: Array[StackEntry]
 ) -> bool:
 	if entry.kind == StackEntry.StackEntryKind.PENDING_COMBAT:
 		return false
-	if not effect_of(state, entry).once_per_turn:
+	if not text_of(state, entry).once_per_turn:
 		return false
 	return kept.any(
 		func(other: StackEntry) -> bool:

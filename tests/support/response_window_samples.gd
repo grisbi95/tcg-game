@@ -14,7 +14,7 @@ const REACTION_COST: int = 1
 ## Un Spell de vitesse Réaction sans effet ni cible, payable au tour adverse (208.2.3).
 static func catalog_with_reaction(reaction_id: StringName) -> Catalog:
 	var data := CatalogSamples.with_field(CatalogSamples.spell(), "id", String(reaction_id))
-	data = CatalogSamples.with_field(data, "effects", [])
+	data = CatalogSamples.with_effects(data, [])
 	data = CatalogSamples.with_field(data, "text", "")
 	var catalog := SetupSamples.catalog()
 	catalog.add_card(CardDefinition.from_dict(data))

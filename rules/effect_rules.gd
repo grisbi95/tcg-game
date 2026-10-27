@@ -1,9 +1,9 @@
 class_name EffectRules
 extends RefCounted
 ## Effets qui passent par la pile (207) : cibles et validité (207.5), application à la
-## résolution (207.4), Contrecarrer (207.6) ; filtres de pièce (`matches_filter`). SpellRules les
-## appelle, jamais l'inverse ; TriggerRules ajoute les effets déclenchés, TriggerTargets lit les
-## cibles légales.
+## résolution (207.4), Contrecarrer (207.6), suite d'effets d'un texte (207.7, `resolve_text`).
+## SpellRules les appelle, jamais l'inverse ; TriggerRules ajoute les effets déclenchés,
+## TriggerTargets lit les cibles légales et juge celles d'une annonce.
 ##
 ## Une entrée porte ses cibles par genre (`target_piece_ids`, `target_cells`,
 ## `target_stack_entry_ids`) ; chaque effet lit celles du genre que vise sa TargetSpec. Un effet
@@ -20,79 +20,6 @@ static func validate_targets(
 		return IntentRejected.RejectReason.WRONG_TARGET_COUNT
 	if not _all_targets_legal(state, entry, spec):
 		return IntentRejected.RejectReason.ILLEGAL_TARGET
-	return IntentRejected.RejectReason.NONE
-
-
-## 207.5.1a, 207.5.8, 211.4.1, 211.4.2 : raison du refus des cibles que porte `entry` pour les
-## `effects` d'un Spell ou d'un Ordre : chaque effet juge les cibles de son genre, aucune cible en
-## trop. Pur.
-static func validate_announced_targets(
-	state: DuelState, entry: StackEntry, effects: Array[EffectDefinition]
-) -> IntentRejected.RejectReason:
-	for effect: EffectDefinition in effects:
-		if effect.target == null:
-			continue
-		var reason := validate_effect_targets(state, entry, effect)
-		if reason != IntentRejected.RejectReason.NONE:
-			return reason
-	return validate_no_extra_targets(entry, effects)
-
-
-## 207.5.1a, 207.5.10, 214.1.3, 215.1.1 : raison du refus des cibles que porte `entry` pour
-## `effect`, destination comprise ; l'échange exige deux pièces distinctes (cartes, Q-098 reste
-## ouverte en général). Pur.
-static func validate_effect_targets(
-	state: DuelState, entry: StackEntry, effect: EffectDefinition
-) -> IntentRejected.RejectReason:
-	var reason := validate_targets(state, entry, effect.target)
-	if reason != IntentRejected.RejectReason.NONE:
-		return reason
-	return validate_destination_targets(state, entry, effect)
-
-
-## 207.5.1 : une entrée ne porte que les cibles qu'exigent ses effets ; tout autre genre de
-## cible fait refuser l'annonce. Pur.
-static func validate_no_extra_targets(
-	entry: StackEntry, effects: Array[EffectDefinition]
-) -> IntentRejected.RejectReason:
-	var aimed: Array[TargetSpec.TargetWhat] = []
-	for effect: EffectDefinition in effects:
-		if effect.target != null:
-			aimed.append(effect.target.what)
-		if effect.destination != null:
-			aimed.append(effect.destination.what)
-	var extra_pieces := not entry.target_piece_ids.is_empty()
-	extra_pieces = extra_pieces and not aimed.has(TargetSpec.TargetWhat.PIECE)
-	var extra_cells := not entry.target_cells.is_empty()
-	extra_cells = extra_cells and not aimed.has(TargetSpec.TargetWhat.CELL)
-	var extra_spells := not entry.target_stack_entry_ids.is_empty()
-	extra_spells = extra_spells and not aimed.has(TargetSpec.TargetWhat.SPELL_ON_STACK)
-	if extra_pieces or extra_cells or extra_spells:
-		return IntentRejected.RejectReason.WRONG_TARGET_COUNT
-	return IntentRejected.RejectReason.NONE
-
-
-## 207.5.1, 214.1.3, 215.1.1 : raison du refus de ce que `entry` porte en plus des pièces déjà
-## jugées pour `effect` : l'échange veut deux pièces distinctes (contrôle de ce `kind`, Q-098 reste
-## ouverte en général), le déplacement une case de destination légale pour la pièce ciblée. Pur.
-static func validate_destination_targets(
-	state: DuelState, entry: StackEntry, effect: EffectDefinition
-) -> IntentRejected.RejectReason:
-	if (
-		effect.kind == EffectDefinition.EffectKind.SWAP_CELLS
-		and _has_duplicates(entry, effect.target)
-	):
-		return IntentRejected.RejectReason.ILLEGAL_TARGET
-	if effect.destination == null:
-		return IntentRejected.RejectReason.NONE
-	var spec := resolved_spec(state, entry, effect.destination)
-	var cell_count := chosen_count(entry, spec)
-	if cell_count < spec.count_min or cell_count > spec.count_max:
-		return IntentRejected.RejectReason.WRONG_TARGET_COUNT
-	var anchor := state.find_piece(entry.target_piece_ids[0])
-	for cell: Vector2i in entry.target_cells:
-		if not is_legal_cell(state, entry.owner, spec, cell, anchor):
-			return IntentRejected.RejectReason.ILLEGAL_TARGET
 	return IntentRejected.RejectReason.NONE
 
 
@@ -117,11 +44,17 @@ static func spec_anchor(
 	state: DuelState, owner: DuelState.PlayerSide, spec: TargetSpec
 ) -> FilterAnchor:
 	if spec.piece_filter.relative_to == PieceFilter.RelativeTo.OWN_HERO:
-		var hero := state.find_hero(owner)
-		if hero == null:
-			return FilterAnchor.new(owner)
-		return FilterAnchor.new(owner, hero.piece_id, hero.cell)
+		return _hero_anchor(state, owner)
 	return FilterAnchor.new(owner, spec.source_piece_id, spec.source_cell)
+
+
+## 207.4.11, 207.3.14, 205.2.5 : point de référence de `filter` pour `entry` : le Hero du joueur, ou
+## la pièce source de l'entrée, sur le plateau ou à sa dernière case.
+static func entry_anchor(state: DuelState, entry: StackEntry, filter: PieceFilter) -> FilterAnchor:
+	if filter.relative_to == PieceFilter.RelativeTo.OWN_HERO:
+		return _hero_anchor(state, entry.owner)
+	var cell := state.cell_of_piece(entry.source_piece_id)
+	return FilterAnchor.new(entry.owner, entry.source_piece_id, cell)
 
 
 ## 202.4.12, 207.5.11, 215.1.1 : une case ciblée est libre, dans la zone qu'exige `spec` et, si
@@ -166,71 +99,47 @@ static func is_legal_spell(
 
 
 ## 207.5.3 à 207.5.6, 207.4.6 : applique `effect` de `entry` à chacune de ses cibles restées
-## valides ; sans aucune, l'effet n'a pas lieu (207.5.5).
+## valides ; sans aucune, l'effet n'a pas lieu (207.5.5). Renvoie vrai si l'effet a eu lieu, au
+## moins en partie (200.4.2, 207.7.6a).
 static func resolve_effect(
 	state: DuelState, entry: StackEntry, effect: EffectDefinition, events: Array[DuelEvent]
-) -> void:
+) -> bool:
 	var context := EffectContext.new(state, entry, effect, events)
-	match effect.kind:
-		EffectDefinition.EffectKind.DRAW_CARDS:
-			TurnRules.draw_cards(state, entry.owner, effect.amount, events)
-			return
-		EffectDefinition.EffectKind.DISCARD_CARDS:
-			DiscardRules.resolve(context)
-			return
-		EffectDefinition.EffectKind.LOOK_AT_TOP_CARD:
-			LookRules.resolve(context)
-			return
-		_ when effect.subject == EffectDefinition.EffectSubject.SOURCE_PIECE:
-			_resolve_on_source_piece(context)
-			return
-		EffectDefinition.EffectKind.SWAP_CELLS:
-			SwapRules.resolve(context)
-			return
-		EffectDefinition.EffectKind.MOVE_UNIT:
-			MoveRules.resolve(context)
-			return
-		EffectDefinition.EffectKind.RETURN_TO_HAND:
-			ReturnRules.resolve(context)
-			return
-	var spec := effect.target
-	match spec.what:
-		TargetSpec.TargetWhat.PIECE:
-			var pieces := valid_pieces(state, entry, spec)
-			if pieces.is_empty():
-				lose_all_targets(entry, events)
-				return
-			var amount := ValueRules.read_amount(state, entry, effect, pieces)
-			for piece: Piece in pieces:
-				_apply_to_piece(context, piece, amount)
-		TargetSpec.TargetWhat.CELL:
-			var cells := _valid_cells(state, entry, spec)
-			if cells.is_empty():
-				lose_all_targets(entry, events)
-				return
-			for cell: Vector2i in cells:
-				CardRules.create_token(context, cell)
-		TargetSpec.TargetWhat.SPELL_ON_STACK:
-			var spells := _valid_spells(state, entry, spec)
-			if spells.is_empty():
-				lose_all_targets(entry, events)
-				return
-			for spell: StackEntry in spells:
-				counter_spell(state, spell, events)
+	if not _resolve_by_kind(context):
+		_resolve_on_targets(context)
+	return context.took_place
 
 
-## 207.4.1, 208.3.2 : applique, dans l'ordre, les effets à la résolution (`RESOLVE`) d'un Spell ou
-## d'un Ordre ; s'arrête dès que la partie s'arrête (209.2.2). Décision 0057 : s'arrête aussi quand
-## un effet pose une attente (212.1.3, 217.1.2) ; l'appel suivant reprend au rang retenu par
-## `DuelState.resolving_effect_index`.
-static func resolve_all(
-	state: DuelState, entry: StackEntry, effects: Array[EffectDefinition], events: Array[DuelEvent]
+## 207.7.1, 207.7.1a, 207.7.1b, 207.7.2, 207.3.13 : vrai si `condition` est absente ou vraie pour le
+## joueur `owner`, à qui appartient l'effet, à l'état courant. Un texte déclenché la lit à
+## l'événement (207.3.13, jamais à la résolution, 207.3.13b), l'effet d'un Spell ou d'un Ordre quand
+## il vient dans l'ordre du texte. Pur.
+static func condition_holds(
+	state: DuelState, condition: EffectCondition, owner: DuelState.PlayerSide
+) -> bool:
+	if condition == null:
+		return true
+	match condition.kind:
+		EffectCondition.ConditionKind.HAND_SIZE_AT_MOST:
+			return state.get_player(owner).hand.size() <= condition.amount
+	return false
+
+
+## 207.7.4, 207.7.1a, 207.7.2, 207.7.3, 207.7.5, 207.7.5a, 207.7.6, 207.7.6a, 208.3.2 : applique,
+## dans l'ordre où le texte les écrit, les effets de `text`. Un effet dont la condition « si » est
+## fausse à son tour n'a pas lieu, les autres si ; « si vous le faites » n'a lieu que si l'effet
+## précédent a eu lieu. S'arrête dès que la partie s'arrête (209.2.2) ou qu'un effet pose une
+## attente (décision 0057) : l'appel suivant reprend au rang `DuelState.resolving_effect_index`,
+## avec `previous_effect_took_place` gardé.
+static func resolve_text(
+	state: DuelState, entry: StackEntry, text: EffectText, events: Array[DuelEvent]
 ) -> void:
-	while state.resolving_effect_index < effects.size():
-		var effect := effects[state.resolving_effect_index]
+	if text == null:
+		return
+	while state.resolving_effect_index < text.effects.size():
+		var effect := text.effects[state.resolving_effect_index]
 		state.resolving_effect_index += 1
-		if effect.timing == EffectDefinition.EffectTiming.RESOLVE:
-			resolve_effect(state, entry, effect, events)
+		state.previous_effect_took_place = _resolve_in_order(state, entry, effect, events)
 		if state.is_ended() or state.pending_decision != null:
 			return
 
@@ -271,7 +180,7 @@ static func chosen_effect_count(entry: StackEntry, effect: EffectDefinition) -> 
 
 static func _all_targets_legal(state: DuelState, entry: StackEntry, spec: TargetSpec) -> bool:
 	var target_count := chosen_count(entry, spec)
-	if spec.distinct and _has_duplicates(entry, spec):
+	if spec.distinct and has_duplicates(entry, spec):
 		return false
 	match spec.what:
 		TargetSpec.TargetWhat.CELL:
@@ -281,9 +190,9 @@ static func _all_targets_legal(state: DuelState, entry: StackEntry, spec: Target
 	return valid_pieces(state, entry, spec).size() == target_count
 
 
-# 207.5.10, 214.1.3, Q-098 : deux cibles du même genre ne sont pas la même (« distinctes » écrit
-# par la carte ; la règle générale reste ouverte).
-static func _has_duplicates(entry: StackEntry, spec: TargetSpec) -> bool:
+## 207.5.10, 214.1.3, Q-098 : deux cibles du même genre ne sont pas la même (« distinctes » écrit
+## par la carte ; la règle générale reste ouverte).
+static func has_duplicates(entry: StackEntry, spec: TargetSpec) -> bool:
 	if spec.what == TargetSpec.TargetWhat.CELL:
 		for cell: Vector2i in entry.target_cells:
 			if entry.target_cells.count(cell) > 1:
@@ -333,6 +242,86 @@ static func lose_all_targets(entry: StackEntry, events: Array[DuelEvent]) -> voi
 	events.append(EffectLostAllTargets.new(entry.owner, entry.stack_entry_id))
 
 
+# Décisions 0057, 0062 et 0064 : les effets dont le sujet n'est pas une cible de genre pièce, case
+# ou Spell : le joueur, la pièce source, l'ensemble décrit, ou les cibles que jugent leur module.
+# Renvoie faux quand l'effet vise les cibles de sa `TargetSpec`.
+static func _resolve_by_kind(context: EffectContext) -> bool:
+	match context.effect.kind:
+		EffectDefinition.EffectKind.DRAW_CARDS:
+			var amount := context.effect.amount
+			context.took_place = (
+				TurnRules.draw_cards(context.state, context.entry.owner, amount, context.events) > 0
+			)
+		EffectDefinition.EffectKind.DISCARD_CARDS:
+			DiscardRules.resolve(context)
+		EffectDefinition.EffectKind.LOOK_AT_TOP_CARD:
+			LookRules.resolve(context)
+		EffectDefinition.EffectKind.SWAP_CELLS:
+			SwapRules.resolve(context)
+		EffectDefinition.EffectKind.MOVE_UNIT:
+			MoveRules.resolve(context)
+		EffectDefinition.EffectKind.RETURN_TO_HAND:
+			ReturnRules.resolve(context)
+		_:
+			return _resolve_on_subject(context)
+	return true
+
+
+static func _resolve_on_subject(context: EffectContext) -> bool:
+	match context.effect.subject:
+		EffectDefinition.EffectSubject.SOURCE_PIECE:
+			_resolve_on_source_piece(context)
+			return true
+		EffectDefinition.EffectSubject.MATCHING_PIECES:
+			_resolve_on_matching_pieces(context)
+			return true
+	return false
+
+
+# 207.5.3 à 207.5.5 : l'effet vise ses cibles restées valides ; sans aucune, il n'a pas lieu.
+static func _resolve_on_targets(context: EffectContext) -> void:
+	var state := context.state
+	var entry := context.entry
+	var spec := context.effect.target
+	match spec.what:
+		TargetSpec.TargetWhat.PIECE:
+			var pieces := valid_pieces(state, entry, spec)
+			if pieces.is_empty():
+				lose_all_targets(entry, context.events)
+				return
+			var amount := ValueRules.read_amount(state, entry, context.effect, pieces)
+			for piece: Piece in pieces:
+				_apply_to_piece(context, piece, amount)
+		TargetSpec.TargetWhat.CELL:
+			var cells := _valid_cells(state, entry, spec)
+			if cells.is_empty():
+				lose_all_targets(entry, context.events)
+				return
+			context.took_place = true
+			for cell: Vector2i in cells:
+				CardRules.create_token(context, cell)
+		TargetSpec.TargetWhat.SPELL_ON_STACK:
+			var spells := _valid_spells(state, entry, spec)
+			if spells.is_empty():
+				lose_all_targets(entry, context.events)
+				return
+			context.took_place = true
+			for spell: StackEntry in spells:
+				counter_spell(state, spell, context.events)
+
+
+# 207.7.1a, 207.7.2, 207.7.6a : l'effet vient dans l'ordre du texte ; « si vous le faites » exige
+# que l'effet précédent ait eu lieu, une condition « si » fausse l'empêche d'avoir lieu.
+static func _resolve_in_order(
+	state: DuelState, entry: StackEntry, effect: EffectDefinition, events: Array[DuelEvent]
+) -> bool:
+	if effect.if_you_do and not state.previous_effect_took_place:
+		return false
+	if not condition_holds(state, effect.condition, entry.owner):
+		return false
+	return resolve_effect(state, entry, effect, events)
+
+
 # 200.4.1, 207.3.12, décision 0062 : l'effet a pour sujet la pièce qui le porte (« cette Unit » ;
 # pour un Gear, l'Unit qui le porte, 207.3.12) ; partie du plateau à la résolution, il n'a pas lieu
 # pour elle, sans événement.
@@ -345,8 +334,38 @@ static func _resolve_on_source_piece(context: EffectContext) -> void:
 	_apply_to_piece(context, source, amount)
 
 
-# 207.4.2, 206.5.1, 206.3.2, 205.5 : MODIFY_FORCE à durée ; DESTROY ; WAKE ; SLEEP.
+# 207.4.11, 207.4.11a, 207.4.11c, 207.5.18, décision 0064 : l'ensemble se calcule une seule fois,
+# maintenant ; l'effet est ensuite posé pièce par pièce, donc une pièce arrivée plus tard n'est pas
+# touchée et une pièce touchée le reste. Ensemble vide : l'effet n'a pas lieu (200.4.1).
+static func _resolve_on_matching_pieces(context: EffectContext) -> void:
+	var filter := context.effect.affected
+	var anchor := entry_anchor(context.state, context.entry, filter)
+	var pieces := ModifierRules.matching_pieces(context.state, filter, anchor)
+	if pieces.is_empty():
+		return
+	var amount := ValueRules.read_amount(context.state, context.entry, context.effect, pieces)
+	for piece: Piece in pieces:
+		if BoardGeometry.is_on_board(piece.cell):
+			_apply_to_piece(context, piece, amount)
+
+
+# 205.2.5 : le Hero du joueur, point de référence d'un filtre `own_hero`.
+static func _hero_anchor(state: DuelState, owner: DuelState.PlayerSide) -> FilterAnchor:
+	var hero := state.find_hero(owner)
+	if hero == null:
+		return FilterAnchor.new(owner)
+	return FilterAnchor.new(owner, hero.piece_id, hero.cell)
+
+
+# 207.4.2, 206.5.1, 206.3.2, 205.5 : MODIFY_FORCE à durée ; DESTROY ; WAKE ; SLEEP. L'effet a eu
+# lieu (207.7.6a) pour une pièce visée, sauf SLEEP : 205.5.7a et 205.5.7b disent qu'il n'a pas lieu
+# pour une pièce déjà endormie ni pour un Building.
 static func _apply_to_piece(context: EffectContext, piece: Piece, amount: int) -> void:
+	if context.effect.kind == EffectDefinition.EffectKind.SLEEP:
+		if ActionRules.sleep_pieces([piece], context.events) > 0:
+			context.took_place = true
+		return
+	context.took_place = true
 	match context.effect.kind:
 		EffectDefinition.EffectKind.MODIFY_FORCE:
 			ModifierRules.add_force_modifier(context, piece, amount)
@@ -356,5 +375,3 @@ static func _apply_to_piece(context: EffectContext, piece: Piece, amount: int) -
 			CombatRules.destroy_piece(context.state, piece, context.events)
 		EffectDefinition.EffectKind.WAKE:
 			ActionRules.wake_pieces([piece], context.events)
-		EffectDefinition.EffectKind.SLEEP:
-			ActionRules.sleep_pieces([piece], context.events)

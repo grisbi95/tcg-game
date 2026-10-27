@@ -25,4 +25,5 @@ static func resolve(context: EffectContext) -> void:
 	if pieces.is_empty() and cells.is_empty():
 		EffectRules.lose_all_targets(entry, context.events)
 	elif anchor != null and not cells.is_empty():
+		context.took_place = true
 		ZoneRules.move_piece(anchor, cells[0], context.events)  # 215.1.2

@@ -94,8 +94,8 @@ static func hero_data(id: StringName, once_per_turn: bool) -> Dictionary:
 	effect["once_per_turn"] = once_per_turn
 	effect["condition"] = {"kind": "hand_size_at_most", "amount": PILLEUSE_HAND_LIMIT}
 	var data := CatalogSamples.with_field(CatalogSamples.hero(), "id", String(id))
-	data = CatalogSamples.with_field(data, "passive", [])
-	return CatalogSamples.with_field(data, "triggered", [effect])
+	data = CatalogSamples.with_flats(data, "passive", [])
+	return CatalogSamples.with_flats(data, "triggered", [effect])
 
 
 ## Effet « cette Unit a +`amount` Force jusqu'à la fin du tour » déclenché par `trigger`, sujet : la
@@ -140,14 +140,14 @@ static func _building(id: StringName, force: int, effect: Dictionary) -> Diction
 
 static func _gear(id: StringName, effect: Dictionary) -> Dictionary:
 	var data := CatalogSamples.with_field(CatalogSamples.gear(), "id", String(id))
-	return CatalogSamples.with_field(data, "effects", [effect])
+	return CatalogSamples.with_effects(data, [effect])
 
 
 static func _card(base: Dictionary, id: StringName, force: int, effect: Dictionary) -> Dictionary:
 	var data := CatalogSamples.with_field(base, "id", String(id))
 	data = CatalogSamples.with_field(data, "name", "Carte %s" % id)
 	data = CatalogSamples.with_field(data, "force", force)
-	return CatalogSamples.with_field(data, "effects", [effect])
+	return CatalogSamples.with_effects(data, [effect])
 
 
 ## Pièce de `definition_id` posée sur `cell_name` pour `side` ; renvoie son `piece_id`.

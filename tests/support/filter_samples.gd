@@ -19,7 +19,7 @@ const OBELISK: StringName = &"filter_obelisk"
 ## Gear : les Units alliées adjacentes à l'Unit qui porte ce Gear ont +1 Force.
 const BANNER: StringName = &"filter_banner"
 ## Building : au début de votre tour, détruisez ce Building (seconde moitié de Chantier ; la carte
-## complète attend l'ordre du texte, 207.7.4, étape c.5d).
+## complète est TextSamples.WORKSITE, 207.7.4).
 const DEMOLITION: StringName = &"filter_demolition"
 ## Unit : à l'annonce d'un Spell de votre joueur, deux effets : une fois par tour, cette Unit a +1
 ## Force ; sans limite, cette Unit a +2 Force (jusqu'à la fin du tour).
@@ -113,7 +113,7 @@ static func _sleeper() -> Dictionary:
 	data = CatalogSamples.with_field(data, "name", "Spell %s" % SLEEPER)
 	data = CatalogSamples.with_field(data, "speed", "action")
 	data = CatalogSamples.with_field(data, "cost", SLEEPER_COST)
-	return CatalogSamples.with_field(data, "effects", [effect])
+	return CatalogSamples.with_effects(data, [effect])
 
 
 static func _unit(id: StringName, effects: Array) -> Dictionary:
@@ -127,11 +127,11 @@ static func _building(id: StringName, effects: Array) -> Dictionary:
 static func _gear(id: StringName, effects: Array) -> Dictionary:
 	var data := CatalogSamples.with_field(CatalogSamples.gear(), "id", String(id))
 	data = CatalogSamples.with_field(data, "name", "Gear %s" % id)
-	return CatalogSamples.with_field(data, "effects", effects)
+	return CatalogSamples.with_effects(data, effects)
 
 
 static func _card(base: Dictionary, id: StringName, force: int, effects: Array) -> Dictionary:
 	var data := CatalogSamples.with_field(base, "id", String(id))
 	data = CatalogSamples.with_field(data, "name", "Carte %s" % id)
 	data = CatalogSamples.with_field(data, "force", force)
-	return CatalogSamples.with_field(data, "effects", effects)
+	return CatalogSamples.with_effects(data, effects)

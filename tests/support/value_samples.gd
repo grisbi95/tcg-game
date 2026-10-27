@@ -157,17 +157,17 @@ static func _spell(id: StringName, cost: Variant, speed: String, effects: Array)
 	data = CatalogSamples.with_field(data, "name", "Spell %s" % id)
 	data = CatalogSamples.with_field(data, "speed", speed)
 	data = CatalogSamples.with_field(data, "cost", cost)
-	return CatalogSamples.with_field(data, "effects", effects)
+	return CatalogSamples.with_effects(data, effects)
 
 
 static func _gear(id: StringName, effect: Dictionary) -> Dictionary:
 	var data := CatalogSamples.with_field(CatalogSamples.gear(), "id", String(id))
 	data = CatalogSamples.with_field(data, "name", "Gear %s" % id)
-	return CatalogSamples.with_field(data, "effects", [effect])
+	return CatalogSamples.with_effects(data, [effect])
 
 
 static func _war_drum() -> Dictionary:
 	var data := CatalogSamples.with_field(CatalogSamples.building(), "id", String(WAR_DRUM))
 	data = CatalogSamples.with_field(data, "name", "Building %s" % WAR_DRUM)
 	var effect := static_grant("assault", DRUM_ASSAULT, CatalogSamples.adjacent_allied_scope())
-	return CatalogSamples.with_field(data, "effects", [effect])
+	return CatalogSamples.with_effects(data, [effect])

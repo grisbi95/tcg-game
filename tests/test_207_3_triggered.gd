@@ -148,9 +148,7 @@ func test_207_3_5a_once_per_turn_trigger_already_used_adds_nothing() -> void:
 	_place(A, TriggerSamples.SOLDIER, "D1")
 	var beacon_id := _place_building(A, TriggerSamples.ONCE_BEACON, "B2")
 	var state := _builder.build()
-	state.once_per_turn_effects.append(
-		Vector2i(state.find_piece(beacon_id).card.card_instance_id, 0)
-	)
+	state.once_per_turn_texts.append(Vector2i(state.find_piece(beacon_id).card.card_instance_id, 0))
 	_engine.start_from_state(state)
 	var labels := EventLog.describe(_engine.submit(EndTurn.new(A)))
 	assert_bool(labels.has("TriggerSkipped:A")).is_true()
@@ -167,10 +165,10 @@ func test_207_3_6_once_per_turn_counts_at_addition() -> void:
 	TriggerRules.trigger(
 		state, state.find_piece(beacon_id), EffectDefinition.TriggerEvent.END_OF_TURN, events
 	)
-	assert_array(state.once_per_turn_effects).is_empty()
+	assert_array(state.once_per_turn_texts).is_empty()
 	TriggerRules.add_waiting_triggers(state, events)
 	assert_int(state.stack.size()).is_equal(1)
-	assert_array(state.once_per_turn_effects).contains_exactly([Vector2i(card_id, 0)])
+	assert_array(state.once_per_turn_texts).contains_exactly([Vector2i(card_id, 0)])
 
 
 func test_207_3_7_once_per_turn_count_is_kept_per_card() -> void:
@@ -201,7 +199,7 @@ func test_207_3_8_once_per_turn_count_lasts_from_turn_start_to_turn_end() -> voi
 	_engine.start_from_state(state)
 	_pass_once(B)
 	assert_int(state.active_player).is_equal(B)
-	assert_array(state.once_per_turn_effects).is_empty()
+	assert_array(state.once_per_turn_texts).is_empty()
 
 
 func test_207_3_9_once_per_turn_count_resets_at_each_turn_start() -> void:
@@ -211,7 +209,7 @@ func test_207_3_9_once_per_turn_count_resets_at_each_turn_start() -> void:
 	_engine.submit(EndTurn.new(A))
 	var state := _engine.get_state()
 	assert_int(state.active_player).is_equal(B)
-	assert_array(state.once_per_turn_effects).is_empty()
+	assert_array(state.once_per_turn_texts).is_empty()
 
 
 func test_207_3_10_count_follows_the_card_when_it_changes_zone() -> void:
@@ -228,7 +226,7 @@ func test_207_3_10_count_follows_the_card_when_it_changes_zone() -> void:
 	assert_array(DuelChecks.card_ids(state.get_player(A).discard)).contains(
 		[beacon_card.card_instance_id]
 	)
-	assert_array(state.once_per_turn_effects).contains_exactly(
+	assert_array(state.once_per_turn_texts).contains_exactly(
 		[Vector2i(beacon_card.card_instance_id, 0)]
 	)
 

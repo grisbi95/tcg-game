@@ -27,7 +27,7 @@ static func catalog() -> Catalog:
 	SetupSamples.add_unit(result, UNIT, UNIT_FORCE)
 	var counter := CatalogSamples.with_field(CatalogSamples.spell(), "id", String(COUNTER_SPELL))
 	counter = CatalogSamples.with_field(counter, "cost", COUNTER_COST)
-	counter = CatalogSamples.with_field(counter, "effects", [CatalogSamples.counter_spell_effect()])
+	counter = CatalogSamples.with_effects(counter, [CatalogSamples.counter_spell_effect()])
 	result.add_card(CardDefinition.from_dict(counter))
 	result.add_hero(HeroDefinition.from_dict(hero_data(HERO, false)))
 	result.add_hero(HeroDefinition.from_dict(hero_data(ONCE_HERO, true)))
@@ -38,12 +38,14 @@ static func catalog() -> Catalog:
 ## alliée ciblée a +2 Force jusqu'à la fin du tour).
 static func hero_data(id: StringName, once_per_turn: bool) -> Dictionary:
 	var boost_data := {
-		"speed": "action", "cost": 0, "effects": [CatalogSamples.modify_force_resolve()]
+		"speed": "action",
+		"cost": 0,
+		"texts": CatalogSamples.texts_of([CatalogSamples.modify_force_resolve()])
 	}
 	var token_data := {
 		"speed": "reaction",
 		"cost": TOKEN_ORDER_COST,
-		"effects": [CatalogSamples.create_token_effect()]
+		"texts": CatalogSamples.texts_of([CatalogSamples.create_token_effect()])
 	}
 	var end_of_turn := CatalogSamples.triggered("end_of_turn", {"once_per_turn": once_per_turn})
 	return {
@@ -52,7 +54,7 @@ static func hero_data(id: StringName, once_per_turn: bool) -> Dictionary:
 		"health": 15,
 		"text": "Deux Ordres et un effet déclenché.",
 		"orders": [boost_data, token_data],
-		"triggered": [end_of_turn],
+		"triggered": CatalogSamples.texts_of([end_of_turn]),
 	}
 
 

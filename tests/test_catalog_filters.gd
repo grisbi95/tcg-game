@@ -19,7 +19,7 @@ func _target_errors(data: Dictionary) -> PackedStringArray:
 
 
 func _effect_errors(data: Dictionary) -> PackedStringArray:
-	return EffectDefinition.from_dict(data).find_errors()
+	return CatalogSamples.effect_errors(data)
 
 
 func _triggered(kind: String, extra: Dictionary = {}) -> Dictionary:
@@ -209,13 +209,14 @@ func test_207_3_14_relation_to_the_source_piece_is_for_triggered_effects() -> vo
 
 
 func test_206_5_5_scope_is_a_filter_relative_to_the_bearer() -> void:
-	var effect := EffectDefinition.from_dict(
-		CatalogSamples.modify_force_static({"scope": CatalogSamples.adjacent_allied_scope()})
+	var data := CatalogSamples.modify_force_static(
+		{"scope": CatalogSamples.adjacent_allied_scope()}
 	)
-	assert_array(Array(effect.find_errors())).is_empty()
+	var effect := CatalogSamples.effect_from(data)
+	assert_array(Array(CatalogSamples.effect_errors(data))).is_empty()
 	assert_int(effect.scope.relation).is_equal(PieceFilter.Relation.ADJACENT)
 	assert_int(effect.scope.side).is_equal(PieceFilter.SideFilter.ALLY)
-	var bearer := EffectDefinition.from_dict(CatalogSamples.modify_force_static())
+	var bearer := CatalogSamples.effect_from(CatalogSamples.modify_force_static())
 	assert_int(bearer.scope.relation).is_equal(PieceFilter.Relation.SELF)
 
 
@@ -266,12 +267,12 @@ func test_decision_0062_other_kinds_refuse_the_source_piece_subject() -> void:
 
 func test_202_3_9_hero_card_force_or_destruction_of_the_source_piece_is_refused() -> void:
 	for kind: String in ["modify_force", "destroy"]:
-		var hero := CatalogSamples.with_field(CatalogSamples.hero(), "passive", [])
-		hero["triggered"] = [_triggered(kind)]
+		var hero := CatalogSamples.with_flats(CatalogSamples.hero(), "passive", [])
+		hero["triggered"] = CatalogSamples.texts_of([_triggered(kind)])
 		var errors := HeroDefinition.from_dict(hero).find_errors()
 		assert_bool(_mentions(errors, "Q-097")).is_true()
-	var sleeping := CatalogSamples.with_field(CatalogSamples.hero(), "passive", [])
-	sleeping["triggered"] = [_triggered("sleep")]
+	var sleeping := CatalogSamples.with_flats(CatalogSamples.hero(), "passive", [])
+	sleeping["triggered"] = CatalogSamples.texts_of([_triggered("sleep")])
 	assert_array(Array(HeroDefinition.from_dict(sleeping).find_errors())).is_empty()
 
 
@@ -318,17 +319,17 @@ func test_207_3_7c_a_hero_may_mark_several_triggered_effects_once_per_turn() -> 
 	first.erase("subject")
 	first["target"] = CatalogSamples.ally_unit_target()
 	var second := first.duplicate(true)
-	var hero := CatalogSamples.with_field(CatalogSamples.hero(), "passive", [])
-	hero["triggered"] = [first, second]
+	var hero := CatalogSamples.with_flats(CatalogSamples.hero(), "passive", [])
+	hero["triggered"] = CatalogSamples.texts_of([first, second])
 	assert_array(Array(HeroDefinition.from_dict(hero).find_errors())).is_empty()
 
 
 func test_202_3_9_hero_passive_force_on_the_bearer_is_refused() -> void:
 	var bearer := CatalogSamples.modify_force_static()
-	var hero := CatalogSamples.with_field(CatalogSamples.hero(), "passive", [bearer])
+	var hero := CatalogSamples.with_flats(CatalogSamples.hero(), "passive", [bearer])
 	assert_bool(_mentions(HeroDefinition.from_dict(hero).find_errors(), "Q-097")).is_true()
-	var aura := CatalogSamples.with_field(CatalogSamples.hero(), "passive", [])
-	aura["passive"] = [
-		CatalogSamples.modify_force_static({"scope": CatalogSamples.adjacent_allied_scope()})
-	]
+	var aura := CatalogSamples.with_flats(CatalogSamples.hero(), "passive", [])
+	aura["passive"] = CatalogSamples.texts_of(
+		[CatalogSamples.modify_force_static({"scope": CatalogSamples.adjacent_allied_scope()})]
+	)
 	assert_array(Array(HeroDefinition.from_dict(aura).find_errors())).is_empty()

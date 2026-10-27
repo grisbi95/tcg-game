@@ -26,8 +26,8 @@ func test_207_3_13_condition_is_read_when_the_event_occurs() -> void:
 		state.get_player(A).hand.clear()
 		for index: int in hand_size:
 			state.get_player(A).hand.append(_builder.make_card_instance(A, SOLDIER))
-		assert_bool(TriggerRules.condition_holds(state, condition, A)).is_equal(hand_size <= LIMIT)
-	assert_bool(TriggerRules.condition_holds(state, null, A)).is_true()
+		assert_bool(EffectRules.condition_holds(state, condition, A)).is_equal(hand_size <= LIMIT)
+	assert_bool(EffectRules.condition_holds(state, null, A)).is_true()
 
 
 func test_207_3_13_condition_reads_the_hand_of_the_player_who_owns_the_effect() -> void:
@@ -58,14 +58,14 @@ func test_207_3_13a_false_condition_does_not_count_for_once_per_turn() -> void:
 	var state := _builder.build()
 	TriggerRules.trigger_for_player(state, A, START, _events)
 	TriggerRules.add_waiting_triggers(state, _events)
-	assert_array(state.once_per_turn_effects).is_empty()
+	assert_array(state.once_per_turn_texts).is_empty()
 	state.get_player(A).hand.pop_back()
 	TriggerRules.trigger_for_player(state, A, START, _events)
 	TriggerRules.add_waiting_triggers(state, _events)
 	assert_array(EventLog.describe(_events)).contains_exactly(
 		["EffectTriggered:A", "DecisionResolvedAutomatically:A", "StackEntryAdded:A"]
 	)
-	assert_array(state.once_per_turn_effects).has_size(1)
+	assert_array(state.once_per_turn_texts).has_size(1)
 
 
 func test_207_3_13b_condition_is_not_read_again_at_resolution() -> void:
@@ -89,14 +89,14 @@ func test_207_3_13b_condition_is_not_read_again_at_resolution() -> void:
 	)
 
 
-func test_207_3_13_condition_is_only_for_triggered_effects() -> void:
-	var data := HandEffectSamples.draw_effect(1)
+func test_207_3_13_condition_is_only_for_triggered_texts() -> void:
+	var data := CatalogSamples.flat_text_of(HandEffectSamples.draw_effect(1))
 	data["condition"] = {"kind": "hand_size_at_most", "amount": LIMIT}
-	var errors := EffectDefinition.from_dict(data).find_errors()
+	var errors := EffectText.from_dict(data).find_errors()
 	assert_bool(CatalogSamples.mentions(errors, "207.3.13 : condition ne vaut que")).is_true()
 	data["timing"] = "triggered"
 	data["trigger"] = "start_of_own_turn"
-	assert_array(Array(EffectDefinition.from_dict(data).find_errors())).is_empty()
+	assert_array(Array(EffectText.from_dict(data).find_errors())).is_empty()
 
 
 func test_207_3_13_condition_kind_is_a_closed_list_with_a_required_amount() -> void:

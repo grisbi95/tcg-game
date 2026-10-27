@@ -200,7 +200,7 @@ static func _two_target_choices(
 static func _awaited_effect(state: DuelState, decision: PendingDecision) -> EffectDefinition:
 	for entry: StackEntry in state.triggers_to_add:
 		if entry.stack_entry_id == decision.subject_stack_entry_id:
-			return TriggerRules.effect_of(state, entry)
+			return TriggerRules.targeting_effect_of(state, entry)
 	return null
 
 
@@ -230,7 +230,9 @@ static func _spell_candidates(
 	for x_value: int in _x_values(state, side, definition):
 		var cost := ValueRules.cost_with_x(definition, x_value)
 		var payment := simple_payment(state, side, cost)
-		for variant: TargetVariant in _target_variants(state, definition.effects):
+		for variant: TargetVariant in _target_variants(
+			state, EffectText.effects_of(EffectText.resolution_of(definition.texts))
+		):
 			var cast := CastSpell.new(side, card.card_instance_id, payment)
 			cast.x_value = x_value
 			variant.copy_into(cast.target_piece_ids, cast.target_cells, cast.target_stack_entry_ids)
@@ -258,7 +260,9 @@ static func _order_candidates(state: DuelState, side: DuelState.PlayerSide) -> A
 	for index: int in OrderRules.order_count(state, side):
 		var hero_order := OrderRules.find_order(state, side, index)
 		var payment := simple_payment(state, side, hero_order.cost)
-		for variant: TargetVariant in _target_variants(state, hero_order.effects):
+		for variant: TargetVariant in _target_variants(
+			state, EffectText.effects_of(EffectText.resolution_of(hero_order.texts))
+		):
 			var order := AnnounceOrder.new(side, index, payment)
 			variant.copy_into(
 				order.target_piece_ids, order.target_cells, order.target_stack_entry_ids

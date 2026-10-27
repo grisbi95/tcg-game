@@ -1,6 +1,9 @@
 class_name EffectDefinition
 extends RefCounted
-## Un effet d'une carte ou d'un Hero : une action du vocabulaire fermé (décisions 0002, 0010).
+## Un effet d'un texte (EffectText) d'une carte ou d'un Hero : une action du vocabulaire fermé
+## (décisions 0002, 0010, 0064). Le timing, l'événement déclencheur, « une fois par tour » et la
+## condition lue à l'événement appartiennent au texte ; l'effet garde sa condition « si » (207.7.1)
+## et « si vous le faites » (207.7.6).
 ##
 ## Aucune logique dans les données : le moteur interprète `kind`. Ajouter un `kind` : valeur à la
 ## fin de EffectKind, champs exigés dans `find_errors()`, code et tests dans le module du
@@ -47,6 +50,7 @@ enum EffectSubject {
 	TARGETS,  # les cibles de `target` ; défaut, seul sujet d'un effet qui cible
 	OWNER_PLAYER,  # le joueur à qui appartient l'effet, sans cible (212.1.2, 217.1.1)
 	SOURCE_PIECE,  # la pièce qui porte l'effet (« cette Unit »), sans cible
+	MATCHING_PIECES,  # décision 0064, 207.4.11 : l'ensemble décrit par `affected`, fixé à la pose
 }
 
 ## Décision 0058 : d'où vient X quand un champ numérique de l'effet s'écrit « X » (213).
@@ -73,16 +77,18 @@ const _LASTING_TIMINGS: Array[EffectTiming] = [
 const _ACTION_TIMINGS: Array[EffectTiming] = [EffectTiming.RESOLVE, EffectTiming.TRIGGERED]
 
 var kind: EffectKind = EffectKind.MODIFY_FORCE
-var timing: EffectTiming = EffectTiming.RESOLVE
-var trigger: TriggerEvent = TriggerEvent.NONE
 ## 207.2.2, 207.2.8, décision 0062 : pièces que touche un effet statique, relativement à la pièce
 ## qui le porte (pour un Gear, la pièce à laquelle il est attaché) ; null hors effet statique.
 var scope: PieceFilter
-## 207.3.5 : mention « une fois par tour », pour un effet déclenché seulement.
-var once_per_turn: bool = false
-## 207.3.13, décision 0060 : condition « si », pour un effet déclenché seulement ; null sans
-## condition.
+## 207.7.1, 207.7.1a, décision 0064 : condition « si » de l'effet, lue quand il vient dans l'ordre
+## du texte d'un Spell ou d'un Ordre ; null sans condition.
 var condition: EffectCondition
+## 207.7.6, 207.7.6a, 207.7.6b : « si vous le faites » ; l'effet dépend de celui qui le précède
+## immédiatement dans le texte.
+var if_you_do: bool = false
+## Décision 0064, 207.4.11 : pièces que touche un effet de sujet MATCHING_PIECES, sans les cibler,
+## relativement à la pièce source ou au joueur ; null sinon.
+var affected: PieceFilter
 ## Décision 0057 : ce que touche l'effet ; TARGETS quand il cible.
 var subject: EffectSubject = EffectSubject.TARGETS
 ## Null pour un effet statique, qui ne cible pas (207.2.1), et pour un effet de sujet autre que
@@ -113,40 +119,28 @@ static func kind_id(effect_kind: EffectKind) -> StringName:
 	return StringName(str(EffectKind.find_key(effect_kind)).to_lower())
 
 
-## 206.3.7, 207.3.12 : message d'erreur si `effect` se déclenche quand l'Unit détruit son défenseur
-## alors que sa carte n'est ni une Unit ni un Gear (`can_attack` faux), vide sinon.
-static func destroys_defender_error(effect: EffectDefinition, can_attack: bool) -> String:
-	if effect.trigger == TriggerEvent.DESTROYS_DEFENDER and not can_attack:
-		return "206.3.7 : seule une Unit ou un Gear détruit un défenseur"
-	return ""
-
-
 ## Lit un effet depuis un objet JSON ; les erreurs de lecture vont dans `parse_errors`.
 static func from_dict(data: Dictionary) -> EffectDefinition:
 	var effect := EffectDefinition.new()
 	var reader := CatalogReader.new(data)
 	reader.require("kind", "207")
-	reader.require("timing", "207")
 	var kind_value := reader.read_enum("kind", EffectKind)
 	if kind_value != CatalogReader.NOT_SET:
 		effect.kind = kind_value as EffectKind
-	var timing_value := reader.read_enum("timing", EffectTiming)
-	if timing_value != CatalogReader.NOT_SET:
-		effect.timing = timing_value as EffectTiming
 	effect._read_conditions(reader)
 	effect._read_parameters(reader)
 	effect.parse_errors = reader.finish()
 	return effect
 
 
-# 207.2.1, 207.3.1, 207.4.10, 207.5.1 : chaque timing exige ou interdit déclencheur, portée,
-# cible et durée ; chaque kind exige ses paramètres et la cible qui lui convient.
-func find_errors() -> PackedStringArray:
+# 207.2.1, 207.3.1, 207.4.10, 207.5.1 : le timing du texte (`text_timing`) exige ou interdit
+# portée, cible et durée ; chaque kind exige ses paramètres et la cible qui lui convient.
+func find_errors(text_timing: EffectTiming) -> PackedStringArray:
 	var errors := parse_errors.duplicate()
-	_check_timing(errors)
-	_check_conditions(errors)
-	_check_duration(errors)
-	_check_parameters(errors)
+	_check_timing(errors, text_timing)
+	_check_conditions(errors, text_timing)
+	_check_duration(errors, text_timing)
+	_check_parameters(errors, text_timing)
 	if target != null:
 		for message: String in target.find_errors():
 			errors.append("cible : " + message)
@@ -157,14 +151,13 @@ func find_errors() -> PackedStringArray:
 
 
 func _read_conditions(reader: CatalogReader) -> void:
-	var trigger_value := reader.read_enum("trigger", TriggerEvent)
-	if trigger_value != CatalogReader.NOT_SET:
-		trigger = trigger_value as TriggerEvent
 	if reader.has("scope"):
 		scope = PieceFilter.from_dict(reader.read_object("scope"))
-	once_per_turn = reader.read_bool("once_per_turn", false)
+	if reader.has("affected"):
+		affected = PieceFilter.from_dict(reader.read_object("affected"))
 	if reader.has("condition"):
 		condition = EffectCondition.from_dict(reader.read_object("condition"))
+	if_you_do = reader.read_bool("if_you_do", false)
 	var subject_value := reader.read_enum("subject", EffectSubject)
 	if subject_value != CatalogReader.NOT_SET:
 		subject = subject_value as EffectSubject
@@ -201,7 +194,7 @@ func _timings_for_kind() -> Array[EffectTiming]:
 	return _ACTION_TIMINGS
 
 
-func _check_timing(errors: PackedStringArray) -> void:
+func _check_timing(errors: PackedStringArray, timing: EffectTiming) -> void:
 	if _timings_for_kind().has(timing):
 		return
 	var kind_name := String(kind_id(kind))
@@ -212,19 +205,9 @@ func _check_timing(errors: PackedStringArray) -> void:
 		errors.append("207 : %s n'admet pas le timing %s" % [kind_name, timing_name])
 
 
-func _check_conditions(errors: PackedStringArray) -> void:
-	if timing == EffectTiming.TRIGGERED and trigger == TriggerEvent.NONE:
-		errors.append("207.3.1 : un effet déclenché nomme son événement dans trigger")
-	if timing != EffectTiming.TRIGGERED and trigger != TriggerEvent.NONE:
-		errors.append("207.3.1 : trigger ne vaut que pour un effet déclenché")
-	if timing != EffectTiming.TRIGGERED and once_per_turn:
-		errors.append("207.3.5 : once_per_turn ne vaut que pour un effet déclenché")
-	if timing != EffectTiming.TRIGGERED and condition != null:
-		errors.append("207.3.13 : condition ne vaut que pour un effet déclenché")
-	if condition != null:
-		for message: String in condition.find_errors():
-			errors.append("condition : " + message)
-	_check_scope(errors)
+func _check_conditions(errors: PackedStringArray, timing: EffectTiming) -> void:
+	_check_sequence(errors, timing)
+	_check_scope(errors, timing)
 	if timing == EffectTiming.STATIC and target != null:
 		errors.append("207.5.1 : un effet statique ne cible pas")
 	if timing == EffectTiming.STATIC and subject != EffectSubject.TARGETS:
@@ -234,13 +217,46 @@ func _check_conditions(errors: PackedStringArray) -> void:
 		errors.append("207.5.1 : un effet qui passe par la pile nomme sa cible")
 	if subject != EffectSubject.TARGETS and target != null:
 		errors.append("0057 : un effet dont le sujet n'est pas TARGETS ne nomme pas de cible")
-	_check_subject(errors)
-	_check_source_adjacency(errors)
+	_check_subject(errors, timing)
+	EffectTargetChecks.check_affected(self, errors)
+	_check_source_adjacency(errors, timing)
+
+
+# 207.7.1, 207.7.6, 207.7.6b : la condition « si » d'un effet vaut pour le texte d'un Spell ou d'un
+# Ordre (timing RESOLVE) ; la condition d'un texte déclenché se lit à l'événement et s'écrit sur le
+# texte (207.3.13). « Si vous le faites » n'est pas une condition « si » : les deux ne se
+# combinent pas, le ruleset ne dit pas comment.
+func _check_sequence(errors: PackedStringArray, timing: EffectTiming) -> void:
+	if condition != null and timing != EffectTiming.RESOLVE:
+		(
+			errors
+			. append(
+				(
+					"0064 : en attente d'une question du ruleset (voir 207.7.1, 207.3.13), la condition "
+					+ "« si » d'un effet ne vaut que pour un Spell ou un Ordre"
+				)
+			)
+		)
+	if condition != null:
+		for message: String in condition.find_errors():
+			errors.append("condition : " + message)
+	if if_you_do and timing == EffectTiming.STATIC:
+		errors.append("207.7.6 : un effet statique ne dépend d'aucun autre effet")
+	if if_you_do and condition != null:
+		(
+			errors
+			. append(
+				(
+					"0064 : en attente d'une question du ruleset (voir 207.7.6b), « si vous le faites » "
+					+ "et une condition « si » ne se combinent pas"
+				)
+			)
+		)
 
 
 # 207.2.2, 207.2.8, 206.5.5 : un effet statique nomme dans scope les pièces qu'il touche, relatives
 # à la pièce qui le porte ; 202.3.9, Q-097 : sa Force ne touche aucun Hero.
-func _check_scope(errors: PackedStringArray) -> void:
+func _check_scope(errors: PackedStringArray, timing: EffectTiming) -> void:
 	if timing == EffectTiming.STATIC and scope == null:
 		errors.append("207.2.2 : un effet statique nomme les pièces qu'il touche dans scope")
 	if timing != EffectTiming.STATIC and scope != null:
@@ -258,24 +274,24 @@ func _check_scope(errors: PackedStringArray) -> void:
 		errors.append("202.3.9 : modify_force ne touche pas de Hero")
 
 
-# 207.3.14 : un filtre relatif à la pièce source suppose une pièce qui porte l'effet, donc un effet
+# 207.3.14 : un filtre relatif à la pièce source suppose une pièce qui porte l'effet, donc un texte
 # déclenché.
-func _check_source_adjacency(errors: PackedStringArray) -> void:
-	var specs: Array[TargetSpec] = []
-	for spec: TargetSpec in [target, destination]:
-		if spec != null:
-			specs.append(spec)
-	var uses_source := specs.any(func(spec: TargetSpec) -> bool: return spec.uses_source_piece())
+func _check_source_adjacency(errors: PackedStringArray, timing: EffectTiming) -> void:
+	var uses_source := [target, destination].any(
+		func(spec: TargetSpec) -> bool: return spec != null and spec.uses_source_piece()
+	)
+	uses_source = uses_source or (affected != null and affected.uses_source_piece())
 	if uses_source and timing != EffectTiming.TRIGGERED:
 		errors.append(
 			"207.3.14 : un filtre relatif à la pièce source ne vaut que pour un effet déclenché"
 		)
 
 
-# Décisions 0057 et 0062 : piocher, défausser et regarder touchent le joueur ; réveiller, endormir,
-# modifier la Force et détruire, leurs cibles ou la pièce source, celle-ci seulement pour un effet
-# déclenché (un Spell n'a pas de pièce, un Ordre a celle du Hero) ; les autres kinds ciblent.
-func _check_subject(errors: PackedStringArray) -> void:
+# Décisions 0057, 0062 et 0064 : piocher, défausser et regarder touchent le joueur ; réveiller,
+# endormir, modifier la Force, accorder un mot-clé et détruire, leurs cibles, la pièce source
+# (effet déclenché seulement : un Spell n'a pas de pièce, un Ordre a celle du Hero) ou un ensemble
+# décrit par `affected` (pas pour un effet statique, qui a sa portée) ; les autres kinds ciblent.
+func _check_subject(errors: PackedStringArray, timing: EffectTiming) -> void:
 	var allowed := _subjects_for_kind()
 	if allowed.has(subject):
 		var source_without_trigger := (
@@ -293,11 +309,15 @@ func _subjects_for_kind() -> Array[EffectSubject]:
 		EffectKind.DRAW_CARDS, EffectKind.DISCARD_CARDS, EffectKind.LOOK_AT_TOP_CARD:
 			return [EffectSubject.OWNER_PLAYER]
 		EffectKind.WAKE, EffectKind.SLEEP, EffectKind.MODIFY_FORCE, EffectKind.DESTROY:
-			return [EffectSubject.TARGETS, EffectSubject.SOURCE_PIECE]
+			return [
+				EffectSubject.TARGETS, EffectSubject.SOURCE_PIECE, EffectSubject.MATCHING_PIECES
+			]
+		EffectKind.GRANT_KEYWORD:
+			return [EffectSubject.TARGETS, EffectSubject.MATCHING_PIECES]
 	return [EffectSubject.TARGETS]
 
 
-func _check_duration(errors: PackedStringArray) -> void:
+func _check_duration(errors: PackedStringArray, timing: EffectTiming) -> void:
 	if timing == EffectTiming.STATIC and has_duration:
 		errors.append("207.4.10 : un effet statique n'a pas de durée")
 	var lasting_kind := kind in _LASTING_KINDS
@@ -308,9 +328,9 @@ func _check_duration(errors: PackedStringArray) -> void:
 		errors.append("207.4.9 : sans durée, l'effet est ponctuel, duration est sans objet")
 
 
-func _check_parameters(errors: PackedStringArray) -> void:
+func _check_parameters(errors: PackedStringArray, timing: EffectTiming) -> void:
 	_check_amount(errors)
-	errors.append_array(EffectValueChecks.find_errors(self))
+	errors.append_array(EffectValueChecks.find_errors(self, timing))
 	var creates_token := kind == EffectKind.CREATE_TOKEN
 	if creates_token and token_piece_kind == NO_TOKEN_KIND:
 		errors.append("202.4.8 : un jeton est une Unit ou un Building, token_piece_kind le dit")

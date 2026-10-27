@@ -17,7 +17,7 @@ static func catalog() -> Catalog:
 	var result := TriggerSamples.catalog()
 	SetupSamples.add_unit(result, CARD, CARD_FORCE)
 	var spell := CatalogSamples.with_field(CatalogSamples.spell(), "id", String(SPELL))
-	result.add_card(CardDefinition.from_dict(CatalogSamples.with_field(spell, "effects", [])))
+	result.add_card(CardDefinition.from_dict(CatalogSamples.with_effects(spell, [])))
 	return result
 
 

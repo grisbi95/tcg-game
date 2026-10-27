@@ -1,9 +1,10 @@
 class_name TriggerTargets
 extends RefCounted
 ## Cibles d'un effet déclenché en attente (207.5.1b, 207.5.2, 207.5.9, 207.5.10, décisions 0004,
-## 0017 et 0056) : pièces et cases légales, choix unique pris par le moteur, attente des cibles.
-## Appelé par TriggerRules, qui ajoute l'effet à la pile ; les filtres relatifs à la pièce source
-## se lisent par `EffectRules.resolved_spec` (207.3.14).
+## 0017 et 0056) : pièces et cases légales, choix unique pris par le moteur, attente des cibles ;
+## et cibles d'un Spell ou d'un Ordre à l'annonce (207.5.1a, 207.5.8, 211.4.1, 211.4.2). Appelé
+## par TriggerRules, qui ajoute l'effet à la pile, par SpellRules et par OrderRules ; les filtres
+## relatifs à la pièce source se lisent par `EffectRules.resolved_spec` (207.3.14).
 
 
 ## 207.5.9, 207.5.10 : nombre de cibles légales de l'effet ; pour un déplacement, une pièce ne
@@ -64,6 +65,79 @@ static func assign_chosen(entry: StackEntry, intent: ChooseTargets) -> void:
 	entry.target_piece_ids.assign(intent.target_piece_ids)
 	entry.target_cells.assign(intent.target_cells)
 	entry.target_stack_entry_ids.assign(intent.target_stack_entry_ids)
+
+
+## 207.5.1a, 207.5.8, 211.4.1, 211.4.2 : raison du refus des cibles que porte `entry` pour les
+## `effects` d'un Spell ou d'un Ordre : chaque effet juge les cibles de son genre, aucune cible en
+## trop. Pur.
+static func validate_announced_targets(
+	state: DuelState, entry: StackEntry, effects: Array[EffectDefinition]
+) -> IntentRejected.RejectReason:
+	for effect: EffectDefinition in effects:
+		if effect.target == null:
+			continue
+		var reason := validate_effect_targets(state, entry, effect)
+		if reason != IntentRejected.RejectReason.NONE:
+			return reason
+	return validate_no_extra_targets(entry, effects)
+
+
+## 207.5.1a, 207.5.10, 214.1.3, 215.1.1 : raison du refus des cibles que porte `entry` pour
+## `effect`, destination comprise ; l'échange exige deux pièces distinctes (cartes, Q-098 reste
+## ouverte en général). Pur.
+static func validate_effect_targets(
+	state: DuelState, entry: StackEntry, effect: EffectDefinition
+) -> IntentRejected.RejectReason:
+	var reason := EffectRules.validate_targets(state, entry, effect.target)
+	if reason != IntentRejected.RejectReason.NONE:
+		return reason
+	return validate_destination_targets(state, entry, effect)
+
+
+## 207.5.1 : une entrée ne porte que les cibles qu'exigent ses effets ; tout autre genre de
+## cible fait refuser l'annonce. Pur.
+static func validate_no_extra_targets(
+	entry: StackEntry, effects: Array[EffectDefinition]
+) -> IntentRejected.RejectReason:
+	var aimed: Array[TargetSpec.TargetWhat] = []
+	for effect: EffectDefinition in effects:
+		if effect.target != null:
+			aimed.append(effect.target.what)
+		if effect.destination != null:
+			aimed.append(effect.destination.what)
+	var extra_pieces := not entry.target_piece_ids.is_empty()
+	extra_pieces = extra_pieces and not aimed.has(TargetSpec.TargetWhat.PIECE)
+	var extra_cells := not entry.target_cells.is_empty()
+	extra_cells = extra_cells and not aimed.has(TargetSpec.TargetWhat.CELL)
+	var extra_spells := not entry.target_stack_entry_ids.is_empty()
+	extra_spells = extra_spells and not aimed.has(TargetSpec.TargetWhat.SPELL_ON_STACK)
+	if extra_pieces or extra_cells or extra_spells:
+		return IntentRejected.RejectReason.WRONG_TARGET_COUNT
+	return IntentRejected.RejectReason.NONE
+
+
+## 207.5.1, 214.1.3, 215.1.1 : raison du refus de ce que `entry` porte en plus des pièces déjà
+## jugées pour `effect` : l'échange veut deux pièces distinctes (contrôle de ce `kind`, Q-098 reste
+## ouverte en général), le déplacement une case de destination légale pour la pièce ciblée. Pur.
+static func validate_destination_targets(
+	state: DuelState, entry: StackEntry, effect: EffectDefinition
+) -> IntentRejected.RejectReason:
+	if (
+		effect.kind == EffectDefinition.EffectKind.SWAP_CELLS
+		and EffectRules.has_duplicates(entry, effect.target)
+	):
+		return IntentRejected.RejectReason.ILLEGAL_TARGET
+	if effect.destination == null:
+		return IntentRejected.RejectReason.NONE
+	var spec := EffectRules.resolved_spec(state, entry, effect.destination)
+	var cell_count := EffectRules.chosen_count(entry, spec)
+	if cell_count < spec.count_min or cell_count > spec.count_max:
+		return IntentRejected.RejectReason.WRONG_TARGET_COUNT
+	var anchor := state.find_piece(entry.target_piece_ids[0])
+	for cell: Vector2i in entry.target_cells:
+		if not EffectRules.is_legal_cell(state, entry.owner, spec, cell, anchor):
+			return IntentRejected.RejectReason.ILLEGAL_TARGET
+	return IntentRejected.RejectReason.NONE
 
 
 # 207.5.9, 215.1.1 : cibles légales de l'effet ; un déplacement ne propose que les pièces qui ont

@@ -14,6 +14,7 @@ static func resolve(context: EffectContext) -> void:
 	var deck := context.state.get_player(side).deck
 	if deck.is_empty():
 		return
+	context.took_place = true
 	var top_card: CardInstance = deck.back()
 	var top_card_id := top_card.card_instance_id
 	context.events.append(TopCardLooked.new(side, top_card_id))

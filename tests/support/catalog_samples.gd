@@ -4,6 +4,13 @@ extends RefCounted
 ##
 ## Chaque fonction renvoie une copie neuve à modifier avec `with_field()` et `without_field()`.
 ## Ce ne sont pas les cartes de test de l'étape 1.9.
+##
+## Forme à plat (décision 0064) : un effet d'essai s'écrit avec ses clés `timing`, `trigger`,
+## `once_per_turn` (et `condition`, pour un effet déclenché) ; `flat_text_of` en fait un texte du
+## catalogue à un seul effet, `with_effects` et `with_flats` posent ces textes sur une carte, un
+## Hero ou un Ordre, et `effect_errors` contrôle l'effet dans son texte.
+
+const _TEXT_KEYS: Array[String] = ["timing", "trigger", "once_per_turn"]
 
 
 static func unit() -> Dictionary:
@@ -36,7 +43,7 @@ static func spell() -> Dictionary:
 		"type": "spell",
 		"speed": "reaction",
 		"text": "Une Unit alliée ciblée a +2 Force jusqu'à la fin du tour.",
-		"effects": [modify_force_resolve()],
+		"texts": texts_of([modify_force_resolve()]),
 	}
 
 
@@ -47,7 +54,7 @@ static func gear() -> Dictionary:
 		"cost": 1,
 		"type": "gear",
 		"text": "La Unit qui porte ce Gear a +1 Force.",
-		"effects": [modify_force_static()],
+		"texts": texts_of([modify_force_static()]),
 	}
 
 
@@ -57,7 +64,7 @@ static func hero() -> Dictionary:
 		"name": "Hero d'essai",
 		"health": 15,
 		"text": "Passif.",
-		"passive": [modify_force_static({"scope": adjacent_allied_scope()})],
+		"passive": texts_of([modify_force_static({"scope": adjacent_allied_scope()})]),
 	}
 
 
@@ -169,7 +176,7 @@ static func token_spell(id: StringName, cost: int) -> CardDefinition:
 	var data := with_field(spell(), "id", String(id))
 	data = with_field(data, "speed", "action")
 	data = with_field(data, "cost", cost)
-	data = with_field(data, "effects", [create_token_effect()])
+	data = with_effects(data, [create_token_effect()])
 	return CardDefinition.from_dict(data)
 
 
@@ -194,6 +201,73 @@ static func with_filter_field(target: Dictionary, key: String, value: Variant) -
 	filter[key] = value
 	copy["filter"] = filter
 	return copy
+
+
+## Décision 0064 : texte à un seul effet pour l'effet à plat `flat` ; `timing`, `trigger` et
+## `once_per_turn` vont sur le texte, ainsi que `condition` d'un effet déclenché (207.3.13).
+static func flat_text_of(flat: Dictionary) -> Dictionary:
+	var effect := flat.duplicate(true)
+	var text := {}
+	for key: String in _TEXT_KEYS:
+		if effect.has(key):
+			text[key] = effect[key]
+			effect.erase(key)
+	if text.get("timing") == "triggered" and effect.has("condition"):
+		text["condition"] = effect["condition"]
+		effect.erase("condition")
+	text["effects"] = [effect]
+	return text
+
+
+## Les textes des effets à plat `flats` : les effets consécutifs de timing « resolve » forment un
+## seul texte, dans l'ordre (207.7.4) ; tout autre effet est un texte à lui seul.
+static func texts_of(flats: Array) -> Array[Dictionary]:
+	var texts: Array[Dictionary] = []
+	var open_resolve := false
+	for flat: Dictionary in flats:
+		var text := flat_text_of(flat)
+		var is_resolve: bool = text.get("timing") == "resolve"
+		if is_resolve and open_resolve:
+			var effects: Array = texts.back()["effects"]
+			var added: Array = text["effects"]
+			effects.append_array(added)
+		else:
+			texts.append(text)
+		open_resolve = is_resolve
+	return texts
+
+
+## Copie de `data`, carte, Hero ou Ordre, dont les textes sont les effets à plat `flats`.
+static func with_effects(data: Dictionary, flats: Array) -> Dictionary:
+	return with_flats(data, "texts", flats)
+
+
+## Copie de `data` dont `key` (`texts`, `passive` ou `triggered`) est les effets à plat `flats`.
+static func with_flats(data: Dictionary, key: String, flats: Array) -> Dictionary:
+	return with_field(data, key, texts_of(flats))
+
+
+## L'effet à plat `flat` sans les clés du texte qui le porte (`timing`, `trigger`,
+## `once_per_turn`).
+static func plain_effect(flat: Dictionary) -> Dictionary:
+	var effects: Array = flat_text_of(flat)["effects"]
+	var effect: Dictionary = effects[0]
+	return effect
+
+
+## Le texte du catalogue de l'effet à plat `flat`.
+static func text_from(flat: Dictionary) -> EffectText:
+	return EffectText.from_dict(flat_text_of(flat))
+
+
+## L'effet du catalogue de l'effet à plat `flat`.
+static func effect_from(flat: Dictionary) -> EffectDefinition:
+	return text_from(flat).effects[0]
+
+
+## Erreurs du texte de l'effet à plat `flat`.
+static func effect_errors(flat: Dictionary) -> PackedStringArray:
+	return text_from(flat).find_errors()
 
 
 ## Copie de `data` avec `key` fixé à `value`.

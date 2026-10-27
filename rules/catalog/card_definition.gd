@@ -49,7 +49,9 @@ var force: int = NO_FORCE
 var speed: SpellSpeed = SpellSpeed.NONE
 ## Valeur X de chaque mot-clé (210.1.3) ; 0 pour un mot-clé sans valeur.
 var keywords: Dictionary[Keyword, int] = {}
-var effects: Array[EffectDefinition] = []
+## Décision 0064 : textes de la carte, dans l'ordre ; `StackEntry.text_index` d'un effet déclenché
+## en est le rang. Un Spell porte au plus un texte, de timing RESOLVE.
+var texts: Array[EffectText] = []
 ## Erreurs de lecture du JSON, reprises par `find_errors()`.
 var parse_errors: PackedStringArray = PackedStringArray()
 
@@ -75,7 +77,7 @@ static func from_dict(data: Dictionary) -> CardDefinition:
 	if speed_value != CatalogReader.NOT_SET:
 		card.speed = speed_value as SpellSpeed
 	card._read_keywords(reader)
-	card._read_effects(reader)
+	card.texts = EffectText.read_all(reader, "texts")
 	card.parse_errors = reader.finish()
 	return card
 
@@ -103,7 +105,7 @@ func find_errors() -> PackedStringArray:
 	_check_speed(errors)
 	_check_x_cost(errors)
 	_check_keywords(errors)
-	_check_effects(errors)
+	_check_texts(errors)
 	return errors
 
 
@@ -125,11 +127,6 @@ func _read_keyword(entry: Dictionary, parent: CatalogReader) -> void:
 		parent.fail("210 : mot-clé « %s » en double" % Keyword.find_key(keyword))
 		return
 	keywords[keyword as Keyword] = value
-
-
-func _read_effects(reader: CatalogReader) -> void:
-	for entry: Dictionary in reader.read_objects("effects"):
-		effects.append(EffectDefinition.from_dict(entry))
 
 
 func _check_force(errors: PackedStringArray) -> void:
@@ -159,7 +156,7 @@ func _check_speed(errors: PackedStringArray) -> void:
 func _check_x_cost(errors: PackedStringArray) -> void:
 	if has_x_cost and card_type != CardType.SPELL:
 		errors.append("213.1.2 : seul un Spell porte un coût X")
-	var chosen_error := EffectValueChecks.chosen_x_error(effects, has_x_cost)
+	var chosen_error := EffectValueChecks.chosen_x_error(texts, has_x_cost)
 	if not chosen_error.is_empty():
 		errors.append(chosen_error)
 
@@ -181,9 +178,7 @@ func _check_keywords(errors: PackedStringArray) -> void:
 func _check_trigger_keyword(
 	errors: PackedStringArray, keyword: Keyword, event: EffectDefinition.TriggerEvent
 ) -> void:
-	var has_effect := false
-	for effect: EffectDefinition in effects:
-		has_effect = has_effect or effect.trigger == event
+	var has_effect := texts.any(func(each: EffectText) -> bool: return each.trigger == event)
 	var keyword_name := str(Keyword.find_key(keyword))
 	if has_keyword(keyword) and not has_effect:
 		errors.append("210.3 : %s exige un effet déclenché par ce mot-clé" % keyword_name)
@@ -191,32 +186,45 @@ func _check_trigger_keyword(
 		errors.append("210.3 : un effet déclenché par %s exige le mot-clé" % keyword_name)
 
 
-func _check_effects(errors: PackedStringArray) -> void:
+func _check_texts(errors: PackedStringArray) -> void:
 	var allowed := _allowed_timings()
-	for index: int in effects.size():
-		var effect := effects[index]
-		for message: String in effect.find_errors():
-			errors.append("effet %d : %s" % [index + 1, message])
-		# Réveiller un Building est exclu (205.5.6) ; endormir un Building « n'a pas lieu pour lui »
-		# (205.5.7b) : SLEEP sur la pièce source d'un Building reste donc valide.
-		if (
+	errors.append_array(EffectText.find_all_errors(texts, "texte"))
+	for index: int in texts.size():
+		var effect_text := texts[index]
+		_check_text_placement(errors, effect_text, "texte %d" % [index + 1], allowed)
+	var count_error := EffectText.single_text_error(texts)
+	if card_type == CardType.SPELL and not count_error.is_empty():
+		errors.append(count_error)
+	var is_unit_bearer := card_type in [CardType.UNIT, CardType.GEAR]
+	var bearer_error := EffectValueChecks.bearer_grant_error(texts, is_unit_bearer)
+	if not bearer_error.is_empty():
+		errors.append(bearer_error)
+
+
+# Réveiller un Building est exclu (205.5.6) ; endormir un Building « n'a pas lieu pour lui »
+# (205.5.7b) : SLEEP sur la pièce source d'un Building reste donc valide.
+func _check_text_placement(
+	errors: PackedStringArray,
+	effect_text: EffectText,
+	label: String,
+	allowed: Array[EffectDefinition.EffectTiming]
+) -> void:
+	for effect: EffectDefinition in effect_text.effects:
+		var wakes_building := (
 			card_type == CardType.BUILDING
 			and effect.kind == EffectDefinition.EffectKind.WAKE
 			and effect.subject == EffectDefinition.EffectSubject.SOURCE_PIECE
-		):
-			errors.append("effet %d : 205.5.6, un Building ne se réveille pas" % [index + 1])
-		if not allowed.has(effect.timing):
-			var type_name := str(CardType.find_key(card_type)).to_lower()
-			errors.append("effet %d : timing refusé pour %s" % [index + 1, type_name])
-		var attack_error := EffectDefinition.destroys_defender_error(
-			effect, card_type in [CardType.UNIT, CardType.GEAR]
 		)
-		if not attack_error.is_empty():
-			errors.append("effet %d : %s" % [index + 1, attack_error])
-	var is_unit_bearer := card_type in [CardType.UNIT, CardType.GEAR]
-	var bearer_error := EffectValueChecks.bearer_grant_error(effects, is_unit_bearer)
-	if not bearer_error.is_empty():
-		errors.append(bearer_error)
+		if wakes_building:
+			errors.append("%s : 205.5.6, un Building ne se réveille pas" % label)
+	if not allowed.has(effect_text.timing):
+		var type_name := str(CardType.find_key(card_type)).to_lower()
+		errors.append("%s : timing refusé pour %s" % [label, type_name])
+	var attack_error := effect_text.destroys_defender_error(
+		card_type in [CardType.UNIT, CardType.GEAR]
+	)
+	if not attack_error.is_empty():
+		errors.append("%s : %s" % [label, attack_error])
 
 
 # 202.2.20 : un Spell se résout ; 207.2.2, 207.3 : une pièce porte du statique et du déclenché ;

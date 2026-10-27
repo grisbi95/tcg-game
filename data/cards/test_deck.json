@@ -8,16 +8,20 @@
 			"text": "Les Units alliées adjacentes au Hero ont +1 Force.",
 			"passive": [
 				{
-					"kind": "modify_force",
 					"timing": "static",
-					"amount": 1,
-					"scope": {
-						"side": "ally",
-						"piece_kinds": [
-							"unit"
-						],
-						"relation": "adjacent"
-					}
+					"effects": [
+						{
+							"kind": "modify_force",
+							"amount": 1,
+							"scope": {
+								"side": "ally",
+								"piece_kinds": [
+									"unit"
+								],
+								"relation": "adjacent"
+							}
+						}
+					]
 				}
 			]
 		}
@@ -103,22 +107,26 @@
 					"keyword": "arrival"
 				}
 			],
-			"effects": [
+			"texts": [
 				{
-					"kind": "modify_force",
 					"timing": "triggered",
-					"amount": -1,
 					"trigger": "arrival",
-					"duration": "until_end_of_turn",
-					"target": {
-						"what": "piece",
-						"filter": {
-							"side": "enemy",
-							"piece_kinds": [
-								"unit"
-							]
+					"effects": [
+						{
+							"kind": "modify_force",
+							"amount": -1,
+							"duration": "until_end_of_turn",
+							"target": {
+								"what": "piece",
+								"filter": {
+									"side": "enemy",
+									"piece_kinds": [
+										"unit"
+									]
+								}
+							}
 						}
-					}
+					]
 				}
 			]
 		},
@@ -134,22 +142,26 @@
 					"keyword": "last_breath"
 				}
 			],
-			"effects": [
+			"texts": [
 				{
-					"kind": "modify_force",
 					"timing": "triggered",
-					"amount": 1,
 					"trigger": "destroyed",
-					"duration": "while_piece_in_play",
-					"target": {
-						"what": "piece",
-						"filter": {
-							"side": "ally",
-							"piece_kinds": [
-								"unit"
-							]
+					"effects": [
+						{
+							"kind": "modify_force",
+							"amount": 1,
+							"duration": "while_piece_in_play",
+							"target": {
+								"what": "piece",
+								"filter": {
+									"side": "ally",
+									"piece_kinds": [
+										"unit"
+									]
+								}
+							}
 						}
-					}
+					]
 				}
 			]
 		},
@@ -189,21 +201,25 @@
 			"type": "spell",
 			"speed": "reaction",
 			"text": "Une Unit alliée ciblée a +2 Force jusqu'à la fin du tour.",
-			"effects": [
+			"texts": [
 				{
-					"kind": "modify_force",
 					"timing": "resolve",
-					"amount": 2,
-					"duration": "until_end_of_turn",
-					"target": {
-						"what": "piece",
-						"filter": {
-							"side": "ally",
-							"piece_kinds": [
-								"unit"
-							]
+					"effects": [
+						{
+							"kind": "modify_force",
+							"amount": 2,
+							"duration": "until_end_of_turn",
+							"target": {
+								"what": "piece",
+								"filter": {
+									"side": "ally",
+									"piece_kinds": [
+										"unit"
+									]
+								}
+							}
 						}
-					}
+					]
 				}
 			]
 		},
@@ -214,20 +230,24 @@
 			"type": "spell",
 			"speed": "action",
 			"text": "Détruisez une Unit ennemie ciblée de Force 3 ou moins.",
-			"effects": [
+			"texts": [
 				{
-					"kind": "destroy",
 					"timing": "resolve",
-					"target": {
-						"what": "piece",
-						"filter": {
-							"side": "enemy",
-							"piece_kinds": [
-								"unit"
-							]
-						},
-						"max_force": 3
-					}
+					"effects": [
+						{
+							"kind": "destroy",
+							"target": {
+								"what": "piece",
+								"filter": {
+									"side": "enemy",
+									"piece_kinds": [
+										"unit"
+									]
+								},
+								"max_force": 3
+							}
+						}
+					]
 				}
 			]
 		},
@@ -238,13 +258,17 @@
 			"type": "spell",
 			"speed": "reaction",
 			"text": "Contrecarrez un Spell ciblé.",
-			"effects": [
+			"texts": [
 				{
-					"kind": "counter_spell",
 					"timing": "resolve",
-					"target": {
-						"what": "spell_on_stack"
-					}
+					"effects": [
+						{
+							"kind": "counter_spell",
+							"target": {
+								"what": "spell_on_stack"
+							}
+						}
+					]
 				}
 			]
 		},
@@ -255,16 +279,20 @@
 			"type": "spell",
 			"speed": "action",
 			"text": "Créez un jeton Unit de Force 2 sur une case libre ciblée de votre première rangée.",
-			"effects": [
+			"texts": [
 				{
-					"kind": "create_token",
 					"timing": "resolve",
-					"token_piece_kind": "unit",
-					"token_force": 2,
-					"target": {
-						"what": "cell",
-						"row": "own_first"
-					}
+					"effects": [
+						{
+							"kind": "create_token",
+							"token_piece_kind": "unit",
+							"token_force": 2,
+							"target": {
+								"what": "cell",
+								"row": "own_first"
+							}
+						}
+					]
 				}
 			]
 		},
@@ -274,14 +302,18 @@
 			"cost": 1,
 			"type": "gear",
 			"text": "La Unit qui porte ce Gear a +1 Force.",
-			"effects": [
+			"texts": [
 				{
-					"kind": "modify_force",
 					"timing": "static",
-					"amount": 1,
-					"scope": {
-						"relation": "self"
-					}
+					"effects": [
+						{
+							"kind": "modify_force",
+							"amount": 1,
+							"scope": {
+								"relation": "self"
+							}
+						}
+					]
 				}
 			]
 		}

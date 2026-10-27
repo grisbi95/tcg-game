@@ -10,7 +10,7 @@ const SUBJECT := EffectDefinition.EffectSubject
 
 
 func _errors(data: Dictionary) -> PackedStringArray:
-	return EffectDefinition.from_dict(data).find_errors()
+	return CatalogSamples.effect_errors(data)
 
 
 func _mentions(errors: PackedStringArray, fragment: String) -> bool:
@@ -36,9 +36,12 @@ func test_decision_0057_new_kinds_come_last_and_keep_their_values() -> void:
 
 
 func test_decision_0057_subject_defaults_to_the_targets() -> void:
-	var effect := EffectDefinition.from_dict(CatalogSamples.modify_force_resolve())
+	var effect := CatalogSamples.effect_from(CatalogSamples.modify_force_resolve())
 	assert_int(effect.subject).is_equal(SUBJECT.TARGETS)
-	assert_array(Array(effect.find_errors())).is_empty()
+	(
+		assert_array(Array(CatalogSamples.effect_errors(CatalogSamples.modify_force_resolve())))
+		. is_empty()
+	)
 	for data: Dictionary in [
 		CatalogSamples.destroy_effect(),
 		CatalogSamples.swap_cells_effect(),
@@ -47,14 +50,14 @@ func test_decision_0057_subject_defaults_to_the_targets() -> void:
 		CatalogSamples.counter_spell_effect(),
 		CatalogSamples.create_token_effect(),
 	]:
-		assert_int(EffectDefinition.from_dict(data).subject).is_equal(SUBJECT.TARGETS)
+		assert_int(CatalogSamples.effect_from(data).subject).is_equal(SUBJECT.TARGETS)
 
 
 func test_decision_0057_subject_is_read_and_closed() -> void:
-	assert_int(EffectDefinition.from_dict(HandEffectSamples.draw_effect(1)).subject).is_equal(
+	assert_int(CatalogSamples.effect_from(HandEffectSamples.draw_effect(1)).subject).is_equal(
 		SUBJECT.OWNER_PLAYER
 	)
-	var source := EffectDefinition.from_dict(HandEffectSamples.wake_source_effect())
+	var source := CatalogSamples.effect_from(HandEffectSamples.wake_source_effect())
 	assert_int(source.subject).is_equal(SUBJECT.SOURCE_PIECE)
 	var unknown := CatalogSamples.with_field(
 		HandEffectSamples.draw_effect(1), "subject", "adversaire"
@@ -140,13 +143,13 @@ func test_decision_0057_wake_effect_targets_units_or_heroes_never_buildings() ->
 
 
 func test_decision_0057_a_building_does_not_carry_a_source_wake_effect() -> void:
-	var building := CatalogSamples.with_field(
-		CatalogSamples.building(), "effects", [HandEffectSamples.wake_source_effect()]
+	var building := CatalogSamples.with_effects(
+		CatalogSamples.building(), [HandEffectSamples.wake_source_effect()]
 	)
 	building = CatalogSamples.with_field(building, "keywords", [{"keyword": "arrival"}])
 	assert_bool(_mentions(CardDefinition.from_dict(building).find_errors(), "205.5.6")).is_true()
-	var unit := CatalogSamples.with_field(
-		CatalogSamples.unit(), "effects", [HandEffectSamples.wake_source_effect()]
+	var unit := CatalogSamples.with_effects(
+		CatalogSamples.unit(), [HandEffectSamples.wake_source_effect()]
 	)
 	unit = CatalogSamples.with_field(unit, "keywords", [{"keyword": "arrival"}])
 	assert_array(Array(CardDefinition.from_dict(unit).find_errors())).is_empty()

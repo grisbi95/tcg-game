@@ -21,12 +21,12 @@ func test_207_3_7b_once_per_turn_limits_only_the_effect_that_carries_it() -> voi
 	var state := _builder.build()
 	_announce(state)
 	assert_int(state.stack.size()).is_equal(2)
-	assert_array(state.once_per_turn_effects).contains_exactly([Vector2i(card_id, FIRST_EFFECT)])
+	assert_array(state.once_per_turn_texts).contains_exactly([Vector2i(card_id, FIRST_EFFECT)])
 	var labels := _announce(state)
 	assert_int(labels.count("TriggerSkipped:A")).is_equal(1)
 	assert_int(labels.count("StackEntryAdded:A")).is_equal(1)
 	assert_int(state.stack.size()).is_equal(3)
-	assert_int(state.stack[2].effect_index).is_equal(SECOND_EFFECT)
+	assert_int(state.stack[2].text_index).is_equal(SECOND_EFFECT)
 
 
 func test_207_3_7b_effect_without_the_mention_is_added_at_every_event() -> void:
@@ -35,7 +35,7 @@ func test_207_3_7b_effect_without_the_mention_is_added_at_every_event() -> void:
 	for announcement: int in 3:
 		_announce(state)
 	var unlimited := state.stack.filter(
-		func(entry: StackEntry) -> bool: return entry.effect_index == SECOND_EFFECT
+		func(entry: StackEntry) -> bool: return entry.text_index == SECOND_EFFECT
 	)
 	assert_int(unlimited.size()).is_equal(3)
 
@@ -45,7 +45,7 @@ func test_207_3_7c_each_effect_with_the_mention_is_counted_separately() -> void:
 	var state := _builder.build()
 	_announce(state)
 	assert_int(state.stack.size()).is_equal(2)
-	assert_array(state.once_per_turn_effects).contains_exactly_in_any_order(
+	assert_array(state.once_per_turn_texts).contains_exactly_in_any_order(
 		[Vector2i(card_id, FIRST_EFFECT), Vector2i(card_id, SECOND_EFFECT)]
 	)
 	var labels := _announce(state)
@@ -60,25 +60,25 @@ func test_207_3_7c_the_count_of_another_copy_of_the_card_is_separate() -> void:
 	var state := _builder.build()
 	_announce(state)
 	assert_int(state.stack.size()).is_equal(4)
-	assert_int(state.once_per_turn_effects.size()).is_equal(4)
-	assert_bool(state.once_per_turn_effects.has(Vector2i(first_card, SECOND_EFFECT))).is_true()
-	assert_bool(state.once_per_turn_effects.has(Vector2i(second_card, SECOND_EFFECT))).is_true()
+	assert_int(state.once_per_turn_texts.size()).is_equal(4)
+	assert_bool(state.once_per_turn_texts.has(Vector2i(first_card, SECOND_EFFECT))).is_true()
+	assert_bool(state.once_per_turn_texts.has(Vector2i(second_card, SECOND_EFFECT))).is_true()
 
 
 func test_207_3_9_the_count_of_each_effect_restarts_at_the_next_turn() -> void:
 	_place(FilterSamples.TWICE_ONCE, "B2")
 	var state := _builder.build()
 	_announce(state)
-	assert_int(state.once_per_turn_effects.size()).is_equal(2)
+	assert_int(state.once_per_turn_texts.size()).is_equal(2)
 	var events: Array[DuelEvent] = []
 	TurnRules.start_turn(state, DuelState.PlayerSide.B, events)
-	assert_array(state.once_per_turn_effects).is_empty()
+	assert_array(state.once_per_turn_texts).is_empty()
 
 
 func test_207_3_7_the_key_of_an_effect_is_its_card_and_its_rank() -> void:
 	var entry := StackEntry.new()
 	entry.source_card_instance_id = 12
-	entry.effect_index = 3
+	entry.text_index = 3
 	assert_vector(TriggerRules.once_per_turn_key(entry)).is_equal(Vector2i(12, 3))
 
 

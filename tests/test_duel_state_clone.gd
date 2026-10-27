@@ -159,11 +159,12 @@ func _build_full_state() -> DuelState:
 	state.triggers_allow_response = false
 	state.resolving_entry = _make_trigger(builder, unit_id, spell_entry_id)
 	state.resolving_effect_index = 2
+	state.previous_effect_took_place = true
 	for player: PlayerState in state.players:
 		player.announced_this_turn = true
 	state.waiting_triggers.append(_make_trigger(builder, token_id, spell_entry_id))
 	state.triggers_to_add.append(_make_trigger(builder, unit_id, spell_entry_id))
-	state.once_per_turn_effects.append(Vector2i(spell_card.card_instance_id, 1))
+	state.once_per_turn_texts.append(Vector2i(spell_card.card_instance_id, 1))
 	state.departed_cells[token_id + 1] = DuelStateBuilder.cell("C4")
 	_draw(state.rng)
 	return state
@@ -209,7 +210,7 @@ func _make_trigger(
 	entry.source_piece_id = source_piece_id
 	entry.source_card_instance_id = entry.card.card_instance_id
 	entry.source_definition_id = UNIT_ID
-	entry.effect_index = 1
+	entry.text_index = 1
 	entry.allows_response = false
 	entry.target_cells.append(DuelStateBuilder.cell("C3"))
 	entry.target_piece_ids.append(source_piece_id)

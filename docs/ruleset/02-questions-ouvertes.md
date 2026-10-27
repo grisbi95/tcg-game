@@ -152,6 +152,36 @@ Manque pour trancher : le choix éditorial du créateur. Origine : étape c.2 du
 - Option B : 207.3.14 ne vaut que pour la pièce source ; une case définie par rapport à une pièce ciblée partie devient une cible invalide ; compromis : l'effet perd toutes ses cibles (207.5.5), comportement actuel du moteur, mais une exception de lecture à écrire dans 207.3.14.
 Manque pour trancher : le choix du créateur. Origine : étape c.5b du code, le code n'a rien tranché (il garde le comportement actuel, noté au backlog).
 
+**Q-156 · Condition « si » sur un effet d'un texte déclenché** · chapitre 207 · ouverte le 27 octobre 2026
+À quel moment se lit la condition « si » d'un effet qui suit un autre effet dans le texte d'un effet déclenché (par exemple « Au début de votre tour, piochez une carte, puis, si vous avez trois cartes ou plus en main, défaussez une carte »), alors que 207.7.1 vise la condition « si » placée dans le texte d'un Spell ou d'un Ordre, lue à la résolution, que 207.3.13 vise la condition d'un effet déclenché, lue à l'événement, et que 207.7.1a et 207.7.1b parlent de la condition « si » d'un effet lue dans l'ordre du texte ?
+- Option A : 207.7.1 à 207.7.3 valent aussi pour le texte d'un effet déclenché, la condition d'un effet suivant est lue dans l'ordre du texte, à la résolution ; compromis : un effet déclenché porte deux lectures de condition, celle de 207.3.13 à l'événement et celle de 207.7 à la résolution.
+- Option B : un effet déclenché ne porte qu'une condition, celle de 207.3.13 lue à l'événement, et un effet qui en suit un autre ne peut pas en porter ; compromis : une seule lecture de condition, mais des cartes à texte enchaîné impossibles à écrire en effet déclenché.
+Manque pour trancher : le choix du créateur. Aucune carte de `50-cartes/` ne l'emploie au 27 octobre 2026. Origine : étape c.5d du code (décision de code 0064, texte d'effets `EffectText`), le code n'a rien tranché ; le catalogue refuse ce cas en attendant la réponse.
+
+**Q-157 · « Si vous le faites » et condition « si » sur le même effet** · chapitre 207 · ouverte le 27 octobre 2026
+Un même effet peut-il porter à la fois « si vous le faites » et une condition « si », et comment se combinent-ils, alors que 207.7.6 et 207.7.6a font dépendre un effet introduit par « si vous le faites » de l'effet qui le précède et que 207.7.6b dit seulement que ce n'est pas une condition « si » ?
+- Option A : les deux s'appliquent, l'effet n'a lieu que si l'effet précédent a eu lieu et si la condition est vraie à sa lecture ; compromis : deux contrôles sur un effet, à lire dans un ordre que la règle doit fixer.
+- Option B : un effet ne porte pas les deux, règle explicite ; compromis : une règle de plus, et le catalogue refuse une carte qui les combine.
+Manque pour trancher : le choix du créateur. Aucune carte de `50-cartes/` ne l'emploie au 27 octobre 2026. Origine : étape c.5d du code (décision de code 0064, texte d'effets `EffectText`), le code n'a rien tranché ; le catalogue refuse ce cas en attendant la réponse.
+
+**Q-158 · Plusieurs textes sur un Spell ou un Ordre** · chapitres 207 et 211 · ouverte le 27 octobre 2026
+Un Spell ou un Ordre peut-il porter plusieurs textes, et dans quel ordre se résolvent-ils, alors que 207.7.4 fixe l'ordre des effets d'un même texte, que 211.1.5 applique 207.7 au texte d'un Ordre, et que rien ne dit combien de textes porte un Spell ou un Ordre ?
+- Option A : un Spell ou un Ordre n'a qu'un texte, règle explicite ; compromis : une règle de plus, et une carte à deux blocs de texte doit être écrite en un seul.
+- Option B : plusieurs textes se résolvent dans l'ordre de la carte, chacun soumis à 207.7 ; compromis : des règles à écrire sur le passage d'un texte au suivant, notamment pour « si vous le faites » (207.7.6).
+Manque pour trancher : le choix du créateur. Aucune carte de `50-cartes/` ne l'emploie au 27 octobre 2026. Origine : étape c.5d du code (décision de code 0064, texte d'effets `EffectText`), le code n'a rien tranché ; le catalogue refuse ce cas en attendant la réponse.
+
+**Q-159 · « A eu lieu » pour réveiller une pièce déjà éveillée** · chapitres 205 et 207 · ouverte le 27 octobre 2026
+Réveiller une pièce déjà éveillée compte-t-il comme un effet qui a eu lieu, alors que 207.7.6a exige que l'effet précédent ait eu lieu au moins en partie, que 205.5.7a et 205.5.7b disent qu'endormir une pièce déjà endormie ou un Building n'a pas lieu pour elle, et que rien de semblable n'existe pour réveiller (205.5.5, 200.4.1) ?
+- Option A : règle symétrique, réveiller une pièce déjà éveillée n'a pas lieu pour elle ; compromis : une règle de plus, et un effet « si vous le faites » placé après un réveil n'a pas lieu quand toutes les pièces visées sont déjà éveillées.
+- Option B : réveiller une pièce ciblée valide a toujours lieu ; compromis : aucune règle à écrire, mais une asymétrie avec 205.5.7a et 205.5.7b.
+Manque pour trancher : le choix du créateur. Aucune carte de `50-cartes/` ne l'emploie au 27 octobre 2026. Origine : étape c.5d du code (décision de code 0064, texte d'effets `EffectText`), le code n'a rien tranché ; le catalogue refuse ce cas en attendant la réponse.
+
+**Q-160 · « A eu lieu » pour un ensemble sans cible vide** · chapitre 207 · ouverte le 27 octobre 2026
+Un effet qui touche un ensemble sans le cibler (207.4.11, 207.5.18), par exemple « les Units ennemies ont −1 Force jusqu'à la fin du tour », a-t-il eu lieu pour 207.7.6a quand l'ensemble est vide à la résolution, alors que 207.5.5 ne vaut que pour des cibles ?
+- Option A : un ensemble vide fait que l'effet n'a pas lieu (200.4.1) ; compromis : un effet « si vous le faites » qui suit ne s'exécute pas, mais la lecture dépend de l'état du plateau.
+- Option B : l'effet a lieu, sans pièce touchée ; compromis : un effet « si vous le faites » qui suit s'exécute alors que rien n'a été touché.
+Manque pour trancher : le choix du créateur. Aucune carte de `50-cartes/` ne l'emploie au 27 octobre 2026. Origine : étape c.5d du code (décision de code 0064, texte d'effets `EffectText`), le code n'a rien tranché ; le catalogue refuse ce cas en attendant la réponse.
+
 ## Tranchées
 
 | Question | Décision |

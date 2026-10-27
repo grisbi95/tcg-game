@@ -48,17 +48,20 @@ static func active_total(
 static func of_kind(
 	state: DuelState, bearer: Piece, kind: EffectDefinition.EffectKind
 ) -> Array[EffectDefinition]:
-	var carried: Array[EffectDefinition] = []
+	var carried: Array[EffectText] = []
 	if bearer.kind == Piece.PieceKind.HERO:
 		carried.append_array(state.catalog.get_hero(bearer.card.definition_id).passive)
 	elif bearer.card != null:
-		carried.append_array(state.catalog.get_card(bearer.card.definition_id).effects)
+		carried.append_array(state.catalog.get_card(bearer.card.definition_id).texts)
 	if bearer.attached_gear != null:
-		carried.append_array(state.catalog.get_card(bearer.attached_gear.definition_id).effects)
+		carried.append_array(state.catalog.get_card(bearer.attached_gear.definition_id).texts)
 	var matching: Array[EffectDefinition] = []
-	for effect: EffectDefinition in carried:
-		if effect.timing == EffectDefinition.EffectTiming.STATIC and effect.kind == kind:
-			matching.append(effect)
+	for text: EffectText in carried:
+		if text.timing != EffectDefinition.EffectTiming.STATIC:
+			continue
+		for effect: EffectDefinition in text.effects:
+			if effect.kind == kind:
+				matching.append(effect)
 	return matching
 
 
@@ -84,6 +87,20 @@ static func total_for(
 static func scope_touches(scope: PieceFilter, bearer: Piece, piece: Piece) -> bool:
 	var anchor := FilterAnchor.new(bearer.owner, bearer.piece_id, bearer.cell)
 	return matches_filter(scope, anchor, piece)
+
+
+## 207.4.11, 207.4.11a, 207.4.11c, décision 0064 : pièces en jeu qui remplissent `filter` par
+## rapport à `anchor` à l'instant de l'appel, dans l'ordre de `state.pieces`. L'ensemble d'un effet
+## qui ne cible pas se calcule ainsi une seule fois, à la résolution ; il ne se recalcule jamais
+## (un effet statique, lui, se lit en continu : `total_for`, 207.4.11b). Pur.
+static func matching_pieces(
+	state: DuelState, filter: PieceFilter, anchor: FilterAnchor
+) -> Array[Piece]:
+	var matching: Array[Piece] = []
+	for piece: Piece in state.pieces:
+		if BoardGeometry.is_on_board(piece.cell) and matches_filter(filter, anchor, piece):
+			matching.append(piece)
+	return matching
 
 
 ## 207.4.7a : un effet « tant que la pièce est en jeu » cesse pour `piece`, qui quitte le

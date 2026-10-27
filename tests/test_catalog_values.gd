@@ -10,7 +10,7 @@ const SOURCE_PIECE_ID: int = 7
 
 
 func _effect_errors(data: Dictionary) -> PackedStringArray:
-	return EffectDefinition.from_dict(data).find_errors()
+	return CatalogSamples.effect_errors(data)
 
 
 func _card_errors(data: Dictionary) -> PackedStringArray:
@@ -84,13 +84,19 @@ func test_decision_0058_a_text_other_than_x_is_not_a_number() -> void:
 
 
 func test_decision_0058_chosen_x_is_refused_without_an_x_cost() -> void:
-	var spell := _with(CatalogSamples.spell(), "effects", [ValueSamples.blessing_effect()])
+	var spell := CatalogSamples.with_effects(
+		CatalogSamples.spell(), [ValueSamples.blessing_effect()]
+	)
 	assert_bool(_mentions(_card_errors(spell), "213.1.3")).is_true()
-	var order := {"speed": "action", "cost": 0, "effects": [ValueSamples.blessing_effect()]}
+	var order := {
+		"speed": "action",
+		"cost": 0,
+		"texts": CatalogSamples.texts_of([ValueSamples.blessing_effect()])
+	}
 	assert_bool(_mentions(HeroOrder.from_dict(order).find_errors(), "213.1.3")).is_true()
-	var hero := _with(CatalogSamples.hero(), "passive", [])
+	var hero := CatalogSamples.with_flats(CatalogSamples.hero(), "passive", [])
 	var triggered := CatalogSamples.triggered("end_of_turn", {"amount": "X", "x_source": "chosen"})
-	hero["triggered"] = [triggered]
+	hero["triggered"] = CatalogSamples.texts_of([triggered])
 	assert_bool(_mentions(HeroDefinition.from_dict(hero).find_errors(), "213.1.3")).is_true()
 
 
@@ -225,14 +231,14 @@ func test_decision_0058_cost_with_x_pays_x_only_for_an_x_cost() -> void:
 
 func test_decision_0058_a_keyword_cannot_be_granted_to_a_bearer_that_is_not_a_unit() -> void:
 	var grant := ValueSamples.static_grant("assault", 1, CatalogSamples.bearer_scope())
-	var building := _with(CatalogSamples.building(), "effects", [grant])
+	var building := CatalogSamples.with_effects(CatalogSamples.building(), [grant])
 	assert_bool(_mentions(_card_errors(building), "210.4.1c")).is_true()
-	var unit := _with(CatalogSamples.unit(), "effects", [grant])
+	var unit := CatalogSamples.with_effects(CatalogSamples.unit(), [grant])
 	assert_array(Array(_card_errors(unit))).is_empty()
 	var aura := ValueSamples.static_grant("assault", 1, CatalogSamples.adjacent_allied_scope())
-	var aura_building := _with(CatalogSamples.building(), "effects", [aura])
+	var aura_building := CatalogSamples.with_effects(CatalogSamples.building(), [aura])
 	assert_array(Array(_card_errors(aura_building))).is_empty()
-	var hero := _with(CatalogSamples.hero(), "passive", [grant])
+	var hero := CatalogSamples.with_flats(CatalogSamples.hero(), "passive", [grant])
 	assert_bool(_mentions(HeroDefinition.from_dict(hero).find_errors(), "210.4.1c")).is_true()
 
 

@@ -89,9 +89,9 @@ var waiting_triggers: Array[StackEntry] = []
 var triggers_to_add: Array[StackEntry] = []
 ## 207.3.6, 207.3.7, 207.3.7c, 207.3.10 : effets « une fois par tour » ajoutés à la pile pendant
 ## le tour. Chaque clé est un `Vector2i` : x = `card_instance_id` de la carte qui porte l'effet,
-## y = rang de l'effet sur cette carte (`TriggerRules.once_per_turn_key`). Remis à zéro au début de
+## y = rang du texte sur cette carte (`TriggerRules.once_per_turn_key`). Remis à zéro au début de
 ## chaque tour (207.3.9).
-var once_per_turn_effects: Array[Vector2i] = []
+var once_per_turn_texts: Array[Vector2i] = []
 ## 208.7.8 à 208.7.11, 208.7.15, 208.7.16 : étiquette que reçoit un effet déclenché qui survient
 ## maintenant, celle de l'annonce ou de l'entrée en cours de résolution ; faux au début et à la
 ## fin du tour. Vrai tant qu'aucune entrée n'a fixé l'étiquette. Fixée par `add_to_stack`, par la
@@ -107,6 +107,10 @@ var pending_decision: PendingDecision
 var resolving_entry: StackEntry
 ## Décision 0057 : rang du prochain effet de `resolving_entry` à appliquer ; 0 hors résolution.
 var resolving_effect_index: int = 0
+## Décision 0064 ; 207.7.6a : le dernier effet du texte en cours de résolution a eu lieu, au moins
+## en partie ; lu par l'effet « si vous le faites » qui le suit, y compris après une attente (0057).
+## Faux hors résolution.
+var previous_effect_took_place: bool = false
 var active_player: PlayerSide = PlayerSide.A
 ## 208.2.4 : joueur qui peut répondre ou passer.
 var priority_player: PlayerSide = PlayerSide.A
@@ -228,11 +232,12 @@ func clone() -> DuelState:
 		copy.active_effects.append(effect.clone())
 	copy.waiting_triggers = _clone_entries(waiting_triggers)
 	copy.triggers_to_add = _clone_entries(triggers_to_add)
-	copy.once_per_turn_effects.assign(once_per_turn_effects)
+	copy.once_per_turn_texts.assign(once_per_turn_texts)
 	copy.triggers_allow_response = triggers_allow_response
 	copy.pending_decision = pending_decision.clone() if pending_decision != null else null
 	copy.resolving_entry = resolving_entry.clone() if resolving_entry != null else null
 	copy.resolving_effect_index = resolving_effect_index
+	copy.previous_effect_took_place = previous_effect_took_place
 	copy.active_player = active_player
 	copy.priority_player = priority_player
 	copy.turn_number = turn_number
