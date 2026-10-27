@@ -41,6 +41,9 @@ var side: TargetSide = TargetSide.ANY
 var piece_kinds: Array[Piece.PieceKind] = []
 ## Borne haute de la Force actuelle de la cible (« de Force 3 ou moins »).
 var max_force: int = NO_FORCE_LIMIT
+## Décision 0058, 213.1.10 : `max_force` s'écrit « X » ; la valeur vient de `x_source` de l'effet,
+## et `with_x()` en fait une borne chiffrée.
+var max_force_is_x: bool = false
 var row: CellRow = CellRow.ANY
 var adjacent_to: AdjacentTo = AdjacentTo.NONE
 var count_min: int = MIN_TARGET_COUNT
@@ -67,9 +70,11 @@ static func from_dict(data: Dictionary) -> TargetSpec:
 	if adjacent_value != CatalogReader.NOT_SET:
 		spec.adjacent_to = adjacent_value as AdjacentTo
 	spec._read_piece_kinds(reader)
-	spec.max_force = reader.read_int(
-		"max_force", CatalogReader.NON_NEGATIVE_MINIMUM, NO_FORCE_LIMIT
-	)
+	spec.max_force_is_x = reader.is_x("max_force")
+	if not spec.max_force_is_x:
+		spec.max_force = reader.read_int(
+			"max_force", CatalogReader.NON_NEGATIVE_MINIMUM, NO_FORCE_LIMIT
+		)
 	spec.count_min = reader.read_int(
 		"count_min", CatalogReader.NON_NEGATIVE_MINIMUM, MIN_TARGET_COUNT
 	)
@@ -96,6 +101,27 @@ func find_errors() -> PackedStringArray:
 	return errors
 
 
+## 213.1.10, 213.1.11 : cette cible où « X » vaut `x_value` ; `self` si elle n'a pas de X.
+func with_x(x_value: int) -> TargetSpec:
+	if not max_force_is_x:
+		return self
+	var copy := TargetSpec.new()
+	copy.what = what
+	copy.side = side
+	copy.piece_kinds.assign(piece_kinds)
+	copy.max_force = x_value
+	copy.row = row
+	copy.adjacent_to = adjacent_to
+	copy.count_min = count_min
+	copy.count_max = count_max
+	return copy
+
+
+## Vrai si la Force de la cible est bornée, par un nombre ou par X.
+func has_force_limit() -> bool:
+	return max_force != NO_FORCE_LIMIT or max_force_is_x
+
+
 func _read_piece_kinds(reader: CatalogReader) -> void:
 	for entry: Variant in reader.read_array("piece_kinds"):
 		var text: String = entry if typeof(entry) == TYPE_STRING else ""
@@ -113,21 +139,21 @@ func _check_piece(errors: PackedStringArray) -> void:
 		errors.append("207.5.11 : row ne vaut que pour une case")
 	if max_force < NO_FORCE_LIMIT:
 		errors.append("207.5.11 : max_force est au moins 0")
-	if max_force != NO_FORCE_LIMIT and piece_kinds.has(Piece.PieceKind.HERO):
+	if has_force_limit() and piece_kinds.has(Piece.PieceKind.HERO):
 		errors.append("202.3.9 : un Hero n'a pas de Force, max_force l'exclut des genres")
 	if adjacent_to == AdjacentTo.TARGET_PIECE:
 		errors.append("215.1.1 : target_piece ne vaut que pour une case de destination")
 
 
 func _check_cell(errors: PackedStringArray) -> void:
-	if side != TargetSide.ANY or not piece_kinds.is_empty() or max_force != NO_FORCE_LIMIT:
+	if side != TargetSide.ANY or not piece_kinds.is_empty() or has_force_limit():
 		errors.append("207.5.11 : une case n'a ni side, ni piece_kinds, ni max_force")
 	if adjacent_to == AdjacentTo.OWN_HERO:
 		errors.append("207.5.11 : own_hero ne vaut que pour une pièce")
 
 
 func _check_spell_on_stack(errors: PackedStringArray) -> void:
-	if side != TargetSide.ANY or not piece_kinds.is_empty() or max_force != NO_FORCE_LIMIT:
+	if side != TargetSide.ANY or not piece_kinds.is_empty() or has_force_limit():
 		errors.append("207.5.14 : un Spell de la pile n'a ni side, ni piece_kinds, ni max_force")
 	if row != CellRow.ANY:
 		errors.append("207.5.14 : row ne vaut que pour une case")

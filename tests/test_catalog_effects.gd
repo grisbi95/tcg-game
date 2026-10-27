@@ -30,15 +30,7 @@ func _with_keywords(card: Dictionary, keywords: Array) -> Dictionary:
 
 
 func test_every_effect_kind_has_a_valid_sample() -> void:
-	var samples: Array[Dictionary] = [
-		CatalogSamples.modify_force_resolve(),
-		CatalogSamples.destroy_effect(),
-		CatalogSamples.counter_spell_effect(),
-		CatalogSamples.create_token_effect(),
-		CatalogSamples.swap_cells_effect(),
-		CatalogSamples.move_unit_effect(),
-		CatalogSamples.return_to_hand_effect(),
-	]
+	var samples := CatalogSamples.effect_samples()
 	samples.append_array(HandEffectSamples.effect_samples())
 	assert_int(EffectDefinition.EffectKind.size()).is_equal(samples.size())
 	for sample: Dictionary in samples:

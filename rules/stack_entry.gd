@@ -45,6 +45,9 @@ var target_cells: Array[Vector2i] = []
 var target_piece_ids: Array[int] = []
 ## 207.5.14 : Spells de la pile ciblés à l'annonce.
 var target_stack_entry_ids: Array[int] = []
+## 213.1.3, 213.1.6, 213.1.8 : valeur choisie pour X à l'annonce d'un Spell à coût X, gardée jusqu'à
+## la fin de sa résolution ; 0 pour tout autre genre d'entrée et tout Spell sans coût X.
+var x_value: int = 0
 
 
 ## 207.5.1a, 211.4.1 : l'entrée porte les cibles choisies à l'annonce ; renvoie l'entrée.
@@ -71,4 +74,5 @@ func clone() -> StackEntry:
 	copy.target_cells.assign(target_cells)
 	copy.target_piece_ids.assign(target_piece_ids)
 	copy.target_stack_entry_ids.assign(target_stack_entry_ids)
+	copy.x_value = x_value
 	return copy

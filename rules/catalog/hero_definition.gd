@@ -57,6 +57,7 @@ func find_errors() -> PackedStringArray:
 	_check_passive(errors)
 	_check_triggered(errors)
 	_check_orders(errors)
+	_check_no_chosen_x(errors)
 	if passive.is_empty() and triggered.is_empty() and orders.is_empty():
 		errors.append("202.3.22 : le Hero porte au moins un passif, un Ordre ou un effet déclenché")
 	return errors
@@ -94,6 +95,19 @@ func _check_triggered(errors: PackedStringArray) -> void:
 	var once_error := EffectDefinition.once_per_turn_error(triggered)
 	if not once_error.is_empty():
 		errors.append(once_error)
+
+
+# 213.1.2 : un Hero n'a pas de coût X, ses effets ne lisent pas de X choisi ; 210.4.1c : il n'est
+# pas une Unit, son passif n'accorde pas de mot-clé à son porteur.
+func _check_no_chosen_x(errors: PackedStringArray) -> void:
+	var carried: Array[EffectDefinition] = passive.duplicate()
+	carried.append_array(triggered)
+	var chosen_error := EffectValueChecks.chosen_x_error(carried, false)
+	if not chosen_error.is_empty():
+		errors.append(chosen_error)
+	var bearer_error := EffectValueChecks.bearer_grant_error(carried, false)
+	if not bearer_error.is_empty():
+		errors.append(bearer_error)
 
 
 # 202.3.19, 211.1 : chaque Ordre se contrôle lui-même.

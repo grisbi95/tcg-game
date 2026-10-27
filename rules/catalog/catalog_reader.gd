@@ -9,6 +9,8 @@ extends RefCounted
 ## Renvoyé par `read_enum()` si le champ est absent ou invalide.
 const NOT_SET: int = -1
 const NON_NEGATIVE_MINIMUM: int = 0  # coûts, PV, Forces et comptes ne sont jamais négatifs
+## Décision 0058 : valeur d'un champ numérique qui s'écrit « X » dans le JSON (213).
+const X_TEXT: String = "X"
 
 var errors: PackedStringArray = PackedStringArray()
 var _data: Dictionary
@@ -72,6 +74,14 @@ func read_int(key: String, minimum: int, fallback: int) -> int:
 		fail("« %s » doit être un entier au moins égal à %d" % [key, minimum])
 		return fallback
 	return value
+
+
+## Décision 0058, 213.1.12 : vrai si `key` vaut exactement « X » ; le champ est alors lu, et le
+## numérique qu'il remplace ne se lit pas. Toute autre valeur reste à `read_int`.
+func is_x(key: String) -> bool:
+	mark_known(key)
+	var value: Variant = _data.get(key)
+	return typeof(value) == TYPE_STRING and str(value) == X_TEXT
 
 
 ## Booléen de JSON ; `fallback` si absent ou invalide.

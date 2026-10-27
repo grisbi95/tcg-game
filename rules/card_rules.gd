@@ -1,7 +1,7 @@
 class_name CardRules
 extends RefCounted
-## Cartes (202) : Gear (annonce, attachement, remplacement). Les jetons se
-## créent par EffectRules (202.4), les effets statiques se lisent dans ForceRules (207.2).
+## Cartes (202) : Gear (annonce, attachement, remplacement). Les jetons se créent par EffectRules
+## (202.4), les effets statiques se lisent dans StaticEffects (207.2), les coûts dans ValueRules.
 
 
 ## 202.2.22, 202.2.23, 207.5.1a, 205.1.5 : un Gear (son Unit) et un Spell s'annoncent avec une
@@ -29,7 +29,9 @@ static func validate_attach_gear(
 		return IntentRejected.RejectReason.NOT_A_GEAR
 	if not _is_valid_gear_unit(state, intent.player, intent.unit_piece_id):
 		return IntentRejected.RejectReason.ILLEGAL_TARGET
-	return EssenceRules.validate_payment(state, intent.player, intent.payment, definition.cost)
+	return EssenceRules.validate_payment(
+		state, intent.player, intent.payment, ValueRules.current_cost(definition)
+	)
 
 
 ## 203.3.2, 203.3.2a, 201.3.8, 202.2.22, 208.4.1, 208.7.6 : paie le coût ; le Gear quitte la main
@@ -37,7 +39,7 @@ static func validate_attach_gear(
 static func announce_gear(state: DuelState, intent: AttachGear, events: Array[DuelEvent]) -> void:
 	var player := state.get_player(intent.player)
 	var card := player.find_card_in_hand(intent.card_instance_id)
-	var cost := state.catalog.get_card(card.definition_id).cost
+	var cost := ValueRules.current_cost(state.catalog.get_card(card.definition_id))
 	events.append_array(EssenceRules.pay_cost(state, intent.player, intent.payment, cost))
 	player.hand.erase(card)
 	events.append(GearAnnounced.new(intent.player, card.card_instance_id, intent.unit_piece_id))

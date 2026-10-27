@@ -22,6 +22,8 @@ var affected_piece_id: int = DuelState.NO_ID
 var effect_kind: StringName = &""
 ## Valeur du modificateur, par exemple +2 de Force (206.5.1).
 var amount: int = 0
+## Mot-clé accordé quand `effect_kind` est « grant_keyword » (210.4) ; sans objet sinon.
+var keyword: CardDefinition.Keyword = CardDefinition.Keyword.ASSAULT
 
 
 func clone() -> ActiveEffect:
@@ -33,4 +35,5 @@ func clone() -> ActiveEffect:
 	copy.affected_piece_id = affected_piece_id
 	copy.effect_kind = effect_kind
 	copy.amount = amount
+	copy.keyword = keyword
 	return copy

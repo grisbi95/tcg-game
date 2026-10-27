@@ -19,6 +19,7 @@ enum EffectKind {
 	DISCARD_CARDS,  # 212 : amount ; sujet : le joueur à qui appartient l'effet
 	LOOK_AT_TOP_CARD,  # 217 : sujet : le joueur à qui appartient l'effet
 	WAKE,  # 205.5 : cible une Unit, ou sujet : la pièce source (« cette Unit »)
+	GRANT_KEYWORD,  # 210.4 : keyword (Assaut ou Rempart), amount ; mêmes formes que MODIFY_FORCE
 }
 
 ## Quand l'effet a lieu.
@@ -50,6 +51,14 @@ enum EffectSubject {
 	SOURCE_PIECE,  # la pièce qui porte l'effet (« cette Unit »), sans cible
 }
 
+## Décision 0058 : d'où vient X quand un champ numérique de l'effet s'écrit « X » (213).
+## Enum journalisable : ajouter à la fin.
+enum XSource {
+	NONE,
+	CHOSEN,  # 213.1.3 : la valeur choisie à l'annonce du Spell à coût X
+	TARGET_FORCE,  # 213.2.3 : la Force de la cible, lue une fois à la résolution
+}
+
 ## Valeur de `token_force` quand l'effet ne crée pas de jeton.
 const NO_TOKEN_FORCE: int = -1
 ## `token_piece_kind` non renseigné : un jeton n'est jamais un Hero (202.4.8).
@@ -58,7 +67,9 @@ const NO_TOKEN_KIND: Piece.PieceKind = Piece.PieceKind.HERO
 const SWAP_TARGET_COUNT: int = 2
 ## 215.1.1 : un déplacement cible une Unit et une case.
 const MOVE_TARGET_COUNT: int = 1
-const _MODIFY_FORCE_TIMINGS: Array[EffectTiming] = [
+## Kinds à durée ou statiques : Force et mot-clé accordé.
+const _LASTING_KINDS: Array[EffectKind] = [EffectKind.MODIFY_FORCE, EffectKind.GRANT_KEYWORD]
+const _LASTING_TIMINGS: Array[EffectTiming] = [
 	EffectTiming.RESOLVE, EffectTiming.STATIC, EffectTiming.TRIGGERED
 ]
 const _ACTION_TIMINGS: Array[EffectTiming] = [EffectTiming.RESOLVE, EffectTiming.TRIGGERED]
@@ -81,6 +92,13 @@ var has_duration: bool = false
 var duration: ActiveEffect.EffectDuration = ActiveEffect.EffectDuration.UNTIL_END_OF_TURN
 ## Modificateur de Force pour MODIFY_FORCE ; 0 si sans objet.
 var amount: int = 0
+## Décision 0058 : `amount` s'écrit « X » ; sa valeur vient de `x_source`.
+var amount_is_x: bool = false
+## Décision 0058 : d'où vient X ; NONE si aucun champ de l'effet ne s'écrit « X ».
+var x_source: XSource = XSource.NONE
+## Mot-clé accordé par GRANT_KEYWORD (210.4) ; sans objet si `keyword_is_set` est faux.
+var keyword: CardDefinition.Keyword = CardDefinition.Keyword.ASSAULT
+var keyword_is_set: bool = false
 var token_piece_kind: Piece.PieceKind = NO_TOKEN_KIND
 var token_force: int = NO_TOKEN_FORCE
 ## Erreurs de lecture du JSON, reprises par `find_errors()`.
@@ -162,7 +180,16 @@ func _read_parameters(reader: CatalogReader) -> void:
 	if duration_value != CatalogReader.NOT_SET:
 		has_duration = true
 		duration = duration_value as ActiveEffect.EffectDuration
-	amount = reader.read_signed_int("amount", 0)
+	amount_is_x = reader.is_x("amount")
+	if not amount_is_x:
+		amount = reader.read_signed_int("amount", 0)
+	var x_source_value := reader.read_enum("x_source", XSource)
+	if x_source_value != CatalogReader.NOT_SET:
+		x_source = x_source_value as XSource
+	var keyword_value := reader.read_enum("keyword", CardDefinition.Keyword)
+	if keyword_value != CatalogReader.NOT_SET:
+		keyword = keyword_value as CardDefinition.Keyword
+		keyword_is_set = true
 	var token_kind_value := reader.read_enum("token_piece_kind", Piece.PieceKind)
 	if token_kind_value != CatalogReader.NOT_SET:
 		token_piece_kind = token_kind_value as Piece.PieceKind
@@ -170,8 +197,8 @@ func _read_parameters(reader: CatalogReader) -> void:
 
 
 func _timings_for_kind() -> Array[EffectTiming]:
-	if kind == EffectKind.MODIFY_FORCE:
-		return _MODIFY_FORCE_TIMINGS
+	if kind in _LASTING_KINDS:
+		return _LASTING_TIMINGS
 	return _ACTION_TIMINGS
 
 
@@ -237,15 +264,17 @@ func _subjects_for_kind() -> Array[EffectSubject]:
 func _check_duration(errors: PackedStringArray) -> void:
 	if timing == EffectTiming.STATIC and has_duration:
 		errors.append("207.4.10 : un effet statique n'a pas de durée")
-	var needs_duration := timing != EffectTiming.STATIC and kind == EffectKind.MODIFY_FORCE
+	var lasting_kind := kind in _LASTING_KINDS
+	var needs_duration := timing != EffectTiming.STATIC and lasting_kind
 	if needs_duration and not has_duration:
-		errors.append("207.4.2 : un effet de Force non statique porte une durée")
-	if has_duration and kind != EffectKind.MODIFY_FORCE:
+		errors.append("207.4.2 : un effet de Force ou de mot-clé non statique porte une durée")
+	if has_duration and not lasting_kind:
 		errors.append("207.4.9 : sans durée, l'effet est ponctuel, duration est sans objet")
 
 
 func _check_parameters(errors: PackedStringArray) -> void:
 	_check_amount(errors)
+	errors.append_array(EffectValueChecks.find_errors(self))
 	var creates_token := kind == EffectKind.CREATE_TOKEN
 	if creates_token and token_piece_kind == NO_TOKEN_KIND:
 		errors.append("202.4.8 : un jeton est une Unit ou un Building, token_piece_kind le dit")
@@ -265,8 +294,13 @@ func _check_amount(errors: PackedStringArray) -> void:
 	if kind in [EffectKind.DRAW_CARDS, EffectKind.DISCARD_CARDS]:
 		if amount < 1:
 			errors.append("212.1.7 : amount est le nombre de cartes, au moins 1")
-	elif (kind == EffectKind.MODIFY_FORCE) == (amount == 0):
+	elif kind == EffectKind.GRANT_KEYWORD:
+		if not amount_is_x and amount < 1:
+			errors.append("210.1.1 : amount est la valeur du mot-clé accordé, au moins 1")
+	elif (kind == EffectKind.MODIFY_FORCE) != (amount != 0 or amount_is_x):
 		errors.append("206.5.1 : amount est exigé non nul pour MODIFY_FORCE, absent sinon")
+	if amount_is_x and kind not in _LASTING_KINDS:
+		errors.append("0058 : amount « X » ne vaut que pour modify_force et grant_keyword")
 
 
 func _check_target_what(errors: PackedStringArray) -> void:

@@ -4,17 +4,17 @@ extends RefCounted
 ## (210.3) sont des effets déclenchés, que TriggerRules met en attente.
 ##
 ## Les mots-clés se lisent sur la définition de la carte d'une pièce ; un Hero et un jeton n'en
-## portent aucun (202.4.13).
+## portent aucun (202.4.13), sauf Assaut et Rempart qu'un effet accorde à une Unit (202.4.13a).
 
 
-## 210.4.1, 210.1.3 : Assaut X de `piece`, ajouté à sa Force quand elle attaque ; 0 sans le
-## mot-clé.
+## 210.4.1, 210.4.1a, 210.1.3 : Assaut X de `piece`, ajouté à sa Force quand elle attaque ; 0 sans
+## le mot-clé. Somme la valeur de sa carte et celles que lui accordent des effets (décision 0058).
 static func assault_value(state: DuelState, piece: Piece) -> int:
 	return _keyword_value(state, piece, CardDefinition.Keyword.ASSAULT)
 
 
-## 210.4.2, 210.1.3 : Rempart X de `piece`, ajouté à sa Force quand elle défend ; 0 sans le
-## mot-clé.
+## 210.4.2, 210.4.2a, 210.1.3 : Rempart X de `piece`, ajouté à sa Force quand elle défend ; 0 sans
+## le mot-clé. Somme la valeur de sa carte et celles que lui accordent des effets (décision 0058).
 static func rampart_value(state: DuelState, piece: Piece) -> int:
 	return _keyword_value(state, piece, CardDefinition.Keyword.RAMPART)
 
@@ -34,9 +34,22 @@ static func is_outpost_cell(state: DuelState, side: DuelState.PlayerSide, cell: 
 
 
 static func _keyword_value(state: DuelState, piece: Piece, keyword: CardDefinition.Keyword) -> int:
-	if not _carries_keywords(piece):
+	var printed := 0
+	if _carries_keywords(piece):
+		printed = _definition_of(state, piece).keyword_value(keyword)
+	return printed + _granted_value(state, piece, keyword)
+
+
+# 202.4.13a, 210.4.1c, 210.4.2c : une Unit, jeton compris, reçoit Assaut ou Rempart d'un effet à
+# durée, d'un effet statique de Gear ou d'une aura ; décision 0058.
+static func _granted_value(state: DuelState, piece: Piece, keyword: CardDefinition.Keyword) -> int:
+	if piece.kind != Piece.PieceKind.UNIT:
 		return 0
-	return _definition_of(state, piece).keyword_value(keyword)
+	var kind := EffectDefinition.EffectKind.GRANT_KEYWORD
+	return (
+		ModifierRules.active_total(state, piece, kind, keyword)
+		+ StaticEffects.total_for(state, piece, kind, keyword)
+	)
 
 
 static func _has_keyword(state: DuelState, piece: Piece, keyword: CardDefinition.Keyword) -> bool:

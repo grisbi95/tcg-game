@@ -37,7 +37,11 @@ const _ID_PATTERN: String = "^[a-z][a-z0-9_]*$"
 
 var id: StringName = &""
 var card_name: String = ""
+## Coût fixe ; 0 quand le coût est X (`has_x_cost`).
 var cost: int = 0
+## 213.1.1, 213.1.12 : le coût s'écrit « X » dans le JSON, X seul sans partie fixe ; se lit par
+## `ValueRules.current_cost`.
+var has_x_cost: bool = false
 var card_type: CardType = CardType.UNIT
 ## 202.1.4 : texte d'affichage, possiblement vide ; les effets ci-dessous font foi.
 var text: String = ""
@@ -59,7 +63,9 @@ static func from_dict(data: Dictionary) -> CardDefinition:
 	reader.require("text", "202.1.4")
 	card.id = StringName(reader.read_string("id"))
 	card.card_name = reader.read_string("name")
-	card.cost = reader.read_int("cost", CatalogReader.NON_NEGATIVE_MINIMUM, 0)
+	card.has_x_cost = reader.is_x("cost")
+	if not card.has_x_cost:
+		card.cost = reader.read_int("cost", CatalogReader.NON_NEGATIVE_MINIMUM, 0)
 	card.text = reader.read_string("text")
 	card.force = reader.read_int("force", CatalogReader.NON_NEGATIVE_MINIMUM, NO_FORCE)
 	var type_value := reader.read_enum("type", CardType)
@@ -95,6 +101,7 @@ func find_errors() -> PackedStringArray:
 		errors.append("202.1.2 : le coût est au moins 0")
 	_check_force(errors)
 	_check_speed(errors)
+	_check_x_cost(errors)
 	_check_keywords(errors)
 	_check_effects(errors)
 	return errors
@@ -148,6 +155,15 @@ func _check_speed(errors: PackedStringArray) -> void:
 		errors.append("207.1.1 : seul un Spell porte une vitesse")
 
 
+# 213.1.2 : seul un Spell porte un coût X ; 213.1.3 : X choisi se lit sur un Spell à coût X.
+func _check_x_cost(errors: PackedStringArray) -> void:
+	if has_x_cost and card_type != CardType.SPELL:
+		errors.append("213.1.2 : seul un Spell porte un coût X")
+	var chosen_error := EffectValueChecks.chosen_x_error(effects, has_x_cost)
+	if not chosen_error.is_empty():
+		errors.append(chosen_error)
+
+
 func _check_keywords(errors: PackedStringArray) -> void:
 	for keyword: Keyword in keywords:
 		var keyword_name := str(Keyword.find_key(keyword))
@@ -190,6 +206,10 @@ func _check_effects(errors: PackedStringArray) -> void:
 			var type_name := str(CardType.find_key(card_type)).to_lower()
 			errors.append("effet %d : timing refusé pour %s" % [index + 1, type_name])
 	_check_once_per_turn(errors)
+	var is_unit_bearer := card_type in [CardType.UNIT, CardType.GEAR]
+	var bearer_error := EffectValueChecks.bearer_grant_error(effects, is_unit_bearer)
+	if not bearer_error.is_empty():
+		errors.append(bearer_error)
 
 
 func _check_once_per_turn(errors: PackedStringArray) -> void:

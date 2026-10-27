@@ -152,6 +152,8 @@ static func is_legal_piece(
 ) -> bool:
 	if spec.what != TargetSpec.TargetWhat.PIECE or not BoardGeometry.is_on_board(piece.cell):
 		return false
+	if spec.max_force_is_x:
+		return false  # 213.1.10 : une borne « X » non résolue (`TargetSpec.with_x`) n'admet rien
 	if spec.side == TargetSpec.TargetSide.ALLY and piece.owner != owner:
 		return false
 	if spec.side == TargetSpec.TargetSide.ENEMY and piece.owner == owner:
@@ -232,8 +234,9 @@ static func resolve_effect(
 			if pieces.is_empty():
 				lose_all_targets(entry, events)
 				return
+			var amount := ValueRules.read_amount(state, entry, effect, pieces)
 			for piece: Piece in pieces:
-				_apply_to_piece(context, piece)
+				_apply_to_piece(context, piece, amount)
 		TargetSpec.TargetWhat.CELL:
 			var cells := _valid_cells(state, entry, spec)
 			if cells.is_empty():
@@ -320,9 +323,10 @@ static func _has_duplicates(entry: StackEntry) -> bool:
 ## 207.5.3, 207.5.6, 207.5.6a : pièces ciblées par `entry` restées valides pour `spec`.
 static func valid_pieces(state: DuelState, entry: StackEntry, spec: TargetSpec) -> Array[Piece]:
 	var pieces: Array[Piece] = []
+	var limits := spec.with_x(entry.x_value)  # 213.1.10, 213.1.11
 	for piece_id: int in entry.target_piece_ids:
 		var piece := state.find_piece(piece_id)
-		if piece != null and is_legal_piece(state, entry.owner, spec, piece):
+		if piece != null and is_legal_piece(state, entry.owner, limits, piece):
 			pieces.append(piece)
 	return pieces
 
@@ -354,34 +358,16 @@ static func lose_all_targets(entry: StackEntry, events: Array[DuelEvent]) -> voi
 
 
 # 207.4.2, 206.5.1, 206.3.2, 205.5 : MODIFY_FORCE à durée ; DESTROY ; WAKE.
-static func _apply_to_piece(context: EffectContext, piece: Piece) -> void:
+static func _apply_to_piece(context: EffectContext, piece: Piece, amount: int) -> void:
 	match context.effect.kind:
 		EffectDefinition.EffectKind.MODIFY_FORCE:
-			_add_force_modifier(context, piece)
+			ModifierRules.add_force_modifier(context, piece, amount)
+		EffectDefinition.EffectKind.GRANT_KEYWORD:
+			ModifierRules.grant_keyword(context, piece, amount)
 		EffectDefinition.EffectKind.DESTROY:
 			CombatRules.destroy_piece(context.state, piece, context.events)
 		EffectDefinition.EffectKind.WAKE:
 			ActionRules.wake_pieces([piece], context.events)
-
-
-# 207.4.2 : le modificateur de Force vit dans l'état avec sa durée.
-static func _add_force_modifier(context: EffectContext, piece: Piece) -> void:
-	var entry := context.entry
-	var effect := context.effect
-	var modifier := ActiveEffect.new()
-	modifier.effect_id = context.state.allocate_active_effect_id()
-	modifier.duration = effect.duration
-	modifier.owner = entry.owner
-	modifier.source_card_instance_id = (
-		entry.card.card_instance_id if entry.card != null else DuelState.NO_ID
-	)
-	modifier.affected_piece_id = piece.piece_id
-	modifier.effect_kind = EffectDefinition.kind_id(effect.kind)
-	modifier.amount = effect.amount
-	context.state.active_effects.append(modifier)
-	context.events.append(
-		ForceModified.new(piece.owner, piece.piece_id, effect.amount, modifier.effect_id)
-	)
 
 
 # 202.4.1, 202.4.8, 202.4.9, 202.4.12 ; 201.5.4, 201.5.4a : le jeton appartient au joueur de

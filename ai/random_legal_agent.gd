@@ -26,6 +26,8 @@ class TargetVariant:
 		target_stack_entry_ids.assign(stack_entry_ids)
 
 
+## Valeurs de X proposées au plus pour un Spell à coût X (213.1.3).
+const MAX_X_CANDIDATES: int = 6
 ## Nombre de choix de défausse proposés au plus, pour borner les combinaisons d'une grande main.
 const MAX_DISCARD_CANDIDATES: int = 24
 
@@ -206,10 +208,10 @@ static func _hand_candidates(state: DuelState, side: DuelState.PlayerSide) -> Ar
 	var intents: Array[DuelIntent] = []
 	for card: CardInstance in state.get_player(side).hand:
 		var definition := state.catalog.get_card(card.definition_id)
-		var payment := simple_payment(state, side, definition.cost)
+		var payment := simple_payment(state, side, ValueRules.current_cost(definition))
 		match definition.card_type:
 			CardDefinition.CardType.SPELL:
-				intents.append_array(_spell_candidates(state, side, card, payment))
+				intents.append_array(_spell_candidates(state, side, card))
 			CardDefinition.CardType.GEAR:
 				intents.append_array(_gear_candidates(state, side, card, payment))
 			_:
@@ -218,16 +220,37 @@ static func _hand_candidates(state: DuelState, side: DuelState.PlayerSide) -> Ar
 	return intents
 
 
+# Un Spell à coût X (213.1) se propose pour chaque valeur de X que l'Essence disponible paie, au
+# plus MAX_X_CANDIDATES ; le moteur juge le paiement.
 static func _spell_candidates(
-	state: DuelState, side: DuelState.PlayerSide, card: CardInstance, payment: EssencePayment
+	state: DuelState, side: DuelState.PlayerSide, card: CardInstance
 ) -> Array[DuelIntent]:
 	var intents: Array[DuelIntent] = []
 	var definition := state.catalog.get_card(card.definition_id)
-	for variant: TargetVariant in _target_variants(state, definition.effects):
-		var cast := CastSpell.new(side, card.card_instance_id, payment)
-		variant.copy_into(cast.target_piece_ids, cast.target_cells, cast.target_stack_entry_ids)
-		intents.append(cast)
+	for x_value: int in _x_values(state, side, definition):
+		var cost := ValueRules.cost_with_x(definition, x_value)
+		var payment := simple_payment(state, side, cost)
+		for variant: TargetVariant in _target_variants(state, definition.effects):
+			var cast := CastSpell.new(side, card.card_instance_id, payment)
+			cast.x_value = x_value
+			variant.copy_into(cast.target_piece_ids, cast.target_cells, cast.target_stack_entry_ids)
+			intents.append(cast)
 	return intents
+
+
+# 213.1.4 : de 1 à l'Essence que `side` peut produire ou a en réserve, bornée ; 0 sans coût X.
+static func _x_values(
+	state: DuelState, side: DuelState.PlayerSide, definition: CardDefinition
+) -> Array[int]:
+	var values: Array[int] = []
+	if not definition.has_x_cost:
+		values.append(0)
+		return values
+	var player := state.get_player(side)
+	var available := player.essence_reserve + player.sources_upright + player.sources_tilted
+	for offset: int in mini(available, MAX_X_CANDIDATES):
+		values.append(ValueRules.MIN_X_VALUE + offset)
+	return values
 
 
 static func _order_candidates(state: DuelState, side: DuelState.PlayerSide) -> Array[DuelIntent]:
