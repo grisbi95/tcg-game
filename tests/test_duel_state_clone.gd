@@ -163,7 +163,7 @@ func _build_full_state() -> DuelState:
 		player.announced_this_turn = true
 	state.waiting_triggers.append(_make_trigger(builder, token_id, spell_entry_id))
 	state.triggers_to_add.append(_make_trigger(builder, unit_id, spell_entry_id))
-	state.once_per_turn_card_ids.append(spell_card.card_instance_id)
+	state.once_per_turn_effects.append(Vector2i(spell_card.card_instance_id, 1))
 	state.departed_cells[token_id + 1] = DuelStateBuilder.cell("C4")
 	_draw(state.rng)
 	return state

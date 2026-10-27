@@ -80,12 +80,16 @@ func _check_passive(errors: PackedStringArray) -> void:
 	for index: int in passive.size():
 		for message: String in passive[index].find_errors():
 			errors.append("passive %d : %s" % [index + 1, message])
+		if _touches_hero_force(passive[index]):
+			errors.append(
+				"passive %d : 202.3.9, Q-097 : ni Force ni destruction du Hero" % (index + 1)
+			)
 		if passive[index].timing != EffectDefinition.EffectTiming.STATIC:
 			errors.append("passive %d : timing refusé pour le Hero" % (index + 1))
 
 
-# 202.3.20, 207.3.1 : effets déclenchés ; 207.3.5 : « une fois par tour » exige un seul effet
-# déclenché sur la carte, comme pour CardDefinition.
+# 202.3.20, 207.3.1 : effets déclenchés ; Q-097 : la pièce source d'un effet du Hero est le Hero,
+# que ni la Force ni la destruction ne visent.
 func _check_triggered(errors: PackedStringArray) -> void:
 	for index: int in triggered.size():
 		for message: String in triggered[index].find_errors():
@@ -95,9 +99,27 @@ func _check_triggered(errors: PackedStringArray) -> void:
 		var attack_error := EffectDefinition.destroys_defender_error(triggered[index], false)
 		if not attack_error.is_empty():
 			errors.append("triggered %d : %s" % [index + 1, attack_error])
-	var once_error := EffectDefinition.once_per_turn_error(triggered)
-	if not once_error.is_empty():
-		errors.append(once_error)
+		if _aims_source_hero(triggered[index]):
+			errors.append(
+				"triggered %d : 202.3.9, Q-097 : ni Force ni destruction du Hero" % (index + 1)
+			)
+
+
+# Q-097 : un passif de Force à portée « porteur » modifierait la Force du Hero.
+func _touches_hero_force(effect: EffectDefinition) -> bool:
+	var kind := EffectDefinition.EffectKind.MODIFY_FORCE
+	return (
+		effect.kind == kind
+		and effect.scope != null
+		and effect.scope.relation == PieceFilter.Relation.SELF
+	)
+
+
+func _aims_source_hero(effect: EffectDefinition) -> bool:
+	var kinds: Array[EffectDefinition.EffectKind] = [
+		EffectDefinition.EffectKind.MODIFY_FORCE, EffectDefinition.EffectKind.DESTROY
+	]
+	return effect.subject == EffectDefinition.EffectSubject.SOURCE_PIECE and effect.kind in kinds
 
 
 # 213.1.2 : un Hero n'a pas de coût X, ses effets ne lisent pas de X choisi ; 210.4.1c : il n'est

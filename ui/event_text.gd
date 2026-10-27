@@ -43,6 +43,7 @@ const SENTENCES: Dictionary[StringName, String] = {
 	&"PieceDeployed": "Une pièce du joueur %s est déployée.",
 	&"PieceDestroyed": "Une pièce du joueur %s est détruite.",
 	&"PieceEnteredAttacking": "Une pièce du joueur %s entre en attaquant.",
+	&"PieceFellAsleep": "Une pièce du joueur %s s'endort.",
 	&"PieceMoved": "Une pièce du joueur %s se déplace.",
 	&"PieceReturnedToHand": "Une pièce du joueur %s est renvoyée dans sa main.",
 	&"PiecesAwakened": "Les Units et le Hero du joueur %s se réveillent.",

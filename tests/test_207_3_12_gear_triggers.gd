@@ -105,8 +105,8 @@ func test_207_3_7_once_per_turn_of_a_gear_is_counted_by_the_gear_card() -> void:
 	var state := _builder.build()
 	TriggerRules.trigger_end_of_turn(state, _events)
 	TriggerRules.add_waiting_triggers(state, _events)
-	assert_array(state.once_per_turn_card_ids).contains_exactly_in_any_order(
-		[first_gear, second_gear]
+	assert_array(state.once_per_turn_effects).contains_exactly_in_any_order(
+		[Vector2i(first_gear, 0), Vector2i(second_gear, 0)]
 	)
 	_events.clear()
 	TriggerRules.trigger_end_of_turn(state, _events)

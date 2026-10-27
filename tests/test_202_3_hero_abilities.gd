@@ -179,7 +179,7 @@ func test_207_3_7_hero_once_per_turn_effect_is_counted_by_its_card() -> void:
 	var events: Array[DuelEvent] = []
 	TriggerRules.trigger_end_of_turn(state, events)
 	TriggerRules.add_waiting_triggers(state, events)
-	assert_array(state.once_per_turn_card_ids).contains_exactly([hero_card_id])
+	assert_array(state.once_per_turn_effects).contains_exactly([Vector2i(hero_card_id, 0)])
 	assert_int(state.stack.size()).is_equal(1)
 	events.clear()
 	TriggerRules.trigger_end_of_turn(state, events)

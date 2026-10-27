@@ -11,7 +11,7 @@ extends RefCounted
 static func legal_count(state: DuelState, entry: StackEntry, effect: EffectDefinition) -> int:
 	if effect.destination == null:
 		var spec := EffectRules.resolved_spec(state, entry, effect.target)
-		return EffectRules.legal_target_count(state, entry.owner, spec)
+		return legal_target_count(state, entry.owner, spec)
 	return _candidate_ids(state, entry, effect).size()
 
 
@@ -24,7 +24,7 @@ static func has_unique_targets(
 	var spec := EffectRules.resolved_spec(state, entry, effect.target)
 	var piece_ids := _candidate_ids(state, entry, effect)
 	var option_count := piece_ids.size()
-	option_count += EffectRules.legal_cells(state, entry.owner, spec).size()
+	option_count += legal_cells(state, entry.owner, spec).size()
 	if option_count != spec.count_min:
 		return false
 	if effect.destination == null:
@@ -72,14 +72,14 @@ static func _candidate_ids(
 	state: DuelState, entry: StackEntry, effect: EffectDefinition
 ) -> Array[int]:
 	var spec := EffectRules.resolved_spec(state, entry, effect.target)
-	var ids := EffectRules.legal_target_ids(state, entry.owner, spec, entry.stack_entry_id)
+	var ids := legal_target_ids(state, entry.owner, spec, entry.stack_entry_id)
 	if effect.destination == null:
 		return ids
 	var destination := EffectRules.resolved_spec(state, entry, effect.destination)
 	var movable: Array[int] = []
 	for piece_id: int in ids:
 		var piece := state.find_piece(piece_id)
-		if not EffectRules.legal_cells(state, entry.owner, destination, piece).is_empty():
+		if not legal_cells(state, entry.owner, destination, piece).is_empty():
 			movable.append(piece_id)
 	return movable
 
@@ -91,12 +91,49 @@ static func _candidate_cells(
 ) -> Array[Vector2i]:
 	if effect.destination == null:
 		var spec := EffectRules.resolved_spec(state, entry, effect.target)
-		return EffectRules.legal_cells(state, entry.owner, spec)
+		return legal_cells(state, entry.owner, spec)
 	var destination := EffectRules.resolved_spec(state, entry, effect.destination)
 	var cells: Array[Vector2i] = []
 	for piece_id: int in piece_ids:
 		var piece := state.find_piece(piece_id)
-		for cell: Vector2i in EffectRules.legal_cells(state, entry.owner, destination, piece):
+		for cell: Vector2i in legal_cells(state, entry.owner, destination, piece):
 			if not cells.has(cell):
 				cells.append(cell)
+	return cells
+
+
+## 207.5.8, 207.5.10 : nombre de cibles légales pour `spec` d'une entrée de `owner`.
+static func legal_target_count(
+	state: DuelState, owner: DuelState.PlayerSide, spec: TargetSpec
+) -> int:
+	if spec.what == TargetSpec.TargetWhat.CELL:
+		return legal_cells(state, owner, spec).size()
+	return legal_target_ids(state, owner, spec, DuelState.NO_ID).size()
+
+
+## 207.5.1b, 207.5.9 : pièces ou Spells de la pile légaux pour `spec` d'une entrée de `owner`,
+## d'identifiant `entry_id` (jamais ciblée par elle-même, 207.5.16). Pur.
+static func legal_target_ids(
+	state: DuelState, owner: DuelState.PlayerSide, spec: TargetSpec, entry_id: int
+) -> Array[int]:
+	var ids: Array[int] = []
+	if spec.what == TargetSpec.TargetWhat.PIECE:
+		for piece: Piece in state.pieces:
+			if EffectRules.is_legal_piece(state, owner, spec, piece):
+				ids.append(piece.piece_id)
+	elif spec.what == TargetSpec.TargetWhat.SPELL_ON_STACK:
+		for entry: StackEntry in state.stack:
+			if EffectRules.is_legal_spell(state, spec, entry, entry_id):
+				ids.append(entry.stack_entry_id)
+	return ids
+
+
+## 207.5.1b, 207.5.9 : cases légales pour `spec` d'une entrée de `owner`. Pur.
+static func legal_cells(
+	state: DuelState, owner: DuelState.PlayerSide, spec: TargetSpec, anchor: Piece = null
+) -> Array[Vector2i]:
+	var cells: Array[Vector2i] = []
+	for cell: Vector2i in BoardGeometry.all_cells():
+		if EffectRules.is_legal_cell(state, owner, spec, cell, anchor):
+			cells.append(cell)
 	return cells

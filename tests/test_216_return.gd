@@ -219,7 +219,7 @@ func test_216_1_1_return_targets_a_unit() -> void:
 	assert_array(Array(MovementSamples.effect_errors(return_effect))).is_empty()
 	for kinds: Array in [["hero"], ["building"], ["unit", "building"]]:
 		var wrong := CatalogSamples.return_to_hand_effect()
-		wrong["target"]["piece_kinds"] = kinds
+		wrong["target"]["filter"]["piece_kinds"] = kinds
 		(
 			assert_bool(CatalogSamples.mentions(MovementSamples.effect_errors(wrong), "216.1.1"))
 			. is_true()

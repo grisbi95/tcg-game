@@ -323,9 +323,12 @@ static func wake_pieces(pieces: Array[Piece], events: Array[DuelEvent]) -> void:
 		events.append(PiecesAwakened.new(awakened_owner, awakened_ids))
 
 
-## 205.5.1, 207.3.3 : « réveillez cette Unit » ; l'effet a lieu même si la pièce `piece_id` a quitté
-## le plateau, alors sans rien réveiller.
-static func wake_source_piece(state: DuelState, piece_id: int, events: Array[DuelEvent]) -> void:
-	var source := state.find_piece(piece_id)
-	if source != null:
-		wake_pieces([source], events)
+## 205.5.7, 205.5.7a, 205.5.7b, 200.4.1 : chaque Unit ou Hero éveillé de `pieces` s'endort, un
+## PieceFellAsleep par pièce. Une pièce déjà endormie (205.5.7a) et un Building (205.5.7b, 205.5.6)
+## ne s'endorment pas : l'effet n'a pas lieu pour elle, sans événement. Sert à l'effet SLEEP ; elle
+## se réveille ensuite comme toute pièce endormie (205.5.7c, 204.3.10, 204.3.11).
+static func sleep_pieces(pieces: Array[Piece], events: Array[DuelEvent]) -> void:
+	for piece: Piece in pieces:
+		if piece.kind != Piece.PieceKind.BUILDING and piece.is_awake:
+			piece.is_awake = false
+			events.append(PieceFellAsleep.new(piece.owner, piece.piece_id))

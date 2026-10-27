@@ -62,7 +62,7 @@ func test_211_1_4_order_is_not_a_spell() -> void:
 	var state := _engine.get_state()
 	var order_entry_id := state.stack[0].stack_entry_id
 	var spec := TargetSpec.from_dict({"what": "spell_on_stack"})
-	assert_array(EffectRules.legal_target_ids(state, B, spec, DuelState.NO_ID)).is_empty()
+	assert_array(TriggerTargets.legal_target_ids(state, B, spec, DuelState.NO_ID)).is_empty()
 	var counter := CastSpell.new(B, counter_id, EssencePayment.new(OrderSamples.COUNTER_COST))
 	counter.target_stack_entry_ids.append(order_entry_id)
 	_assert_rejected(counter, REASON.ILLEGAL_TARGET)

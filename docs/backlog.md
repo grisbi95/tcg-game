@@ -8,13 +8,14 @@ Priorité : **haute** = écart au ruleset ou défaut visible en partie ; **moyen
 
 | Dette | Référence | Priorité | Cible |
 | --- | --- | --- | --- |
-| `CombatRules`, `EffectRules` et `TriggerRules` forment le dernier groupe de modules qui s'appellent en boucle : la destruction (`CombatRules.destroy_piece`) termine les effets de la pièce (`EffectRules.end_effects_on_piece`) et déclenche ses effets (`TriggerRules.trigger`), dont la résolution passe par `EffectRules.resolve_effect`, qui peut détruire. Remède ouvert, à trancher par une décision. | 206.3.2, 206.3.2a, 207.4.7a | basse | J4 |
+| `CombatRules`, `EffectRules` et `TriggerRules` forment le dernier groupe de modules qui s'appellent en boucle : la destruction (`CombatRules.destroy_piece`) termine les effets de la pièce (`ModifierRules.end_effects_on_piece`, déplacée en c.5c) et déclenche ses effets (`TriggerRules.trigger`), dont la résolution passe par `EffectRules.resolve_effect`, qui peut détruire. Remède ouvert, à trancher par une décision. | 206.3.2, 206.3.2a, 207.4.7a | basse | J4 |
 | Ruleset 0.46 sans code : coût X (213.1) et valeur X fixée à la résolution (213.2). | 0214 à 0216 | moyenne | avant les cartes du catalogue |
 | Ruleset 0.47 sans code : X choisi avant les cibles (213.1.9 à 213.1.11), Force lue pour X sans Assaut ni Rempart (213.2.4). | 0217 à 0222 | moyenne | avant les cartes du catalogue |
 | Ruleset 0.49 sans code : abandon de l'annonce à l'expiration pendant le choix de X (209.4.4h, 209.4.11b). Le catalogue de `ruleset/50-cartes/` attend Q-132 à Q-139 avant tout codage de ses cartes. | 0226 à 0228 | haute | avant J3 |
 | `MoveRules` juge une destination « adjacente à la pièce ciblée » invalide quand l'Unit ciblée a quitté le plateau (`test_215_1_1_unit_gone_at_resolution_loses_the_effect`) ; à reprendre selon la réponse à Q-147 du ruleset (207.3.14 vaut-elle pour une pièce ciblée ?). | 207.3.14, 207.5.5, Q-147 | moyenne | Q-147 tranchée |
 | Si `max_recycles_per_turn` devient borné, le paiement préparé pendant le tour adverse l'ignore (203.4.2 PROVISOIRE : illimité aujourd'hui). | 203.4.2 | moyenne | si 203.4.2 est borné |
-| Une carte qui porte « une fois par tour » et plusieurs effets déclenchés est refusée par le catalogue. | 207.3.5, 207.3.7 | moyenne | J4 (`50-cartes/`) |
+| `distinct` de `TargetSpec` ne compare que les cibles d'un même `TargetSpec` ; une pièce et sa case de destination, ou deux cibles de deux effets, ne se comparent pas. À reprendre selon Q-098. | 207.5.10, Q-098, 0062 | moyenne | Q-098 tranchée |
+| La clé « une fois par tour » (`DuelState.once_per_turn_effects`) est un `Vector2i` (carte, rang de l'effet) sans nom de champ ; une petite classe typée clonée serait plus lisible. | 207.3.7c | basse | J4 |
 | `ActiveEffect.effect_kind` est une `StringName` alors que l'enum `EffectKind` existe. | 0010 | basse | J4 |
 | Le test de 209.2.3 part d'un Hero déjà à 0 PV au lieu de l'y amener. | 209.2.3 | basse | J4 |
 | Rien ne garantit que la suite tire la décision `OrderTriggers` (ordre des déclencheurs). | 0017 | basse | J4 |

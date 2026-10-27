@@ -19,7 +19,7 @@ static func resolve(context: EffectContext) -> void:
 ## d'exister (216.1.3) ; son Gear va dans la défausse de son joueur (216.1.4).
 static func return_to_hand(state: DuelState, piece: Piece, events: Array[DuelEvent]) -> void:
 	ZoneRules.remove_piece(state, piece)
-	EffectRules.end_effects_on_piece(state, piece, events)
+	ModifierRules.end_effects_on_piece(state, piece, events)
 	events.append(PieceReturnedToHand.new(piece.owner, piece.piece_id))
 	if piece.card != null:
 		ZoneRules.return_card_to_hand(state, piece.card, events)

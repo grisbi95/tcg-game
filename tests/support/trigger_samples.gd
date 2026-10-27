@@ -38,7 +38,7 @@ static func catalog() -> Catalog:
 ## Objets JSON des cartes à effet déclenché, pour vérifier qu'elles sont valides.
 static func card_data() -> Array[Dictionary]:
 	var enemy_unit := CatalogSamples.ally_unit_target()
-	enemy_unit["side"] = "enemy"
+	enemy_unit["filter"]["side"] = "enemy"
 	var herald_effect := CatalogSamples.triggered(
 		"arrival", {"amount": HERALD_MALUS, "target": enemy_unit}
 	)

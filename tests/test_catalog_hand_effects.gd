@@ -134,7 +134,7 @@ func test_decision_0057_look_and_wake_take_no_amount() -> void:
 func test_decision_0057_wake_effect_targets_units_or_heroes_never_buildings() -> void:
 	assert_array(Array(_errors(HandEffectSamples.wake_unit_or_hero_effect()))).is_empty()
 	for kinds: Array in [["building"], ["unit", "building"], []]:
-		var target := {"what": "piece", "piece_kinds": kinds}
+		var target := {"what": "piece", "filter": {"piece_kinds": kinds}}
 		var refused := CatalogSamples.with_field(HandEffectSamples.wake_effect(), "target", target)
 		assert_bool(_mentions(_errors(refused), "205.5.6")).is_true()
 

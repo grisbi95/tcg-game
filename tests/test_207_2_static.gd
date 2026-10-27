@@ -35,12 +35,15 @@ func before_test() -> void:
 	aura_unit = CatalogSamples.with_field(
 		aura_unit,
 		"effects",
-		[CatalogSamples.modify_force_static({"scope": "adjacent_allied_units"})]
+		[CatalogSamples.modify_force_static({"scope": CatalogSamples.adjacent_allied_scope()})]
 	)
 	catalog.add_card(CardDefinition.from_dict(aura_unit))
 	catalog.add_card(CardDefinition.from_dict(CatalogSamples.gear()))
 	catalog.add_card(
-		_gear(AURA_GEAR_ID, CatalogSamples.modify_force_static({"scope": "adjacent_allied_units"}))
+		_gear(
+			AURA_GEAR_ID,
+			CatalogSamples.modify_force_static({"scope": CatalogSamples.adjacent_allied_scope()})
+		)
 	)
 	catalog.add_card(
 		_gear(STRONG_GEAR_ID, CatalogSamples.modify_force_static({"amount": STRONG_GEAR_BONUS}))

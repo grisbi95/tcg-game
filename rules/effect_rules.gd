@@ -1,15 +1,13 @@
 class_name EffectRules
 extends RefCounted
 ## Effets qui passent par la pile (207) : cibles et validité (207.5), application à la
-## résolution (207.4), Contrecarrer (207.6). Les Spells (207.1) sont dans SpellRules, qui appelle
-## ce module ; celui-ci n'appelle jamais SpellRules. Les effets statiques se lisent dans
-## ForceRules (207.2) ; les effets déclenchés attendent et s'ajoutent par TriggerRules.
+## résolution (207.4), Contrecarrer (207.6) ; filtres de pièce (`matches_filter`). SpellRules les
+## appelle, jamais l'inverse ; TriggerRules ajoute les effets déclenchés, TriggerTargets lit les
+## cibles légales.
 ##
 ## Une entrée porte ses cibles par genre (`target_piece_ids`, `target_cells`,
 ## `target_stack_entry_ids`) ; chaque effet lit celles du genre que vise sa TargetSpec. Un effet
-## de déplacement (215) lit aussi la case de sa `destination` dans `target_cells`, jugée par
-## rapport à la pièce ciblée (décision 0056). L'application des effets de mouvement (214 à 216)
-## est dans SwapRules, MoveRules et ReturnRules.
+## de déplacement (215) lit aussi la case de sa `destination` (décision 0056).
 
 
 ## 207.5.1a, 207.5.2, 207.5.8, 207.5.10 : raison du refus des cibles que porte `entry` pour
@@ -74,35 +72,16 @@ static func validate_no_extra_targets(
 	return IntentRejected.RejectReason.NONE
 
 
-## 207.4.7a : un effet « tant que la pièce est en jeu » cesse pour `piece`, qui quitte le
-## plateau ; un effet « jusqu'à la fin du tour » attend 207.4.3.
-static func end_effects_on_piece(state: DuelState, piece: Piece, events: Array[DuelEvent]) -> void:
-	var remaining: Array[ActiveEffect] = []
-	for effect: ActiveEffect in state.active_effects:
-		var lasting := effect.duration == ActiveEffect.EffectDuration.WHILE_PIECE_IN_PLAY
-		if lasting and effect.affected_piece_id == piece.piece_id:
-			events.append(ActiveEffectEnded.new(effect.effect_id))
-		else:
-			remaining.append(effect)
-	state.active_effects = remaining
-
-
-## 207.5.8, 207.5.10 : nombre de cibles légales pour `spec` d'une entrée de `owner`.
-static func legal_target_count(
-	state: DuelState, owner: DuelState.PlayerSide, spec: TargetSpec
-) -> int:
-	if spec.what == TargetSpec.TargetWhat.CELL:
-		return legal_cells(state, owner, spec).size()
-	return legal_target_ids(state, owner, spec, DuelState.NO_ID).size()
-
-
 ## 207.5.1, 214.1.3, 215.1.1 : raison du refus de ce que `entry` porte en plus des pièces déjà
 ## jugées pour `effect` : l'échange veut deux pièces distinctes (contrôle de ce `kind`, Q-098 reste
 ## ouverte en général), le déplacement une case de destination légale pour la pièce ciblée. Pur.
 static func validate_destination_targets(
 	state: DuelState, entry: StackEntry, effect: EffectDefinition
 ) -> IntentRejected.RejectReason:
-	if effect.kind == EffectDefinition.EffectKind.SWAP_CELLS and _has_duplicates(entry):
+	if (
+		effect.kind == EffectDefinition.EffectKind.SWAP_CELLS
+		and _has_duplicates(entry, effect.target)
+	):
 		return IntentRejected.RejectReason.ILLEGAL_TARGET
 	if effect.destination == null:
 		return IntentRejected.RejectReason.NONE
@@ -117,36 +96,8 @@ static func validate_destination_targets(
 	return IntentRejected.RejectReason.NONE
 
 
-## 207.5.1b, 207.5.9 : pièces ou Spells de la pile légaux pour `spec` d'une entrée de `owner`,
-## d'identifiant `entry_id` (jamais ciblée par elle-même, 207.5.16). Pur.
-static func legal_target_ids(
-	state: DuelState, owner: DuelState.PlayerSide, spec: TargetSpec, entry_id: int
-) -> Array[int]:
-	var ids: Array[int] = []
-	if spec.what == TargetSpec.TargetWhat.PIECE:
-		for piece: Piece in state.pieces:
-			if is_legal_piece(state, owner, spec, piece):
-				ids.append(piece.piece_id)
-	elif spec.what == TargetSpec.TargetWhat.SPELL_ON_STACK:
-		for entry: StackEntry in state.stack:
-			if is_legal_spell(spec, entry, entry_id):
-				ids.append(entry.stack_entry_id)
-	return ids
-
-
-## 207.5.1b, 207.5.9 : cases légales pour `spec` d'une entrée de `owner`. Pur.
-static func legal_cells(
-	state: DuelState, owner: DuelState.PlayerSide, spec: TargetSpec, anchor: Piece = null
-) -> Array[Vector2i]:
-	var cells: Array[Vector2i] = []
-	for cell: Vector2i in BoardGeometry.all_cells():
-		if is_legal_cell(state, owner, spec, cell, anchor):
-			cells.append(cell)
-	return cells
-
-
 ## 207.5.6, 207.5.11, 207.5.11a, 207.5.11b : `piece` remplit les conditions de `spec` pour une
-## entrée de `owner` (côté, type de pièce, Force actuelle au plus `max_force`).
+## entrée de `owner` (filtre de pièce, Force actuelle au plus `max_force`).
 static func is_legal_piece(
 	state: DuelState, owner: DuelState.PlayerSide, spec: TargetSpec, piece: Piece
 ) -> bool:
@@ -154,25 +105,26 @@ static func is_legal_piece(
 		return false
 	if spec.max_force_is_x:
 		return false  # 213.1.10 : une borne « X » non résolue (`TargetSpec.with_x`) n'admet rien
-	if spec.side == TargetSpec.TargetSide.ALLY and piece.owner != owner:
+	if not ModifierRules.matches_filter(spec.piece_filter, spec_anchor(state, owner, spec), piece):
 		return false
-	if spec.side == TargetSpec.TargetSide.ENEMY and piece.owner == owner:
-		return false
-	if not spec.piece_kinds.is_empty() and not spec.piece_kinds.has(piece.kind):
-		return false
-	if (
-		spec.adjacent_to == TargetSpec.AdjacentTo.OWN_HERO
-		and not _is_next_to_hero(state, owner, piece)
-	):
-		return false
-	if spec.adjacent_to == TargetSpec.AdjacentTo.SOURCE_PIECE:
-		if not BoardGeometry.are_adjacent(spec.source_cell, piece.cell):
-			return false  # 207.3.14
 	var limited := spec.max_force != TargetSpec.NO_FORCE_LIMIT
 	return not limited or ForceRules.current_force(state, piece) <= spec.max_force
 
 
-## 202.4.12, 207.5.11, 215.1.1 : une case ciblée est libre, sur la rangée qu'exige `spec` et, si
+## 207.5.6, 207.3.14, 205.2.5 : point de référence de `spec` pour une entrée de `owner` : le Hero du
+## joueur, ou la pièce source de `spec` (`TargetSpec.with_source`).
+static func spec_anchor(
+	state: DuelState, owner: DuelState.PlayerSide, spec: TargetSpec
+) -> FilterAnchor:
+	if spec.piece_filter.relative_to == PieceFilter.RelativeTo.OWN_HERO:
+		var hero := state.find_hero(owner)
+		if hero == null:
+			return FilterAnchor.new(owner)
+		return FilterAnchor.new(owner, hero.piece_id, hero.cell)
+	return FilterAnchor.new(owner, spec.source_piece_id, spec.source_cell)
+
+
+## 202.4.12, 207.5.11, 215.1.1 : une case ciblée est libre, dans la zone qu'exige `spec` et, si
 ## `spec` le demande, adjacente à `anchor`, la pièce que cible le même effet.
 static func is_legal_cell(
 	state: DuelState,
@@ -189,18 +141,28 @@ static func is_legal_cell(
 	if spec.adjacent_to == TargetSpec.AdjacentTo.SOURCE_PIECE:
 		if not BoardGeometry.are_adjacent(spec.source_cell, cell):
 			return false  # 207.3.14
-	if spec.row == TargetSpec.CellRow.OWN_FIRST and not BoardGeometry.is_in_first_row(owner, cell):
+	if not ModifierRules.is_in_row_zone(spec.row, owner, cell):
 		return false
 	return state.piece_at(cell) == null
 
 
-## 207.5.14, 207.5.15, 207.5.16 : seul un Spell de la pile se cible, jamais l'entrée qui cible.
-static func is_legal_spell(spec: TargetSpec, entry: StackEntry, targeting_entry_id: int) -> bool:
+## 207.5.14, 207.5.15, 207.5.16, 207.5.6 : seul un Spell de la pile se cible, jamais l'entrée qui
+## cible, et seulement s'il remplit les filtres de `spec` : coût actuel, X compris (213.1.6,
+## 213.1.7), et vitesse (207.1.2).
+static func is_legal_spell(
+	state: DuelState, spec: TargetSpec, entry: StackEntry, targeting_entry_id: int
+) -> bool:
 	if spec.what != TargetSpec.TargetWhat.SPELL_ON_STACK:
 		return false
 	if entry.kind != StackEntry.StackEntryKind.SPELL:
 		return false
-	return entry.stack_entry_id != targeting_entry_id
+	if entry.stack_entry_id == targeting_entry_id:
+		return false
+	var definition := state.catalog.get_card(entry.card.definition_id)
+	if not spec.spell_speeds.is_empty() and not spec.spell_speeds.has(definition.speed):
+		return false
+	var limited := spec.spell_max_cost != TargetSpec.NO_COST_LIMIT
+	return not limited or ValueRules.current_cost(definition, entry) <= spec.spell_max_cost
 
 
 ## 207.5.3 à 207.5.6, 207.4.6 : applique `effect` de `entry` à chacune de ses cibles restées
@@ -219,10 +181,8 @@ static func resolve_effect(
 		EffectDefinition.EffectKind.LOOK_AT_TOP_CARD:
 			LookRules.resolve(context)
 			return
-		EffectDefinition.EffectKind.WAKE when (
-			effect.subject == EffectDefinition.EffectSubject.SOURCE_PIECE
-		):
-			ActionRules.wake_source_piece(state, entry.source_piece_id, events)
+		_ when effect.subject == EffectDefinition.EffectSubject.SOURCE_PIECE:
+			_resolve_on_source_piece(context)
 			return
 		EffectDefinition.EffectKind.SWAP_CELLS:
 			SwapRules.resolve(context)
@@ -249,7 +209,7 @@ static func resolve_effect(
 				lose_all_targets(entry, events)
 				return
 			for cell: Vector2i in cells:
-				_create_token(context, cell)
+				CardRules.create_token(context, cell)
 		TargetSpec.TargetWhat.SPELL_ON_STACK:
 			var spells := _valid_spells(state, entry, spec)
 			if spells.is_empty():
@@ -288,7 +248,7 @@ static func counter_spell(state: DuelState, spell: StackEntry, events: Array[Due
 ## source est celle de `entry.source_piece_id`, sur le plateau ou la dernière qu'elle a occupée.
 static func resolved_spec(state: DuelState, entry: StackEntry, spec: TargetSpec) -> TargetSpec:
 	var cell := state.cell_of_piece(entry.source_piece_id)
-	return spec.with_x(entry.x_value).with_source_cell(cell)
+	return spec.with_x(entry.x_value).with_source(entry.source_piece_id, cell)
 
 
 ## 207.5.10 : nombre de cibles du genre que vise `spec` portées par `entry`.
@@ -311,6 +271,8 @@ static func chosen_effect_count(entry: StackEntry, effect: EffectDefinition) -> 
 
 static func _all_targets_legal(state: DuelState, entry: StackEntry, spec: TargetSpec) -> bool:
 	var target_count := chosen_count(entry, spec)
+	if spec.distinct and _has_duplicates(entry, spec):
+		return false
 	match spec.what:
 		TargetSpec.TargetWhat.CELL:
 			return _valid_cells(state, entry, spec).size() == target_count
@@ -319,14 +281,14 @@ static func _all_targets_legal(state: DuelState, entry: StackEntry, spec: Target
 	return valid_pieces(state, entry, spec).size() == target_count
 
 
-# 205.2.5 : la pièce touche, par un côté, le Hero du joueur à qui appartient l'effet.
-static func _is_next_to_hero(state: DuelState, owner: DuelState.PlayerSide, piece: Piece) -> bool:
-	var hero := state.find_hero(owner)
-	return hero != null and BoardGeometry.are_adjacent(hero.cell, piece.cell)
-
-
-# 214.1.3 : les deux pièces échangées sont distinctes.
-static func _has_duplicates(entry: StackEntry) -> bool:
+# 207.5.10, 214.1.3, Q-098 : deux cibles du même genre ne sont pas la même (« distinctes » écrit
+# par la carte ; la règle générale reste ouverte).
+static func _has_duplicates(entry: StackEntry, spec: TargetSpec) -> bool:
+	if spec.what == TargetSpec.TargetWhat.CELL:
+		for cell: Vector2i in entry.target_cells:
+			if entry.target_cells.count(cell) > 1:
+				return true
+		return false
 	for piece_id: int in entry.target_piece_ids:
 		if entry.target_piece_ids.count(piece_id) > 1:
 			return true
@@ -361,7 +323,7 @@ static func _valid_spells(
 	var spells: Array[StackEntry] = []
 	for entry_id: int in entry.target_stack_entry_ids:
 		var spell := state.find_stack_entry(entry_id)
-		if spell != null and is_legal_spell(spec, spell, entry.stack_entry_id):
+		if spell != null and is_legal_spell(state, spec, spell, entry.stack_entry_id):
 			spells.append(spell)
 	return spells
 
@@ -371,7 +333,19 @@ static func lose_all_targets(entry: StackEntry, events: Array[DuelEvent]) -> voi
 	events.append(EffectLostAllTargets.new(entry.owner, entry.stack_entry_id))
 
 
-# 207.4.2, 206.5.1, 206.3.2, 205.5 : MODIFY_FORCE à durée ; DESTROY ; WAKE.
+# 200.4.1, 207.3.12, décision 0062 : l'effet a pour sujet la pièce qui le porte (« cette Unit » ;
+# pour un Gear, l'Unit qui le porte, 207.3.12) ; partie du plateau à la résolution, il n'a pas lieu
+# pour elle, sans événement.
+static func _resolve_on_source_piece(context: EffectContext) -> void:
+	var source := context.state.find_piece(context.entry.source_piece_id)
+	if source == null:
+		return
+	var pieces: Array[Piece] = [source]
+	var amount := ValueRules.read_amount(context.state, context.entry, context.effect, pieces)
+	_apply_to_piece(context, source, amount)
+
+
+# 207.4.2, 206.5.1, 206.3.2, 205.5 : MODIFY_FORCE à durée ; DESTROY ; WAKE ; SLEEP.
 static func _apply_to_piece(context: EffectContext, piece: Piece, amount: int) -> void:
 	match context.effect.kind:
 		EffectDefinition.EffectKind.MODIFY_FORCE:
@@ -382,16 +356,5 @@ static func _apply_to_piece(context: EffectContext, piece: Piece, amount: int) -
 			CombatRules.destroy_piece(context.state, piece, context.events)
 		EffectDefinition.EffectKind.WAKE:
 			ActionRules.wake_pieces([piece], context.events)
-
-
-# 202.4.1, 202.4.8, 202.4.9, 202.4.12 ; 201.5.4, 201.5.4a : le jeton appartient au joueur de
-# l'entrée qui le crée ; 205.5.4a : il naît endormi (`is_awake` reste faux).
-static func _create_token(context: EffectContext, cell: Vector2i) -> void:
-	var token := Piece.new()
-	token.piece_id = context.state.allocate_piece_id()
-	token.kind = context.effect.token_piece_kind
-	token.owner = context.entry.owner
-	token.cell = cell
-	token.token_force = context.effect.token_force
-	context.state.pieces.append(token)
-	context.events.append(TokenCreated.new(token.owner, token.piece_id, cell))
+		EffectDefinition.EffectKind.SLEEP:
+			ActionRules.sleep_pieces([piece], context.events)

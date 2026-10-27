@@ -34,7 +34,8 @@ static func catalog() -> Catalog:
 static func card_data() -> Array[Dictionary]:
 	var data: Array[Dictionary] = []
 	var near_hero := CatalogSamples.swap_cells_effect()
-	near_hero["target"]["adjacent_to"] = "own_hero"
+	near_hero["target"]["filter"]["relation"] = "adjacent"
+	near_hero["target"]["filter"]["relative_to"] = "own_hero"
 	data.append(_spell(SWAP_SPELL, CatalogSamples.swap_cells_effect()))
 	data.append(_spell(NEAR_HERO_SWAP_SPELL, near_hero))
 	data.append(_spell(MOVE_SPELL, CatalogSamples.move_unit_effect()))
