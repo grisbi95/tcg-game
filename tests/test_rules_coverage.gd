@@ -140,7 +140,7 @@ const RULES_WITHOUT_OWN_TEST: Dictionary[String, String] = {
 ## la liste est vide à la sortie de c.8.
 const RULES_AWAITING_IMPLEMENTATION: Dictionary[String, String] = {
 	"201.4.1a": "c.7",
-	"207.3.15": "c.5d",
+	"207.3.15": "c.5e",
 	"207.4.11": "c.5d",
 	"207.4.11a": "c.5d",
 	"207.4.11b": "c.5d",
@@ -161,7 +161,7 @@ const RULES_AWAITING_IMPLEMENTATION: Dictionary[String, String] = {
 	"207.7.8": "c.5d",
 	"211.1.5": "c.5d",
 	"217.1.5": "c.7",
-	"217.1.8": "c.5d",
+	"217.1.8": "c.5e",
 }
 
 var _rule_ids: PackedStringArray
