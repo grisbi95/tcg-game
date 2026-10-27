@@ -48,6 +48,40 @@ func test_217_1_1_the_looked_card_is_the_top_card_of_the_deck_of_the_owner() -> 
 	assert_array(DuelChecks.card_ids(enemy_deck)).contains_exactly(enemy_ids)
 
 
+func test_217_1_8_the_effect_looks_at_the_top_card_only() -> void:
+	var deck_ids := _fill_deck(A)
+	var events := _cast_and_resolve()
+	var looked := events.filter(func(event: DuelEvent) -> bool: return event is TopCardLooked)
+	assert_int(looked.size()).is_equal(1)
+	var state := _engine.get_state()
+	assert_array(state.pending_decision.candidate_ids).contains_exactly([deck_ids.back()])
+	assert_int(state.pending_decision.required_count).is_equal(0)  # aucune autre carte à choisir
+	assert_array(DuelChecks.card_ids(state.get_player(A).deck)).contains_exactly(deck_ids)
+
+
+func test_217_1_8_the_other_cards_of_the_deck_keep_their_order() -> void:
+	var deck_ids := _fill_deck(A)
+	_cast_and_resolve()
+	_engine.submit(HandEffectSamples.place(A, true))
+	var expected: Array[int] = [deck_ids.back()]
+	expected.append_array(deck_ids.slice(0, deck_ids.size() - 1))
+	var deck := _engine.get_state().get_player(A).deck
+	assert_array(DuelChecks.card_ids(deck)).contains_exactly(expected)
+
+
+func test_217_1_8_a_look_effect_names_no_number_of_cards() -> void:
+	var look := HandEffectSamples.look_effect()
+	assert_array(Array(CatalogSamples.effect_errors(look))).is_empty()
+	look["amount"] = 2
+	assert_bool(CatalogSamples.mentions(CatalogSamples.effect_errors(look), "206.5.1")).is_true()
+	look["amount"] = "X"
+	look["x_from"] = {"kind": "hand_size"}
+	(
+		assert_bool(CatalogSamples.mentions(CatalogSamples.effect_errors(look), "amount « X »"))
+		. is_true()
+	)
+
+
 func test_217_1_2_the_player_leaves_the_card_on_top() -> void:
 	var deck_ids := _fill_deck(A)
 	_cast_and_resolve()

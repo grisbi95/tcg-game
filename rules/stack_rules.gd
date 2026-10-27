@@ -90,6 +90,8 @@ static func take_top_entry(state: DuelState) -> StackEntry:
 	state.resolving_entry = entry
 	state.resolving_effect_index = 0
 	state.previous_effect_took_place = false
+	state.previous_effect_discarded_count = 0
+	state.current_effect_discarded_count = 0
 	return entry
 
 
@@ -99,6 +101,8 @@ static func end_resolution(state: DuelState) -> void:
 	state.resolving_entry = null
 	state.resolving_effect_index = 0
 	state.previous_effect_took_place = false
+	state.previous_effect_discarded_count = 0
+	state.current_effect_discarded_count = 0
 
 
 ## 207.5.2, 208.4.6, 209.4.6, 209.4.7c, 209.4.7d : le moteur attend le choix de `decision` ; chaque

@@ -44,8 +44,7 @@ static func announce_spell(state: DuelState, intent: CastSpell, events: Array[Du
 	player.hand.erase(card)
 	events.append(SpellAnnounced.new(intent.player, card.card_instance_id))
 	StackRules.add_to_stack(state, entry, events)
-	var trigger_event := EffectDefinition.TriggerEvent.OWN_SPELL_ANNOUNCED
-	TriggerRules.trigger_for_player(state, intent.player, trigger_event, events)  # 208.4.4
+	TriggerRules.trigger_spell_announced(state, entry, events)  # 208.4.4
 
 
 ## 202.2.20, 208.3.2 : le Spell se résout une fois ; 207.1.7, 207.1.7a, 207.7.8 : sa carte va

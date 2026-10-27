@@ -138,7 +138,7 @@ static func _chill() -> Dictionary:
 static func _draw(amount: int, if_few: bool = false, if_you_do: bool = false) -> Dictionary:
 	var effect := CatalogSamples.plain_effect(HandEffectSamples.draw_effect(amount))
 	if if_few:
-		effect["condition"] = {"kind": "hand_size_at_most", "amount": HAND_LIMIT}
+		effect["condition"] = CatalogSamples.hand_size_condition("at_most", HAND_LIMIT)
 	if if_you_do:
 		effect["if_you_do"] = true
 	return effect

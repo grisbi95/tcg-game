@@ -21,20 +21,43 @@ static func resolve_attack(
 	)
 	var defender_cell := defender.cell
 	var defender_destroyed := _is_defender_destroyed(state, attacker_force, defender_force)
+	# 206.3.3 ; 206.3.3a : à l'égalité, l'attaquant est détruit lui aussi (206.3.6), en même temps
+	# que le défenseur (207.3.15).
+	var attacker_destroyed := _is_attacker_destroyed(state, attacker_force, defender_force)
+	var destroyed: Array[Piece] = []
 	if defender_destroyed:
-		destroy_piece(state, defender, events)
-	# 206.3.3 ; 206.3.3a : à l'égalité, l'attaquant est détruit lui aussi (206.3.6).
-	if _is_attacker_destroyed(state, attacker_force, defender_force):
-		destroy_piece(state, attacker, events)
-	elif defender_destroyed:
+		destroyed.append(defender)
+	if attacker_destroyed:
+		destroyed.append(attacker)
+	destroy_pieces(state, destroyed, events)
+	if defender_destroyed and not attacker_destroyed:
 		ZoneRules.move_piece(attacker, defender_cell, events)
 		_trigger_destroys_defender(state, attacker, events)
 
 
-## 206.3.2, 206.3.2a, 202.2.13 : retire `piece` du plateau ; sa carte et son Gear vont dans la
-## défausse de leur joueur, un jeton ne va nulle part ; 207.4.7a : ses effets « tant que la
-## pièce est en jeu » cessent ; 210.3.2 : son Dernier souffle se déclenche.
+## 206.3.2, 206.3.2a, 202.2.13 : détruit `piece` ; voir `destroy_pieces`.
 static func destroy_piece(state: DuelState, piece: Piece, events: Array[DuelEvent]) -> void:
+	destroy_pieces(state, [piece], events)
+
+
+## 206.3.2, 206.3.2a, 202.2.13 : retire `pieces` du plateau, en même temps ; la carte et le Gear de
+## chacune vont dans la défausse de leur joueur, un jeton ne va nulle part ; 207.4.7a : ses effets
+## « tant que la pièce est en jeu » cessent ; 210.3.2 : son Dernier souffle se déclenche.
+## 207.3.15 : les effets « une autre pièce est détruite » des pièces en jeu avant la destruction,
+## celles qui sont détruites avec elles comprises, se déclenchent une fois toutes parties.
+static func destroy_pieces(
+	state: DuelState, pieces: Array[Piece], events: Array[DuelEvent]
+) -> void:
+	if pieces.is_empty():
+		return
+	var reactors := state.pieces_on_board()
+	for piece: Piece in pieces:
+		_destroy(state, piece, events)
+	TriggerRules.trigger_other_destroyed(state, pieces, reactors, events)
+
+
+# 206.3.2 : une pièce quitte le plateau.
+static func _destroy(state: DuelState, piece: Piece, events: Array[DuelEvent]) -> void:
 	ZoneRules.remove_piece(state, piece)
 	ModifierRules.end_effects_on_piece(state, piece, events)
 	if piece.card != null:

@@ -34,25 +34,31 @@ func test_decision_0058_the_sample_cards_are_valid() -> void:
 		assert_array(Array(_card_errors(data))).is_empty()
 
 
-func test_decision_0058_an_x_field_needs_a_source_of_x() -> void:
+func test_decision_0065_an_x_field_needs_a_game_value() -> void:
 	var without_source := ValueSamples.blessing_effect()
-	without_source.erase("x_source")
-	assert_bool(_mentions(_effect_errors(without_source), "exige x_source")).is_true()
+	without_source.erase("x_from")
+	assert_bool(_mentions(_effect_errors(without_source), "exige x_from")).is_true()
 	var target := _unit_target()
 	target["max_force"] = "X"
 	var limit := {"kind": "destroy", "timing": "resolve", "target": target}
-	assert_bool(_mentions(_effect_errors(limit), "exige x_source")).is_true()
+	assert_bool(_mentions(_effect_errors(limit), "exige x_from")).is_true()
 
 
-func test_decision_0058_a_source_of_x_needs_an_x_field() -> void:
-	var effect := CatalogSamples.modify_force_resolve({"x_source": "chosen"})
-	assert_bool(_mentions(_effect_errors(effect), "x_source exige un champ")).is_true()
+func test_decision_0065_a_game_value_of_x_needs_an_x_field() -> void:
+	var effect := CatalogSamples.modify_force_resolve({"x_from": {"kind": "chosen_x"}})
+	assert_bool(_mentions(_effect_errors(effect), "x_from exige un champ")).is_true()
 
 
-func test_decision_0058_the_x_of_a_force_limit_is_the_chosen_one() -> void:
+func test_decision_0065_the_x_of_a_force_limit_is_the_chosen_one() -> void:
 	var effect := ValueSamples.execution_effect()
-	effect["x_source"] = "target_force"
+	effect["x_from"] = {"kind": "hand_size"}
 	assert_bool(_mentions(_effect_errors(effect), "max_force « X » exige")).is_true()
+
+
+func test_decision_0065_the_old_x_source_key_is_gone() -> void:
+	var effect := ValueSamples.blessing_effect()
+	effect["x_source"] = "chosen"
+	assert_bool(_mentions(_effect_errors(effect), "« x_source » inconnu")).is_true()
 
 
 func test_decision_0058_the_force_of_the_target_needs_one_non_hero_piece() -> void:
@@ -67,15 +73,17 @@ func test_decision_0058_the_force_of_the_target_needs_one_non_hero_piece() -> vo
 
 
 func test_decision_0058_a_static_effect_has_no_x() -> void:
-	var effect := CatalogSamples.modify_force_static({"amount": "X", "x_source": "chosen"})
+	var effect := CatalogSamples.modify_force_static(
+		{"amount": "X", "x_from": {"kind": "chosen_x"}}
+	)
 	assert_bool(_mentions(_effect_errors(effect), "213.2.1")).is_true()
 
 
-func test_decision_0058_amount_x_is_for_force_and_keywords_only() -> void:
-	var draw := HandEffectSamples.draw_effect(1)
-	draw["amount"] = "X"
-	draw["x_source"] = "chosen"
-	assert_bool(_mentions(_effect_errors(draw), "amount « X »")).is_true()
+func test_decision_0065_amount_x_is_for_force_keywords_draw_and_discard_only() -> void:
+	var token := CatalogSamples.create_token_effect()
+	token["amount"] = "X"
+	token["x_from"] = {"kind": "hand_size"}
+	assert_bool(_mentions(_effect_errors(token), "amount « X »")).is_true()
 
 
 func test_decision_0058_a_text_other_than_x_is_not_a_number() -> void:
@@ -95,7 +103,9 @@ func test_decision_0058_chosen_x_is_refused_without_an_x_cost() -> void:
 	}
 	assert_bool(_mentions(HeroOrder.from_dict(order).find_errors(), "213.1.3")).is_true()
 	var hero := CatalogSamples.with_flats(CatalogSamples.hero(), "passive", [])
-	var triggered := CatalogSamples.triggered("end_of_turn", {"amount": "X", "x_source": "chosen"})
+	var triggered := CatalogSamples.triggered(
+		"end_of_turn", {"amount": "X", "x_from": {"kind": "chosen_x"}}
+	)
 	hero["triggered"] = CatalogSamples.texts_of([triggered])
 	assert_bool(_mentions(HeroDefinition.from_dict(hero).find_errors(), "213.1.3")).is_true()
 

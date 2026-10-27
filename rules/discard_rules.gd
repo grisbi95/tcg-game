@@ -9,15 +9,18 @@ extends RefCounted
 ## restent des CardDiscarded (212.2.2 à 212.2.2d), émis par leurs modules.
 
 
-## 212.1.1 à 212.1.4, 212.1.6, 212.1.7 ; 200.4.1, 200.4.2 : le joueur de l'entrée défausse
-## `amount` cartes de sa main, ou toutes si elle en contient moins ; main vide, l'effet n'a pas
-## lieu.
+## 212.1.1 à 212.1.4, 212.1.6, 212.1.7 ; 200.4.1, 200.4.2, 213.2.1 : le joueur de l'entrée défausse
+## `amount` cartes (nombre écrit, ou « X » lu une seule fois) de sa main, ou toutes si elle en
+## contient moins ; main vide, l'effet n'a pas lieu.
 ## Quand toutes les cartes de la main sont défaussées, le choix est unique et le moteur le prend
 ## sans demander (décision 0004) ; sinon l'attente est posée.
 static func resolve(context: EffectContext) -> void:
 	var side := context.entry.owner
 	var hand_ids := _card_ids(context.state.get_player(side).hand)
-	var count := mini(context.effect.amount, hand_ids.size())
+	var amount := ValueRules.read_amount(context.state, context.entry, context.effect)
+	if ValueRules.is_unreadable_amount(context.effect, amount):
+		return
+	var count := mini(amount, hand_ids.size())
 	if count == 0:
 		return
 	context.took_place = true
@@ -82,6 +85,7 @@ static func _discard(
 	state: DuelState, side: DuelState.PlayerSide, card_ids: Array[int], events: Array[DuelEvent]
 ) -> void:
 	var player := state.get_player(side)
+	state.current_effect_discarded_count += card_ids.size()
 	for card_id: int in card_ids:
 		var card := player.find_card_in_hand(card_id)
 		player.hand.erase(card)

@@ -6,11 +6,14 @@ extends RefCounted
 ## Ce ne sont pas les cartes de test de l'étape 1.9.
 ##
 ## Forme à plat (décision 0064) : un effet d'essai s'écrit avec ses clés `timing`, `trigger`,
-## `once_per_turn` (et `condition`, pour un effet déclenché) ; `flat_text_of` en fait un texte du
-## catalogue à un seul effet, `with_effects` et `with_flats` posent ces textes sur une carte, un
-## Hero ou un Ordre, et `effect_errors` contrôle l'effet dans son texte.
+## `once_per_turn` (et `condition` et `object`, pour un effet déclenché) ; `flat_text_of` en fait un
+## texte du catalogue à un seul effet, `with_effects` et `with_flats` posent ces textes sur une
+## carte, un Hero ou un Ordre, et `effect_errors` contrôle l'effet dans son texte.
 
 const _TEXT_KEYS: Array[String] = ["timing", "trigger", "once_per_turn"]
+## Clés qui vont sur le texte seulement s'il est déclenché : condition lue à l'événement (207.3.13)
+## et objet de l'événement (décision 0065).
+const _TRIGGERED_TEXT_KEYS: Array[String] = ["condition", "object"]
 
 
 static func unit() -> Dictionary:
@@ -212,9 +215,11 @@ static func flat_text_of(flat: Dictionary) -> Dictionary:
 		if effect.has(key):
 			text[key] = effect[key]
 			effect.erase(key)
-	if text.get("timing") == "triggered" and effect.has("condition"):
-		text["condition"] = effect["condition"]
-		effect.erase("condition")
+	if text.get("timing") == "triggered":
+		for key: String in _TRIGGERED_TEXT_KEYS:
+			if effect.has(key):
+				text[key] = effect[key]
+				effect.erase(key)
 	text["effects"] = [effect]
 	return text
 
@@ -268,6 +273,17 @@ static func effect_from(flat: Dictionary) -> EffectDefinition:
 ## Erreurs du texte de l'effet à plat `flat`.
 static func effect_errors(flat: Dictionary) -> PackedStringArray:
 	return text_from(flat).find_errors()
+
+
+## Décision 0065 : condition « la valeur `value` (objet JSON de GameValue) est `comparison`
+## (`at_least` ou `at_most`) `amount` ».
+static func condition(value: Dictionary, comparison: String, amount: int) -> Dictionary:
+	return {"value": value, "comparison": comparison, "amount": amount}
+
+
+## Décision 0065 : condition sur la taille de la main.
+static func hand_size_condition(comparison: String, amount: int) -> Dictionary:
+	return condition({"kind": "hand_size"}, comparison, amount)
 
 
 ## Copie de `data` avec `key` fixé à `value`.

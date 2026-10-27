@@ -92,7 +92,7 @@ static func hero_data(id: StringName, once_per_turn: bool) -> Dictionary:
 	effect["timing"] = "triggered"
 	effect["trigger"] = "start_of_own_turn"
 	effect["once_per_turn"] = once_per_turn
-	effect["condition"] = {"kind": "hand_size_at_most", "amount": PILLEUSE_HAND_LIMIT}
+	effect["condition"] = CatalogSamples.hand_size_condition("at_most", PILLEUSE_HAND_LIMIT)
 	var data := CatalogSamples.with_field(CatalogSamples.hero(), "id", String(id))
 	data = CatalogSamples.with_flats(data, "passive", [])
 	return CatalogSamples.with_flats(data, "triggered", [effect])

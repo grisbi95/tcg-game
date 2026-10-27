@@ -114,7 +114,7 @@ func _aims_source_hero(effect: EffectDefinition) -> bool:
 
 
 # 213.1.2 : un Hero n'a pas de coût X, ses effets ne lisent pas de X choisi ; 210.4.1c : il n'est
-# pas une Unit, son passif n'accorde pas de mot-clé à son porteur.
+# pas une Unit, son passif n'accorde pas de mot-clé à son porteur .
 func _check_no_chosen_x(errors: PackedStringArray) -> void:
 	var carried: Array[EffectText] = passive.duplicate()
 	carried.append_array(triggered)

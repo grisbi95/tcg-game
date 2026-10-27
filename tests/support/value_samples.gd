@@ -74,12 +74,14 @@ static func execution_effect() -> Dictionary:
 	var target := CatalogSamples.ally_unit_target()
 	target["filter"]["side"] = "enemy"
 	target["max_force"] = "X"
-	return {"kind": "destroy", "timing": "resolve", "x_source": "chosen", "target": target}
+	return {
+		"kind": "destroy", "timing": "resolve", "x_from": {"kind": "chosen_x"}, "target": target
+	}
 
 
 ## Une Unit alliée ciblée a +X Force jusqu'à la fin du tour, X choisi à l'annonce.
 static func blessing_effect() -> Dictionary:
-	return CatalogSamples.modify_force_resolve({"amount": "X", "x_source": "chosen"})
+	return CatalogSamples.modify_force_resolve({"amount": "X", "x_from": {"kind": "chosen_x"}})
 
 
 ## Une Unit alliée ciblée a `keyword` X jusqu'à la fin du tour, X étant sa Force à la résolution.
@@ -89,7 +91,7 @@ static func fury_effect(keyword: String) -> Dictionary:
 		"timing": "resolve",
 		"keyword": keyword,
 		"amount": "X",
-		"x_source": "target_force",
+		"x_from": {"kind": "target_force"},
 		"duration": "until_end_of_turn",
 		"target": CatalogSamples.ally_unit_target(),
 	}

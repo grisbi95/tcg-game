@@ -266,7 +266,25 @@ static func _put_deploy_combat_on_hold(
 	combat.owner = deploy.owner
 	combat.card = deploy.card
 	combat.target_cells.assign(deploy.target_cells)
-	TriggerRules.wait_pending_combat(state, combat, events)
+	_wait_pending_combat(state, combat, events)
+
+
+# 205.6.3, 205.6.5, 205.6.6, 208.7.14 : `combat` attend la fin de la résolution qui l'a fait
+# naître, comme un effet déclenché du joueur à qui appartient l'attaquant. Il reçoit un identifiant
+# d'entrée dès maintenant (décision 0017) et peut recevoir une réponse.
+static func _wait_pending_combat(
+	state: DuelState, combat: StackEntry, events: Array[DuelEvent]
+) -> void:
+	combat.stack_entry_id = state.allocate_stack_entry_id()
+	combat.kind = StackEntry.StackEntryKind.PENDING_COMBAT
+	combat.allows_response = true
+	state.waiting_triggers.append(combat)
+	var held := CombatPutOnHold.new(
+		combat.owner, combat.stack_entry_id, combat.source_piece_id, combat.target_cells[0]
+	)
+	if combat.card != null:
+		held.card_instance_id = combat.card.card_instance_id
+	events.append(held)
 
 
 # 205.2.3a, 205.6.1, 205.6.7 : l'Unit reste sur sa case de départ pendant l'attente.
@@ -277,7 +295,7 @@ static func _put_action_combat_on_hold(
 	combat.owner = unit.owner
 	combat.source_piece_id = unit.piece_id
 	combat.target_cells.append(cell)
-	TriggerRules.wait_pending_combat(state, combat, events)
+	_wait_pending_combat(state, combat, events)
 
 
 # 205.6.12, 205.6.14, 205.6.15

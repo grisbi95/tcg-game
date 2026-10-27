@@ -23,8 +23,18 @@ func test_decision_0060_new_trigger_events_are_appended_after_the_existing_ones(
 	assert_array(names.slice(0, 4)).contains_exactly(
 		["NONE", "ARRIVAL", "DESTROYED", "END_OF_TURN"]
 	)
-	assert_array(names.slice(4)).contains_exactly(
-		["START_OF_OWN_TURN", "OWN_SPELL_ANNOUNCED", "OWN_CARD_DISCARDED", "DESTROYS_DEFENDER"]
+	(
+		assert_array(names.slice(4))
+		. contains_exactly(
+			[
+				"START_OF_OWN_TURN",
+				"OWN_SPELL_ANNOUNCED",
+				"OWN_CARD_DISCARDED",
+				"DESTROYS_DEFENDER",
+				"OTHER_PIECE_DESTROYED",
+				"SPELL_COUNTERED",
+			]
+		)
 	)
 
 
@@ -75,7 +85,7 @@ func test_decision_0060_condition_is_read_from_the_json_effect() -> void:
 	var effect := HandEffectSamples.draw_effect(1)
 	effect["timing"] = "triggered"
 	effect["trigger"] = "start_of_own_turn"
-	effect["condition"] = {"kind": "hand_size_at_most", "amount": 1}
+	effect["condition"] = CatalogSamples.hand_size_condition("at_most", 1)
 	var text := CatalogSamples.text_from(effect)
 	assert_array(Array(text.find_errors())).is_empty()
 	assert_int(text.condition.amount).is_equal(1)
@@ -86,7 +96,7 @@ func test_decision_0060_condition_must_be_an_object() -> void:
 	var effect := HandEffectSamples.draw_effect(1)
 	effect["timing"] = "triggered"
 	effect["trigger"] = "start_of_own_turn"
-	effect["condition"] = "hand_size_at_most"
+	effect["condition"] = "hand_size"
 	(
 		assert_bool(
 			CatalogSamples.mentions(

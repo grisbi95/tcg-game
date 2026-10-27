@@ -111,6 +111,13 @@ var resolving_effect_index: int = 0
 ## en partie ; lu par l'effet « si vous le faites » qui le suit, y compris après une attente (0057).
 ## Faux hors résolution.
 var previous_effect_took_place: bool = false
+## Décision 0065 ; 212.2.3, 213.2.1 : cartes défaussées par l'effet précédent du texte en cours de
+## résolution, lues par « autant que de cartes défaussées » ; gardé après une attente (0057). 0 hors
+## résolution.
+var previous_effect_discarded_count: int = 0
+## Décision 0065 : cartes défaussées jusqu'ici par l'effet en cours ; devient
+## `previous_effect_discarded_count` quand l'effet suivant commence. 0 hors résolution.
+var current_effect_discarded_count: int = 0
 var active_player: PlayerSide = PlayerSide.A
 ## 208.2.4 : joueur qui peut répondre ou passer.
 var priority_player: PlayerSide = PlayerSide.A
@@ -172,6 +179,15 @@ func piece_at(cell: Vector2i) -> Piece:
 		if piece.cell == cell:
 			return piece
 	return null
+
+
+## Pièces en jeu (sur le plateau), dans l'ordre de `pieces`.
+func pieces_on_board() -> Array[Piece]:
+	var on_board: Array[Piece] = []
+	for piece: Piece in pieces:
+		if BoardGeometry.is_on_board(piece.cell):
+			on_board.append(piece)
+	return on_board
 
 
 ## Renvoie le Hero de `side` (202.3.1), ou null avant la préparation.
@@ -238,6 +254,8 @@ func clone() -> DuelState:
 	copy.resolving_entry = resolving_entry.clone() if resolving_entry != null else null
 	copy.resolving_effect_index = resolving_effect_index
 	copy.previous_effect_took_place = previous_effect_took_place
+	copy.previous_effect_discarded_count = previous_effect_discarded_count
+	copy.current_effect_discarded_count = current_effect_discarded_count
 	copy.active_player = active_player
 	copy.priority_player = priority_player
 	copy.turn_number = turn_number

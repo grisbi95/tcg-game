@@ -220,6 +220,16 @@ func _check_text_placement(
 	if not allowed.has(effect_text.timing):
 		var type_name := str(CardType.find_key(card_type)).to_lower()
 		errors.append("%s : timing refusé pour %s" % [label, type_name])
+	if (
+		card_type == CardType.GEAR
+		and effect_text.trigger == EffectDefinition.TriggerEvent.OTHER_PIECE_DESTROYED
+	):
+		errors.append(
+			(
+				"%s : en attente d'une question du ruleset (voir 207.3.12a, 207.3.15), " % label
+				+ "un Gear ne porte pas de texte other_piece_destroyed"
+			)
+		)
 	var attack_error := effect_text.destroys_defender_error(
 		card_type in [CardType.UNIT, CardType.GEAR]
 	)

@@ -89,13 +89,14 @@ func find_errors() -> PackedStringArray:
 	var errors := parse_errors.duplicate()
 	if relation == Relation.ANY and not include_reference:
 		errors.append("206.5.5 : include_reference faux exige une relation à la référence")
-	if relation == Relation.SELF and not include_reference:
-		errors.append("206.5.5 : la relation self exclut la référence, aucune pièce ne convient")
-	if relative_to == RelativeTo.OWN_HERO and relation != Relation.ADJACENT:
-		errors.append("205.2.5 : own_hero ne sert que la relation adjacent")
-	if relative_to != RelativeTo.SOURCE_PIECE and relation == Relation.ANY:
-		errors.append("207.5.6 : relative_to exige une relation")
+	errors.append_array(_relation_errors())
 	return errors
+
+
+# Décision 0065 : le filtre de l'objet d'un événement peut exclure la pièce de référence sans
+# relation (« une autre Unit alliée »).
+func find_object_errors() -> PackedStringArray:
+	return parse_errors + _relation_errors()
 
 
 ## Vrai si le filtre se lit par rapport à la pièce qui porte l'effet (207.3.14).
@@ -105,15 +106,38 @@ func uses_source_piece() -> bool:
 
 ## Vrai si aucun champ n'est écrit : le filtre admet toute pièce.
 func is_default() -> bool:
+	return is_equal_to(PieceFilter.new())
+
+
+## Vrai si seul le côté est écrit (le Spell contrecarré n'a que son propriétaire, décision 0065).
+func is_side_only() -> bool:
+	var bare := PieceFilter.new()
+	bare.side = side
+	return is_equal_to(bare)
+
+
+## Vrai si les deux filtres ont les mêmes champs.
+func is_equal_to(other: PieceFilter) -> bool:
 	return (
-		side == SideFilter.ANY
-		and piece_kinds.is_empty()
-		and relation == Relation.ANY
-		and relative_to == RelativeTo.SOURCE_PIECE
-		and include_reference
-		and tokens == TokenFilter.ANY
-		and row == RowZone.ANY
+		side == other.side
+		and piece_kinds == other.piece_kinds
+		and relation == other.relation
+		and relative_to == other.relative_to
+		and include_reference == other.include_reference
+		and tokens == other.tokens
+		and row == other.row
 	)
+
+
+func _relation_errors() -> PackedStringArray:
+	var errors := PackedStringArray()
+	if relation == Relation.SELF and not include_reference:
+		errors.append("206.5.5 : la relation self exclut la référence, aucune pièce ne convient")
+	if relative_to == RelativeTo.OWN_HERO and relation != Relation.ADJACENT:
+		errors.append("205.2.5 : own_hero ne sert que la relation adjacent")
+	if relative_to != RelativeTo.SOURCE_PIECE and relation == Relation.ANY:
+		errors.append("207.5.6 : relative_to exige une relation")
+	return errors
 
 
 func _read_piece_kinds(reader: CatalogReader) -> void:

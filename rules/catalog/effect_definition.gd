@@ -43,6 +43,8 @@ enum TriggerEvent {
 	OWN_SPELL_ANNOUNCED,  # le joueur à qui appartient l'effet annonce un Spell (208.4.4)
 	OWN_CARD_DISCARDED,  # 212.2.4 : une carte de sa main est défaussée, un événement par carte
 	DESTROYS_DEFENDER,  # 206.3.7 : la pièce, ou l'Unit qui porte le Gear, détruit son défenseur
+	OTHER_PIECE_DESTROYED,  # 207.3.1, 207.3.15, décision 0065 : une autre pièce est détruite
+	SPELL_COUNTERED,  # 207.3.1, 207.6.4, décision 0065 : un Spell est contrecarré
 }
 
 ## Ce que touche l'effet (décision 0057). Enum journalisable : ajouter à la fin.
@@ -51,14 +53,6 @@ enum EffectSubject {
 	OWNER_PLAYER,  # le joueur à qui appartient l'effet, sans cible (212.1.2, 217.1.1)
 	SOURCE_PIECE,  # la pièce qui porte l'effet (« cette Unit »), sans cible
 	MATCHING_PIECES,  # décision 0064, 207.4.11 : l'ensemble décrit par `affected`, fixé à la pose
-}
-
-## Décision 0058 : d'où vient X quand un champ numérique de l'effet s'écrit « X » (213).
-## Enum journalisable : ajouter à la fin.
-enum XSource {
-	NONE,
-	CHOSEN,  # 213.1.3 : la valeur choisie à l'annonce du Spell à coût X
-	TARGET_FORCE,  # 213.2.3 : la Force de la cible, lue une fois à la résolution
 }
 
 ## Valeur de `token_force` quand l'effet ne crée pas de jeton.
@@ -71,6 +65,13 @@ const SWAP_TARGET_COUNT: int = 2
 const MOVE_TARGET_COUNT: int = 1
 ## Kinds à durée ou statiques : Force et mot-clé accordé.
 const _LASTING_KINDS: Array[EffectKind] = [EffectKind.MODIFY_FORCE, EffectKind.GRANT_KEYWORD]
+## Kinds dont `amount` peut s'écrire « X » (décision 0065).
+const _X_AMOUNT_KINDS: Array[EffectKind] = [
+	EffectKind.MODIFY_FORCE,
+	EffectKind.GRANT_KEYWORD,
+	EffectKind.DRAW_CARDS,
+	EffectKind.DISCARD_CARDS,
+]
 const _LASTING_TIMINGS: Array[EffectTiming] = [
 	EffectTiming.RESOLVE, EffectTiming.STATIC, EffectTiming.TRIGGERED
 ]
@@ -101,10 +102,11 @@ var has_duration: bool = false
 var duration: ActiveEffect.EffectDuration = ActiveEffect.EffectDuration.UNTIL_END_OF_TURN
 ## Modificateur de Force pour MODIFY_FORCE ; 0 si sans objet.
 var amount: int = 0
-## Décision 0058 : `amount` s'écrit « X » ; sa valeur vient de `x_source`.
+## Décisions 0058 et 0065 : `amount` s'écrit « X » ; sa valeur vient de `x_from`.
 var amount_is_x: bool = false
-## Décision 0058 : d'où vient X ; NONE si aucun champ de l'effet ne s'écrit « X ».
-var x_source: XSource = XSource.NONE
+## Décision 0065, 213.1.8, 213.2.1 : la valeur du jeu que nomme « X », lue une seule fois à la
+## résolution ; null si aucun champ de l'effet ne s'écrit « X ».
+var x_from: GameValue
 ## Mot-clé accordé par GRANT_KEYWORD (210.4) ; sans objet si `keyword_is_set` est faux.
 var keyword: CardDefinition.Keyword = CardDefinition.Keyword.ASSAULT
 var keyword_is_set: bool = false
@@ -175,9 +177,8 @@ func _read_parameters(reader: CatalogReader) -> void:
 	amount_is_x = reader.is_x("amount")
 	if not amount_is_x:
 		amount = reader.read_signed_int("amount", 0)
-	var x_source_value := reader.read_enum("x_source", XSource)
-	if x_source_value != CatalogReader.NOT_SET:
-		x_source = x_source_value as XSource
+	if reader.has("x_from"):
+		x_from = GameValue.from_dict(reader.read_object("x_from"))
 	var keyword_value := reader.read_enum("keyword", CardDefinition.Keyword)
 	if keyword_value != CatalogReader.NOT_SET:
 		keyword = keyword_value as CardDefinition.Keyword
@@ -345,12 +346,17 @@ func _check_parameters(errors: PackedStringArray, timing: EffectTiming) -> void:
 # exigent un nombre de cartes positif ; les autres kinds n'ont pas d'amount.
 func _check_amount(errors: PackedStringArray) -> void:
 	if kind in [EffectKind.DRAW_CARDS, EffectKind.DISCARD_CARDS]:
-		if amount < 1:
+		if not amount_is_x and amount < 1:
 			errors.append("212.1.7 : amount est le nombre de cartes, au moins 1")
 	elif kind == EffectKind.GRANT_KEYWORD:
 		if not amount_is_x and amount < 1:
 			errors.append("210.1.1 : amount est la valeur du mot-clé accordé, au moins 1")
 	elif (kind == EffectKind.MODIFY_FORCE) != (amount != 0 or amount_is_x):
 		errors.append("206.5.1 : amount est exigé non nul pour MODIFY_FORCE, absent sinon")
-	if amount_is_x and kind not in _LASTING_KINDS:
-		errors.append("0058 : amount « X » ne vaut que pour modify_force et grant_keyword")
+	if amount_is_x and kind not in _X_AMOUNT_KINDS:
+		errors.append(
+			(
+				"0065 : amount « X » ne vaut que pour modify_force, grant_keyword, draw_cards et "
+				+ "discard_cards"
+			)
+		)
