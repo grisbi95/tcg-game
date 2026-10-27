@@ -27,7 +27,7 @@ func test_202_1_5_colossus_is_a_plain_unit() -> void:
 	_assert_card(&"colosse", [TYPE.UNIT, 5, 6, SPEED.NONE], {}, [])
 
 
-func test_201_3_5_inspiration_draws_a_card() -> void:
+func test_201_3_2_inspiration_draws_a_card() -> void:
 	_assert_card(
 		&"inspiration",
 		[TYPE.SPELL, 1, CardDefinition.NO_FORCE, SPEED.REACTION],

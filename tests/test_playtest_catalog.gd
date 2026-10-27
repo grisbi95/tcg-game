@@ -97,7 +97,7 @@ func test_207_5_18_text_says_targeted_only_when_an_effect_targets() -> void:
 	assert_array(wrong).is_empty()
 
 
-func test_202_3_7_chef_de_guerre_wakes_an_adjacent_ally_by_order() -> void:
+func test_211_1_1_chef_de_guerre_wakes_an_adjacent_ally_by_order() -> void:
 	var hero := _catalog.get_hero(&"chef_de_guerre")
 	assert_int(hero.health).is_equal(13)
 	assert_int(hero.orders.size()).is_equal(1)
@@ -113,7 +113,7 @@ func test_202_3_7_chef_de_guerre_wakes_an_adjacent_ally_by_order() -> void:
 	assert_int(filter.relative_to).is_equal(PieceFilter.RelativeTo.OWN_HERO)
 
 
-func test_205_2_5_recruteuse_creates_a_token_next_to_its_hero_by_order() -> void:
+func test_202_4_12_recruteuse_creates_a_token_next_to_its_hero_by_order() -> void:
 	var hero := _catalog.get_hero(&"recruteuse")
 	assert_int(hero.health).is_equal(16)
 	assert_int(hero.orders.size()).is_equal(1)
@@ -129,7 +129,7 @@ func test_205_2_5_recruteuse_creates_a_token_next_to_its_hero_by_order() -> void
 	assert_int(effects[0].target.adjacent_to).is_equal(TargetSpec.AdjacentTo.OWN_HERO)
 
 
-func test_211_1_stratege_swaps_two_distinct_allies_by_reaction_order() -> void:
+func test_211_1_1_stratege_swaps_two_distinct_allies_by_reaction_order() -> void:
 	var hero := _catalog.get_hero(&"stratege")
 	assert_int(hero.health).is_equal(15)
 	assert_int(hero.orders.size()).is_equal(1)

@@ -39,7 +39,7 @@ static func is_legal_piece(
 	return not limited or ForceRules.current_force(state, piece) <= spec.max_force
 
 
-## 207.5.6, 207.3.14, 205.2.5 : point de référence de `spec` pour une entrée de `owner` : le Hero du
+## 207.5.6, 207.3.14 : point de référence de `spec` pour une entrée de `owner` : le Hero du
 ## joueur, ou la pièce source de `spec` (`TargetSpec.with_source`).
 static func spec_anchor(
 	state: DuelState, owner: DuelState.PlayerSide, spec: TargetSpec
@@ -49,7 +49,7 @@ static func spec_anchor(
 	)
 
 
-## 207.4.11, 207.3.14, 205.2.5 : point de référence de `filter` pour `entry` : le Hero du joueur, ou
+## 207.4.11, 207.3.14 : point de référence de `filter` pour `entry` : le Hero du joueur, ou
 ## la pièce source de l'entrée, sur le plateau ou à sa dernière case.
 static func entry_anchor(state: DuelState, entry: StackEntry, filter: PieceFilter) -> FilterAnchor:
 	var cell := state.cell_of_piece(entry.source_piece_id)
@@ -75,13 +75,13 @@ static func is_legal_cell(
 			return false  # 207.3.14
 	if spec.adjacent_to == TargetSpec.AdjacentTo.OWN_HERO:
 		if not _is_next_to_hero(state, owner, cell):
-			return false  # 205.2.5, 207.5.6
+			return false  # 207.5.6
 	if not ModifierRules.is_in_row_zone(spec.row, owner, cell):
 		return false
 	return state.piece_at(cell) == null
 
 
-# 205.2.5 : `cell` touche la case du Hero de `owner`, lue sur le plateau du moment.
+# 207.5.6, décision 0067 : `cell` touche la case du Hero de `owner`, lue sur le plateau du moment.
 static func _is_next_to_hero(state: DuelState, owner: DuelState.PlayerSide, cell: Vector2i) -> bool:
 	var hero := state.find_hero(owner)
 	return hero != null and BoardGeometry.are_adjacent(hero.cell, cell)

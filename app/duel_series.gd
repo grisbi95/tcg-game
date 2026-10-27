@@ -51,10 +51,12 @@ func set_first_player_choice(choice: FirstPlayerChoice) -> void:
 ## Préparation de la partie à venir, avec `rng_seed`.
 func make_setup(rng_seed: int) -> DuelSetup:
 	var duel_setup := DuelSetup.new()
-	duel_setup.deck_a = get_deck(DuelState.PlayerSide.A).card_ids()
-	duel_setup.deck_b = get_deck(DuelState.PlayerSide.B).card_ids()
-	duel_setup.hero_a = get_deck(DuelState.PlayerSide.A).hero_id
-	duel_setup.hero_b = get_deck(DuelState.PlayerSide.B).hero_id
+	var deck_a := get_deck(DuelState.PlayerSide.A)
+	var deck_b := get_deck(DuelState.PlayerSide.B)
+	duel_setup.deck_a = deck_a.card_ids()
+	duel_setup.deck_b = deck_b.card_ids()
+	duel_setup.hero_a = deck_a.hero_id
+	duel_setup.hero_b = deck_b.hero_id
 	duel_setup.rng_seed = rng_seed
 	match _first_player_choice:
 		FirstPlayerChoice.PLAYER_A:

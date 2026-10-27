@@ -100,11 +100,11 @@ func test_207_5_6_others_needs_a_relation_and_one_piece_left() -> void:
 	assert_array(Array(others)).is_empty()
 
 
-func test_205_2_5_hero_reference_is_for_adjacency_only() -> void:
+func test_207_4_11b_hero_reference_is_for_adjacency_only() -> void:
 	var adjacent := {"relation": "adjacent", "relative_to": "own_hero"}
 	assert_array(Array(_filter_errors(adjacent))).is_empty()
 	var same_row := {"relation": "same_row", "relative_to": "own_hero"}
-	assert_bool(_mentions(_filter_errors(same_row), "205.2.5")).is_true()
+	assert_bool(_mentions(_filter_errors(same_row), "207.4.11b")).is_true()
 	var bare := {"relative_to": "own_hero"}
 	assert_bool(_mentions(_filter_errors(bare), "relative_to exige une relation")).is_true()
 

@@ -33,7 +33,7 @@ func test_205_5_1_charge_wakes_an_allied_unit() -> void:
 	_assert_target(&"charge", SIDE.ALLY)
 
 
-func test_213_2_4_fury_grants_assault_of_target_force() -> void:
+func test_213_2_3_fury_grants_assault_of_target_force() -> void:
 	_assert_card(
 		&"furie", [TYPE.SPELL, 3, CardDefinition.NO_FORCE, SPEED.ACTION], {}, [KIND.GRANT_KEYWORD]
 	)

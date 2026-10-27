@@ -47,7 +47,7 @@ func test_207_5_10_rally_targets_two_distinct_cells() -> void:
 	_assert_two_distinct_targets(&"rassemblement")
 
 
-func test_213_2_4_sap_grants_rampart_of_target_force() -> void:
+func test_213_2_3_sap_grants_rampart_of_target_force() -> void:
 	_assert_card(
 		&"seve", [TYPE.SPELL, 2, CardDefinition.NO_FORCE, SPEED.REACTION], {}, [KIND.GRANT_KEYWORD]
 	)

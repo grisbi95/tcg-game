@@ -65,7 +65,7 @@ func test_207_3_14_cell_adjacent_to_the_source_outside_the_central_row() -> void
 	)
 
 
-func test_205_2_5_cell_adjacent_to_the_hero_of_the_owner_is_accepted() -> void:
+func test_207_5_6_cell_adjacent_to_the_hero_of_the_owner_is_accepted() -> void:
 	var state := _builder.build()
 	var spec := _cell_spec({"adjacent_to": "own_hero"})
 	assert_bool(_cell_legal(state, spec, "B1")).is_true()
@@ -83,7 +83,7 @@ func test_205_2_5_cell_adjacent_to_the_hero_of_the_owner_is_accepted() -> void:
 	)
 
 
-func test_205_2_5_cell_not_adjacent_to_the_hero_or_occupied_is_refused() -> void:
+func test_207_5_6_cell_not_adjacent_to_the_hero_or_occupied_is_refused() -> void:
 	_unit(A, "B1")
 	var state := _builder.build()
 	var spec := _cell_spec({"adjacent_to": "own_hero"})
@@ -97,7 +97,7 @@ func test_205_2_5_cell_not_adjacent_to_the_hero_or_occupied_is_refused() -> void
 	assert_array(DeepCompare.find_clone_defects(snapshot, state)).is_empty()
 
 
-func test_205_2_5_cell_adjacent_to_the_hero_is_read_for_the_owner_of_the_effect() -> void:
+func test_207_5_6_cell_adjacent_to_the_hero_is_read_for_the_owner_of_the_effect() -> void:
 	var state := _builder.build()
 	var spec := _cell_spec({"adjacent_to": "own_hero"})
 	assert_bool(_cell_legal(state, spec, "B1", B)).is_false()

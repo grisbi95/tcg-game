@@ -229,8 +229,7 @@ func _on_connection_lost(reason: String) -> void:
 
 
 # Décisions 0036 et 0066 : decks et premier joueur restent ceux de l'hôte, la graine est tirée de
-# nouveau ; décision 0050 : en
-# duel à distance, retour à la préparation.
+# nouveau ; décision 0050 : en duel à distance, retour à la préparation.
 func _on_rematch_requested() -> void:
 	var duel_screen := _screen as DuelScreen
 	if duel_screen != null and duel_screen.is_remote():

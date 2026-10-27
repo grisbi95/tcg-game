@@ -6,7 +6,7 @@ extends RefCounted
 ##
 ## Côté et rangée se lisent par rapport au joueur à qui appartient l'effet ; la relation, par
 ## rapport à la pièce de référence : la pièce qui porte l'effet (pour un Gear, l'Unit qui le porte,
-## 207.2.8) ou le Hero du joueur à qui appartient l'effet (205.2.5).
+## 207.2.8) ou le Hero du joueur à qui appartient l'effet (207.4.11b, décision 0062).
 
 ## Côté de la pièce, relatif au joueur à qui appartient l'effet (glossaire : Allié, Ennemi).
 ## Enum journalisable : ajouter à la fin.
@@ -27,7 +27,7 @@ enum Relation {
 ## Pièce de référence de la relation. Enum journalisable : ajouter à la fin.
 enum RelativeTo {
 	SOURCE_PIECE,  # la pièce qui porte l'effet, ou sa dernière case (207.3.14)
-	OWN_HERO,  # 205.2.5 : le Hero du joueur à qui appartient l'effet
+	OWN_HERO,  # 207.4.11b, décision 0062 : le Hero du joueur à qui appartient l'effet
 }
 
 ## 202.4.1 : jeton ou non. Enum journalisable : ajouter à la fin.
@@ -134,7 +134,7 @@ func _relation_errors() -> PackedStringArray:
 	if relation == Relation.SELF and not include_reference:
 		errors.append("206.5.5 : la relation self exclut la référence, aucune pièce ne convient")
 	if relative_to == RelativeTo.OWN_HERO and relation != Relation.ADJACENT:
-		errors.append("205.2.5 : own_hero ne sert que la relation adjacent")
+		errors.append("207.4.11b : own_hero ne sert que la relation adjacent")
 	if relative_to != RelativeTo.SOURCE_PIECE and relation == Relation.ANY:
 		errors.append("207.5.6 : relative_to exige une relation")
 	return errors
