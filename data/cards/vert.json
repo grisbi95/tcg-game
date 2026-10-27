@@ -1,0 +1,260 @@
+{
+	"edition": "0.55",
+	"heroes": [],
+	"cards": [
+		{
+			"id": "semeuse",
+			"name": "Semeuse",
+			"cost": 2,
+			"type": "unit",
+			"text": "Arrivée : créez un jeton Unit de Force 1 sur une case libre ciblée adjacente à cette Unit.",
+			"force": 1,
+			"keywords": [
+				{
+					"keyword": "arrival"
+				}
+			],
+			"texts": [
+				{
+					"timing": "triggered",
+					"trigger": "arrival",
+					"effects": [
+						{
+							"kind": "create_token",
+							"token_piece_kind": "unit",
+							"token_force": 1,
+							"target": {
+								"what": "cell",
+								"adjacent_to": "source_piece"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "porte_enseigne",
+			"name": "Porte-enseigne",
+			"cost": 3,
+			"type": "unit",
+			"text": "Les autres Units alliées adjacentes au Porte-enseigne ont +1 Force.",
+			"force": 2,
+			"texts": [
+				{
+					"timing": "static",
+					"effects": [
+						{
+							"kind": "modify_force",
+							"amount": 1,
+							"scope": {
+								"side": "ally",
+								"piece_kinds": [
+									"unit"
+								],
+								"relation": "adjacent",
+								"include_reference": false
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "compagnon_tenace",
+			"name": "Compagnon tenace",
+			"cost": 3,
+			"type": "unit",
+			"text": "Dernier souffle : créez un jeton Unit de Force 1 sur une case libre ciblée de votre première rangée.",
+			"force": 3,
+			"keywords": [
+				{
+					"keyword": "last_breath"
+				}
+			],
+			"texts": [
+				{
+					"timing": "triggered",
+					"trigger": "destroyed",
+					"effects": [
+						{
+							"kind": "create_token",
+							"token_piece_kind": "unit",
+							"token_force": 1,
+							"target": {
+								"what": "cell",
+								"row": "own_first"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "ancien_du_bosquet",
+			"name": "Ancien du bosquet",
+			"cost": 5,
+			"type": "unit",
+			"text": "Les autres Units alliées situées dans la même rangée que cette Unit ont +1 Force.",
+			"force": 4,
+			"texts": [
+				{
+					"timing": "static",
+					"effects": [
+						{
+							"kind": "modify_force",
+							"amount": 1,
+							"scope": {
+								"side": "ally",
+								"piece_kinds": [
+									"unit"
+								],
+								"relation": "same_row",
+								"include_reference": false
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "rassemblement",
+			"name": "Rassemblement",
+			"cost": 3,
+			"type": "spell",
+			"speed": "action",
+			"text": "Créez un jeton Unit de Force 1 sur chacune de deux cases libres ciblées distinctes parmi les deux rangées les plus proches de vous.",
+			"texts": [
+				{
+					"timing": "resolve",
+					"effects": [
+						{
+							"kind": "create_token",
+							"token_piece_kind": "unit",
+							"token_force": 1,
+							"target": {
+								"what": "cell",
+								"row": "own_near",
+								"count_min": 2,
+								"count_max": 2,
+								"distinct": true
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "seve",
+			"name": "Sève",
+			"cost": 2,
+			"type": "spell",
+			"speed": "reaction",
+			"text": "Une Unit alliée ciblée a Rempart X jusqu'à la fin du tour, X étant sa Force à la résolution.",
+			"texts": [
+				{
+					"timing": "resolve",
+					"effects": [
+						{
+							"kind": "grant_keyword",
+							"keyword": "rampart",
+							"amount": "X",
+							"x_from": {
+								"kind": "target_force"
+							},
+							"duration": "until_end_of_turn",
+							"target": {
+								"what": "piece",
+								"filter": {
+									"side": "ally",
+									"piece_kinds": [
+										"unit"
+									]
+								}
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "garnison",
+			"name": "Garnison",
+			"cost": 4,
+			"type": "building",
+			"text": "Au début de votre tour, créez un jeton Unit de Force 1 sur une case libre ciblée adjacente à ce Building, hors de la rangée centrale.",
+			"force": 3,
+			"texts": [
+				{
+					"timing": "triggered",
+					"trigger": "start_of_own_turn",
+					"effects": [
+						{
+							"kind": "create_token",
+							"token_piece_kind": "unit",
+							"token_force": 1,
+							"target": {
+								"what": "cell",
+								"adjacent_to": "source_piece",
+								"row": "not_central"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "chantier",
+			"name": "Chantier",
+			"cost": 3,
+			"type": "building",
+			"text": "Au début de votre tour, créez un jeton Unit de Force 4 sur une case libre ciblée adjacente à ce Building, puis détruisez ce Building.",
+			"force": 2,
+			"texts": [
+				{
+					"timing": "triggered",
+					"trigger": "start_of_own_turn",
+					"effects": [
+						{
+							"kind": "create_token",
+							"token_piece_kind": "unit",
+							"token_force": 4,
+							"target": {
+								"what": "cell",
+								"adjacent_to": "source_piece"
+							}
+						},
+						{
+							"kind": "destroy",
+							"subject": "source_piece"
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "banniere",
+			"name": "Bannière",
+			"cost": 2,
+			"type": "gear",
+			"text": "Les Units alliées adjacentes à l'Unit qui porte ce Gear ont +1 Force.",
+			"texts": [
+				{
+					"timing": "static",
+					"effects": [
+						{
+							"kind": "modify_force",
+							"amount": 1,
+							"scope": {
+								"side": "ally",
+								"piece_kinds": [
+									"unit"
+								],
+								"relation": "adjacent"
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}

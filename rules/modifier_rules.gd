@@ -162,9 +162,9 @@ static func is_on_side(
 	return true
 
 
-## 205.2.5, 207.3.14, décision 0062 : point de référence de `filter` pour un effet du joueur `owner`
-## porté par la pièce `piece_id` sur la case `cell` : le Hero du joueur pour un filtre `own_hero`,
-## cette pièce sinon. Pur.
+## 207.4.11b, 207.3.14, décision 0062 : point de référence de `filter` pour un effet du joueur
+## `owner` porté par la pièce `piece_id` sur la case `cell` : le Hero du joueur pour un filtre
+## `own_hero`, cette pièce sinon. Pur.
 static func reference_anchor(
 	state: DuelState,
 	filter: PieceFilter,

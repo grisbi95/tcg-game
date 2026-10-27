@@ -56,22 +56,62 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"ModalBodyLabel"
 
-[node name="FirstPlayerLabel" type="Label" parent="Center/Panel/Column/GameRow"]
+[node name="DeckARow" type="HBoxContainer" parent="Center/Panel/Column"]
+layout_mode = 2
+theme_type_variation = &"ModalRow"
+
+[node name="PlayerLabelA" type="Label" parent="Center/Panel/Column/DeckARow"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 theme_type_variation = &"ModalBodyLabel"
 
-[node name="PlayerLabelA" type="Label" parent="Center/Panel/Column"]
+[node name="DeckOptionA" type="OptionButton" parent="Center/Panel/Column/DeckARow"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_type_variation = &"ModalBodyLabel"
-horizontal_alignment = 1
+size_flags_horizontal = 3
+focus_mode = 0
+theme_type_variation = &"ModalOptionButton"
+clip_text = true
+fit_to_longest_item = false
 
-[node name="PlayerLabelB" type="Label" parent="Center/Panel/Column"]
+[node name="DeckBRow" type="HBoxContainer" parent="Center/Panel/Column"]
+layout_mode = 2
+theme_type_variation = &"ModalRow"
+
+[node name="PlayerLabelB" type="Label" parent="Center/Panel/Column/DeckBRow"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 theme_type_variation = &"ModalBodyLabel"
-horizontal_alignment = 1
+
+[node name="DeckOptionB" type="OptionButton" parent="Center/Panel/Column/DeckBRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+theme_type_variation = &"ModalOptionButton"
+clip_text = true
+fit_to_longest_item = false
+
+[node name="FirstPlayerRow" type="HBoxContainer" parent="Center/Panel/Column"]
+layout_mode = 2
+theme_type_variation = &"ModalRow"
+
+[node name="FirstPlayerLabel" type="Label" parent="Center/Panel/Column/FirstPlayerRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+theme_type_variation = &"ModalBodyLabel"
+
+[node name="FirstPlayerOption" type="OptionButton" parent="Center/Panel/Column/FirstPlayerRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+theme_type_variation = &"ModalOptionButton"
+clip_text = true
+fit_to_longest_item = false
 
 [node name="SeedRow" type="HBoxContainer" parent="Center/Panel/Column"]
 layout_mode = 2

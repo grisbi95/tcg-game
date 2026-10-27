@@ -100,11 +100,11 @@ func test_207_5_6_others_needs_a_relation_and_one_piece_left() -> void:
 	assert_array(Array(others)).is_empty()
 
 
-func test_205_2_5_hero_reference_is_for_adjacency_only() -> void:
+func test_207_4_11b_hero_reference_is_for_adjacency_only() -> void:
 	var adjacent := {"relation": "adjacent", "relative_to": "own_hero"}
 	assert_array(Array(_filter_errors(adjacent))).is_empty()
 	var same_row := {"relation": "same_row", "relative_to": "own_hero"}
-	assert_bool(_mentions(_filter_errors(same_row), "205.2.5")).is_true()
+	assert_bool(_mentions(_filter_errors(same_row), "207.4.11b")).is_true()
 	var bare := {"relative_to": "own_hero"}
 	assert_bool(_mentions(_filter_errors(bare), "relative_to exige une relation")).is_true()
 
@@ -132,6 +132,12 @@ func test_207_5_11_adjacent_to_is_for_cells_only() -> void:
 		{"what": "cell", "adjacent_to": "source_piece", "row": "not_central"}
 	)
 	assert_array(Array(cell)).is_empty()
+	var hero_cell := _target_errors({"what": "cell", "adjacent_to": "own_hero"})
+	assert_array(Array(hero_cell)).is_empty()
+	var hero_piece := _target_errors(
+		{"what": "piece", "filter": {"piece_kinds": ["unit"]}, "adjacent_to": "own_hero"}
+	)
+	assert_bool(_mentions(hero_piece, "adjacent_to ne vaut que pour une case")).is_true()
 
 
 func test_205_1_4_cell_target_reads_the_named_zones() -> void:

@@ -18,6 +18,7 @@ enum LobbyStep {
 const SETUP_SCENE: PackedScene = preload("res://ui/setup_screen.tscn")
 const DUEL_SCENE: PackedScene = preload("res://ui/duel_screen.tscn")
 const LOAD_ERROR_TEXT: String = "Impossible de charger le jeu : cartes ou deck de test en erreur."
+const DECK_LABEL_FORMAT: String = "%s — %s"
 const BACK_TEXT: String = "Retour"
 const SETUP_ERROR_FORMAT: String = "Partie impossible : %s"
 const SHEET_SAVED_FORMAT: String = "Fiche enregistrée : %s"
@@ -30,6 +31,8 @@ const DISCONNECTED_FORMAT: String = "Duel à distance interrompu : %s"
 var _catalog: Catalog
 var _config: DuelConfig = DuelConfig.new()
 var _series: DuelSeries
+## Decks proposés à la préparation, dans l'ordre de `GameLibrary.load_decks`.
+var _decks: Array[DeckList] = []
 var _screen: Control
 var _lobby_step: LobbyStep = LobbyStep.NONE
 var _connection: RelayConnection
@@ -52,11 +55,12 @@ func _ready() -> void:
 	if _catalog == null:
 		_show_load_error()
 		return
-	var deck := GameLibrary.load_deck(_catalog)
-	if deck == null:
+	_decks = GameLibrary.load_decks(_catalog)
+	var test_deck_index := _find_deck_index(GameLibrary.TEST_DECK_ID)
+	if test_deck_index < 0:
 		_show_load_error()
 		return
-	_series = DuelSeries.new(deck, deck)
+	_series = DuelSeries.new(_decks[test_deck_index], _decks[test_deck_index])
 	_show_setup()
 
 
@@ -76,23 +80,38 @@ func _show_setup(status: String = "") -> void:
 	setup_screen.create_pressed.connect(_on_create_pressed)
 	setup_screen.join_pressed.connect(_on_join_pressed)
 	setup_screen.cancel_pressed.connect(_on_cancel_pressed)
-	setup_screen.show_preparation(
-		_series.get_game_number(),
-		_series.get_first_player(),
-		_setup_lines(),
-		DuelSeries.draw_seed()
-	)
+	setup_screen.deck_chosen.connect(_on_deck_chosen)
+	setup_screen.first_player_chosen.connect(_series.set_first_player_choice)
+	setup_screen.show_preparation(_make_preparation())
 	setup_screen.show_idle(status)
 
 
-func _setup_lines() -> Array[SetupScreen.PlayerLine]:
-	var lines: Array[SetupScreen.PlayerLine] = []
+func _make_preparation() -> SetupScreen.Preparation:
+	var preparation := SetupScreen.Preparation.new()
+	preparation.game_number = _series.get_game_number()
+	for deck: DeckList in _decks:
+		preparation.deck_labels.append(DECK_LABEL_FORMAT % [deck.deck_name, _hero_name(deck)])
 	for side: DuelState.PlayerSide in DuelState.SIDES:
-		var deck := _series.get_deck(side)
-		var hero := _catalog.get_hero(deck.hero_id)
-		var hero_name := String(deck.hero_id) if hero == null else hero.hero_name
-		lines.append(SetupScreen.PlayerLine.new(side, deck.deck_name, hero_name))
-	return lines
+		preparation.deck_indexes[side] = _decks.find(_series.get_deck(side))
+	preparation.first_player_choice = _series.get_first_player_choice()
+	preparation.rng_seed = DuelSeries.draw_seed()
+	return preparation
+
+
+func _hero_name(deck: DeckList) -> String:
+	var hero := _catalog.get_hero(deck.hero_id)
+	return String(deck.hero_id) if hero == null else hero.hero_name
+
+
+func _find_deck_index(deck_id: StringName) -> int:
+	for deck_index: int in _decks.size():
+		if _decks[deck_index].deck_id == deck_id:
+			return deck_index
+	return -1
+
+
+func _on_deck_chosen(side: DuelState.PlayerSide, deck_index: int) -> void:
+	_series.set_deck(side, _decks[deck_index])
 
 
 func _start_duel(rng_seed: int) -> void:
@@ -209,8 +228,8 @@ func _on_connection_lost(reason: String) -> void:
 	_show_setup(DISCONNECTED_FORMAT % reason)
 
 
-# Décision 0036 : l'autre joueur commence, la graine est tirée de nouveau ; décision 0050 : en
-# duel à distance, retour à la préparation.
+# Décisions 0036 et 0066 : decks et premier joueur restent ceux de l'hôte, la graine est tirée de
+# nouveau ; décision 0050 : en duel à distance, retour à la préparation.
 func _on_rematch_requested() -> void:
 	var duel_screen := _screen as DuelScreen
 	if duel_screen != null and duel_screen.is_remote():

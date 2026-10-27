@@ -1,11 +1,16 @@
 class_name SetupScreen
 extends Control
-## Écran de préparation (décision 0036, point 3) : « Nouvelle partie », le numéro de la partie et
-## le joueur qui commence, le deck et le Hero de chaque joueur, la graine (affichée, modifiable,
-## entier positif) et « Commencer ». Décisions 0043 et 0050 : « Créer une partie à distance »
-## (le créateur joue A) ou « Rejoindre » par le code de la partie (B) ; le parent mène la connexion
-## et dit où elle en est. Le parent donne les textes et reçoit la graine choisie ; aucune règle ici.
+## Écran de préparation (décision 0036, point 3) : « Nouvelle partie », le numéro de la partie, le
+## deck de chaque joueur et le premier joueur, choisis par l'hôte (décision 0066), la graine
+## (affichée, modifiable, entier positif) et « Commencer ». Décisions 0043 et 0050 : « Créer une
+## partie à distance » (le créateur joue A) ou « Rejoindre » par le code de la partie (B) ; le
+## parent mène la connexion et dit où elle en est. Le parent donne les textes et reçoit la graine
+## choisie ; aucune règle ici.
 
+## L'hôte donne au joueur `side` le deck `deck_index` de `Preparation.deck_labels`.
+signal deck_chosen(side: DuelState.PlayerSide, deck_index: int)
+## L'hôte choisit qui commence.
+signal first_player_chosen(choice: DuelSeries.FirstPlayerChoice)
 ## « Commencer » est pressé, avec la graine du champ.
 signal start_pressed(rng_seed: int)
 ## « Créer une partie à distance » est pressé, avec la graine du champ.
@@ -18,8 +23,8 @@ signal cancel_pressed
 const MAX_SEED_DIGITS: int = 18
 const TITLE_TEXT: String = "Nouvelle partie"
 const GAME_FORMAT: String = "Partie %d ·"
-const FIRST_PLAYER_FORMAT: String = "%s commence"
-const PLAYER_LINE_FORMAT: String = "%s : %s · %s"
+const FIRST_PLAYER_TEXT: String = "Commence"
+const DRAWN_TEXT: String = "Tiré au sort"
 const SEED_TEXT: String = "Graine"
 const START_TEXT: String = "Commencer sur cet appareil"
 const REMOTE_TITLE_TEXT: String = "À distance"
@@ -35,6 +40,7 @@ const CODE_LENGTH: int = 4
 @onready var _title_label: Label = %TitleLabel
 @onready var _game_label: Label = %GameLabel
 @onready var _first_player_label: Label = %FirstPlayerLabel
+@onready var _first_player_option: OptionButton = %FirstPlayerOption
 @onready var _seed_title_label: Label = %SeedTitleLabel
 @onready var _seed_edit: LineEdit = %SeedEdit
 @onready var _start_button: Button = %StartButton
@@ -48,19 +54,21 @@ const CODE_LENGTH: int = 4
 	DuelState.PlayerSide.A: %PlayerLabelA,
 	DuelState.PlayerSide.B: %PlayerLabelB,
 }
+@onready var _deck_options: Dictionary[DuelState.PlayerSide, OptionButton] = {
+	DuelState.PlayerSide.A: %DeckOptionA,
+	DuelState.PlayerSide.B: %DeckOptionB,
+}
 
 
-## Ce que la préparation dit d'un joueur : son deck et son Hero.
-class PlayerLine:
+## Ce que la préparation montre : le numéro de la partie, les decks proposés (textes déjà formés),
+## le deck choisi de chaque joueur (index dans `deck_labels`), le premier joueur et la graine.
+class Preparation:
 	extends RefCounted
-	var side: DuelState.PlayerSide = DuelState.PlayerSide.A
-	var deck_name: String = ""
-	var hero_name: String = ""
-
-	func _init(player_side: DuelState.PlayerSide, deck: String, hero: String) -> void:
-		side = player_side
-		deck_name = deck
-		hero_name = hero
+	var game_number: int = 1
+	var deck_labels: PackedStringArray = PackedStringArray()
+	var deck_indexes: Dictionary[DuelState.PlayerSide, int] = {}
+	var first_player_choice: DuelSeries.FirstPlayerChoice = DuelSeries.FirstPlayerChoice.PLAYER_A
+	var rng_seed: int = 0
 
 
 func _ready() -> void:
@@ -71,6 +79,7 @@ func _ready() -> void:
 	_title_label.text = TITLE_TEXT
 	_title_label.add_theme_color_override("font_color", DuelPalette.INK_COLOR)
 	_game_label.add_theme_color_override("font_color", DuelPalette.MUTED_COLOR)
+	_setup_choice_controls()
 	_seed_title_label.text = SEED_TEXT
 	_seed_title_label.add_theme_color_override("font_color", DuelPalette.MUTED_COLOR)
 	_start_button.text = START_TEXT
@@ -81,22 +90,15 @@ func _ready() -> void:
 	_setup_remote_controls()
 
 
-## Montre la partie numéro `game_number`, que commence `first_player`, avec les `lines` de chaque
-## joueur et la graine `rng_seed` proposée.
-func show_preparation(
-	game_number: int, first_player: DuelState.PlayerSide, lines: Array[PlayerLine], rng_seed: int
-) -> void:
-	_game_label.text = GAME_FORMAT % game_number
-	_first_player_label.text = FIRST_PLAYER_FORMAT % PlayerNames.display_name(first_player)
-	_first_player_label.add_theme_color_override("font_color", DuelPalette.player_ink(first_player))
-	for line: PlayerLine in lines:
-		var label := _player_labels[line.side]
-		label.text = (
-			PLAYER_LINE_FORMAT
-			% [PlayerNames.display_name(line.side), line.deck_name, line.hero_name]
-		)
-		label.add_theme_color_override("font_color", DuelPalette.player_ink(line.side))
-	_seed_edit.text = str(rng_seed)
+## Montre la `preparation` : choix de l'hôte et graine proposée.
+func show_preparation(preparation: Preparation) -> void:
+	_game_label.text = GAME_FORMAT % preparation.game_number
+	for side: DuelState.PlayerSide in DuelState.SIDES:
+		_fill_deck_option(side, preparation)
+	_first_player_option.select(
+		_first_player_option.get_item_index(preparation.first_player_choice)
+	)
+	_seed_edit.text = str(preparation.rng_seed)
 	show_idle()
 
 
@@ -123,6 +125,32 @@ static func _digits_only(text: String) -> String:
 	return digits
 
 
+func _setup_choice_controls() -> void:
+	for side: DuelState.PlayerSide in DuelState.SIDES:
+		var label := _player_labels[side]
+		label.text = PlayerNames.display_name(side)
+		label.add_theme_color_override("font_color", DuelPalette.player_ink(side))
+		_deck_options[side].item_selected.connect(_on_deck_selected.bind(side))
+	_first_player_label.text = FIRST_PLAYER_TEXT
+	_first_player_label.add_theme_color_override("font_color", DuelPalette.MUTED_COLOR)
+	_first_player_option.add_item(
+		PlayerNames.display_name(DuelState.PlayerSide.A), DuelSeries.FirstPlayerChoice.PLAYER_A
+	)
+	_first_player_option.add_item(
+		PlayerNames.display_name(DuelState.PlayerSide.B), DuelSeries.FirstPlayerChoice.PLAYER_B
+	)
+	_first_player_option.add_item(DRAWN_TEXT, DuelSeries.FirstPlayerChoice.DRAWN)
+	_first_player_option.item_selected.connect(_on_first_player_selected)
+
+
+func _fill_deck_option(side: DuelState.PlayerSide, preparation: Preparation) -> void:
+	var option := _deck_options[side]
+	option.clear()
+	for deck_label: String in preparation.deck_labels:
+		option.add_item(deck_label)
+	option.select(preparation.deck_indexes[side])
+
+
 func _setup_remote_controls() -> void:
 	_remote_title_label.text = REMOTE_TITLE_TEXT
 	_remote_title_label.add_theme_color_override("font_color", DuelPalette.MUTED_COLOR)
@@ -145,12 +173,24 @@ func _set_controls_enabled(is_enabled: bool) -> void:
 	_create_button.disabled = not (is_enabled and has_seed)
 	_join_button.disabled = not (is_enabled and _code_edit.text.length() == CODE_LENGTH)
 	_seed_edit.editable = is_enabled
+	_first_player_option.disabled = not is_enabled
+	for option: OptionButton in _deck_options.values():
+		option.disabled = not is_enabled
 	_code_edit.editable = is_enabled
 
 
 func _show_status(status: String) -> void:
 	_status_label.text = status
 	_status_label.visible = not status.is_empty()
+
+
+func _on_deck_selected(deck_index: int, side: DuelState.PlayerSide) -> void:
+	deck_chosen.emit(side, deck_index)
+
+
+func _on_first_player_selected(item_index: int) -> void:
+	var choice: DuelSeries.FirstPlayerChoice = _first_player_option.get_item_id(item_index)
+	first_player_chosen.emit(choice)
 
 
 func _on_seed_text_changed(new_text: String) -> void:

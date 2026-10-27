@@ -87,7 +87,7 @@ func before() -> void:
 
 
 func test_decision_0010_catalog_holds_every_test_card() -> void:
-	assert_array(_catalog.card_ids()).contains_exactly_in_any_order(CARDS.keys())
+	assert_array(_catalog.card_ids()).contains(CARDS.keys())
 
 
 func test_202_1_test_cards_match_the_playtest_list() -> void:

@@ -1,0 +1,199 @@
+{
+	"edition": "0.55",
+	"heroes": [],
+	"cards": [
+		{
+			"id": "apprenti",
+			"name": "Apprenti",
+			"cost": 2,
+			"type": "unit",
+			"text": "Chaque fois que vous annoncez un Spell, cette Unit a +1 Force jusqu'à la fin du tour.",
+			"force": 2,
+			"texts": [
+				{
+					"timing": "triggered",
+					"trigger": "own_spell_announced",
+					"effects": [
+						{
+							"kind": "modify_force",
+							"subject": "source_piece",
+							"amount": 1,
+							"duration": "until_end_of_turn"
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "spectre_des_archives",
+			"name": "Spectre des archives",
+			"cost": 2,
+			"type": "unit",
+			"text": "Une fois par tour, quand vous défaussez une carte de votre main, cette Unit a +2 Force jusqu'à la fin du tour.",
+			"force": 2,
+			"texts": [
+				{
+					"timing": "triggered",
+					"trigger": "own_card_discarded",
+					"once_per_turn": true,
+					"effects": [
+						{
+							"kind": "modify_force",
+							"subject": "source_piece",
+							"amount": 2,
+							"duration": "until_end_of_turn"
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "lettre",
+			"name": "Lettré",
+			"cost": 3,
+			"type": "unit",
+			"text": "Arrivée : piochez une carte.",
+			"force": 2,
+			"keywords": [
+				{
+					"keyword": "arrival"
+				}
+			],
+			"texts": [
+				{
+					"timing": "triggered",
+					"trigger": "arrival",
+					"effects": [
+						{
+							"kind": "draw_cards",
+							"subject": "owner_player",
+							"amount": 1
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "lame_sort",
+			"name": "Lame-sort",
+			"cost": 3,
+			"type": "unit",
+			"text": "Une fois par tour, quand vous annoncez un Spell, une Unit alliée ciblée a +1 Force jusqu'à la fin du tour.",
+			"force": 3,
+			"texts": [
+				{
+					"timing": "triggered",
+					"trigger": "own_spell_announced",
+					"once_per_turn": true,
+					"effects": [
+						{
+							"kind": "modify_force",
+							"amount": 1,
+							"duration": "until_end_of_turn",
+							"target": {
+								"what": "piece",
+								"filter": {
+									"side": "ally",
+									"piece_kinds": [
+										"unit"
+									]
+								}
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "etude",
+			"name": "Étude",
+			"cost": 1,
+			"type": "spell",
+			"speed": "action",
+			"text": "Piochez deux cartes, puis défaussez une carte de votre main.",
+			"texts": [
+				{
+					"timing": "resolve",
+					"effects": [
+						{
+							"kind": "draw_cards",
+							"subject": "owner_player",
+							"amount": 2
+						},
+						{
+							"kind": "discard_cards",
+							"subject": "owner_player",
+							"amount": 1
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "bibliotheque",
+			"name": "Bibliothèque",
+			"cost": 3,
+			"type": "building",
+			"text": "Au début de votre tour, piochez une carte.",
+			"force": 2,
+			"texts": [
+				{
+					"timing": "triggered",
+					"trigger": "start_of_own_turn",
+					"effects": [
+						{
+							"kind": "draw_cards",
+							"subject": "owner_player",
+							"amount": 1
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "observatoire",
+			"name": "Observatoire",
+			"cost": 2,
+			"type": "building",
+			"text": "Au début de votre tour, regardez la carte du dessus de votre deck ; vous pouvez la mettre sous votre deck.",
+			"force": 3,
+			"texts": [
+				{
+					"timing": "triggered",
+					"trigger": "start_of_own_turn",
+					"effects": [
+						{
+							"kind": "look_at_top_card",
+							"subject": "owner_player"
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "grimoire",
+			"name": "Grimoire",
+			"cost": 1,
+			"type": "gear",
+			"text": "Quand l'Unit qui porte ce Gear détruit son défenseur, piochez une carte, puis défaussez une carte de votre main.",
+			"texts": [
+				{
+					"timing": "triggered",
+					"trigger": "destroys_defender",
+					"effects": [
+						{
+							"kind": "draw_cards",
+							"subject": "owner_player",
+							"amount": 1
+						},
+						{
+							"kind": "discard_cards",
+							"subject": "owner_player",
+							"amount": 1
+						}
+					]
+				}
+			]
+		}
+	]
+}

@@ -140,7 +140,6 @@ const RULES_WITHOUT_OWN_TEST: Dictionary[String, String] = {
 ## la liste est vide à la sortie de c.8.
 const RULES_AWAITING_IMPLEMENTATION: Dictionary[String, String] = {
 	"201.4.1a": "c.7",
-	"207.5.18": "c.6",
 	"217.1.5": "c.7",
 }
 

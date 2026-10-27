@@ -1,6 +1,6 @@
 # 0063 — Évaluateur du filtre de pièces dans ModifierRules
 
-- Statut : acceptée
+- Statut : acceptée ; précisée par 0067
 - Date : 2026-10-27
 - Décideur : créateur du projet, en conversation
 - Périmètre : lieu de l'évaluation de `PieceFilter` et noms retenus, étape c.5c du jalon J2c ; précise 0062

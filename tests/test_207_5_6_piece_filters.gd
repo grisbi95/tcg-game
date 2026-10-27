@@ -1,6 +1,6 @@
 extends GdUnitTestSuite
 ## Filtres de pièces d'une cible (ruleset 0.55, 207.5.6, 207.5.11 ; 202.4.1, 205.1.2 à 205.1.4,
-## 205.2.5, 207.3.14 ; décision 0062) : un test par axe du PieceFilter, lu par
+## 207.3.14, 207.4.11b ; décision 0062) : un test par axe du PieceFilter, lu par
 ## ModifierRules.matches_filter. Cases et Spells ciblés : test_207_5_6_cell_and_spell_filters.gd.
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
@@ -92,7 +92,7 @@ func test_207_5_6_others_excludes_the_reference_itself() -> void:
 	assert_bool(_legal_from(state, others, source_id, other_id)).is_true()
 
 
-func test_205_2_5_relation_adjacent_to_the_hero_of_the_owner() -> void:
+func test_207_4_11b_relation_adjacent_to_the_hero_of_the_owner() -> void:
 	var hero_cell := DuelStateBuilder.cell("C1")
 	var next_id := _unit(A, "C2")
 	var far_id := _unit(A, "E2")
@@ -103,7 +103,7 @@ func test_205_2_5_relation_adjacent_to_the_hero_of_the_owner() -> void:
 	assert_bool(_legal(state, filter, far_id)).is_false()
 
 
-func test_205_2_5_relation_adjacent_to_the_hero_is_read_for_the_owner_of_the_effect() -> void:
+func test_207_4_11b_relation_adjacent_to_the_hero_is_read_for_the_owner_of_the_effect() -> void:
 	var next_to_a := _unit(B, "C2")
 	var state := _builder.build()
 	var filter := {"relation": "adjacent", "relative_to": "own_hero"}

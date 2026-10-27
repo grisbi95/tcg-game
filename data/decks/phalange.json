@@ -1,0 +1,24 @@
+{
+	"edition": "0.55",
+	"id": "phalange",
+	"name": "Phalange",
+	"hero": "recruteuse",
+	"cards": {
+		"semeuse": 3,
+		"porte_enseigne": 3,
+		"compagnon_tenace": 2,
+		"ancien_du_bosquet": 1,
+		"rassemblement": 2,
+		"seve": 2,
+		"garnison": 2,
+		"chantier": 1,
+		"banniere": 2,
+		"lettre": 2,
+		"bibliotheque": 1,
+		"soldat": 2,
+		"gardien": 2,
+		"veteran": 2,
+		"champion": 1,
+		"choc": 2
+	}
+}

@@ -7,7 +7,7 @@ extends RefCounted
 
 const CARDS_DIRECTORY: String = "res://data/cards"
 const DECKS_DIRECTORY: String = "res://data/decks"
-## Décision 0036 : les deux joueurs jouent le deck de test du playtest.
+## Décision 0066 : deck proposé aux deux joueurs tant que l'hôte n'en choisit pas un autre.
 const TEST_DECK_ID: StringName = &"deck_de_test"
 
 
@@ -30,6 +30,16 @@ static func load_deck(catalog: Catalog, deck_id: StringName = TEST_DECK_ID) -> D
 	if deck == null:
 		push_error("GameLibrary : deck « %s » absent de %s" % [deck_id, DECKS_DIRECTORY])
 	return deck
+
+
+## Décision 0066 : tous les decks de `data/decks/` à l'édition de `catalog`, dans l'ordre de
+## lecture ; vide en cas d'erreur.
+static func load_decks(catalog: Catalog) -> Array[DeckList]:
+	var loader := DeckLoader.new(catalog.edition)
+	loader.load_directory(DECKS_DIRECTORY)
+	if _has_reported(loader.find_errors()):
+		return []
+	return loader.get_decks()
 
 
 static func _has_reported(errors: PackedStringArray) -> bool:

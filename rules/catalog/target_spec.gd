@@ -21,6 +21,7 @@ enum AdjacentTo {
 	NONE,
 	TARGET_PIECE,  # case adjacente à la pièce que cible le même effet (destination, 215.1.1)
 	SOURCE_PIECE,  # adjacente à la case de la pièce qui porte l'effet, ou à sa dernière (207.3.14)
+	OWN_HERO,  # adjacente au Hero du joueur à qui appartient l'effet (207.5.6, décision 0067)
 }
 
 ## Valeur de `max_force` quand la Force de la cible n'est pas bornée.
