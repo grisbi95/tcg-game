@@ -1,6 +1,6 @@
 # 0062 — Filtre de pièces partagé entre cible et portée statique
 
-- Statut : acceptée
+- Statut : acceptée, précisée par 0063
 - Date : 2026-10-27
 - Décideur : créateur du projet, en conversation
 - Périmètre : filtres de pièces des effets (`TargetSpec`, `EffectDefinition.StaticScope`), étape c.5c du jalon J2c (branche `feat/c.5c-sujets-portees-filtres`) ; applique 0061, précise 0056
