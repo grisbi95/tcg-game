@@ -74,22 +74,25 @@ func test_207_3_14_unknown_piece_has_no_cell() -> void:
 
 func test_207_3_14_adjacency_to_the_source_is_unresolved_without_a_cell() -> void:
 	var spec := TargetSpec.from_dict(
-		{"what": "piece", "side": "enemy", "piece_kinds": ["unit"], "adjacent_to": "source_piece"}
+		{
+			"what": "piece",
+			"filter": {"side": "enemy", "piece_kinds": ["unit"], "relation": "adjacent"}
+		}
 	)
 	var unit_id := _place(B, Piece.PieceKind.UNIT, SOLDIER, "C2")
 	var state := _builder.build()
 	var unit := state.find_piece(unit_id)
 	assert_bool(EffectRules.is_legal_piece(state, A, spec, unit)).is_false()
-	var next_to_b2 := spec.with_source_cell(DuelStateBuilder.cell("B2"))
+	var next_to_b2 := spec.with_source(DuelState.NO_ID, DuelStateBuilder.cell("B2"))
 	assert_bool(EffectRules.is_legal_piece(state, A, next_to_b2, unit)).is_true()
-	var next_to_e5 := spec.with_source_cell(DuelStateBuilder.cell("E5"))
+	var next_to_e5 := spec.with_source(DuelState.NO_ID, DuelStateBuilder.cell("E5"))
 	assert_bool(EffectRules.is_legal_piece(state, A, next_to_e5, unit)).is_false()
 
 
 func test_207_3_14_source_piece_adjacency_is_only_for_triggered_effects() -> void:
 	var data := CatalogSamples.destroy_effect()
 	var target: Dictionary = data["target"]
-	target["adjacent_to"] = "source_piece"
+	target["filter"]["relation"] = "adjacent"
 	var errors := EffectDefinition.from_dict(data).find_errors()
 	assert_bool(CatalogSamples.mentions(errors, "207.3.14")).is_true()
 	var triggered := CatalogSamples.with_field(data, "timing", "triggered")

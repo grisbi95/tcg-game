@@ -67,7 +67,7 @@ func test_208_4_4_trigger_resolves_before_the_spell_that_triggered_it() -> void:
 		. contains_exactly(
 			[
 				"PriorityPassed:B",
-				"CardDrawn:A",
+				"ForceModified:A",
 				"StackEntryResolved:A",
 				"CardDrawn:A",
 				"CardDiscarded:A",

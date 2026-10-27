@@ -29,7 +29,7 @@ static func _check_target_what(effect: EffectDefinition, errors: PackedStringArr
 # un effet de Force ou de destruction ne vise donc pas de Hero.
 static func _check_hero_target(effect: EffectDefinition, errors: PackedStringArray) -> void:
 	var target := effect.target
-	if target == null or not target.piece_kinds.has(Piece.PieceKind.HERO):
+	if target == null or not target.piece_filter.piece_kinds.has(Piece.PieceKind.HERO):
 		return
 	var kinds: Array[EffectDefinition.EffectKind] = [
 		EffectDefinition.EffectKind.MODIFY_FORCE, EffectDefinition.EffectKind.DESTROY
@@ -56,7 +56,10 @@ static func _check_movement(effect: EffectDefinition, errors: PackedStringArray)
 	if effect.kind not in movements or target == null:
 		return
 	var kind_name := String(EffectDefinition.kind_id(effect.kind))
-	if target.what == TargetSpec.TargetWhat.PIECE and target.piece_kinds != [Piece.PieceKind.UNIT]:
+	if (
+		target.what == TargetSpec.TargetWhat.PIECE
+		and target.piece_filter.piece_kinds != [Piece.PieceKind.UNIT]
+	):
 		errors.append("%s : %s ne cible que des Units" % [_target_rule(effect), kind_name])
 	if effect.kind == EffectDefinition.EffectKind.SWAP_CELLS:
 		_check_swap(target, errors)
@@ -72,8 +75,8 @@ static func _check_wake(effect: EffectDefinition, errors: PackedStringArray) -> 
 		return
 	if target.what != TargetSpec.TargetWhat.PIECE:
 		return
-	var wakeable := not target.piece_kinds.is_empty()
-	for piece_kind: Piece.PieceKind in target.piece_kinds:
+	var wakeable := not target.piece_filter.piece_kinds.is_empty()
+	for piece_kind: Piece.PieceKind in target.piece_filter.piece_kinds:
 		wakeable = wakeable and piece_kind != Piece.PieceKind.BUILDING
 	if not wakeable:
 		errors.append("205.5.6 : wake ne cible que des Units ou des Heroes, nommés par piece_kinds")
@@ -81,7 +84,7 @@ static func _check_wake(effect: EffectDefinition, errors: PackedStringArray) -> 
 
 # 214.1.3, 214.1.4 : exactement deux Units alliées.
 static func _check_swap(target: TargetSpec, errors: PackedStringArray) -> void:
-	if target.side != TargetSpec.TargetSide.ALLY:
+	if target.piece_filter.side != PieceFilter.SideFilter.ALLY:
 		errors.append("214.1.3 : swap_cells ne cible que des Units alliées")
 	if (
 		target.count_min != EffectDefinition.SWAP_TARGET_COUNT

@@ -70,7 +70,7 @@ static func card_data() -> Array[Dictionary]:
 
 ## Un effet valide par kind de la décision 0057.
 static func effect_samples() -> Array[Dictionary]:
-	return [draw_effect(1), discard_effect(1), look_effect(), wake_effect()]
+	return [draw_effect(1), discard_effect(1), look_effect(), wake_effect(), sleep_effect()]
 
 
 static func draw_effect(amount: int) -> Dictionary:
@@ -92,10 +92,15 @@ static func wake_effect() -> Dictionary:
 	return {"kind": "wake", "timing": "resolve", "target": CatalogSamples.ally_unit_target()}
 
 
+## 205.5.7 : endort une Unit alliée ciblée.
+static func sleep_effect() -> Dictionary:
+	return {"kind": "sleep", "timing": "resolve", "target": CatalogSamples.ally_unit_target()}
+
+
 ## Réveille une Unit ou un Hero allié ciblé.
 static func wake_unit_or_hero_effect() -> Dictionary:
 	var target := CatalogSamples.ally_unit_target()
-	target["piece_kinds"] = ["unit", "hero"]
+	target["filter"]["piece_kinds"] = ["unit", "hero"]
 	return {"kind": "wake", "timing": "resolve", "target": target}
 
 

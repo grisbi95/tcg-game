@@ -36,7 +36,7 @@ static func resolve_attack(
 ## pièce est en jeu » cessent ; 210.3.2 : son Dernier souffle se déclenche.
 static func destroy_piece(state: DuelState, piece: Piece, events: Array[DuelEvent]) -> void:
 	ZoneRules.remove_piece(state, piece)
-	EffectRules.end_effects_on_piece(state, piece, events)
+	ModifierRules.end_effects_on_piece(state, piece, events)
 	if piece.card != null:
 		state.get_player(piece.card.owner).discard.append(piece.card)
 	events.append(PieceDestroyed.new(piece.owner, piece.piece_id))

@@ -6,11 +6,12 @@ extends RefCounted
 ## la forme de celles de docs/ruleset/50-cartes/ : Apprenti, Lame-sort, Spectre des archives,
 ## Bibliothèque, Forge, Grimoire, Trophée, Poudrière et le Hero Pilleuse.
 
-## Unit : chaque fois que vous annoncez un Spell, piochez une carte.
+## Unit : chaque fois que vous annoncez un Spell, cette Unit a +1 Force jusqu'à la fin du tour.
 const APPRENTICE: StringName = &"named_apprentice"
 ## Unit : une fois par tour, quand vous annoncez un Spell, une Unit alliée ciblée a +1 Force.
 const SPELLBLADE: StringName = &"named_spellblade"
-## Unit : une fois par tour, quand vous défaussez une carte, une Unit alliée ciblée a +2 Force.
+## Unit : une fois par tour, quand vous défaussez une carte de votre main, cette Unit a +2 Force
+## jusqu'à la fin du tour.
 const SPECTRE: StringName = &"named_spectre"
 ## Building : au début de votre tour, piochez une carte.
 const LIBRARY: StringName = &"named_library"
@@ -18,8 +19,8 @@ const LIBRARY: StringName = &"named_library"
 const FORGE: StringName = &"named_forge"
 ## Gear : quand l'Unit qui porte ce Gear détruit son défenseur, piochez une carte.
 const GRIMOIRE: StringName = &"named_grimoire"
-## Gear : quand l'Unit qui porte ce Gear détruit son défenseur, une Unit alliée ciblée a +1 Force
-## tant que la pièce est en jeu.
+## Gear : quand l'Unit qui porte ce Gear détruit son défenseur, elle a +1 Force tant que la pièce
+## est en jeu.
 const TROPHY: StringName = &"named_trophy"
 ## Gear : une fois par tour, à la fin du tour, piochez une carte.
 const LANTERN: StringName = &"named_lantern"
@@ -64,9 +65,10 @@ static func catalog() -> Catalog:
 ## Objets JSON des cartes de ce catalogue, pour vérifier qu'elles sont valides.
 static func card_data() -> Array[Dictionary]:
 	var data: Array[Dictionary] = []
-	data.append(_unit(APPRENTICE, APPRENTICE_FORCE, _draw("own_spell_announced")))
+	data.append(_unit(APPRENTICE, APPRENTICE_FORCE, _self_boost("own_spell_announced", 1, false)))
 	data.append(_unit(SPELLBLADE, SPELLBLADE_FORCE, _boost("own_spell_announced", 1, true)))
-	data.append(_unit(SPECTRE, SPECTRE_FORCE, _boost("own_card_discarded", SPECTRE_BONUS, true)))
+	var spectre_effect := _self_boost("own_card_discarded", SPECTRE_BONUS, true)
+	data.append(_unit(SPECTRE, SPECTRE_FORCE, spectre_effect))
 	data.append(_unit(CONQUEROR, CONQUEROR_FORCE, _draw("destroys_defender")))
 	data.append(_unit(GHOST, GHOST_FORCE, _boost("own_card_discarded", 1, false)))
 	data.append(_building(LIBRARY, BUILDING_FORCE, _draw("start_of_own_turn")))
@@ -75,7 +77,7 @@ static func card_data() -> Array[Dictionary]:
 	var lantern_effect := _draw("end_of_turn")
 	lantern_effect["once_per_turn"] = true
 	data.append(_gear(LANTERN, lantern_effect))
-	var trophy_effect := _boost("destroys_defender", TROPHY_BONUS, false)
+	var trophy_effect := _self_boost("destroys_defender", TROPHY_BONUS, false)
 	trophy_effect["duration"] = "while_piece_in_play"
 	data.append(_gear(TROPHY, trophy_effect))
 	var keg := _building(POWDER_KEG, POWDER_KEG_FORCE, _powder_effect())
@@ -96,6 +98,15 @@ static func hero_data(id: StringName, once_per_turn: bool) -> Dictionary:
 	return CatalogSamples.with_field(data, "triggered", [effect])
 
 
+## Effet « cette Unit a +`amount` Force jusqu'à la fin du tour » déclenché par `trigger`, sujet : la
+## pièce source (décision 0062).
+static func _self_boost(trigger: String, amount: int, once_per_turn: bool) -> Dictionary:
+	var effect := _boost(trigger, amount, once_per_turn)
+	effect.erase("target")
+	effect["subject"] = "source_piece"
+	return effect
+
+
 ## Effet « piochez une carte » déclenché par `trigger`.
 static func _draw(trigger: String) -> Dictionary:
 	var effect := HandEffectSamples.draw_effect(1)
@@ -113,10 +124,8 @@ static func _boost(trigger: String, amount: int, once_per_turn: bool) -> Diction
 static func _powder_effect() -> Dictionary:
 	var target := {
 		"what": "piece",
-		"side": "enemy",
-		"piece_kinds": ["unit"],
+		"filter": {"side": "enemy", "piece_kinds": ["unit"], "relation": "adjacent"},
 		"max_force": POWDER_KEG_MAX_FORCE,
-		"adjacent_to": "source_piece",
 	}
 	return {"kind": "destroy", "timing": "triggered", "trigger": "destroyed", "target": target}
 

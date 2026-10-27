@@ -8,8 +8,8 @@ extends RefCounted
 
 ## Genres d'effet. Enum journalisable : ajouter à la fin, sans réordonner.
 enum EffectKind {
-	MODIFY_FORCE,  # amount, durée sauf statique ; cible pièce ou portée statique
-	DESTROY,  # cible pièce (206.3.1)
+	MODIFY_FORCE,  # amount, durée sauf statique ; cible pièce, pièce source ou portée statique
+	DESTROY,  # cible pièce (206.3.1) ou pièce source (« détruisez ce Building »)
 	COUNTER_SPELL,  # cible Spell de la pile (207.6)
 	CREATE_TOKEN,  # token_piece_kind, token_force ; cible case (202.4)
 	SWAP_CELLS,  # 214 : cible deux Units alliées (count 2), distinctes
@@ -20,6 +20,7 @@ enum EffectKind {
 	LOOK_AT_TOP_CARD,  # 217 : sujet : le joueur à qui appartient l'effet
 	WAKE,  # 205.5 : cible une Unit, ou sujet : la pièce source (« cette Unit »)
 	GRANT_KEYWORD,  # 210.4 : keyword (Assaut ou Rempart), amount ; mêmes formes que MODIFY_FORCE
+	SLEEP,  # 205.5.7 : cible une Unit ou un Hero, ou sujet : la pièce source (« endormez cette Unit »)
 }
 
 ## Quand l'effet a lieu.
@@ -39,13 +40,6 @@ enum TriggerEvent {
 	OWN_SPELL_ANNOUNCED,  # le joueur à qui appartient l'effet annonce un Spell (208.4.4)
 	OWN_CARD_DISCARDED,  # 212.2.4 : une carte de sa main est défaussée, un événement par carte
 	DESTROYS_DEFENDER,  # 206.3.7 : la pièce, ou l'Unit qui porte le Gear, détruit son défenseur
-}
-
-## 207.2 : pièces que touche un effet statique, relativement à la pièce qui le porte.
-enum StaticScope {
-	NONE,
-	BEARER,  # la pièce qui porte l'effet (207.2.8 : pour un Gear, la pièce à laquelle il est attaché)
-	ADJACENT_ALLIED_UNITS,  # les Units alliées adjacentes à la pièce qui porte l'effet
 }
 
 ## Ce que touche l'effet (décision 0057). Enum journalisable : ajouter à la fin.
@@ -81,7 +75,9 @@ const _ACTION_TIMINGS: Array[EffectTiming] = [EffectTiming.RESOLVE, EffectTiming
 var kind: EffectKind = EffectKind.MODIFY_FORCE
 var timing: EffectTiming = EffectTiming.RESOLVE
 var trigger: TriggerEvent = TriggerEvent.NONE
-var scope: StaticScope = StaticScope.NONE
+## 207.2.2, 207.2.8, décision 0062 : pièces que touche un effet statique, relativement à la pièce
+## qui le porte (pour un Gear, la pièce à laquelle il est attaché) ; null hors effet statique.
+var scope: PieceFilter
 ## 207.3.5 : mention « une fois par tour », pour un effet déclenché seulement.
 var once_per_turn: bool = false
 ## 207.3.13, décision 0060 : condition « si », pour un effet déclenché seulement ; null sans
@@ -115,19 +111,6 @@ var parse_errors: PackedStringArray = PackedStringArray()
 ## Nom du `kind` tel que `ActiveEffect.effect_kind` le conserve : « modify_force ».
 static func kind_id(effect_kind: EffectKind) -> StringName:
 	return StringName(str(EffectKind.find_key(effect_kind)).to_lower())
-
-
-## 207.3.5, 207.3.7 : la mention « une fois par tour » est portée par la carte et décomptée par
-## carte ; le ruleset ne dit rien d'une carte à plusieurs effets déclenchés, qui est refusée.
-## Message d'erreur sur les effets `effects` d'une carte ou d'un Hero, vide s'il n'y en a pas.
-static func once_per_turn_error(effects: Array[EffectDefinition]) -> String:
-	var triggered := effects.filter(
-		func(effect: EffectDefinition) -> bool: return effect.timing == EffectTiming.TRIGGERED
-	)
-	var marked := triggered.any(func(effect: EffectDefinition) -> bool: return effect.once_per_turn)
-	if marked and triggered.size() > 1:
-		return "207.3.5 : « une fois par tour » exige un seul effet déclenché sur la carte"
-	return ""
 
 
 ## 206.3.7, 207.3.12 : message d'erreur si `effect` se déclenche quand l'Unit détruit son défenseur
@@ -177,9 +160,8 @@ func _read_conditions(reader: CatalogReader) -> void:
 	var trigger_value := reader.read_enum("trigger", TriggerEvent)
 	if trigger_value != CatalogReader.NOT_SET:
 		trigger = trigger_value as TriggerEvent
-	var scope_value := reader.read_enum("scope", StaticScope)
-	if scope_value != CatalogReader.NOT_SET:
-		scope = scope_value as StaticScope
+	if reader.has("scope"):
+		scope = PieceFilter.from_dict(reader.read_object("scope"))
 	once_per_turn = reader.read_bool("once_per_turn", false)
 	if reader.has("condition"):
 		condition = EffectCondition.from_dict(reader.read_object("condition"))
@@ -242,10 +224,7 @@ func _check_conditions(errors: PackedStringArray) -> void:
 	if condition != null:
 		for message: String in condition.find_errors():
 			errors.append("condition : " + message)
-	if timing == EffectTiming.STATIC and scope == StaticScope.NONE:
-		errors.append("207.2.2 : un effet statique nomme les pièces qu'il touche dans scope")
-	if timing != EffectTiming.STATIC and scope != StaticScope.NONE:
-		errors.append("207.2.1 : scope ne vaut que pour un effet statique")
+	_check_scope(errors)
 	if timing == EffectTiming.STATIC and target != null:
 		errors.append("207.5.1 : un effet statique ne cible pas")
 	if timing == EffectTiming.STATIC and subject != EffectSubject.TARGETS:
@@ -259,24 +238,43 @@ func _check_conditions(errors: PackedStringArray) -> void:
 	_check_source_adjacency(errors)
 
 
-# 207.3.14 : « adjacente à la case de la pièce source » suppose une pièce qui porte l'effet, donc un
-# effet déclenché.
+# 207.2.2, 207.2.8, 206.5.5 : un effet statique nomme dans scope les pièces qu'il touche, relatives
+# à la pièce qui le porte ; 202.3.9, Q-097 : sa Force ne touche aucun Hero.
+func _check_scope(errors: PackedStringArray) -> void:
+	if timing == EffectTiming.STATIC and scope == null:
+		errors.append("207.2.2 : un effet statique nomme les pièces qu'il touche dans scope")
+	if timing != EffectTiming.STATIC and scope != null:
+		errors.append("207.2.1 : scope ne vaut que pour un effet statique")
+	if scope == null:
+		return
+	for message: String in scope.find_errors():
+		errors.append("scope : " + message)
+	if scope.relative_to != PieceFilter.RelativeTo.SOURCE_PIECE:
+		errors.append("207.2.8 : la portée d'un effet statique se lit par rapport à son porteur")
+	if scope.piece_kinds.is_empty() and scope.relation != PieceFilter.Relation.SELF:
+		errors.append("206.5.5 : une portée nomme au moins un genre dans piece_kinds")
+	var touches_hero := scope.piece_kinds.has(Piece.PieceKind.HERO)
+	if kind == EffectKind.MODIFY_FORCE and touches_hero:
+		errors.append("202.3.9 : modify_force ne touche pas de Hero")
+
+
+# 207.3.14 : un filtre relatif à la pièce source suppose une pièce qui porte l'effet, donc un effet
+# déclenché.
 func _check_source_adjacency(errors: PackedStringArray) -> void:
 	var specs: Array[TargetSpec] = []
 	for spec: TargetSpec in [target, destination]:
 		if spec != null:
 			specs.append(spec)
-	var uses_source := specs.any(
-		func(spec: TargetSpec) -> bool:
-			return spec.adjacent_to == TargetSpec.AdjacentTo.SOURCE_PIECE
-	)
+	var uses_source := specs.any(func(spec: TargetSpec) -> bool: return spec.uses_source_piece())
 	if uses_source and timing != EffectTiming.TRIGGERED:
-		errors.append("207.3.14 : source_piece ne vaut que pour un effet déclenché")
+		errors.append(
+			"207.3.14 : un filtre relatif à la pièce source ne vaut que pour un effet déclenché"
+		)
 
 
-# Décision 0057 : piocher, défausser et regarder touchent le joueur ; réveiller, ses cibles ou la
-# pièce source, celle-ci seulement pour un effet déclenché (un Spell n'a pas de pièce, un Ordre a
-# celle du Hero, qui n'est pas une Unit) ; les autres kinds ciblent.
+# Décisions 0057 et 0062 : piocher, défausser et regarder touchent le joueur ; réveiller, endormir,
+# modifier la Force et détruire, leurs cibles ou la pièce source, celle-ci seulement pour un effet
+# déclenché (un Spell n'a pas de pièce, un Ordre a celle du Hero) ; les autres kinds ciblent.
 func _check_subject(errors: PackedStringArray) -> void:
 	var allowed := _subjects_for_kind()
 	if allowed.has(subject):
@@ -294,7 +292,7 @@ func _subjects_for_kind() -> Array[EffectSubject]:
 	match kind:
 		EffectKind.DRAW_CARDS, EffectKind.DISCARD_CARDS, EffectKind.LOOK_AT_TOP_CARD:
 			return [EffectSubject.OWNER_PLAYER]
-		EffectKind.WAKE:
+		EffectKind.WAKE, EffectKind.SLEEP, EffectKind.MODIFY_FORCE, EffectKind.DESTROY:
 			return [EffectSubject.TARGETS, EffectSubject.SOURCE_PIECE]
 	return [EffectSubject.TARGETS]
 

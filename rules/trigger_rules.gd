@@ -178,6 +178,14 @@ static func resolve_triggered(
 	EffectRules.resolve_effect(state, entry, effect_of(state, entry), events)
 
 
+## 207.3.7 à 207.3.7c, 207.3.10 : clé du décompte « une fois par tour » de l'effet que porte
+## `entry` : la carte qui le porte en x (Hero et Gear compris ; un jeton ne porte aucun effet,
+## 202.4.5, 207.3.7a n'a donc pas d'objet), le rang de l'effet sur cette carte en y. Le couple
+## (carte, rang) tient dans un `Vector2i` : x = `card_instance_id`, y = rang. Pur.
+static func once_per_turn_key(entry: StackEntry) -> Vector2i:
+	return Vector2i(entry.source_card_instance_id, entry.effect_index)
+
+
 ## Définition de l'effet que porte `entry`.
 static func effect_of(state: DuelState, entry: StackEntry) -> EffectDefinition:
 	return state.catalog.triggerable_effects(entry.source_definition_id)[entry.effect_index]
@@ -296,7 +304,7 @@ static func _add_next(state: DuelState, events: Array[DuelEvent]) -> void:
 		TriggerTargets.assign_unique_targets(state, entry, effect, events)
 	state.triggers_to_add.pop_front()
 	if effect.once_per_turn:
-		state.once_per_turn_card_ids.append(entry.source_card_instance_id)
+		state.once_per_turn_effects.append(once_per_turn_key(entry))
 	StackRules.add_to_stack(state, entry, events)
 
 
@@ -305,15 +313,15 @@ static func _can_be_added(state: DuelState, entry: StackEntry) -> bool:
 	if entry.kind == StackEntry.StackEntryKind.PENDING_COMBAT:
 		return true
 	var effect := effect_of(state, entry)
-	if effect.once_per_turn and state.once_per_turn_card_ids.has(entry.source_card_instance_id):
+	if effect.once_per_turn and state.once_per_turn_effects.has(once_per_turn_key(entry)):
 		return false
 	if effect.target == null:
 		return true  # décision 0057 : un effet sans cible n'attend aucune cible légale
 	return TriggerTargets.legal_count(state, entry, effect) >= effect.target.count_min
 
 
-# 207.3.5, 207.3.5a, 212.2.5 : un second effet « une fois par tour » de la même carte, déjà dans
-# `kept`, ne s'ajoutera pas à la pile.
+# 207.3.5, 207.3.5a, 207.3.7b, 212.2.5 : un second exemplaire du même effet « une fois par tour »,
+# déjà dans `kept`, ne s'ajoutera pas à la pile ; un autre effet de la même carte, si.
 static func _repeats_once_per_turn(
 	state: DuelState, entry: StackEntry, kept: Array[StackEntry]
 ) -> bool:
@@ -323,7 +331,10 @@ static func _repeats_once_per_turn(
 		return false
 	return kept.any(
 		func(other: StackEntry) -> bool:
-			return other.source_card_instance_id == entry.source_card_instance_id
+			return (
+				other.kind != StackEntry.StackEntryKind.PENDING_COMBAT
+				and (once_per_turn_key(other) == once_per_turn_key(entry))
+			)
 	)
 
 

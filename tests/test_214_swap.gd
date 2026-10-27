@@ -313,10 +313,10 @@ func test_214_1_4_swap_targets_exactly_two_allied_units() -> void:
 			. is_true()
 		)
 	var enemy := CatalogSamples.swap_cells_effect()
-	enemy["target"]["side"] = "enemy"
+	enemy["target"]["filter"]["side"] = "enemy"
 	assert_bool(CatalogSamples.mentions(MovementSamples.effect_errors(enemy), "214.1.3")).is_true()
 	var any_side := CatalogSamples.swap_cells_effect()
-	any_side["target"]["side"] = "any"
+	any_side["target"]["filter"]["side"] = "any"
 	(
 		assert_bool(CatalogSamples.mentions(MovementSamples.effect_errors(any_side), "214.1.3"))
 		. is_true()
@@ -326,7 +326,7 @@ func test_214_1_4_swap_targets_exactly_two_allied_units() -> void:
 func test_214_1_3_swap_targets_only_units() -> void:
 	for kinds: Array in [["hero"], ["building"], ["unit", "hero"]]:
 		var swap := CatalogSamples.swap_cells_effect()
-		swap["target"]["piece_kinds"] = kinds
+		swap["target"]["filter"]["piece_kinds"] = kinds
 		(
 			assert_bool(
 				CatalogSamples.mentions(

@@ -91,6 +91,11 @@ static func is_in_central_row(cell: Vector2i) -> bool:
 	return is_on_board(cell) and cell.y == CENTRAL_ROW_INDEX
 
 
+# 201.2.3 : deux cases sont dans la même rangée si elles ont le même numéro de rangée.
+static func are_in_same_row(first: Vector2i, second: Vector2i) -> bool:
+	return is_on_board(first) and is_on_board(second) and first.y == second.y
+
+
 # 205.1.2
 static func first_row_cells(side: DuelState.PlayerSide) -> Array[Vector2i]:
 	return _cells_where(func(cell: Vector2i) -> bool: return is_in_first_row(side, cell))

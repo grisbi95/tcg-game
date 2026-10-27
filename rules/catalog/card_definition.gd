@@ -197,8 +197,11 @@ func _check_effects(errors: PackedStringArray) -> void:
 		var effect := effects[index]
 		for message: String in effect.find_errors():
 			errors.append("effet %d : %s" % [index + 1, message])
+		# Réveiller un Building est exclu (205.5.6) ; endormir un Building « n'a pas lieu pour lui »
+		# (205.5.7b) : SLEEP sur la pièce source d'un Building reste donc valide.
 		if (
 			card_type == CardType.BUILDING
+			and effect.kind == EffectDefinition.EffectKind.WAKE
 			and effect.subject == EffectDefinition.EffectSubject.SOURCE_PIECE
 		):
 			errors.append("effet %d : 205.5.6, un Building ne se réveille pas" % [index + 1])
@@ -210,17 +213,10 @@ func _check_effects(errors: PackedStringArray) -> void:
 		)
 		if not attack_error.is_empty():
 			errors.append("effet %d : %s" % [index + 1, attack_error])
-	_check_once_per_turn(errors)
 	var is_unit_bearer := card_type in [CardType.UNIT, CardType.GEAR]
 	var bearer_error := EffectValueChecks.bearer_grant_error(effects, is_unit_bearer)
 	if not bearer_error.is_empty():
 		errors.append(bearer_error)
-
-
-func _check_once_per_turn(errors: PackedStringArray) -> void:
-	var once_error := EffectDefinition.once_per_turn_error(effects)
-	if not once_error.is_empty():
-		errors.append(once_error)
 
 
 # 202.2.20 : un Spell se résout ; 207.2.2, 207.3 : une pièce porte du statique et du déclenché ;

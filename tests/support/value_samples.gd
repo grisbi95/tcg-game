@@ -62,8 +62,8 @@ static func card_data() -> Array[Dictionary]:
 		_spell(FURY, FURY_COST, "action", [fury_effect("assault")]),
 		_spell(SAP, SAP_COST, "reaction", [fury_effect("rampart")]),
 		_spell(WATCH, WATCH_COST, "action", [watch_effect()]),
-		_gear(WAR_AXE, static_grant("assault", AXE_ASSAULT, "bearer")),
-		_gear(SHADOW_CLOAK, static_grant("rampart", CLOAK_RAMPART, "bearer")),
+		_gear(WAR_AXE, static_grant("assault", AXE_ASSAULT, CatalogSamples.bearer_scope())),
+		_gear(SHADOW_CLOAK, static_grant("rampart", CLOAK_RAMPART, CatalogSamples.bearer_scope())),
 		_war_drum(),
 	]
 	return cards
@@ -72,7 +72,7 @@ static func card_data() -> Array[Dictionary]:
 ## Détruisez une Unit ennemie ciblée de Force X ou moins, X choisi à l'annonce.
 static func execution_effect() -> Dictionary:
 	var target := CatalogSamples.ally_unit_target()
-	target["side"] = "enemy"
+	target["filter"]["side"] = "enemy"
 	target["max_force"] = "X"
 	return {"kind": "destroy", "timing": "resolve", "x_source": "chosen", "target": target}
 
@@ -108,7 +108,7 @@ static func watch_effect() -> Dictionary:
 
 
 ## Effet statique qui accorde `keyword` `amount` aux pièces de `scope`.
-static func static_grant(keyword: String, amount: int, scope: String) -> Dictionary:
+static func static_grant(keyword: String, amount: int, scope: Dictionary) -> Dictionary:
 	return {
 		"kind": "grant_keyword",
 		"timing": "static",
@@ -169,5 +169,5 @@ static func _gear(id: StringName, effect: Dictionary) -> Dictionary:
 static func _war_drum() -> Dictionary:
 	var data := CatalogSamples.with_field(CatalogSamples.building(), "id", String(WAR_DRUM))
 	data = CatalogSamples.with_field(data, "name", "Building %s" % WAR_DRUM)
-	var effect := static_grant("assault", DRUM_ASSAULT, "adjacent_allied_units")
+	var effect := static_grant("assault", DRUM_ASSAULT, CatalogSamples.adjacent_allied_scope())
 	return CatalogSamples.with_field(data, "effects", [effect])

@@ -29,6 +29,12 @@ func _with_keywords(card: Dictionary, keywords: Array) -> Dictionary:
 	return CatalogSamples.with_field(card, "keywords", keywords)
 
 
+func _piece_target(kinds: Array, extra: Dictionary = {}) -> Dictionary:
+	var target := {"what": "piece", "filter": {"piece_kinds": kinds}}
+	target.merge(extra, true)
+	return target
+
+
 func test_every_effect_kind_has_a_valid_sample() -> void:
 	var samples := CatalogSamples.effect_samples()
 	samples.append_array(HandEffectSamples.effect_samples())
@@ -51,7 +57,7 @@ func test_202_3_9_force_or_destroy_effect_never_targets_a_hero() -> void:
 		CatalogSamples.modify_force_resolve(), CatalogSamples.destroy_effect()
 	]:
 		var target: Dictionary = sample["target"]
-		target["piece_kinds"] = ["unit", "hero"]
+		target["filter"]["piece_kinds"] = ["unit", "hero"]
 		assert_bool(_mentions(_effect_errors(sample), "202.3.9")).is_true()
 
 
@@ -99,14 +105,16 @@ func test_207_3_5_once_per_turn_is_read_for_a_triggered_effect() -> void:
 	)
 
 
-func test_207_3_5_once_per_turn_card_has_a_single_triggered_effect() -> void:
+func test_207_3_7c_card_with_several_triggered_effects_may_mark_each_once_per_turn() -> void:
 	var marked := CatalogSamples.triggered("arrival", {"once_per_turn": true})
-	var second := CatalogSamples.triggered("destroyed")
+	var second := CatalogSamples.triggered("destroyed", {"once_per_turn": true})
 	var keywords := [{"keyword": "arrival"}, {"keyword": "last_breath"}]
 	var card := _with_keywords(_with_effects(CatalogSamples.unit(), [marked, second]), keywords)
-	var single := _with_keywords(_with_effects(CatalogSamples.unit(), [marked]), [keywords[0]])
-	assert_bool(_mentions(_card_errors(card), "207.3.5")).is_true()
-	assert_array(Array(_card_errors(single))).is_empty()
+	assert_array(Array(_card_errors(card))).is_empty()
+	var mixed := _with_effects(
+		CatalogSamples.unit(), [marked, CatalogSamples.triggered("destroyed")]
+	)
+	assert_array(Array(_card_errors(_with_keywords(mixed, keywords)))).is_empty()
 
 
 func test_207_3_5_once_per_turn_is_only_for_triggered_effects() -> void:
@@ -128,7 +136,8 @@ func test_207_2_2_static_effect_names_its_scope() -> void:
 
 
 func test_207_2_1_scope_is_only_for_static_effects() -> void:
-	var data := CatalogSamples.with_field(CatalogSamples.modify_force_resolve(), "scope", "bearer")
+	var scope := CatalogSamples.bearer_scope()
+	var data := CatalogSamples.with_field(CatalogSamples.modify_force_resolve(), "scope", scope)
 	assert_bool(_mentions(_effect_errors(data), "207.2.1")).is_true()
 
 
@@ -243,27 +252,27 @@ func test_207_5_11_piece_effect_targets_a_piece() -> void:
 
 
 func test_207_5_11_target_what_is_required_and_closed() -> void:
-	var missing := _target_errors({"piece_kinds": ["unit"]})
+	var missing := _target_errors({"filter": {"piece_kinds": ["unit"]}})
 	var unknown := _target_errors({"what": "deck"})
 	assert_bool(_mentions(missing, "207.5.11 : champ « what » absent")).is_true()
 	assert_bool(_mentions(unknown, "« deck » inconnu")).is_true()
 
 
 func test_207_5_11_piece_target_names_its_kinds() -> void:
-	var errors := _target_errors({"what": "piece", "side": "enemy"})
+	var errors := _target_errors({"what": "piece", "filter": {"side": "enemy"}})
 	assert_bool(_mentions(errors, "piece_kinds")).is_true()
 
 
 func test_207_5_11a_hero_and_token_pieces_can_be_targeted() -> void:
-	var spec := TargetSpec.from_dict({"what": "piece", "piece_kinds": ["hero", "unit", "building"]})
+	var spec := TargetSpec.from_dict(_piece_target(["hero", "unit", "building"]))
 	assert_array(Array(spec.find_errors())).is_empty()
-	assert_array(spec.piece_kinds).contains_exactly(
+	assert_array(spec.piece_filter.piece_kinds).contains_exactly(
 		[Piece.PieceKind.HERO, Piece.PieceKind.UNIT, Piece.PieceKind.BUILDING]
 	)
 
 
 func test_207_5_11_cell_target_takes_no_piece_filter() -> void:
-	var errors := _target_errors({"what": "cell", "side": "ally"})
+	var errors := _target_errors({"what": "cell", "filter": {"side": "ally"}})
 	assert_bool(_mentions(errors, "207.5.11")).is_true()
 
 
@@ -273,23 +282,21 @@ func test_207_5_14_spell_target_takes_no_piece_filter() -> void:
 
 
 func test_202_3_9_max_force_excludes_the_hero_kind() -> void:
-	var errors := _target_errors({"what": "piece", "piece_kinds": ["hero"], "max_force": 3})
+	var errors := _target_errors(_piece_target(["hero"], {"max_force": 3}))
 	assert_bool(_mentions(errors, "202.3.9")).is_true()
 
 
 func test_207_5_10_target_count_bounds() -> void:
-	var valid := _target_errors({"what": "piece", "piece_kinds": ["unit"], "count_max": 2})
-	var inverted := _target_errors(
-		{"what": "piece", "piece_kinds": ["unit"], "count_min": 2, "count_max": 1}
-	)
-	var zero := _target_errors({"what": "piece", "piece_kinds": ["unit"], "count_min": 0})
+	var valid := _target_errors(_piece_target(["unit"], {"count_max": 2}))
+	var inverted := _target_errors(_piece_target(["unit"], {"count_min": 2, "count_max": 1}))
+	var zero := _target_errors(_piece_target(["unit"], {"count_min": 0}))
 	assert_array(Array(valid)).is_empty()
 	assert_bool(_mentions(inverted, "207.5.10")).is_true()
 	assert_bool(_mentions(zero, "207.5.10")).is_true()
 
 
 func test_target_defaults_to_exactly_one() -> void:
-	var spec := TargetSpec.from_dict({"what": "piece", "piece_kinds": ["unit"]})
+	var spec := TargetSpec.from_dict(_piece_target(["unit"]))
 	assert_int(spec.count_min).is_equal(1)
 	assert_int(spec.count_max).is_equal(1)
 	assert_int(spec.max_force).is_equal(TargetSpec.NO_FORCE_LIMIT)

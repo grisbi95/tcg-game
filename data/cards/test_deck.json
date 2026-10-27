@@ -11,7 +11,13 @@
 					"kind": "modify_force",
 					"timing": "static",
 					"amount": 1,
-					"scope": "adjacent_allied_units"
+					"scope": {
+						"side": "ally",
+						"piece_kinds": [
+							"unit"
+						],
+						"relation": "adjacent"
+					}
 				}
 			]
 		}
@@ -106,10 +112,12 @@
 					"duration": "until_end_of_turn",
 					"target": {
 						"what": "piece",
-						"side": "enemy",
-						"piece_kinds": [
-							"unit"
-						]
+						"filter": {
+							"side": "enemy",
+							"piece_kinds": [
+								"unit"
+							]
+						}
 					}
 				}
 			]
@@ -135,10 +143,12 @@
 					"duration": "while_piece_in_play",
 					"target": {
 						"what": "piece",
-						"side": "ally",
-						"piece_kinds": [
-							"unit"
-						]
+						"filter": {
+							"side": "ally",
+							"piece_kinds": [
+								"unit"
+							]
+						}
 					}
 				}
 			]
@@ -187,10 +197,12 @@
 					"duration": "until_end_of_turn",
 					"target": {
 						"what": "piece",
-						"side": "ally",
-						"piece_kinds": [
-							"unit"
-						]
+						"filter": {
+							"side": "ally",
+							"piece_kinds": [
+								"unit"
+							]
+						}
 					}
 				}
 			]
@@ -208,10 +220,12 @@
 					"timing": "resolve",
 					"target": {
 						"what": "piece",
-						"side": "enemy",
-						"piece_kinds": [
-							"unit"
-						],
+						"filter": {
+							"side": "enemy",
+							"piece_kinds": [
+								"unit"
+							]
+						},
 						"max_force": 3
 					}
 				}
@@ -265,7 +279,9 @@
 					"kind": "modify_force",
 					"timing": "static",
 					"amount": 1,
-					"scope": "bearer"
+					"scope": {
+						"relation": "self"
+					}
 				}
 			]
 		}

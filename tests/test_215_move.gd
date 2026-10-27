@@ -266,7 +266,7 @@ func test_215_1_1_move_names_a_destination_cell_and_a_single_unit() -> void:
 		. is_true()
 	)
 	var hero := CatalogSamples.move_unit_effect()
-	hero["target"]["piece_kinds"] = ["hero"]
+	hero["target"]["filter"]["piece_kinds"] = ["hero"]
 	(
 		assert_bool(
 			CatalogSamples.mentions(
@@ -324,9 +324,6 @@ func test_decision_0056_destination_is_read_from_the_json() -> void:
 
 
 func test_decision_0056_adjacency_filters_fit_the_kind_of_target() -> void:
-	var own_hero_piece := CatalogSamples.ally_unit_target()
-	own_hero_piece["adjacent_to"] = "own_hero"
-	assert_array(Array(MovementSamples.target_errors(own_hero_piece))).is_empty()
 	var target_piece_piece := CatalogSamples.ally_unit_target()
 	target_piece_piece["adjacent_to"] = "target_piece"
 	(
@@ -350,7 +347,7 @@ func test_decision_0056_adjacency_filters_fit_the_kind_of_target() -> void:
 		)
 		. is_true()
 	)
-	var spell := {"what": "spell_on_stack", "adjacent_to": "own_hero"}
+	var spell := {"what": "spell_on_stack", "adjacent_to": "target_piece"}
 	assert_bool(CatalogSamples.mentions(MovementSamples.target_errors(spell), "207.5.14")).is_true()
 
 

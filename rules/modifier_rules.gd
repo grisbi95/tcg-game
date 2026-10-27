@@ -78,19 +78,84 @@ static func total_for(
 	return total
 
 
-## 206.5.5 : un effet statique ne touche une pièce que tant qu'elle remplit la condition de
-## position de sa portée par rapport à `bearer`.
-static func scope_touches(scope: EffectDefinition.StaticScope, bearer: Piece, piece: Piece) -> bool:
-	match scope:
-		EffectDefinition.StaticScope.BEARER:
-			return piece == bearer
-		EffectDefinition.StaticScope.ADJACENT_ALLIED_UNITS:
-			return (
-				piece.kind == Piece.PieceKind.UNIT
-				and piece.owner == bearer.owner
-				and BoardGeometry.are_adjacent(bearer.cell, piece.cell)
-			)
-	return false
+## 206.5.5, 207.2.8, décision 0062 : un effet statique ne touche une pièce que tant qu'elle remplit
+## le filtre `scope` par rapport à `bearer`, la pièce qui le porte (pour un Gear, l'Unit qui le
+## porte), dont le joueur est celui à qui appartient l'effet. Pur.
+static func scope_touches(scope: PieceFilter, bearer: Piece, piece: Piece) -> bool:
+	var anchor := FilterAnchor.new(bearer.owner, bearer.piece_id, bearer.cell)
+	return matches_filter(scope, anchor, piece)
+
+
+## 207.4.7a : un effet « tant que la pièce est en jeu » cesse pour `piece`, qui quitte le
+## plateau ; un effet « jusqu'à la fin du tour » attend 207.4.3.
+static func end_effects_on_piece(state: DuelState, piece: Piece, events: Array[DuelEvent]) -> void:
+	var remaining: Array[ActiveEffect] = []
+	for effect: ActiveEffect in state.active_effects:
+		var lasting := effect.duration == ActiveEffect.EffectDuration.WHILE_PIECE_IN_PLAY
+		if lasting and effect.affected_piece_id == piece.piece_id:
+			events.append(ActiveEffectEnded.new(effect.effect_id))
+		else:
+			remaining.append(effect)
+	state.active_effects = remaining
+
+
+## 207.5.6, 206.5.5, 202.4.1, 205.1.2 à 205.1.4, décision 0062 : `piece` remplit `filter` par
+## rapport à `anchor` (côté, genre, jeton, zone, relation, « autres »). Seule évaluation d'un
+## PieceFilter, pour une cible comme pour une portée. Pur.
+static func matches_filter(filter: PieceFilter, anchor: FilterAnchor, piece: Piece) -> bool:
+	if not _is_on_side(filter.side, anchor.owner, piece):
+		return false
+	if not filter.piece_kinds.is_empty() and not filter.piece_kinds.has(piece.kind):
+		return false
+	if filter.tokens == PieceFilter.TokenFilter.NON_TOKEN and piece.is_token():
+		return false
+	if not is_in_row_zone(filter.row, anchor.owner, piece.cell):
+		return false
+	if not filter.include_reference and piece.piece_id == anchor.piece_id:
+		return false
+	return _has_relation(filter.relation, anchor, piece)
+
+
+## 205.1.2 à 205.1.4 : `cell` est dans la zone nommée `zone`, relative au joueur `side`.
+static func is_in_row_zone(
+	zone: PieceFilter.RowZone, side: DuelState.PlayerSide, cell: Vector2i
+) -> bool:
+	match zone:
+		PieceFilter.RowZone.OWN_FIRST:
+			return BoardGeometry.is_in_first_row(side, cell)
+		PieceFilter.RowZone.OWN_NEAR:
+			return BoardGeometry.is_in_near_rows(side, cell)
+		PieceFilter.RowZone.CENTRAL:
+			return BoardGeometry.is_in_central_row(cell)
+		PieceFilter.RowZone.NOT_CENTRAL:
+			return BoardGeometry.is_on_board(cell) and not BoardGeometry.is_in_central_row(cell)
+	return true
+
+
+# Glossaire (Allié, Ennemi) : côté de `piece` par rapport au joueur à qui appartient l'effet.
+static func _is_on_side(
+	side: PieceFilter.SideFilter, owner: DuelState.PlayerSide, piece: Piece
+) -> bool:
+	match side:
+		PieceFilter.SideFilter.ALLY:
+			return piece.owner == owner
+		PieceFilter.SideFilter.ENEMY:
+			return piece.owner != owner
+	return true
+
+
+# 205.2.5, 201.2.3 : relation de `piece` à la pièce de l'ancre, par sa case ou son identifiant.
+static func _has_relation(
+	relation: PieceFilter.Relation, anchor: FilterAnchor, piece: Piece
+) -> bool:
+	match relation:
+		PieceFilter.Relation.SELF:
+			return piece.piece_id == anchor.piece_id
+		PieceFilter.Relation.ADJACENT:
+			return BoardGeometry.are_adjacent(anchor.cell, piece.cell)
+		PieceFilter.Relation.SAME_ROW:
+			return BoardGeometry.are_in_same_row(anchor.cell, piece.cell)
+	return true
 
 
 static func _add_active_effect(context: EffectContext, piece: Piece, amount: int) -> ActiveEffect:

@@ -57,7 +57,7 @@ static func hero() -> Dictionary:
 		"name": "Hero d'essai",
 		"health": 15,
 		"text": "Passif.",
-		"passive": [modify_force_static({"scope": "adjacent_allied_units"})],
+		"passive": [modify_force_static({"scope": adjacent_allied_scope()})],
 	}
 
 
@@ -74,7 +74,7 @@ static func modify_force_resolve(overrides: Dictionary = {}) -> Dictionary:
 
 
 static func modify_force_static(overrides: Dictionary = {}) -> Dictionary:
-	var effect := {"kind": "modify_force", "timing": "static", "scope": "bearer", "amount": 1}
+	var effect := {"kind": "modify_force", "timing": "static", "scope": bearer_scope(), "amount": 1}
 	effect.merge(overrides, true)
 	return effect
 
@@ -87,7 +87,7 @@ static func triggered(trigger: String, overrides: Dictionary = {}) -> Dictionary
 
 static func destroy_effect() -> Dictionary:
 	var target := ally_unit_target()
-	target["side"] = "enemy"
+	target["filter"]["side"] = "enemy"
 	target["max_force"] = 3
 	return {"kind": "destroy", "timing": "resolve", "target": target}
 
@@ -148,7 +148,7 @@ static func swap_cells_effect() -> Dictionary:
 ## 215, décision 0056 : déplace une Unit ennemie ciblée sur une case libre ciblée adjacente.
 static func move_unit_effect() -> Dictionary:
 	var target := ally_unit_target()
-	target["side"] = "enemy"
+	target["filter"]["side"] = "enemy"
 	return {
 		"kind": "move_unit",
 		"timing": "resolve",
@@ -160,7 +160,7 @@ static func move_unit_effect() -> Dictionary:
 ## 216 : renvoie dans la main une Unit ennemie ciblée.
 static func return_to_hand_effect() -> Dictionary:
 	var target := ally_unit_target()
-	target["side"] = "enemy"
+	target["filter"]["side"] = "enemy"
 	return {"kind": "return_to_hand", "timing": "resolve", "target": target}
 
 
@@ -174,7 +174,26 @@ static func token_spell(id: StringName, cost: int) -> CardDefinition:
 
 
 static func ally_unit_target() -> Dictionary:
-	return {"what": "piece", "side": "ally", "piece_kinds": ["unit"]}
+	return {"what": "piece", "filter": {"side": "ally", "piece_kinds": ["unit"]}}
+
+
+## 207.2.8, décision 0062 : portée de la pièce qui porte l'effet (relation à elle-même).
+static func bearer_scope() -> Dictionary:
+	return {"relation": "self"}
+
+
+## 206.5.5 : portée des Units alliées adjacentes à la pièce qui porte l'effet.
+static func adjacent_allied_scope() -> Dictionary:
+	return {"side": "ally", "piece_kinds": ["unit"], "relation": "adjacent"}
+
+
+## Copie de la cible `target` dont le filtre de pièce a `key` fixé à `value` (décision 0062).
+static func with_filter_field(target: Dictionary, key: String, value: Variant) -> Dictionary:
+	var copy := target.duplicate(true)
+	var filter: Dictionary = copy.get("filter", {})
+	filter[key] = value
+	copy["filter"] = filter
+	return copy
 
 
 ## Copie de `data` avec `key` fixé à `value`.

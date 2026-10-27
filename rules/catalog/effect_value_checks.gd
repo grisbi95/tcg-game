@@ -50,7 +50,7 @@ static func _check_target_force_source(effect: EffectDefinition, errors: PackedS
 		target != null
 		and target.what == TargetSpec.TargetWhat.PIECE
 		and target.count_max == 1
-		and target.piece_kinds == [Piece.PieceKind.UNIT]
+		and target.piece_filter.piece_kinds == [Piece.PieceKind.UNIT]
 	)
 	if not one_piece:
 		errors.append("213.2.3 : x_source target_force lit la Force d'une seule Unit ciblée")
@@ -69,7 +69,7 @@ static func _check_keyword(effect: EffectDefinition, errors: PackedStringArray) 
 		errors.append("210.4 : grant_keyword nomme son mot-clé dans keyword")
 	elif not grantable.has(effect.keyword):
 		errors.append("0058 : grant_keyword n'accorde qu'Assaut ou Rempart")
-	if effect.target != null and effect.target.piece_kinds != [Piece.PieceKind.UNIT]:
+	if effect.target != null and effect.target.piece_filter.piece_kinds != [Piece.PieceKind.UNIT]:
 		errors.append("210.4.1c : grant_keyword ne cible que des Units")
 
 
@@ -83,7 +83,8 @@ static func bearer_grant_error(effects: Array[EffectDefinition], bearer_is_unit:
 			return (
 				effect.kind == EffectDefinition.EffectKind.GRANT_KEYWORD
 				and effect.timing == EffectDefinition.EffectTiming.STATIC
-				and effect.scope == EffectDefinition.StaticScope.BEARER
+				and effect.scope != null
+				and effect.scope.relation == PieceFilter.Relation.SELF
 			)
 	)
 	if refused and not bearer_is_unit:

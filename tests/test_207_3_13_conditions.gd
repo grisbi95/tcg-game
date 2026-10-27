@@ -58,14 +58,14 @@ func test_207_3_13a_false_condition_does_not_count_for_once_per_turn() -> void:
 	var state := _builder.build()
 	TriggerRules.trigger_for_player(state, A, START, _events)
 	TriggerRules.add_waiting_triggers(state, _events)
-	assert_array(state.once_per_turn_card_ids).is_empty()
+	assert_array(state.once_per_turn_effects).is_empty()
 	state.get_player(A).hand.pop_back()
 	TriggerRules.trigger_for_player(state, A, START, _events)
 	TriggerRules.add_waiting_triggers(state, _events)
 	assert_array(EventLog.describe(_events)).contains_exactly(
 		["EffectTriggered:A", "DecisionResolvedAutomatically:A", "StackEntryAdded:A"]
 	)
-	assert_array(state.once_per_turn_card_ids).has_size(1)
+	assert_array(state.once_per_turn_effects).has_size(1)
 
 
 func test_207_3_13b_condition_is_not_read_again_at_resolution() -> void:

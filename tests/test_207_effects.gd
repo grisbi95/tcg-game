@@ -92,10 +92,12 @@ func test_207_5_13_cards_outside_the_board_are_never_targeted() -> void:
 	for piece: Piece in state.pieces:
 		on_board_ids.append(piece.piece_id)
 	var any_piece := TargetSpec.new()
-	assert_array(EffectRules.legal_target_ids(state, A, any_piece, DuelState.NO_ID)).is_equal(
+	assert_array(TriggerTargets.legal_target_ids(state, A, any_piece, DuelState.NO_ID)).is_equal(
 		on_board_ids
 	)
-	var legal_spells := EffectRules.legal_target_ids(state, A, _counter().target, DuelState.NO_ID)
+	var legal_spells := TriggerTargets.legal_target_ids(
+		state, A, _counter().target, DuelState.NO_ID
+	)
 	assert_array(legal_spells).is_empty()
 
 
@@ -104,7 +106,7 @@ func test_207_5_14_spell_on_stack_can_be_targeted() -> void:
 	var state := _builder.build()
 	var spec := _counter().target
 	var spell := state.find_stack_entry(spell_id)
-	assert_bool(EffectRules.is_legal_spell(spec, spell, DuelState.NO_ID)).is_true()
+	assert_bool(EffectRules.is_legal_spell(state, spec, spell, DuelState.NO_ID)).is_true()
 
 
 func test_207_5_15_deploy_on_stack_cannot_be_targeted() -> void:
@@ -114,14 +116,14 @@ func test_207_5_15_deploy_on_stack_cannot_be_targeted() -> void:
 	var state := _builder.build()
 	var spec := _counter().target
 	var deploy := state.find_stack_entry(deploy_id)
-	assert_bool(EffectRules.is_legal_spell(spec, deploy, DuelState.NO_ID)).is_false()
+	assert_bool(EffectRules.is_legal_spell(state, spec, deploy, DuelState.NO_ID)).is_false()
 
 
 func test_207_5_16_entry_never_targets_itself() -> void:
 	var spell_id := _builder.push_spell(_builder.make_card_instance(B, SPELL_ID))
 	var state := _builder.build()
 	var spell := state.find_stack_entry(spell_id)
-	assert_bool(EffectRules.is_legal_spell(_counter().target, spell, spell_id)).is_false()
+	assert_bool(EffectRules.is_legal_spell(state, _counter().target, spell, spell_id)).is_false()
 
 
 func test_207_5_10_target_count_must_fit_the_card() -> void:
@@ -138,7 +140,7 @@ func test_207_5_8_spell_needs_a_legal_target() -> void:
 	var enemy_id := _place(B, UNIT_ID, "B4")
 	var state := _builder.build()
 	var spec := _boost().target
-	assert_int(EffectRules.legal_target_count(state, A, spec)).is_equal(0)
+	assert_int(TriggerTargets.legal_target_count(state, A, spec)).is_equal(0)
 	var entry := _entry(A, [enemy_id] as Array[int])
 	assert_int(EffectRules.validate_targets(state, entry, spec)).is_equal(REASON.ILLEGAL_TARGET)
 
@@ -288,7 +290,7 @@ func test_207_6_3_counter_spell_aims_at_no_other_entry_kind() -> void:
 	_builder.push_stack_entry(triggered)
 	var spell_id := _builder.push_spell(_builder.make_card_instance(A, SPELL_ID))
 	var state := _builder.build()
-	var legal := EffectRules.legal_target_ids(state, B, _counter().target, DuelState.NO_ID)
+	var legal := TriggerTargets.legal_target_ids(state, B, _counter().target, DuelState.NO_ID)
 	assert_array(legal).contains_exactly([spell_id])
 
 

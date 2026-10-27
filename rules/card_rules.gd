@@ -1,7 +1,8 @@
 class_name CardRules
 extends RefCounted
-## Cartes (202) : Gear (annonce, attachement, remplacement). Les jetons se créent par EffectRules
-## (202.4), les effets statiques se lisent dans ModifierRules (207.2), les coûts dans ValueRules.
+## Cartes (202) : Gear (annonce, attachement, remplacement) et création des jetons (202.4), que
+## EffectRules appelle ; les effets statiques se lisent dans ModifierRules (207.2), les coûts
+## dans ValueRules.
 
 
 ## 202.2.22, 202.2.23, 207.5.1a, 205.1.5 : un Gear (son Unit) et un Spell s'annoncent avec une
@@ -79,6 +80,19 @@ static func _is_valid_gear_unit(state: DuelState, side: DuelState.PlayerSide, un
 static func _gear_target() -> TargetSpec:
 	var spec := TargetSpec.new()
 	spec.what = TargetSpec.TargetWhat.PIECE
-	spec.side = TargetSpec.TargetSide.ALLY
-	spec.piece_kinds.append(Piece.PieceKind.UNIT)
+	spec.piece_filter.side = PieceFilter.SideFilter.ALLY
+	spec.piece_filter.piece_kinds.append(Piece.PieceKind.UNIT)
 	return spec
+
+
+## 202.4.1, 202.4.8, 202.4.9, 202.4.12 ; 201.5.4, 201.5.4a : le jeton appartient au joueur de
+## l'entrée qui le crée ; 205.5.4a : il naît endormi (`is_awake` reste faux).
+static func create_token(context: EffectContext, cell: Vector2i) -> void:
+	var token := Piece.new()
+	token.piece_id = context.state.allocate_piece_id()
+	token.kind = context.effect.token_piece_kind
+	token.owner = context.entry.owner
+	token.cell = cell
+	token.token_force = context.effect.token_force
+	context.state.pieces.append(token)
+	context.events.append(TokenCreated.new(token.owner, token.piece_id, cell))
