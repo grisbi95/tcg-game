@@ -181,6 +181,11 @@ func _check_effects(errors: PackedStringArray) -> void:
 		var effect := effects[index]
 		for message: String in effect.find_errors():
 			errors.append("effet %d : %s" % [index + 1, message])
+		if (
+			card_type == CardType.BUILDING
+			and effect.subject == EffectDefinition.EffectSubject.SOURCE_PIECE
+		):
+			errors.append("effet %d : 205.5.6, un Building ne se réveille pas" % [index + 1])
 		if not allowed.has(effect.timing):
 			var type_name := str(CardType.find_key(card_type)).to_lower()
 			errors.append("effet %d : timing refusé pour %s" % [index + 1, type_name])

@@ -519,3 +519,9 @@
 - [50-cartes/](50-cartes/README.md) : colonne « Questions ouvertes » mise à jour : Trophée, Grimoire, Poudrière, Chef de guerre et Recruteuse sans question ; Rassemblement garde Q-098 ; renvois du README remplacés par les décisions 0241 et 0238.
 - Livret [10-regles-de-base.md](10-regles-de-base.md) et chapitre 210 non modifiés.
 - [README.md](README.md) : édition courante passée à 0.52.
+
+## 0.53 · 26 octobre 2026 · majeure · expiration du temps pendant le regard sur le dessus du deck
+
+- Expiration du temps pendant le choix de laisser la carte du dessus du deck ou de la mettre sous le deck : identifiants ajoutés 209.4.7d et 209.4.14 ([209-controles-d-etat.md](20-regles-completes/209-controles-d-etat.md)). Décision [0242](40-decisions/0242-expiration-du-temps-pendant-le-regard-sur-le-deck.md). Q-143 tranchée, option C.
+- [50-cartes/bleu.md](50-cartes/bleu.md) : Observatoire sans question ouverte, texte inchangé.
+- [README.md](README.md) : édition courante passée à 0.53.

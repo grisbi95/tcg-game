@@ -77,11 +77,13 @@ static func _check_board(state: DuelState, violations: PackedStringArray) -> voi
 			violations.append("205.5.6 : Building %d éveillé" % piece.piece_id)
 
 
-# 208.3.1, 208.5.1, 209.2.2, décisions 0009 et 0017
+# 208.3.1, 208.5.1, 209.2.2, décisions 0009, 0017 et 0057
 static func _check_stack_and_waits(state: DuelState, violations: PackedStringArray) -> void:
 	var waiting := not state.waiting_triggers.is_empty() or not state.triggers_to_add.is_empty()
 	if waiting and state.pending_decision == null:
 		violations.append("décision 0017 : effets en attente sans choix attendu")
+	if state.resolving_entry != null and state.pending_decision == null and not state.is_ended():
+		violations.append("décision 0057 : entrée en cours de résolution sans choix attendu")
 	if state.is_ended():
 		if state.result == DuelState.DuelResult.NONE:
 			violations.append("209.2.2 : partie arrêtée sans issue")
@@ -104,6 +106,8 @@ static func _all_cards(state: DuelState) -> Array[CardInstance]:
 		for entry: StackEntry in entries:
 			if entry.card != null:
 				cards.append(entry.card)
+	if state.resolving_entry != null and state.resolving_entry.card != null:
+		cards.append(state.resolving_entry.card)
 	for piece: Piece in state.pieces:
 		if piece.card != null:
 			cards.append(piece.card)

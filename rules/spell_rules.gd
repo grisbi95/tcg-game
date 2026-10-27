@@ -39,11 +39,12 @@ static func announce_spell(state: DuelState, intent: CastSpell, events: Array[Du
 
 ## 202.2.20, 208.3.2 : le Spell se résout une fois ; 207.1.7, 207.1.7a : sa carte va ensuite
 ## dans la défausse de son joueur, que son effet ait eu lieu ou non. Si la partie s'arrête
-## pendant ses effets (209.2.2), la carte ne bouge plus.
+## pendant ses effets (209.2.2), la carte ne bouge plus. Décision 0057 : un effet qui attend un
+## choix suspend la résolution, la carte reste sur l'entrée ; la reprise rappelle cette fonction.
 static func resolve_spell(state: DuelState, entry: StackEntry, events: Array[DuelEvent]) -> void:
 	var definition := state.catalog.get_card(entry.card.definition_id)
 	EffectRules.resolve_all(state, entry, definition.effects, events)
-	if state.is_ended():
+	if state.is_ended() or state.pending_decision != null:
 		return
 	state.get_player(entry.card.owner).discard.append(entry.card)
 	events.append(CardDiscarded.new(entry.card.owner, entry.card.card_instance_id))

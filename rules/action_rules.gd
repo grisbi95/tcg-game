@@ -303,3 +303,27 @@ static func _make_piece(state: DuelState, card: CardInstance) -> Piece:
 	piece.owner = card.owner
 	piece.card = card
 	return piece
+
+
+## 205.5.1, 205.5.2, 205.5.5, 205.5.6, 200.4.1 : les pièces endormies de `pieces`, toutes au même
+## joueur, s'éveillent et un seul PiecesAwakened les liste. Une pièce déjà éveillée le reste sans
+## être rapportée, un Building n'a aucun état de sommeil ; aucun événement si rien ne dormait.
+## Sert au réveil du début du tour (204.3.10, 204.3.11) et à l'effet WAKE (décision 0057).
+static func wake_pieces(pieces: Array[Piece], events: Array[DuelEvent]) -> void:
+	var awakened_ids: Array[int] = []
+	var awakened_owner := DuelState.PlayerSide.A
+	for piece: Piece in pieces:
+		if piece.is_asleep():
+			piece.is_awake = true
+			awakened_ids.append(piece.piece_id)
+			awakened_owner = piece.owner
+	if not awakened_ids.is_empty():
+		events.append(PiecesAwakened.new(awakened_owner, awakened_ids))
+
+
+## 205.5.1, 207.3.3 : « réveillez cette Unit » ; l'effet a lieu même si la pièce `piece_id` a quitté
+## le plateau, alors sans rien réveiller.
+static func wake_source_piece(state: DuelState, piece_id: int, events: Array[DuelEvent]) -> void:
+	var source := state.find_piece(piece_id)
+	if source != null:
+		wake_pieces([source], events)

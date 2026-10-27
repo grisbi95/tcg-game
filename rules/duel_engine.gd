@@ -184,15 +184,36 @@ func _validate_duel_running() -> IntentRejected.RejectReason:
 func _route_validation(intent: DuelIntent) -> IntentRejected.RejectReason:
 	if intent is Concede:
 		return StateCheckRules.validate_concede(_state, intent as Concede)
+	if _is_decision_answer(intent):
+		return _validate_answer(intent)
+	if _state.pending_decision != null:
+		return IntentRejected.RejectReason.DECISION_PENDING
+	return _route_play_validation(intent)
+
+
+func _is_decision_answer(intent: DuelIntent) -> bool:
+	return _answer_scripts().has(intent.get_script())
+
+
+# Intentions qui répondent à une attente (décisions 0009 et 0057) ; `_validate_answer` les aiguille.
+func _answer_scripts() -> Array[Script]:
+	return [ChooseMulligan, OrderTriggers, ChooseTargets, ChooseDiscard, ChooseTopCardPlace]
+
+
+# Réponses aux attentes : mulligan, ordre des effets, cibles, et les deux choix d'une résolution
+# (décision 0057).
+func _validate_answer(intent: DuelIntent) -> IntentRejected.RejectReason:
 	if intent is ChooseMulligan:
 		return PreparationRules.validate_mulligan(_state, intent as ChooseMulligan)
 	if intent is OrderTriggers:
 		return TriggerRules.validate_order(_state, intent as OrderTriggers)
 	if intent is ChooseTargets:
 		return TriggerRules.validate_targets_choice(_state, intent as ChooseTargets)
-	if _state.pending_decision != null:
-		return IntentRejected.RejectReason.DECISION_PENDING
-	return _route_play_validation(intent)
+	if intent is ChooseDiscard:
+		return DiscardRules.validate_choice(_state, intent as ChooseDiscard)
+	if intent is ChooseTopCardPlace:
+		return LookRules.validate_choice(_state, intent as ChooseTopCardPlace)
+	return IntentRejected.RejectReason.UNKNOWN_INTENT
 
 
 # Intentions de jeu, hors attente.
@@ -240,11 +261,21 @@ func _settle(events: Array[DuelEvent]) -> void:
 
 # 208.3.1, 208.3.2, 208.3.3 ; 209.2.1, 209.2.3 : toute la pile se résout d'un bloc, du sommet à
 # la base ; la victoire se vérifie après chaque entrée, et une partie arrêtée laisse le reste.
+# Décision 0057 : un effet qui attend un choix (212.1.3, 217.1.2) suspend le bloc, l'entrée restant
+# `resolving_entry` ; la réponse rappelle cette boucle, qui reprend cette entrée à son prochain
+# effet puis le reste du bloc. Une entrée est annoncée résolue une seule fois, à sa fin.
 func _resolve_stack(events: Array[DuelEvent]) -> void:
-	while not _state.stack.is_empty():
-		var entry := StackRules.take_top_entry(_state)
-		_state.triggers_allow_response = entry.allows_response  # 208.7.9, 208.7.11
+	while _state.resolving_entry != null or not _state.stack.is_empty():
+		var entry := _state.resolving_entry
+		if entry == null:
+			entry = StackRules.take_top_entry(_state)
+			_state.triggers_allow_response = entry.allows_response  # 208.7.9, 208.7.11
 		_resolve_entry(entry, events)
+		if _state.pending_decision != null:
+			return
+		if _state.is_ended():
+			return  # 209.2.2 : la pile et l'entrée en cours restent en l'état
+		StackRules.end_resolution(_state)
 		StackRules.announce_entry_resolved(_state, entry, events)
 		if StateCheckRules.check_victory(_state, events, DuelState.EndReason.HERO_HEALTH_ZERO):
 			return
@@ -269,9 +300,10 @@ func _resolve_entry(entry: StackEntry, events: Array[DuelEvent]) -> void:
 			OrderRules.resolve_order(_state, entry, events)
 
 
-# 209.4.9, 209.4.10, 209.4.11a, 209.4.12 : le temps de `side` est écoulé. Le tour se termine, le
-# joueur passe, les effets déclenchés s'ordonnent comme ils se sont déclenchés ou l'effet dont il
-# choisissait les cibles est abandonné. Renvoie faux, sans rien changer, quand le ruleset ne
+# 209.4.9, 209.4.10, 209.4.11a, 209.4.12 à 209.4.14 : le temps de `side` est écoulé. Le tour se
+# termine, le joueur passe, les effets déclenchés s'ordonnent comme ils se sont déclenchés, l'effet
+# dont il choisissait les cibles est abandonné, ou le choix d'une résolution est tiré au sort et la
+# résolution reprend. Renvoie faux, sans rien changer, quand le ruleset ne
 # tranche pas (Q-110).
 func _expire(side: DuelState.PlayerSide, events: Array[DuelEvent]) -> bool:
 	var decision := _state.pending_decision
@@ -292,13 +324,24 @@ func _expire(side: DuelState.PlayerSide, events: Array[DuelEvent]) -> bool:
 			TriggerRules.abandon_targets_choice(_state, events)
 		TimeExpired.Consequence.TRIGGERS_ORDERED:
 			TriggerRules.order_as_triggered(_state, events)
+		TimeExpired.Consequence.CARDS_DISCARDED_AT_RANDOM:
+			DiscardRules.discard_at_random(_state, events)
+			_resolve_stack(events)
+		TimeExpired.Consequence.TOP_CARD_PLACE_DRAWN_AT_RANDOM:
+			LookRules.place_at_random(_state, events)
+			_resolve_stack(events)
 	return true
 
 
 func _expiry_consequence(decision: PendingDecision) -> TimeExpired.Consequence:
 	if decision != null:
-		if decision.kind == PendingDecision.DecisionKind.CHOOSE_TARGETS:
-			return TimeExpired.Consequence.TARGETS_ABANDONED
+		match decision.kind:
+			PendingDecision.DecisionKind.CHOOSE_TARGETS:
+				return TimeExpired.Consequence.TARGETS_ABANDONED
+			PendingDecision.DecisionKind.CHOOSE_DISCARD:
+				return TimeExpired.Consequence.CARDS_DISCARDED_AT_RANDOM
+			PendingDecision.DecisionKind.CHOOSE_TOP_CARD_PLACE:
+				return TimeExpired.Consequence.TOP_CARD_PLACE_DRAWN_AT_RANDOM
 		return TimeExpired.Consequence.TRIGGERS_ORDERED
 	if _state.stack.is_empty():
 		return TimeExpired.Consequence.TURN_ENDED
@@ -314,6 +357,12 @@ func _apply(intent: DuelIntent, events: Array[DuelEvent]) -> void:
 		TriggerRules.apply_order(_state, intent as OrderTriggers, events)
 	elif intent is ChooseTargets:
 		TriggerRules.apply_targets_choice(_state, intent as ChooseTargets, events)
+	elif intent is ChooseDiscard:
+		DiscardRules.apply_choice(_state, intent as ChooseDiscard, events)
+		_resolve_stack(events)
+	elif intent is ChooseTopCardPlace:
+		LookRules.apply_choice(_state, intent as ChooseTopCardPlace, events)
+		_resolve_stack(events)
 	elif intent is EndTurn:
 		TurnRules.apply_end_turn(_state, intent as EndTurn, events)
 		StateCheckRules.record_turn_ended_by_player(_state, (intent as EndTurn).player)

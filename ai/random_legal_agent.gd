@@ -26,6 +26,9 @@ class TargetVariant:
 		target_stack_entry_ids.assign(stack_entry_ids)
 
 
+## Nombre de choix de défausse proposés au plus, pour borner les combinaisons d'une grande main.
+const MAX_DISCARD_CANDIDATES: int = 24
+
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
 
@@ -40,7 +43,7 @@ func choose_intent(engine: DuelEngine) -> DuelIntent:
 	if owners.is_empty():
 		return null
 	var legal: Array[DuelIntent] = []
-	for intent: DuelIntent in candidates(engine.get_state(), owners[0]):
+	for intent: DuelIntent in candidates(engine.get_state(), owners[0], _rng):
 		if engine.validate(intent) == IntentRejected.RejectReason.NONE:
 			legal.append(intent)
 	if legal.is_empty():
@@ -48,10 +51,13 @@ func choose_intent(engine: DuelEngine) -> DuelIntent:
 	return legal[_rng.randi_range(0, legal.size() - 1)]
 
 
-## Intentions candidates de `side`, légales ou non.
-static func candidates(state: DuelState, side: DuelState.PlayerSide) -> Array[DuelIntent]:
+## Intentions candidates de `side`, légales ou non. `sampler` tire les choix de défausse quand ils
+## sont trop nombreux (décision 0057) ; sans lui, les premiers dans l'ordre de la main.
+static func candidates(
+	state: DuelState, side: DuelState.PlayerSide, sampler: RandomNumberGenerator = null
+) -> Array[DuelIntent]:
 	if state.pending_decision != null:
-		return _decision_candidates(state, side)
+		return _decision_candidates(state, side, sampler)
 	var intents: Array[DuelIntent] = [PassPriority.new(side), EndTurn.new(side)]
 	intents.append_array(_hand_candidates(state, side))
 	intents.append_array(_normal_action_candidates(state, side))
@@ -59,7 +65,9 @@ static func candidates(state: DuelState, side: DuelState.PlayerSide) -> Array[Du
 	return intents
 
 
-static func _decision_candidates(state: DuelState, side: DuelState.PlayerSide) -> Array[DuelIntent]:
+static func _decision_candidates(
+	state: DuelState, side: DuelState.PlayerSide, sampler: RandomNumberGenerator
+) -> Array[DuelIntent]:
 	var decision := state.pending_decision
 	match decision.kind:
 		PendingDecision.DecisionKind.MULLIGAN:
@@ -72,7 +80,68 @@ static func _decision_candidates(state: DuelState, side: DuelState.PlayerSide) -
 			]
 		PendingDecision.DecisionKind.CHOOSE_TARGETS:
 			return _choose_targets_candidates(state, decision, side)
+		PendingDecision.DecisionKind.CHOOSE_DISCARD:
+			return _discard_candidates(decision, side, sampler)
+		PendingDecision.DecisionKind.CHOOSE_TOP_CARD_PLACE:
+			var places: Array[DuelIntent] = []
+			for place: ChooseTopCardPlace.TopCardPlace in ChooseTopCardPlace.TopCardPlace.values():
+				places.append(ChooseTopCardPlace.new(side, place))
+			return places
 	return []
+
+
+# Décision 0057 : les sous-ensembles de la main de la taille à défausser ; au-delà de
+# MAX_DISCARD_CANDIDATES, autant de sous-ensembles tirés par `sampler` (les premiers sans lui).
+static func _discard_candidates(
+	decision: PendingDecision, side: DuelState.PlayerSide, sampler: RandomNumberGenerator
+) -> Array[DuelIntent]:
+	var subsets: Array[Array] = []
+	_collect_subsets(decision.candidate_ids, decision.required_count, [], subsets)
+	if subsets.size() > MAX_DISCARD_CANDIDATES:
+		subsets.resize(MAX_DISCARD_CANDIDATES)
+		if sampler != null:
+			subsets = _sample_subsets(decision, sampler)
+	var intents: Array[DuelIntent] = []
+	for subset: Array in subsets:
+		var card_ids: Array[int] = []
+		card_ids.assign(subset)
+		intents.append(ChooseDiscard.new(side, card_ids))
+	return intents
+
+
+# MAX_DISCARD_CANDIDATES sous-ensembles de la taille requise, par mélange partiel de la main.
+static func _sample_subsets(
+	decision: PendingDecision, sampler: RandomNumberGenerator
+) -> Array[Array]:
+	var subsets: Array[Array] = []
+	for draw: int in MAX_DISCARD_CANDIDATES:
+		var pool: Array[int] = []
+		pool.assign(decision.candidate_ids)
+		for rank: int in decision.required_count:
+			var picked := sampler.randi_range(rank, pool.size() - 1)
+			var card_id: int = pool[picked]
+			pool[picked] = pool[rank]
+			pool[rank] = card_id
+		subsets.append(pool.slice(0, decision.required_count))
+	return subsets
+
+
+static func _collect_subsets(
+	pool: Array[int], size: int, chosen: Array[int], subsets: Array[Array]
+) -> void:
+	if subsets.size() > MAX_DISCARD_CANDIDATES:
+		return
+	if chosen.size() == size:
+		subsets.append(chosen.duplicate())
+		return
+	for index: int in pool.size():
+		var rest: Array[int] = []
+		rest.assign(pool.slice(index + 1))
+		if chosen.size() + 1 + rest.size() < size:
+			break
+		var extended := chosen.duplicate()
+		extended.append(pool[index])
+		_collect_subsets(rest, size, extended, subsets)
 
 
 static func _mulligan_candidates(state: DuelState, side: DuelState.PlayerSide) -> Array[DuelIntent]:

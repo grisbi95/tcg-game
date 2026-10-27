@@ -1,6 +1,6 @@
 # 0009 — PendingDecision, un objet porté par DuelState
 
-- Statut : acceptée ; complétée par 0013 et 0017
+- Statut : acceptée ; complétée par 0013 et 0017 ; complétée par 0057
 - Date : 2026-10-16
 - Décideur : créateur du projet
 - Périmètre : représentation de l'attente d'un choix de joueur (204.2, 207.5, 208.4, 209.4.4)

@@ -145,11 +145,11 @@ const RULES_WITHOUT_OWN_TEST: Dictionary[String, String] = {
 	),
 }
 
-## Règles consignées par les éditions 0.45 à 0.52 du ruleset et pas encore codées, avec l'étape du
+## Règles consignées par les éditions 0.45 à 0.53 du ruleset et pas encore codées, avec l'étape du
 ## jalon J2c qui les code (décision 0054) : chaque étape retire ses lignes en écrivant leurs tests,
 ## la liste est vide à la sortie de c.8.
 const RULES_AWAITING_IMPLEMENTATION: Dictionary[String, String] = {
-	"201.4.1a": "c.4",
+	"201.4.1a": "c.7",
 	"204.3.12": "c.5",
 	"204.3.12a": "c.5",
 	"206.3.7": "c.5",
@@ -165,25 +165,8 @@ const RULES_AWAITING_IMPLEMENTATION: Dictionary[String, String] = {
 	"207.3.14": "c.5",
 	"207.5.18": "c.5",
 	"209.4.4h": "c.5",
-	"209.4.7c": "c.4",
 	"209.4.11b": "c.5",
-	"209.4.13": "c.4",
-	"212.1.1": "c.4",
-	"212.1.2": "c.4",
-	"212.1.3": "c.4",
-	"212.1.4": "c.4",
-	"212.1.5": "c.4",
-	"212.1.6": "c.4",
-	"212.1.7": "c.4",
-	"212.2.1": "c.4",
-	"212.2.2": "c.4",
-	"212.2.2a": "c.4",
-	"212.2.2b": "c.4",
-	"212.2.2c": "c.4",
-	"212.2.2d": "c.4",
-	"212.2.3": "c.4",
-	"212.2.4": "c.4",
-	"212.2.5": "c.4",
+	"212.2.5": "c.5",
 	"213.1.1": "c.5",
 	"213.1.2": "c.5",
 	"213.1.3": "c.5",
@@ -201,13 +184,7 @@ const RULES_AWAITING_IMPLEMENTATION: Dictionary[String, String] = {
 	"213.2.3": "c.5",
 	"213.2.4": "c.5",
 	"213.2.5": "c.5",
-	"217.1.1": "c.4",
-	"217.1.2": "c.4",
-	"217.1.3": "c.4",
-	"217.1.4": "c.4",
-	"217.1.5": "c.4",
-	"217.1.6": "c.4",
-	"217.1.7": "c.4",
+	"217.1.5": "c.7",
 }
 
 var _rule_ids: PackedStringArray

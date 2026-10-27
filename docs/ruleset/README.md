@@ -1,6 +1,6 @@
 # Ruleset du TCG tactique
 
-> Dossier de conception des règles, intégré au dépôt du jeu `tcg-game`, dans `docs/ruleset/` (décision 0014 du projet). Édition courante : **0.52** (sens de « détruit son défenseur », case d'une pièce qui a quitté le plateau, marque du ciblage dans le texte d'une carte, decks du premier playtest en listes fixes, 26 octobre 2026). Historique dans [90-changelog.md](90-changelog.md).
+> Dossier de conception des règles, intégré au dépôt du jeu `tcg-game`, dans `docs/ruleset/` (décision 0014 du projet). Édition courante : **0.53** (expiration du temps pendant le regard sur le dessus du deck, 26 octobre 2026). Historique dans [90-changelog.md](90-changelog.md).
 
 ## Quel document pour quel lecteur
 
