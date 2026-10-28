@@ -1,9 +1,10 @@
 class_name MainScreen
 extends Control
-## Scène racine (décision 0036, point 6) : enchaîne la préparation, le duel et sa fin, puis la
-## partie suivante ou la préparation. Décisions 0043 et 0050 : mène aussi la connexion au relais
-## d'un duel à distance, de « Créer » ou « Rejoindre » jusqu'au duel ; en duel à distance, la fin
-## ramène à la préparation. Tient la suite des parties (`DuelSeries`) et n'affiche qu'un
+## Scène racine (décision 0036, point 6, modifiée par 0075) : enchaîne l'accueil, la préparation, le
+## duel et sa fin, puis la partie suivante ou la préparation. Décisions 0043, 0050 et 0075 : mène
+## aussi la connexion au relais d'un duel à distance, de « Créer » (préparation) ou « Rejoindre »
+## (accueil) jusqu'au duel, et dit où elle en est à l'écran d'entrée affiché ; en duel à distance,
+## la fin ramène à la préparation. Tient la suite des parties (`DuelSeries`) et n'affiche qu'un
 ## écran enfant à la fois ; aucun état global, aucune règle. Une erreur de lecture des cartes ou du
 ## deck s'affiche au lieu de planter.
 
@@ -15,6 +16,7 @@ enum LobbyStep {
 	AWAITING_SETUP,
 }
 
+const HOME_SCENE: PackedScene = preload("res://ui/home_screen.tscn")
 const SETUP_SCENE: PackedScene = preload("res://ui/setup_screen.tscn")
 const DUEL_SCENE: PackedScene = preload("res://ui/duel_screen.tscn")
 const LOAD_ERROR_TEXT: String = "Impossible de charger le jeu : cartes ou deck de test en erreur."
@@ -70,7 +72,7 @@ func _ready() -> void:
 		_setup_default_status = PLAN_UNREADABLE_TEXT
 	else:
 		_series.set_plan(plan, _decks)
-	_show_setup()
+	_show_home()
 
 
 # Contournement Web : sans thread, la connexion au relais avance à chaque image.
@@ -82,13 +84,22 @@ func _process(_delta: float) -> void:
 			_advance_guest_session()
 
 
+func _show_home() -> void:
+	var home_screen: HomeScreen = HOME_SCENE.instantiate()
+	_replace_screen(home_screen)
+	home_screen.new_game_pressed.connect(_show_setup)
+	home_screen.join_pressed.connect(_on_join_pressed)
+	home_screen.cancel_pressed.connect(_on_cancel_pressed)
+	home_screen.show_idle()
+
+
 func _show_setup(status: String = "") -> void:
 	var setup_screen: SetupScreen = SETUP_SCENE.instantiate()
 	_replace_screen(setup_screen)
 	setup_screen.start_pressed.connect(_start_duel)
 	setup_screen.create_pressed.connect(_on_create_pressed)
-	setup_screen.join_pressed.connect(_on_join_pressed)
 	setup_screen.cancel_pressed.connect(_on_cancel_pressed)
+	setup_screen.back_pressed.connect(_show_home)
 	setup_screen.deck_chosen.connect(_on_deck_chosen)
 	setup_screen.game_chosen.connect(_on_game_chosen)
 	setup_screen.first_player_chosen.connect(_series.set_first_player_choice)
@@ -145,7 +156,7 @@ func _on_game_chosen(game_number: int) -> void:
 		_series.choose_free_game()
 	else:
 		_series.choose_plan_game(game_number)
-	_setup_screen().show_game(_make_preparation())
+	(_screen as SetupScreen).show_game(_make_preparation())
 
 
 func _on_deck_chosen(side: DuelState.PlayerSide, deck_index: int) -> void:
@@ -193,12 +204,12 @@ func _on_join_pressed(code: String) -> void:
 
 func _on_cancel_pressed() -> void:
 	_leave_lobby()
-	_setup_screen().show_idle()
+	_entry_screen().show_idle()
 
 
 func _enter_lobby(step: LobbyStep, status: String) -> void:
 	_lobby_step = step
-	_setup_screen().show_connecting(status)
+	_entry_screen().show_connecting(status)
 
 
 func _leave_lobby() -> void:
@@ -209,8 +220,8 @@ func _leave_lobby() -> void:
 	_lobby_step = LobbyStep.NONE
 
 
-func _setup_screen() -> SetupScreen:
-	return _screen as SetupScreen
+func _entry_screen() -> EntryScreen:
+	return _screen as EntryScreen
 
 
 func _advance_connection() -> void:
@@ -218,13 +229,13 @@ func _advance_connection() -> void:
 	match _connection.get_status():
 		RelayConnection.Status.WAITING_FOR_PEER:
 			if _lobby_step == LobbyStep.CREATING and not _connection.get_room_code().is_empty():
-				_setup_screen().show_connecting(ROOM_CODE_FORMAT % _connection.get_room_code())
+				_entry_screen().show_connecting(ROOM_CODE_FORMAT % _connection.get_room_code())
 		RelayConnection.Status.PAIRED:
 			_on_paired()
 		RelayConnection.Status.CLOSED:
 			var reason := _connection.get_error()
 			_leave_lobby()
-			_setup_screen().show_idle(DISCONNECTED_FORMAT % reason)
+			_entry_screen().show_idle(DISCONNECTED_FORMAT % reason)
 
 
 # Décision 0050 : le créateur joue A et démarre le duel ; celui qui rejoint attend sa préparation.
@@ -252,7 +263,7 @@ func _advance_guest_session() -> void:
 	if _guest_session.get_session_state() == DuelSession.SessionState.DISCONNECTED:
 		var reason := _guest_session.get_disconnection()
 		_leave_lobby()
-		_setup_screen().show_idle(DISCONNECTED_FORMAT % reason)
+		_entry_screen().show_idle(DISCONNECTED_FORMAT % reason)
 	elif is_ready:
 		var session := _guest_session
 		_guest_session = null

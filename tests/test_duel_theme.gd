@@ -1,3 +1,4 @@
+# gdlint: disable=max-public-methods
 extends GdUnitTestSuite
 ## Thème unique de l'écran de duel, lu sans scène : les couleurs fixes de ses variations égalent
 ## les constantes de `DuelPalette` (décision 0027, `ui/CLAUDE.md` « Style »).
@@ -6,6 +7,7 @@ const THEME_PATH: String = "res://ui/theme/duel_theme.tres"
 const FONT_COLOR: StringName = &"font_color"
 const FONT_HOVER_COLOR: StringName = &"font_hover_color"
 const FONT_PRESSED_COLOR: StringName = &"font_pressed_color"
+const HOME_TITLE_SIZE: int = 120
 
 var _theme: Theme
 
@@ -106,6 +108,55 @@ func test_decision_0071_info_bubble_is_paper_with_an_ink_line_and_a_flat_shadow(
 	assert_vector(panel.shadow_offset).is_equal(Vector2.ONE * DuelPalette.SHADOW_OFFSET)
 	_assert_color(&"InfoBubbleTitleLabel", FONT_COLOR, DuelPalette.CARD_TEXT_COLOR)
 	_assert_color(&"InfoBubbleTextLabel", FONT_COLOR, DuelPalette.CARD_TEXT_COLOR)
+
+
+func test_decision_0075_home_title_is_big_paper_with_an_ink_shadow() -> void:
+	_assert_color(&"HomeTitleLabel", FONT_COLOR, DuelPalette.PAPER_COLOR)
+	_assert_color(&"HomeTitleLabel", &"font_shadow_color", DuelPalette.INK_COLOR)
+	assert_int(_theme.get_font_size(&"font_size", &"HomeTitleLabel")).is_equal(HOME_TITLE_SIZE)
+	assert_int(_theme.get_constant(&"shadow_offset_x", &"HomeTitleLabel")).is_equal(
+		int(DuelPalette.MODAL_SHADOW_OFFSET)
+	)
+	assert_int(_theme.get_constant(&"shadow_offset_y", &"HomeTitleLabel")).is_equal(
+		int(DuelPalette.MODAL_SHADOW_OFFSET)
+	)
+
+
+func test_decision_0075_home_texts_use_the_muted_color() -> void:
+	var variations: Array[StringName] = [
+		&"HomeSubtitleLabel", &"ModalSectionLabel", &"ModalMutedLabel", &"ModalFieldLabel"
+	]
+	for variation: StringName in variations:
+		_assert_color(variation, FONT_COLOR, DuelPalette.MUTED_COLOR)
+
+
+func test_decision_0075_main_button_is_ink_on_paper() -> void:
+	for color_name: StringName in [FONT_COLOR, FONT_HOVER_COLOR, FONT_PRESSED_COLOR]:
+		_assert_color(&"MainButton", color_name, DuelPalette.INK_COLOR)
+	_assert_style_fill(&"MainButton", &"normal", DuelPalette.PAPER_COLOR)
+	_assert_style_fill(&"MainButton", &"hover", DuelPalette.PAPER_LIT_COLOR)
+	_assert_style_fill(&"MainButton", &"pressed", DuelPalette.PAPER_SHADED_COLOR)
+	_assert_style_fill(&"MainButton", &"disabled", DuelPalette.NEUTRAL_COLOR)
+	for style_name: StringName in [&"normal", &"hover", &"pressed", &"disabled"]:
+		_assert_style_border(&"MainButton", style_name, DuelPalette.INK_COLOR)
+
+
+func test_decision_0075_ghost_button_is_an_outline_that_fills_on_hover() -> void:
+	_assert_color(&"ModalGhostButton", FONT_COLOR, DuelPalette.TEXT_COLOR)
+	_assert_color(&"ModalGhostButton", FONT_HOVER_COLOR, DuelPalette.PAPER_COLOR)
+	assert_float(_flat_style(&"ModalGhostButton", &"normal").bg_color.a).is_equal(0.0)
+	_assert_style_border(&"ModalGhostButton", &"normal", DuelPalette.NEUTRAL_COLOR)
+	_assert_style_fill(&"ModalGhostButton", &"hover", DuelPalette.SOCKET_COLOR)
+	_assert_style_fill(&"ModalGhostButton", &"pressed", DuelPalette.HOLE_COLOR)
+
+
+func test_decision_0075_modal_panel_is_the_panel_color_with_an_ink_line_and_shadow() -> void:
+	_assert_style_fill(&"ModalPanel", &"panel", DuelPalette.PANEL_COLOR)
+	_assert_style_border(&"ModalPanel", &"panel", DuelPalette.INK_COLOR)
+	var panel := _flat_style(&"ModalPanel", &"panel")
+	assert_int(panel.border_width_top).is_equal(DuelPalette.PLAYER_BORDER_WIDTH)
+	assert_float(panel.content_margin_left).is_equal(DuelPalette.MODAL_MARGIN)
+	assert_vector(panel.shadow_offset).is_equal(Vector2.ONE * DuelPalette.MODAL_SHADOW_OFFSET)
 
 
 func _assert_color(variation: StringName, color_name: StringName, expected: Color) -> void:

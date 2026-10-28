@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Écrans d'entrée</title>
+<!-- Maquette des écrans d'entrée (étape 2b.7a, décision 0075), version 1 du 2026-10-28.
+     Accueil puis préparation, dans le repère 1920×1080 ; style selon docs/direction-artistique/bible.md
+     et la maquette ecran-de-duel-da-vestiaire.html. Le titre du jeu est provisoire. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..900&family=Source+Serif+4:opsz,wght@8..60,400..700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --table: #1c1916; --panel: #26221d; --socket: #2f2a24; --hole: #1f1b17;
+    --ink: #15120f; --paper: #efe5cf; --paper-dark: #c7b896;
+    --text: #cdbfa6; --text-bright: #efe5cf; --muted: #8b8274;
+    --a: #2f6fd6; --b: #d43b2f; --yellow: #f4c542;
+    --title: 'Archivo', sans-serif; --serif: 'Source Serif 4', serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #0d0c0b; color: #e8e2d6;
+    font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { padding: 12px 16px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  header h1 { font-size: 18px; margin: 0 12px 0 0; }
+  header label { display: inline-flex; gap: 6px; align-items: center; color: #a39a8b; }
+  header button { font: inherit; padding: 4px 12px; background: #26221d; color: #e8e2d6;
+    border: 1px solid #4a433a; cursor: pointer; }
+  header button[aria-pressed="true"] { background: #4a433a; }
+  #frame { margin: 0 16px 16px; position: relative; }
+  .screen { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px;
+    transform-origin: 0 0; overflow: hidden; outline: 1px solid #000; display: none;
+    background: var(--table); font-family: var(--title); color: var(--text); }
+  .screen.on { display: block; }
+  .light { position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 70% at 50% 0%, rgba(255,226,170,.07), transparent 70%); }
+  .cut { clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px),
+    calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px), 0 10px); }
+  .panel { position: absolute; background: var(--panel); border: 2px solid var(--ink);
+    box-shadow: 6px 6px 0 var(--ink); padding: 32px; }
+  .btn { display: flex; align-items: center; justify-content: center; height: 64px;
+    background: var(--socket); border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink);
+    color: var(--text-bright); font-weight: 700; font-size: 22px; }
+  .btn.main { background: var(--paper); color: var(--ink); }
+  .btn.ghost { background: transparent; color: var(--text); box-shadow: none;
+    border-color: #4a433a; }
+  .field { height: 44px; background: var(--hole); border: 2px solid var(--ink);
+    box-shadow: inset 2px 2px 0 #0e0c0a; display: flex; align-items: center; padding: 0 12px;
+    font-size: 20px; color: var(--text); }
+  .select { justify-content: space-between; background: var(--socket); box-shadow: 3px 3px 0 var(--ink);
+    font-weight: 700; color: var(--text-bright); }
+  .select::after { content: "⌄"; color: var(--muted); }
+  .row { display: grid; grid-template-columns: 170px 1fr; gap: 16px; align-items: center;
+    font-size: 20px; margin-bottom: 18px; }
+  .row label { color: var(--muted); }
+  .note { position: absolute; font-family: system-ui, sans-serif; font-size: 15px; color: #f4c542;
+    background: rgba(0,0,0,.55); padding: 4px 8px; border-left: 3px solid #f4c542; }
+  #notes { margin: 0 16px 32px; max-width: 1100px; }
+  #notes h2 { font-size: 15px; margin: 16px 0 6px; }
+  #notes li { color: #b5ab9a; margin-bottom: 4px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Écrans d'entrée · décision 0075</h1>
+  <button id="show-home" aria-pressed="true">Accueil</button>
+  <button id="show-prep" aria-pressed="false">Préparation</button>
+  <label>Échelle
+    <select id="scale">
+      <option value="fit">ajustée à la fenêtre</option>
+      <option value="1">1920×1080 (100 %)</option>
+      <option value="0.6667">1280×720 (2/3)</option>
+    </select>
+  </label>
+  <label><input type="checkbox" id="notes-on" checked> Annotations</label>
+</header>
+
+<div id="frame">
+  <!-- Accueil -->
+  <div class="screen on" id="home">
+    <div class="light"></div>
+    <div style="position:absolute;left:0;right:0;top:250px;text-align:center">
+      <div style="font-size:120px;font-weight:900;letter-spacing:12px;color:var(--paper);
+        text-shadow:6px 6px 0 var(--ink)">TOURNOI</div>
+      <div style="margin-top:8px;font-size:22px;letter-spacing:8px;color:var(--muted)">
+        DUEL SUR UN SOL DE 5 × 5</div>
+    </div>
+    <div class="panel cut" style="left:710px;top:560px;width:500px">
+      <div class="btn main cut">Nouvelle partie</div>
+      <div style="margin:28px 0 12px;font-size:18px;letter-spacing:4px;color:var(--muted);
+        text-align:center">REJOINDRE UNE PARTIE</div>
+      <div style="display:grid;grid-template-columns:1fr 160px;gap:12px">
+        <div class="field" style="height:64px;color:var(--muted)">Code</div>
+        <div class="btn cut" style="color:var(--muted)">Rejoindre</div>
+      </div>
+      <div style="margin-top:16px;min-height:28px;font-size:18px;color:var(--muted);text-align:center">
+        Partie rejointe ; en attente de l'hôte…</div>
+    </div>
+    <div class="note n" style="left:1240px;top:260px">Titre provisoire : le jeu n'a pas encore de nom</div>
+    <div class="note n" style="left:1240px;top:570px">Ouvre la préparation</div>
+    <div class="note n" style="left:1240px;top:690px">Grisé tant que le code est vide</div>
+    <div class="note n" style="left:1240px;top:760px">Messages de connexion du « Rejoindre »</div>
+  </div>
+
+  <!-- Préparation -->
+  <div class="screen" id="prep">
+    <div class="light"></div>
+    <div class="panel cut" style="left:560px;top:150px;width:800px">
+      <div style="font-size:40px;font-weight:800;color:var(--text-bright);text-align:center;
+        margin-bottom:28px">Nouvelle partie</div>
+      <div class="row"><label>Partie</label><div class="field select">Partie 7 — Percée contre Échiquier (B commence)</div></div>
+      <div class="row"><label style="color:#6f9df0">Joueur A</label><div class="field select">Percée — Chef de guerre</div></div>
+      <div class="row"><label style="color:#e8766c">Joueur B</label><div class="field select">Échiquier — Stratège</div></div>
+      <div class="row"><label>Commence</label><div class="field select">Joueur B</div></div>
+      <div class="row"><label>Graine</label><div class="field" style="width:300px">2524769383</div></div>
+      <div class="btn main cut" style="margin-top:28px">Commencer sur cet appareil</div>
+      <div class="btn cut" style="margin-top:16px">Créer une partie à distance</div>
+      <div style="margin-top:14px;min-height:56px;font-size:18px;color:var(--muted);text-align:center">
+        Code de la partie : KX4P<br>Donne-le à l'autre joueur ; en attente…</div>
+      <div class="btn ghost cut" style="margin-top:8px;height:52px;font-size:20px">Retour</div>
+    </div>
+    <div class="note n" style="left:1390px;top:250px">Plan de série (0069) ou « Partie libre »</div>
+    <div class="note n" style="left:1390px;top:310px">Decks et premier joueur (0066)</div>
+    <div class="note n" style="left:1390px;top:560px">Action principale : papier</div>
+    <div class="note n" style="left:1390px;top:660px">Messages de connexion du « Créer » ;<br>« Annuler » remplace « Retour » pendant l'attente</div>
+    <div class="note n" style="left:1390px;top:780px">Revient à l'accueil</div>
+  </div>
+</div>
+
+<section id="notes">
+  <h2>À retenir</h2>
+  <ul>
+    <li>Accueil : titre, « Nouvelle partie », « Rejoindre » avec le code. Préparation : partie, decks, premier joueur, graine, « Commencer sur cet appareil », « Créer une partie à distance », « Retour ».</li>
+    <li>Habillage « Vestiaire » (0070, 0071) : table sombre, panneau à coins coupés, trait d'encre, ombre en aplat ; l'action principale est en papier.</li>
+    <li>Rien ne change au fonctionnement : mêmes choix, même jeu à distance ; seule la place des commandes change.</li>
+    <li>Le titre « TOURNOI » est un nom de travail tiré de la bible (« un tournoi dont on ne sait rien ») ; à remplacer par le nom du jeu.</li>
+  </ul>
+</section>
+
+<script>
+  const screens = [...document.querySelectorAll('.screen')];
+  const frame = document.getElementById('frame');
+  const scaleSel = document.getElementById('scale');
+  function rescale() {
+    const v = scaleSel.value;
+    const s = v === 'fit' ? Math.min(1, (window.innerWidth - 32) / 1920) : parseFloat(v);
+    screens.forEach(el => { el.style.transform = `scale(${s})`; });
+    frame.style.height = (1080 * s) + 'px';
+  }
+  function show(id) {
+    screens.forEach(el => el.classList.toggle('on', el.id === id));
+    document.getElementById('show-home').setAttribute('aria-pressed', id === 'home');
+    document.getElementById('show-prep').setAttribute('aria-pressed', id === 'prep');
+  }
+  document.getElementById('show-home').onclick = () => show('home');
+  document.getElementById('show-prep').onclick = () => show('prep');
+  document.getElementById('notes-on').onchange = e =>
+    document.querySelectorAll('.n').forEach(n => { n.style.display = e.target.checked ? '' : 'none'; });
+  scaleSel.onchange = rescale;
+  window.addEventListener('resize', rescale);
+  rescale();
+</script>
+</body>
+</html>

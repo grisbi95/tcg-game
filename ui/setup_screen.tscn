@@ -34,9 +34,10 @@ grow_vertical = 2
 [node name="Panel" type="PanelContainer" parent="Center"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"ModalPanel"
 
 [node name="Column" type="VBoxContainer" parent="Center/Panel"]
-custom_minimum_size = Vector2(560, 0)
+custom_minimum_size = Vector2(736, 0)
 layout_mode = 2
 theme_type_variation = &"ModalColumn"
 
@@ -52,9 +53,9 @@ theme_type_variation = &"ModalRow"
 
 [node name="GameLabel" type="Label" parent="Center/Panel/Column/GameRow"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(140, 0)
+custom_minimum_size = Vector2(170, 0)
 layout_mode = 2
-theme_type_variation = &"ModalBodyLabel"
+theme_type_variation = &"ModalFieldLabel"
 
 [node name="GameOption" type="OptionButton" parent="Center/Panel/Column/GameRow"]
 unique_name_in_owner = true
@@ -71,7 +72,7 @@ theme_type_variation = &"ModalRow"
 
 [node name="PlayerLabelA" type="Label" parent="Center/Panel/Column/DeckARow"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(140, 0)
+custom_minimum_size = Vector2(170, 0)
 layout_mode = 2
 theme_type_variation = &"ModalBodyLabel"
 
@@ -90,7 +91,7 @@ theme_type_variation = &"ModalRow"
 
 [node name="PlayerLabelB" type="Label" parent="Center/Panel/Column/DeckBRow"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(140, 0)
+custom_minimum_size = Vector2(170, 0)
 layout_mode = 2
 theme_type_variation = &"ModalBodyLabel"
 
@@ -109,9 +110,9 @@ theme_type_variation = &"ModalRow"
 
 [node name="FirstPlayerLabel" type="Label" parent="Center/Panel/Column/FirstPlayerRow"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(140, 0)
+custom_minimum_size = Vector2(170, 0)
 layout_mode = 2
-theme_type_variation = &"ModalBodyLabel"
+theme_type_variation = &"ModalFieldLabel"
 
 [node name="FirstPlayerOption" type="OptionButton" parent="Center/Panel/Column/FirstPlayerRow"]
 unique_name_in_owner = true
@@ -130,7 +131,7 @@ theme_type_variation = &"ModalRow"
 [node name="SeedTitleLabel" type="Label" parent="Center/Panel/Column/SeedRow"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_type_variation = &"ModalBodyLabel"
+theme_type_variation = &"ModalFieldLabel"
 
 [node name="SeedEdit" type="LineEdit" parent="Center/Panel/Column/SeedRow"]
 unique_name_in_owner = true
@@ -143,13 +144,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
 focus_mode = 0
-theme_type_variation = &"ModalButton"
-
-[node name="RemoteTitleLabel" type="Label" parent="Center/Panel/Column"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"ModalBodyLabel"
-horizontal_alignment = 1
+theme_type_variation = &"MainButton"
 
 [node name="CreateButton" type="Button" parent="Center/Panel/Column"]
 unique_name_in_owner = true
@@ -158,37 +153,27 @@ layout_mode = 2
 focus_mode = 0
 theme_type_variation = &"ModalButton"
 
-[node name="JoinRow" type="HBoxContainer" parent="Center/Panel/Column"]
-layout_mode = 2
-alignment = 1
-theme_type_variation = &"ModalRow"
-
-[node name="CodeEdit" type="LineEdit" parent="Center/Panel/Column/JoinRow"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
-theme_type_variation = &"ModalLineEdit"
-
-[node name="JoinButton" type="Button" parent="Center/Panel/Column/JoinRow"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(200, 64)
-layout_mode = 2
-focus_mode = 0
-theme_type_variation = &"ModalButton"
-
 [node name="StatusLabel" type="Label" parent="Center/Panel/Column"]
 unique_name_in_owner = true
 visible = false
-custom_minimum_size = Vector2(560, 0)
+custom_minimum_size = Vector2(736, 0)
 layout_mode = 2
-theme_type_variation = &"ModalBodyLabel"
+theme_type_variation = &"ModalMutedLabel"
 horizontal_alignment = 1
 autowrap_mode = 3
 
 [node name="CancelButton" type="Button" parent="Center/Panel/Column"]
 unique_name_in_owner = true
 visible = false
-custom_minimum_size = Vector2(0, 64)
+custom_minimum_size = Vector2(200, 56)
 layout_mode = 2
+size_flags_horizontal = 4
 focus_mode = 0
 theme_type_variation = &"ModalButton"
+
+[node name="BackButton" type="Button" parent="Center/Panel/Column"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"ModalGhostButton"

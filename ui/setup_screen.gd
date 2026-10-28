@@ -1,12 +1,12 @@
 class_name SetupScreen
-extends Control
+extends EntryScreen
 ## Écran de préparation (décision 0036, point 3) : « Nouvelle partie », la partie (du plan de série
 ## ou libre, décision 0069), le deck de chaque joueur et le premier joueur (imposés par une partie
 ## du plan, choisis par l'hôte en partie libre, décision 0066), la graine
-## (affichée, modifiable, entier positif) et « Commencer ». Décisions 0043 et 0050 : « Créer une
-## partie à distance » (le créateur joue A) ou « Rejoindre » par le code de la partie (B) ; le
-## parent mène la connexion et dit où elle en est. Le parent donne les textes et reçoit la graine
-## choisie ; aucune règle ici.
+## (affichée, modifiable, entier positif) et « Commencer ». Décisions 0043, 0050 et 0075 : « Créer
+## une partie à distance » (le créateur joue A) ; « Rejoindre » est à l'accueil, d'où « Retour »
+## revient. Le parent mène la connexion et dit où elle en est. Le parent donne les textes et reçoit
+## la graine choisie ; aucune règle ici.
 
 ## L'hôte choisit une partie : son numéro dans le plan, `DuelSeries.NO_PLAN_GAME` pour la libre.
 signal game_chosen(game_number: int)
@@ -18,10 +18,8 @@ signal first_player_chosen(choice: DuelSeries.FirstPlayerChoice)
 signal start_pressed(rng_seed: int)
 ## « Créer une partie à distance » est pressé, avec la graine du champ.
 signal create_pressed(rng_seed: int)
-## « Rejoindre » est pressé, avec le code saisi.
-signal join_pressed(code: String)
-## « Annuler » est pressé pendant la connexion au relais.
-signal cancel_pressed
+## « Retour » est pressé : retour à l'accueil.
+signal back_pressed
 
 const MAX_SEED_DIGITS: int = 18
 const TITLE_TEXT: String = "Nouvelle partie"
@@ -31,18 +29,12 @@ const FIRST_PLAYER_TEXT: String = "Commence"
 const DRAWN_TEXT: String = "Tiré au sort"
 const SEED_TEXT: String = "Graine"
 const START_TEXT: String = "Commencer sur cet appareil"
-const REMOTE_TITLE_TEXT: String = "À distance"
 const CREATE_TEXT: String = "Créer une partie à distance"
-const JOIN_TEXT: String = "Rejoindre"
-const CODE_PLACEHOLDER: String = "Code"
-const CANCEL_TEXT: String = "Annuler"
-## Longueur d'un code de partie du relais (`tools/relay/server.js`).
-const CODE_LENGTH: int = 4
+const BACK_TEXT: String = "Retour"
 
 var _game_number: int = DuelSeries.NO_PLAN_GAME
 
 @onready var _table: ColorRect = %Table
-@onready var _panel: PanelContainer = %Panel
 @onready var _title_label: Label = %TitleLabel
 @onready var _game_label: Label = %GameLabel
 @onready var _game_option: OptionButton = %GameOption
@@ -51,12 +43,8 @@ var _game_number: int = DuelSeries.NO_PLAN_GAME
 @onready var _seed_title_label: Label = %SeedTitleLabel
 @onready var _seed_edit: LineEdit = %SeedEdit
 @onready var _start_button: Button = %StartButton
-@onready var _remote_title_label: Label = %RemoteTitleLabel
 @onready var _create_button: Button = %CreateButton
-@onready var _code_edit: LineEdit = %CodeEdit
-@onready var _join_button: Button = %JoinButton
-@onready var _status_label: Label = %StatusLabel
-@onready var _cancel_button: Button = %CancelButton
+@onready var _back_button: Button = %BackButton
 @onready var _player_labels: Dictionary[DuelState.PlayerSide, Label] = {
 	DuelState.PlayerSide.A: %PlayerLabelA,
 	DuelState.PlayerSide.B: %PlayerLabelB,
@@ -84,15 +72,11 @@ class Preparation:
 
 func _ready() -> void:
 	_table.color = DuelPalette.TABLE_COLOR
-	_panel.add_theme_stylebox_override("panel", DuelPalette.modal_style(DuelPalette.INK_COLOR))
 	_title_label.text = TITLE_TEXT
-	_title_label.add_theme_color_override("font_color", DuelPalette.TEXT_COLOR)
 	_game_label.text = GAME_TEXT
-	_game_label.add_theme_color_override("font_color", DuelPalette.MUTED_COLOR)
 	_game_option.item_selected.connect(_on_game_selected)
 	_setup_choice_controls()
 	_seed_title_label.text = SEED_TEXT
-	_seed_title_label.add_theme_color_override("font_color", DuelPalette.MUTED_COLOR)
 	_start_button.text = START_TEXT
 	_seed_edit.max_length = MAX_SEED_DIGITS
 	_seed_edit.text_changed.connect(_on_seed_text_changed)
@@ -119,21 +103,6 @@ func show_game(preparation: Preparation) -> void:
 		_first_player_option.get_item_index(preparation.first_player_choice)
 	)
 	show_idle()
-
-
-## Rien en cours : les choix sont ouverts ; `status` dit, s'il n'est pas vide, ce qui s'est passé
-## (connexion perdue, code inconnu).
-func show_idle(status: String = "") -> void:
-	_set_controls_enabled(true)
-	_cancel_button.visible = false
-	_show_status(status)
-
-
-## Connexion au relais en cours, ou attente de l'autre joueur : `status` le dit, « Annuler » arrête.
-func show_connecting(status: String) -> void:
-	_set_controls_enabled(false)
-	_cancel_button.visible = true
-	_show_status(status)
 
 
 ## Décision 0069 : numéros des entrées du sélecteur de partie, la partie libre puis les parties du
@@ -173,7 +142,6 @@ func _setup_choice_controls() -> void:
 		label.add_theme_color_override("font_color", DuelPalette.player_ink(side))
 		_deck_options[side].item_selected.connect(_on_deck_selected.bind(side))
 	_first_player_label.text = FIRST_PLAYER_TEXT
-	_first_player_label.add_theme_color_override("font_color", DuelPalette.MUTED_COLOR)
 	_first_player_option.add_item(
 		PlayerNames.display_name(DuelState.PlayerSide.A), DuelSeries.FirstPlayerChoice.PLAYER_A
 	)
@@ -201,38 +169,24 @@ func _fill_deck_option(side: DuelState.PlayerSide, preparation: Preparation) -> 
 
 
 func _setup_remote_controls() -> void:
-	_remote_title_label.text = REMOTE_TITLE_TEXT
-	_remote_title_label.add_theme_color_override("font_color", DuelPalette.MUTED_COLOR)
 	_create_button.text = CREATE_TEXT
-	_join_button.text = JOIN_TEXT
-	_cancel_button.text = CANCEL_TEXT
-	_code_edit.placeholder_text = CODE_PLACEHOLDER
-	_code_edit.max_length = CODE_LENGTH
-	_status_label.add_theme_color_override("font_color", DuelPalette.TEXT_COLOR)
+	_back_button.text = BACK_TEXT
 	_create_button.pressed.connect(_on_create_pressed)
-	_join_button.pressed.connect(_on_join_pressed)
-	_code_edit.text_changed.connect(_on_code_text_changed)
-	_code_edit.text_submitted.connect(_on_code_submitted)
-	_cancel_button.pressed.connect(cancel_pressed.emit)
+	_bind_entry_controls(%StatusLabel as Label, %CancelButton as Button)
+	_back_button.pressed.connect(back_pressed.emit)
 
 
 func _set_controls_enabled(is_enabled: bool) -> void:
+	_back_button.visible = is_enabled
 	var has_seed := not _seed_edit.text.is_empty()
 	_start_button.disabled = not (is_enabled and has_seed)
 	_create_button.disabled = not (is_enabled and has_seed)
-	_join_button.disabled = not (is_enabled and _code_edit.text.length() == CODE_LENGTH)
 	_seed_edit.editable = is_enabled
 	_game_option.disabled = not is_enabled
 	var is_free := are_free_choices_enabled(_game_number, is_enabled)
 	_first_player_option.disabled = not is_free
 	for option: OptionButton in _deck_options.values():
 		option.disabled = not is_free
-	_code_edit.editable = is_enabled
-
-
-func _show_status(status: String) -> void:
-	_status_label.text = status
-	_status_label.visible = not status.is_empty()
 
 
 func _on_game_selected(item_index: int) -> void:
@@ -271,22 +225,3 @@ func _on_start_pressed() -> void:
 func _on_create_pressed() -> void:
 	if not _create_button.disabled:
 		create_pressed.emit(_seed_edit.text.to_int())
-
-
-# Le code se dicte en majuscules (relais) ; les minuscules saisies y sont ramenées.
-func _on_code_text_changed(new_text: String) -> void:
-	var upper := new_text.to_upper()
-	if upper != new_text:
-		var caret := _code_edit.caret_column
-		_code_edit.text = upper
-		_code_edit.caret_column = caret
-	_join_button.disabled = upper.length() != CODE_LENGTH
-
-
-func _on_code_submitted(_text: String) -> void:
-	_on_join_pressed()
-
-
-func _on_join_pressed() -> void:
-	if not _join_button.disabled:
-		join_pressed.emit(_code_edit.text)
