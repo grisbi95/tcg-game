@@ -17,6 +17,11 @@ enum Icon {
 	SOURCE,
 	CONCEDE,
 	ESSENCE,
+	ASSAULT,
+	RAMPART,
+	ARRIVAL,
+	LAST_BREATH,
+	OUTPOST,
 }
 
 ## Formes pleines d'un chiffre : goutte du coût, losange de la Force, cœur des PV. Ajouter à la fin.
@@ -27,6 +32,8 @@ enum Badge {
 }
 
 const GRID_SIZE: float = 24.0
+## Icône d'étiquette de texte : carré plein de la couleur du fond, tracé de la couleur de l'encre.
+const CHIP_STROKE_WIDTH: float = 2.0
 const STROKE_WIDTH: float = 1.8
 const HEART_POINT_COUNT: int = 32
 ## Cœur paramétrique (16 sin³ t, 13 cos t − 5 cos 2t − 2 cos 3t − cos 4t) ramené à la grille.
@@ -53,6 +60,15 @@ const TINT_ICONS: Dictionary[DuelPalette.Tint, Icon] = {
 	DuelPalette.Tint.SPELL: Icon.SPELL,
 	DuelPalette.Tint.GEAR: Icon.GEAR,
 	DuelPalette.Tint.HERO: Icon.HERO,
+}
+
+## Un mot-clé, une icône : mêmes asset et même grille que les icônes de type.
+const KEYWORD_ICONS: Dictionary[CardDefinition.Keyword, Icon] = {
+	CardDefinition.Keyword.OUTPOST: Icon.OUTPOST,
+	CardDefinition.Keyword.ARRIVAL: Icon.ARRIVAL,
+	CardDefinition.Keyword.LAST_BREATH: Icon.LAST_BREATH,
+	CardDefinition.Keyword.ASSAULT: Icon.ASSAULT,
+	CardDefinition.Keyword.RAMPART: Icon.RAMPART,
 }
 
 ## Tracés de la maquette : x, y de chaque point d'une ligne brisée, sur la grille.
@@ -88,10 +104,30 @@ const CONCEDE_FLAG_PATH: Array[float] = [6.0, 4.5, 19.0, 4.5, 15.5, 9.0, 19.0, 1
 ## Essence : une gemme taillée, sa ceinture en travers.
 const ESSENCE_GEM_PATH: Array[float] = [12.0, 2.0, 20.0, 9.0, 12.0, 22.0, 4.0, 9.0, 12.0, 2.0]
 const ESSENCE_BELT_PATH: Array[float] = [4.0, 9.0, 20.0, 9.0]
+## Assaut : une flèche qui file vers l'avant. Rempart : un écu coupé en deux. Arrivée : une flèche
+## qui se pose sur le sol. Dernier souffle : une stèle et sa croix. Avant-poste : une tente.
+const ASSAULT_SHAFT_PATH: Array[float] = [4.0, 20.0, 19.0, 5.0]
+const ASSAULT_HEAD_PATH: Array[float] = [10.0, 5.0, 19.0, 5.0, 19.0, 14.0]
+const RAMPART_SHIELD_PATH: Array[float] = [
+	5.0, 4.0, 19.0, 4.0, 19.0, 12.0, 12.0, 21.0, 5.0, 12.0, 5.0, 4.0
+]
+const RAMPART_SPLIT_PATH: Array[float] = [12.0, 4.0, 12.0, 21.0]
+const ARRIVAL_SHAFT_PATH: Array[float] = [12.0, 3.0, 12.0, 16.0]
+const ARRIVAL_HEAD_PATH: Array[float] = [6.0, 10.0, 12.0, 16.0, 18.0, 10.0]
+const ARRIVAL_GROUND_PATH: Array[float] = [5.0, 21.0, 19.0, 21.0]
+const LAST_BREATH_STONE_PATH: Array[float] = [
+	6.0, 21.0, 6.0, 10.0, 9.0, 5.0, 15.0, 5.0, 18.0, 10.0, 18.0, 21.0, 6.0, 21.0
+]
+const LAST_BREATH_UPRIGHT_PATH: Array[float] = [12.0, 9.0, 12.0, 17.0]
+const LAST_BREATH_CROSSBAR_PATH: Array[float] = [9.0, 12.0, 15.0, 12.0]
+const OUTPOST_TENT_PATH: Array[float] = [3.0, 20.0, 12.0, 4.0, 21.0, 20.0, 3.0, 20.0]
+const OUTPOST_DOOR_PATH: Array[float] = [9.0, 20.0, 12.0, 13.0, 15.0, 20.0]
 const HERO_PATH: Array[float] = [
 	3.0, 18.0, 5.0, 7.0, 10.0, 12.0, 12.0, 5.0, 14.0, 12.0, 19.0, 7.0, 21.0, 18.0, 3.0, 18.0
 ]
 
+## Textures d'icônes d'étiquette déjà rastérisées.
+static var _chip_textures: Dictionary[String, Texture2D] = {}
 ## Lignes brisées de chaque icône, en coordonnées de la grille.
 static var _strokes: Dictionary[Icon, Array] = {
 	Icon.UNIT: [_path(UNIT_PATH)],
@@ -103,6 +139,16 @@ static var _strokes: Dictionary[Icon, Array] = {
 	Icon.SOURCE: _source_paths(),
 	Icon.CONCEDE: [_path(CONCEDE_POLE_PATH), _path(CONCEDE_FLAG_PATH)],
 	Icon.ESSENCE: [_path(ESSENCE_GEM_PATH), _path(ESSENCE_BELT_PATH)],
+	Icon.ASSAULT: [_path(ASSAULT_SHAFT_PATH), _path(ASSAULT_HEAD_PATH)],
+	Icon.RAMPART: [_path(RAMPART_SHIELD_PATH), _path(RAMPART_SPLIT_PATH)],
+	Icon.ARRIVAL: [_path(ARRIVAL_SHAFT_PATH), _path(ARRIVAL_HEAD_PATH), _path(ARRIVAL_GROUND_PATH)],
+	Icon.LAST_BREATH:
+	[
+		_path(LAST_BREATH_STONE_PATH),
+		_path(LAST_BREATH_UPRIGHT_PATH),
+		_path(LAST_BREATH_CROSSBAR_PATH)
+	],
+	Icon.OUTPOST: [_path(OUTPOST_TENT_PATH), _path(OUTPOST_DOOR_PATH)],
 }
 ## Polygones de chaque forme pleine, du fond au dessus, en coordonnées de la grille.
 static var _badge_shapes: Dictionary[Badge, Array] = {
@@ -134,6 +180,30 @@ static func draw(canvas: CanvasItem, icon: Icon, rect: Rect2, color: Color) -> v
 		for point: Vector2 in stroke:
 			points.append(origin + point * ratio)
 		canvas.draw_polyline(points, color, width, true)
+
+
+## Carré de `pixel_size` px portant `icon` tracée de `stroke` sur `background`, pour une étiquette
+## insérée dans un texte (RichTextLabel) ; le tracé de la grille est rastérisé nettement à cette
+## taille, une fois par taille et par couleur.
+static func chip_texture(
+	icon: Icon, pixel_size: int, background: Color, stroke: Color
+) -> Texture2D:
+	var key := "%d/%d/%s/%s" % [icon, pixel_size, background.to_html(), stroke.to_html()]
+	if not _chip_textures.has(key):
+		var image := Image.new()
+		image.load_svg_from_string(_chip_svg(icon, background, stroke), pixel_size / GRID_SIZE)
+		_chip_textures[key] = ImageTexture.create_from_image(image)
+	return _chip_textures[key]
+
+
+## Lignes brisées de `icon`, en coordonnées de la grille de 24 × 24 : celles que `draw` trace.
+static func strokes_of(icon: Icon) -> Array:
+	return _strokes[icon]
+
+
+## Icône du mot-clé `keyword`.
+static func keyword_icon(keyword: CardDefinition.Keyword) -> Icon:
+	return KEYWORD_ICONS[keyword]
 
 
 ## Nom du fichier de `icon` dans `assets/icons/`, sans extension : `unit`, `heart`, `source`…
@@ -199,6 +269,26 @@ static func bind_tinted(type_icons: Array[Control], tint_of: Callable) -> void:
 	var ink := func() -> Color: return DuelPalette.TINT_INKS[tint_of.call()]
 	for control: Control in type_icons:
 		bind(control, type_icon, ink)
+
+
+static func _chip_svg(icon: Icon, background: Color, stroke: Color) -> String:
+	var shapes := PackedStringArray()
+	for line: PackedVector2Array in _strokes[icon]:
+		var points := PackedStringArray()
+		for point: Vector2 in line:
+			points.append("%s,%s" % [point.x, point.y])
+		shapes.append('<polyline points="%s"/>' % " ".join(points))
+	return (
+		'<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">'
+		+ '<rect width="24" height="24" fill="#%s"/>' % background.to_html(false)
+		+ (
+			'<g fill="none" stroke="#%s" stroke-width="%s" '
+			% [stroke.to_html(false), CHIP_STROKE_WIDTH]
+		)
+		+ 'stroke-linecap="round" stroke-linejoin="round">'
+		+ "".join(shapes)
+		+ "</g></svg>"
+	)
 
 
 static func _path(coordinates: Array[float]) -> PackedVector2Array:

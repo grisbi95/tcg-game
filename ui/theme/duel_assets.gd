@@ -9,6 +9,7 @@ extends RefCounted
 
 const ROOT_DIRECTORY: String = "res://assets/"
 const CARD_ART_DIRECTORY: String = ROOT_DIRECTORY + "cards/art/"
+const CARD_FRAME_DIRECTORY: String = ROOT_DIRECTORY + "cards/frames/"
 const ICON_DIRECTORY: String = ROOT_DIRECTORY + "icons/"
 const UI_DIRECTORY: String = ROOT_DIRECTORY + "ui/"
 const CARD_ART_EXTENSION: String = ".webp"
@@ -16,6 +17,20 @@ const ICON_EXTENSION: String = ".svg"
 const UI_EXTENSION: String = ".png"
 const TABLE_EXTENSION: String = ".webp"
 const TABLE_NAME: String = "table"
+const CARD_FRAME_EXTENSION: String = ".png"
+## Cadres de `assets/cards/frames/` (fiche § 7) : `card_<type>.png` 158×220 et `piece_<type>.png`
+## 125×125, en 9-patch ; `card_<type>_2x.png` (316×440) sert à l'aperçu agrandi, dont l'échelle
+## atteint `LARGE_FRAME_MIN_SCALE`. Marges de 9-patch en pixels de l'image @1x ; l'image @2x double.
+const CARD_FRAME_PREFIX: String = "card_"
+const PIECE_FRAME_PREFIX: String = "piece_"
+const LARGE_FRAME_SUFFIX: String = "_2x"
+const CARD_FRAME_MARGIN: int = 12
+const PIECE_FRAME_MARGIN: int = 10
+const LARGE_FRAME_MIN_SCALE: float = 1.5
+const LARGE_FRAME_RATIO: int = 2
+## Dos des cartes : `card_back.png` (deck, 158×220) et `card_back_small.png` (main adverse, 50×70).
+const CARD_BACK_NAME: String = "card_back"
+const CARD_BACK_SMALL_NAME: String = "card_back_small"
 ## Images de `assets/ui/` de la fiche § 7 : leur nom et la marge de leur 9-patch, en pixels.
 const COLUMN_PANEL_IMAGE: String = "column_panel"
 const COLUMN_PANEL_IMAGE_MARGIN: int = 16
@@ -109,7 +124,40 @@ static func table_path() -> String:
 static func ui_style(
 	image_name: String, fallback: StyleBox, margin: int = 0, tint: Color = Color.WHITE
 ) -> StyleBox:
-	var texture := ui_image(image_name)
+	return _nine_patch(ui_image(image_name), fallback, margin, tint)
+
+
+## Cadre `cards/frames/card_<tint_name>.png` de la carte de type `tint_name` (`unit`, `building`…),
+## à l'échelle `card_scale` ; sans fichier, `fallback`, le cadre dessiné (décision 0071).
+static func card_frame_style(tint_name: String, card_scale: float, fallback: StyleBox) -> StyleBox:
+	return _frame_style(CARD_FRAME_PREFIX + tint_name, CARD_FRAME_MARGIN, card_scale, fallback)
+
+
+## Cadre `cards/frames/piece_<tint_name>.png` de la pièce de type `tint_name`, ou `fallback`.
+static func piece_frame_style(tint_name: String, fallback: StyleBox) -> StyleBox:
+	return _frame_style(PIECE_FRAME_PREFIX + tint_name, PIECE_FRAME_MARGIN, 1.0, fallback)
+
+
+## Dos `cards/frames/card_back.png` (`is_small` : `card_back_small.png`), ou `null` sans fichier.
+static func card_back(is_small: bool) -> Texture2D:
+	var back_name := CARD_BACK_SMALL_NAME if is_small else CARD_BACK_NAME
+	return _texture(CARD_FRAME_DIRECTORY + back_name + CARD_FRAME_EXTENSION)
+
+
+static func _frame_style(
+	frame_name: String, margin: int, card_scale: float, fallback: StyleBox
+) -> StyleBox:
+	var path := CARD_FRAME_DIRECTORY + frame_name
+	if card_scale >= LARGE_FRAME_MIN_SCALE:
+		var large := _texture(path + LARGE_FRAME_SUFFIX + CARD_FRAME_EXTENSION)
+		if large != null:
+			return _nine_patch(large, fallback, margin * LARGE_FRAME_RATIO, Color.WHITE)
+	return _nine_patch(_texture(path + CARD_FRAME_EXTENSION), fallback, margin, Color.WHITE)
+
+
+static func _nine_patch(
+	texture: Texture2D, fallback: StyleBox, margin: int, tint: Color
+) -> StyleBox:
 	if texture == null:
 		return fallback
 	var style := StyleBoxTexture.new()

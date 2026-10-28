@@ -10,57 +10,26 @@ script = ExtResource("1_script")
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
-theme_type_variation = &"CardColumn"
+theme_type_variation = &"CardTightColumn"
 
-[node name="Header" type="HBoxContainer" parent="Layout"]
+[node name="ArtFrame" type="Control" parent="Layout"]
 unique_name_in_owner = true
 layout_mode = 2
-mouse_filter = 2
-theme_type_variation = &"CardRow"
-
-[node name="CostBadge" type="Control" parent="Layout/Header"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 4
+size_flags_horizontal = 4
 mouse_filter = 2
 
-[node name="CostLabel" type="Label" parent="Layout/Header/CostBadge"]
+[node name="Art" type="PanelContainer" parent="Layout/ArtFrame"]
 unique_name_in_owner = true
-layout_mode = 1
-theme_type_variation = &"CardPillLabel"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="NameLabel" type="Label" parent="Layout/Header"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"CardNameLabel"
-vertical_alignment = 1
-text_overrun_behavior = 3
-clip_text = true
-
-[node name="StatBadge" type="Control" parent="Layout/Header"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 4
-mouse_filter = 2
-
-[node name="StatLabel" type="Label" parent="Layout/Header/StatBadge"]
-unique_name_in_owner = true
-layout_mode = 1
-theme_type_variation = &"CardPillLabel"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Art" type="PanelContainer" parent="Layout"]
-unique_name_in_owner = true
-layout_mode = 2
 clip_contents = true
-size_flags_vertical = 3
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 
-[node name="ArtImage" type="TextureRect" parent="Layout/Art"]
+[node name="ArtImage" type="TextureRect" parent="Layout/ArtFrame/Art"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -68,39 +37,65 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 6
 
-[node name="ArtIcon" type="Control" parent="Layout/Art"]
+[node name="ArtIcon" type="Control" parent="Layout/ArtFrame/Art"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 mouse_filter = 2
 
-[node name="Band" type="HBoxContainer" parent="Layout"]
+[node name="NameBanner" type="PanelContainer" parent="Layout/ArtFrame"]
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
 mouse_filter = 2
-theme_type_variation = &"CardRow"
 
-[node name="BandIcon" type="Control" parent="Layout/Band"]
+[node name="NameLabel" type="Label" parent="Layout/ArtFrame/NameBanner"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 4
+theme_type_variation = &"CardNameLabel"
+horizontal_alignment = 1
+vertical_alignment = 1
+text_overrun_behavior = 3
+clip_text = true
+
+[node name="CostBadge" type="Control" parent="Layout/ArtFrame"]
+unique_name_in_owner = true
+layout_mode = 1
 mouse_filter = 2
 
-[node name="TypeLabel" type="Label" parent="Layout/Band"]
+[node name="CostLabel" type="Label" parent="Layout/ArtFrame/CostBadge"]
 unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"CardBandLabel"
+layout_mode = 1
+theme_type_variation = &"CardPillLabel"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="SpeedLabel" type="Label" parent="Layout/Band"]
+[node name="StatBadge" type="Control" parent="Layout/ArtFrame"]
 unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"CardBandLabel"
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+grow_horizontal = 0
+mouse_filter = 2
+
+[node name="StatLabel" type="Label" parent="Layout/ArtFrame/StatBadge"]
+unique_name_in_owner = true
+layout_mode = 1
+theme_type_variation = &"CardPillLabel"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="TextPanel" type="PanelContainer" parent="Layout"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_vertical = 3
 mouse_filter = 2
 
 [node name="TextLabel" type="RichTextLabel" parent="Layout/TextPanel"]

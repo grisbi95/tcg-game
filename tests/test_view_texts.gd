@@ -34,20 +34,15 @@ func test_decision_0027_type_and_speed_names() -> void:
 	assert_str(CardText.speed_name(unit)).is_empty()
 	var spell := CardDefinition.from_dict(CatalogSamples.spell())
 	assert_str(CardText.speed_name(spell)).is_equal("Réaction")
-	assert_str(CardText.keywords_line(spell)).is_empty()
-	var building := CardDefinition.CardType.BUILDING
-	assert_str(CardText.token_type_name(building)).is_equal("Building · Jeton")
 
 
-func test_decision_0027_keyword_chip_replaces_its_written_name() -> void:
+func test_decision_0027_keyword_tag_replaces_its_written_name() -> void:
 	var unit := CardDefinition.from_dict(CatalogSamples.unit())
 	unit.keywords[CardDefinition.Keyword.ARRIVAL] = CardDefinition.NO_KEYWORD_VALUE
 	unit.text = "Arrivée : une Unit ennemie ciblée a −1 Force."
-	assert_str(CardText.body_bbcode(unit)).is_equal(
-		CardText.chip("Arrivée") + " une Unit ennemie ciblée a −1 Force."
-	)
+	assert_str(CardText.body_bbcode(unit)).is_equal("une Unit ennemie ciblée a −1 Force.")
 	unit.text = "Arrivée"
-	assert_str(CardText.body_bbcode(unit)).is_equal(CardText.chip("Arrivée"))
+	assert_str(CardText.body_bbcode(unit)).is_empty()
 
 
 func test_decision_0027_hero_text_is_shown_as_is_without_chip() -> void:
@@ -56,11 +51,23 @@ func test_decision_0027_hero_text_is_shown_as_is_without_chip() -> void:
 	assert_str(CardText.hero_body_bbcode(hero)).is_equal("Passif : effet [lb]rare].")
 
 
-func test_decision_0025_keywords_line_names_each_keyword_with_its_value() -> void:
+func test_decision_0027_chips_list_the_spell_speed_then_each_keyword_in_capitals() -> void:
 	var unit := CardDefinition.from_dict(CatalogSamples.unit())
 	unit.keywords[CardDefinition.Keyword.ASSAULT] = 2
 	unit.keywords[CardDefinition.Keyword.OUTPOST] = CardDefinition.NO_KEYWORD_VALUE
-	assert_str(CardText.keywords_line(unit)).is_equal("Assaut 2 · Avant-poste")
+	var chips := CardText.chips(unit)
+	assert_int(chips.size()).is_equal(2)
+	assert_str(chips[0].label).is_equal("ASSAUT 2")
+	assert_bool(chips[0].has_icon).is_true()
+	assert_int(chips[0].icon).is_equal(DuelIcons.Icon.ASSAULT)
+	assert_str(chips[1].label).is_equal("AVANT-POSTE")
+	var spell := CardDefinition.from_dict(CatalogSamples.spell())
+	var spell_chips := CardText.chips(spell)
+	assert_str(spell_chips[0].label).is_equal("RÉACTION")
+	assert_bool(spell_chips[0].has_icon).is_false()
+	assert_int(CardText.chips(CardDefinition.from_dict(CatalogSamples.building())).size()).is_equal(
+		0
+	)
 
 
 func test_decision_0045_clock_alerts_under_ten_seconds() -> void:

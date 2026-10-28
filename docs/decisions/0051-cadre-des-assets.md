@@ -1,6 +1,6 @@
 # 0051 — Cadre des assets : dossier `assets/` et illustration retrouvée par l'identifiant de la carte
 
-- Statut : acceptée ; complétée par 0052
+- Statut : acceptée ; complétée par 0052 ; complétée par 0072
 - Date : 2026-10-23
 - Décideur : créateur du projet
 - Périmètre : rangement, nommage, formats et réglages d'import des images, polices et icônes ; lien entre une carte et son illustration ; repli quand un asset manque ; registre de provenance (étape 2b.1, jalon J2b)

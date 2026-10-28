@@ -18,8 +18,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+offset_bottom = -16.0
 mouse_filter = 2
-alignment = 1
+alignment = 2
 
 [node name="CountLabel" type="Label" parent="CountColumn"]
 unique_name_in_owner = true

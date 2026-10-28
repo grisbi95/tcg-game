@@ -1,6 +1,6 @@
 # 0027 — Design des cartes et des pièces dans la vue
 
-- Statut : acceptée ; complétée par 0030 ; modifiée par 0033 et 0034 ; modifiée par 0047 ; complétée par 0051 ; modifiée par 0070
+- Statut : acceptée ; complétée par 0030 ; modifiée par 0033 et 0034 ; modifiée par 0047 ; complétée par 0051 ; modifiée par 0070 ; modifiée par 0073 ; modifiée par 0074
 - Date : 2026-10-18
 - Décideur : créateur du projet
 - Périmètre : présentation des cartes (main, aperçu) et des pièces du plateau (`ui/components/` : CardView, PieceView, HoverPreview ; étape 2.3)
