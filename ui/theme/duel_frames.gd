@@ -2,7 +2,7 @@ class_name DuelFrames
 extends RefCounted
 ## Cadres dessinés des cartes et des pièces, selon la bible « Vestiaire » (décisions 0070 et 0071) :
 ## trait d'encre, coins coupés, ombre en aplat, cadre de la teinte du type rayé de hachures et
-## papier au centre ; bande de type à plat ; fond d'illustration tramé de points. Chaque cadre
+## papier au centre ; bandeau du nom à plat ; fond d'illustration tramé de points. Chaque cadre
 ## est cherché d'abord en image (`cards/frames/`, `DuelAssets`) ; sans fichier, il est dessiné ici.
 ## Tout se règle par l'échelle de la carte (1 en main, 2,2 en aperçu) et ne connaît aucune règle.
 
@@ -18,16 +18,16 @@ const PAPER_CUT: int = 5
 const CARD_SHADOW_OFFSET: float = 3.0
 ## Marge intérieure de la carte : trait, cadre rayé, trait du papier, un pixel d'air.
 const CARD_CONTENT_MARGIN: float = 8.0
-## Bande de type : marges autour de son contenu.
-const BAND_PADDING_HORIZONTAL: float = 4.0
-const BAND_PADDING_VERTICAL: float = 1.0
+## Bandeau du nom : marges autour de son contenu.
+const BANNER_PADDING_HORIZONTAL: float = 4.0
+const BANNER_PADDING_VERTICAL: float = 1.0
 ## Trame de points du fond d'illustration : un point tous les 6 px, de rayon proportionnel.
 const DOT_STEP: float = 6.0
 const DOT_RADIUS_RATIO: float = 0.17
 const DOT_COLOR := Color(0.082, 0.071, 0.059, 0.16)
-## Zone d'illustration carrée, trait d'encre compris, commune à la carte en main (E11) et à la
-## pièce (E06) : un seul fichier `cards/art/<id>.webp` sert aux deux, montré en entier.
-const ART_ZONE_SIZE: float = 110.0
+## Zone d'illustration carrée de la pièce (E06), trait d'encre compris (décision 0073) ; la carte en
+## main a le même cadrage à sa propre taille (décision 0074).
+const PIECE_ART_SIZE: float = 110.0
 const SQRT_TWO: float = 1.41421356
 
 ## Hachures déjà calculées : clé « largeur x hauteur x échelle » → bandes à tracer.
@@ -88,10 +88,10 @@ static func banner_style(card_scale: float) -> StyleBoxFlat:
 	var line := _thin(card_scale)
 	var style := DuelPalette.framed_style(DuelPalette.PAPER_COLOR, DuelPalette.INK_COLOR, line, 0.0)
 	style.set_corner_radius_all(0)
-	style.content_margin_left = BAND_PADDING_HORIZONTAL * card_scale + line
-	style.content_margin_right = BAND_PADDING_HORIZONTAL * card_scale + line
-	style.content_margin_top = BAND_PADDING_VERTICAL * card_scale + line
-	style.content_margin_bottom = BAND_PADDING_VERTICAL * card_scale + line
+	style.content_margin_left = BANNER_PADDING_HORIZONTAL * card_scale + line
+	style.content_margin_right = BANNER_PADDING_HORIZONTAL * card_scale + line
+	style.content_margin_top = BANNER_PADDING_VERTICAL * card_scale + line
+	style.content_margin_bottom = BANNER_PADDING_VERTICAL * card_scale + line
 	return style
 
 

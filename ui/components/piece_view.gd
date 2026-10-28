@@ -1,8 +1,7 @@
 class_name PieceView
 extends Control
-## Pièce sur le plateau (décision 0027, épurée au jalon J2b) : l'illustration carrée de sa carte
-## (décision 0051), la même et à la même taille que sur la carte en main
-## (`DuelFrames.ART_ZONE_SIZE`),
+## Pièce sur le plateau (décision 0027, épurée par la décision 0073) : l'illustration carrée de sa
+## carte (décision 0051), au même cadrage que sur la carte en main (`DuelFrames.PIECE_ART_SIZE`),
 ## ou l'icône du type sur sa teinte tant qu'il n'y en a pas, sur du papier liseré de la couleur
 ## fixe de son joueur ; Force actuelle (losange) ou PV du Hero (cœur) dans le coin. Ni nom, ni type,
 ## ni mot-clé : le type se lit à la teinte, le reste à l'aperçu au survol. Le cadre est dessiné
@@ -157,7 +156,7 @@ func _bind_icons() -> void:
 func _size_parts() -> void:
 	custom_minimum_size = PIECE_SIZE
 	_art_icon.custom_minimum_size = Vector2.ONE * ART_ICON_SIZE
-	_art.custom_minimum_size = Vector2.ONE * DuelFrames.ART_ZONE_SIZE
+	_art.custom_minimum_size = Vector2.ONE * DuelFrames.PIECE_ART_SIZE
 	_gear_icon.custom_minimum_size = Vector2.ONE * GEAR_ICON_SIZE
 	_place_stat_badge(STAT_BADGE_SIZE)
 

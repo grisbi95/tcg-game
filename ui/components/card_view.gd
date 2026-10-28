@@ -1,9 +1,9 @@
 class_name CardView
 extends PanelContainer
 ## Carte de la main ou de l'aperçu (décision 0027, habillage « Vestiaire » des décisions 0070 et
-## 0071) : l'illustration carrée (décision 0051 : `assets/cards/art/<id>.webp`), en entier,
-## remplacée
-## par l'icône du type sur la teinte tant qu'il n'y en a pas, prend toute la largeur ; par-dessus,
+## 0071, gabarit de la décision 0074) : l'illustration carrée (décision 0051 :
+## `assets/cards/art/<id>.webp`), en entier, remplacée par l'icône du type sur la teinte tant
+## qu'il n'y en a pas, prend toute la largeur ; par-dessus,
 ## le coût (goutte) en haut à gauche, la Force (losange) ou les PV du Hero (cœur) en haut à droite
 ## et le nom sur un bandeau de papier en bas. Dessous, le texte de règles, précédé de ses
 ## étiquettes : vitesse d'un Spell et mots-clés avec leur icône. Pas de bande de type : le cadre,

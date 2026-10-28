@@ -99,11 +99,18 @@ class Chip:
 	var has_icon: bool
 	var icon: DuelIcons.Icon
 
-	func _init(chip_label: String, chip_icon: int = -1) -> void:
+	func _init(chip_label: String, chip_has_icon: bool, chip_icon: DuelIcons.Icon) -> void:
 		label = chip_label
-		has_icon = chip_icon >= 0
-		if has_icon:
-			icon = chip_icon as DuelIcons.Icon
+		has_icon = chip_has_icon
+		icon = chip_icon
+
+	## Vitesse d'un Spell : étiquette sans icône.
+	static func speed(chip_label: String) -> Chip:
+		return Chip.new(chip_label, false, DuelIcons.Icon.SPELL)
+
+	## Mot-clé, avec son icône.
+	static func keyword(chip_label: String, chip_icon: DuelIcons.Icon) -> Chip:
+		return Chip.new(chip_label, true, chip_icon)
 
 
 ## Les étiquettes en tête du texte de `definition` : sa vitesse s'il s'agit d'un Spell, puis chaque
@@ -112,10 +119,10 @@ static func chips(definition: CardDefinition) -> Array[Chip]:
 	var result: Array[Chip] = []
 	var speed := speed_name(definition)
 	if not speed.is_empty():
-		result.append(Chip.new(speed.to_upper()))
+		result.append(Chip.speed(speed.to_upper()))
 	for keyword: CardDefinition.Keyword in definition.keywords:
 		var label := keyword_label(keyword, definition.keywords[keyword])
-		result.append(Chip.new(label.to_upper(), DuelIcons.keyword_icon(keyword)))
+		result.append(Chip.keyword(label.to_upper(), DuelIcons.keyword_icon(keyword)))
 	return result
 
 

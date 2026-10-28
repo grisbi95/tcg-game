@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bcce3jp3pgu2o"
-path="res://.godot/imported/recrue.webp-daed881544344826f5274ae3b1600e6e.ctex"
+uid="uid://bjjtdssq6pfir"
+path="res://.godot/imported/hero.svg-86e6a08af4262221e7048d0e42e80123.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/cards/art/recrue.webp"
-dest_files=["res://.godot/imported/recrue.webp-daed881544344826f5274ae3b1600e6e.ctex"]
+source_file="res://assets/icons/hero.svg"
+dest_files=["res://.godot/imported/hero.svg-86e6a08af4262221e7048d0e42e80123.ctex"]
 
 [params]
 
@@ -38,3 +38,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
+svg/scale=1.0
+editor/scale_with_editor_scale=false
+editor/convert_colors_with_editor_theme=false

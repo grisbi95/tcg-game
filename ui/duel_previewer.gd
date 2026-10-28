@@ -46,11 +46,10 @@ func show_piece(piece_id: int) -> void:
 			definition = _model.piece_definition(piece)
 			_preview.show_card(definition, gear)
 	var keywords := CardText.piece_keywords(_engine.get_state(), piece, definition)
-	if _tooltips != null:
-		_tooltips.show_bubbles(
-			InfoBubble.list_for_piece(keywords, gear, DuelViewModel.is_shown_asleep(piece)),
-			gear != null
-		)
+	_show_bubble_list(
+		InfoBubble.list_for_piece(keywords, gear, DuelViewModel.is_shown_asleep(piece)),
+		gear != null
+	)
 
 
 func show_stack_entry(stack_entry_id: int) -> void:
@@ -74,5 +73,9 @@ func hide_preview(_ignored_id: int = DuelState.NO_ID) -> void:
 
 
 func _show_bubbles(definition: CardDefinition, gear: CardDefinition, is_asleep: bool) -> void:
+	_show_bubble_list(InfoBubble.list_for(definition, gear, is_asleep), gear != null)
+
+
+func _show_bubble_list(bubbles: Array[InfoBubble], has_gear: bool) -> void:
 	if _tooltips != null:
-		_tooltips.show_bubbles(InfoBubble.list_for(definition, gear, is_asleep), gear != null)
+		_tooltips.show_bubbles(bubbles, has_gear)
