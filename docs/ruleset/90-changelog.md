@@ -545,3 +545,8 @@
 - Ensemble figé d'un effet qui ne cible pas : identifiant ajouté 207.4.11c. Décision [0253](40-decisions/0253-ensemble-fige-d-un-effet-qui-ne-cible-pas.md).
 - [01-glossaire.md](01-glossaire.md) : termes ajoutés Condition « si », Endormir, Si vous le faites ; renvois ajoutés à Effet déclenché (207.3.15, 207.3.7b, 207.3.7c), Regarder (217.1.8), Durée et Effet ponctuel (207.4.11, 207.4.11c), Effet statique (207.4.11b), Condition « si » (207.7.1a, 207.7.1b, 207.7.7, 207.7.8) et Si vous le faites (207.7.6b).
 - [README.md](README.md) : édition courante passée à 0.55.
+
+## 0.56 · 27 octobre 2026 · majeure · expiration du temps pendant le choix des cibles d'un Ordre
+
+- Expiration du temps pendant le choix des cibles d'un Ordre. Identifiants modifiés : 209.4.11 (la mention « la carte reste où elle était » est retirée, la règle vise toute entrée de la pile qui appartient au joueur). Identifiants ajoutés : 209.4.11c ([209-controles-d-etat.md](20-regles-completes/209-controles-d-etat.md)), 211.2.2a ([211-ordre-du-hero.md](20-regles-completes/211-ordre-du-hero.md)). 211.2.2 inchangée. Décision [0254](40-decisions/0254-expiration-du-temps-pendant-le-choix-des-cibles-d-un-ordre.md). Q-116 tranchée, option A.
+- [README.md](README.md) : édition courante passée à 0.56.

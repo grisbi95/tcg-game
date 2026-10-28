@@ -4,6 +4,9 @@ extends RefCounted
 ## gestes en intentions, pas à pas, et n'émet que celles que DuelEngine.validate() accepte ;
 ## `snapshot()` dit aux vues quoi surligner.
 ##
+## Les annonces en plusieurs temps (X, plusieurs cibles, Ordre du Hero) sont déléguées à
+## `AnnouncementAssistant` (décision 0068) ; cet objet garde les autres gestes.
+##
 ## Aucune règle ici et aucun état qui fait foi : la sélection lit le moteur sans le modifier, et
 ## l'écran transmet les intentions émises à DuelHost. Pendant son tour, un clic sur une Source
 ## produit de l'Essence ; pendant le tour adverse, il prépare le paiement de la réponse (0023).
@@ -19,7 +22,7 @@ enum SelectionState {
 	IDLE,
 	CARD_CHOSEN,  # Unit ou Building choisi, en attente de sa case
 	PIECE_CHOSEN,  # pièce choisie, en attente de la case de son action normale
-	TARGET_PENDING,  # Spell ou Gear choisi, en attente de sa cible
+	TARGET_PENDING,  # annonce commencée (Spell, Gear, Ordre), en attente de son X ou de sa cible
 }
 
 const DECISION := PendingDecision.DecisionKind
@@ -30,38 +33,52 @@ var _selection_state: SelectionState = SelectionState.IDLE
 var _card_id: int = DuelState.NO_ID
 var _piece_id: int = DuelState.NO_ID
 ## Décision 0023 : paiement préparé pendant le tour adverse ; vide pendant son tour.
-var _draft_payment: EssencePayment = EssencePayment.new()
-## 204.2.4 : cartes à écarter, pendant le mulligan.
-var _set_aside_card_ids: Array[int] = []
-## 208.4.6 : effets déclenchés dans l'ordre choisi, pendant ORDER_TRIGGERS.
-var _ordered_entry_ids: Array[int] = []
+var _draft: SelectionDraft = SelectionDraft.new()
+## 204.2.4, 212.1.3, 208.4.6 : cartes à écarter ou à défausser, effets déclenchés rangés.
+var _picks: SelectionPicks = SelectionPicks.new()
+## Décision 0068 : assistant de l'annonce commencée, ou de la réponse à CHOOSE_TARGETS ; null sinon.
+var _assistant: AnnouncementAssistant
 
 
 ## `engine` est lu, jamais modifié ; `side` est le joueur devant l'écran.
 func setup(engine: DuelEngine, side: DuelState.PlayerSide) -> void:
 	_engine = engine
 	_side = side
+	_draft.setup(engine, side)
 	reset()
 
 
 ## Le joueur devant l'écran change (relais, décision 0020).
 func set_player(side: DuelState.PlayerSide) -> void:
 	_side = side
+	_draft.setup(_engine, side)
 	reset()
 
 
 ## Abandonne la sélection en cours et le paiement préparé, par exemple après des événements.
 func reset() -> void:
+	_draft.clear()
+	_picks.clear()
+	_assistant = null
+	_ensure_answer_assistant()
 	_enter(SelectionState.IDLE, DuelState.NO_ID, DuelState.NO_ID)
-	_draft_payment = EssencePayment.new()
-	_set_aside_card_ids.clear()
-	_ordered_entry_ids.clear()
-	selection_changed.emit()
+
+
+## Recale la sélection sur l'état du moteur : abandonne l'annonce que l'expiration du temps a
+## défaite (209.4.11, 211.2.2a) et prépare la réponse à CHOOSE_TARGETS. Appelé par les gestes et
+## par l'écran après des événements ; `snapshot()` reste une lecture.
+func resync() -> void:
+	if _assistant != null and _assistant.is_stale():
+		_clear_announcement()
+	_ensure_answer_assistant()
 
 
 func press_card(card_id: int) -> void:
+	resync()
 	if _is_awaiting(DECISION.MULLIGAN):
-		_toggle_set_aside(card_id)
+		_toggle_card(card_id)
+	elif _is_awaiting(DECISION.CHOOSE_DISCARD):
+		_toggle_discard(card_id)
 	elif _has_pending_decision():
 		return
 	elif card_id == _card_id and _selection_state != SelectionState.IDLE:
@@ -73,26 +90,31 @@ func press_card(card_id: int) -> void:
 
 
 func press_piece(piece_id: int) -> void:
+	resync()
 	var target := SelectionTarget.of_piece(piece_id)
 	if _is_awaiting(DECISION.CHOOSE_TARGETS):
-		_emit_if_legal(_candidates().targets_answer(target))
-	elif _selection_state == SelectionState.TARGET_PENDING:
+		_choose_answer_target(target)
+	elif _assistant != null and _assistant.is_candidate(target):
 		_choose_target(target)
 	elif piece_id == _piece_id:
 		reset()
-	elif not _has_pending_decision() and not _candidates().move_cells(piece_id).is_empty():
+	elif _selection_state == SelectionState.TARGET_PENDING or _has_pending_decision():
+		return
+	elif _candidates().has_piece_gesture(piece_id):
 		_enter(SelectionState.PIECE_CHOSEN, DuelState.NO_ID, piece_id)
 
 
 ## Décision 0030 : un clic sur une pièce est un geste sur sa case. La case compte d'abord quand la
 ## sélection la propose (déploiement, action normale, cible) ; sinon, sa pièce.
 func press_cell(cell: Vector2i) -> void:
+	resync()
 	var piece := _engine.get_state().piece_at(cell)
-	if piece != null and not snapshot().legal_cells.has(cell):
+	if piece != null and not _board_highlights().legal_cells.has(cell):
 		press_piece(piece.piece_id)
 		return
+	var target := SelectionTarget.of_cell(cell)
 	if _is_awaiting(DECISION.CHOOSE_TARGETS):
-		_emit_if_legal(_candidates().targets_answer(SelectionTarget.of_cell(cell)))
+		_choose_answer_target(target)
 		return
 	match _selection_state:
 		SelectionState.CARD_CHOSEN:
@@ -100,16 +122,18 @@ func press_cell(cell: Vector2i) -> void:
 		SelectionState.PIECE_CHOSEN:
 			_emit_if_legal(_candidates().normal_action(_piece_id, cell))
 		SelectionState.TARGET_PENDING:
-			_choose_target(SelectionTarget.of_cell(cell))
+			if _assistant != null and _assistant.is_candidate(target):
+				_choose_target(target)
 
 
 func press_stack_entry(stack_entry_id: int) -> void:
+	resync()
 	var target := SelectionTarget.of_stack_entry(stack_entry_id)
 	if _is_awaiting(DECISION.ORDER_TRIGGERS):
 		_add_to_order(stack_entry_id)
 	elif _is_awaiting(DECISION.CHOOSE_TARGETS):
-		_emit_if_legal(_candidates().targets_answer(target))
-	elif _selection_state == SelectionState.TARGET_PENDING:
+		_choose_answer_target(target)
+	elif _assistant != null and _assistant.is_candidate(target):
 		_choose_target(target)
 
 
@@ -121,9 +145,7 @@ func press_source(is_tilted: bool) -> void:
 	var produced := EssencePayment.new(0, 1) if is_tilted else EssencePayment.new(1, 0)
 	if _is_own_turn():
 		_emit_if_legal(ProduceEssence.new(_side, produced))
-	elif (_shown_tilted_sources() if is_tilted else _shown_upright_sources()) > 0:
-		_draft_payment.incline_count += produced.incline_count
-		_draft_payment.recycle_count += produced.recycle_count
+	elif _draft.add_source(is_tilted):
 		selection_changed.emit()
 
 
@@ -138,11 +160,48 @@ func press_end_turn() -> void:
 ## Décision 0031 : seul le mulligan se confirme ; une annonce part dès qu'elle est complète.
 func press_confirm() -> void:
 	if _is_awaiting(DECISION.MULLIGAN):
-		_emit_if_legal(ChooseMulligan.new(_side, _set_aside_card_ids.duplicate()))
+		_emit_if_legal(ChooseMulligan.new(_side, _picks.card_ids()))
 
 
 func press_cancel() -> void:
 	reset()
+
+
+## Décision 0068 : le choix de X recule d'une valeur que le moteur accepte.
+func press_x_decrease() -> void:
+	if _assistant != null:
+		_assistant.decrease_x()
+		selection_changed.emit()
+
+
+func press_x_increase() -> void:
+	if _assistant != null:
+		_assistant.increase_x()
+		selection_changed.emit()
+
+
+## Décision 0068 : annonce sans cible dont X est choisi ; elle part si le moteur l'accepte.
+func press_x_confirm() -> void:
+	if _assistant != null:
+		var intent := _assistant.confirm_x()
+		if intent != null:
+			_emit_if_legal(intent)
+
+
+## Décision 0068 : le bouton `index` de `SelectionSnapshot.choice_values` ; un Ordre du Hero choisi
+## (211) ou la place de la carte regardée (217.1.2, 217.1.3).
+func press_choice(index: int) -> void:
+	resync()
+	var values := _candidates().choice_values(_chosen_hero_id())
+	if index < 0 or index >= values.size():
+		return
+	if _is_awaiting(DECISION.CHOOSE_TOP_CARD_PLACE):
+		var place := values[index] as ChooseTopCardPlace.TopCardPlace
+		_emit_if_legal(ChooseTopCardPlace.new(_side, place))
+	elif _selection_state == SelectionState.PIECE_CHOSEN:
+		if _is_answering():
+			response_started.emit()
+		_begin_assistant(_candidates().order_assistant(values[index]), DuelState.NO_ID, _piece_id)
 
 
 ## Ce que les vues montrent maintenant.
@@ -153,59 +212,91 @@ func snapshot() -> SelectionSnapshot:
 	shown.chosen_card_id = _card_id
 	shown.chosen_piece_id = _piece_id
 	shown.playable_card_ids = _playable_card_ids(candidates)
-	shown.set_aside_card_ids = _set_aside_card_ids.duplicate()
-	shown.ordered_entry_ids = _ordered_entry_ids.duplicate()
+	shown.picked_card_ids = _picks.card_ids()
+	shown.ordered_entry_ids = _picks.entry_ids()
 	_fill_board_highlights(shown, candidates)
-	shown.draft_payment = _copy_draft()
-	shown.shown_upright_sources = _shown_upright_sources()
-	shown.shown_tilted_sources = _shown_tilted_sources()
-	shown.shown_fonte_sources = _engine.fonte_after_payment(_side, _draft_payment)
+	shown.draft_payment = _draft.payment()
+	shown.shown_upright_sources = _draft.shown_upright_sources()
+	shown.shown_tilted_sources = _draft.shown_tilted_sources()
+	shown.shown_fonte_sources = _draft.shown_fonte_sources()
 	shown.can_pass = candidates.is_legal(PassPriority.new(_side))
 	shown.can_end_turn = candidates.is_legal(EndTurn.new(_side))
 	shown.can_confirm = _can_confirm(candidates)
 	shown.is_drafting_payment = not _is_own_turn()
+	if _assistant != null:
+		shown.show_announcement(_assistant, _selection_state == SelectionState.TARGET_PENDING)
+	shown.show_choice(candidates, _chosen_hero_id())
 	return shown
 
 
 func _choose_card(card_id: int) -> void:
 	if _candidates().is_announced_card(card_id):
-		_choose_announcement(card_id)
+		_begin_assistant(_candidates().card_assistant(card_id), card_id, DuelState.NO_ID)
 	elif _candidates().is_card_playable(card_id):
 		_enter(SelectionState.CARD_CHOSEN, card_id, DuelState.NO_ID)
 
 
-# Décision 0031 : une annonce sans cible part aussitôt ; avec cible, elle attend sa cible.
-func _choose_announcement(card_id: int) -> void:
-	_card_id = card_id
-	var candidates := _candidates()
-	var untargeted := candidates.card_announcement(_card_id, SelectionTarget.new())
-	if candidates.is_legal(untargeted):
-		_emit_if_legal(untargeted)
-	elif not candidates.card_targets(_card_id).is_empty():
-		_enter(SelectionState.TARGET_PENDING, card_id, DuelState.NO_ID)
+# Décisions 0031 et 0068 : une annonce sans X ni cible part aussitôt ; sinon l'assistant demande
+# ce qui manque, et l'intention part dès qu'elle est complète.
+func _begin_assistant(assistant: AnnouncementAssistant, card_id: int, piece_id: int) -> void:
+	_clear_announcement()
+	var complete := assistant.start()
+	if complete != null:
+		_emit_if_legal(complete)
+	elif assistant.get_step() != AnnouncementAssistant.Step.NONE:
+		_assistant = assistant
+		_enter(SelectionState.TARGET_PENDING, card_id, piece_id)
 
 
-# Décision 0031 : l'annonce part dès que sa cible est choisie.
 func _choose_target(target: SelectionTarget) -> void:
-	_emit_if_legal(_candidates().card_announcement(_card_id, target))
+	var intent := _assistant.choose(target)
+	if intent != null:
+		_emit_if_legal(intent)
+	elif _assistant.get_step() == AnnouncementAssistant.Step.NONE:
+		reset()
+	else:
+		selection_changed.emit()
 
 
-func _toggle_set_aside(card_id: int) -> void:
-	if _set_aside_card_ids.has(card_id):
-		_set_aside_card_ids.erase(card_id)
-	elif _player().find_card_in_hand(card_id) != null:
-		_set_aside_card_ids.append(card_id)
+func _choose_answer_target(target: SelectionTarget) -> void:
+	if _assistant != null and _assistant.is_candidate(target):
+		_choose_target(target)
+
+
+# CHOOSE_TARGETS : l'assistant sert aussi à répondre, sans « annonce » à commencer.
+func _ensure_answer_assistant() -> void:
+	if _assistant != null or _engine == null or not _is_awaiting(DECISION.CHOOSE_TARGETS):
+		return
+	var assistant := _candidates().answer_assistant()
+	assistant.start()
+	if assistant.get_step() != AnnouncementAssistant.Step.NONE:
+		_assistant = assistant
+
+
+func _clear_announcement() -> void:
+	_assistant = null
+	_enter(SelectionState.IDLE, DuelState.NO_ID, DuelState.NO_ID)
+
+
+# 212.1.3 : les cartes à défausser se cliquent dans la main ; le choix part quand le moteur
+# l'accepte, au nombre demandé.
+func _toggle_discard(card_id: int) -> void:
+	_toggle_card(card_id)
+	_emit_if_legal(ChooseDiscard.new(_side, _picks.card_ids()))
+
+
+func _toggle_card(card_id: int) -> void:
+	_picks.toggle_card(card_id, _player())
 	selection_changed.emit()
 
 
 func _add_to_order(stack_entry_id: int) -> void:
 	var candidate_ids := _engine.get_state().pending_decision.candidate_ids
-	if not candidate_ids.has(stack_entry_id) or _ordered_entry_ids.has(stack_entry_id):
+	if not _picks.add_entry(stack_entry_id, candidate_ids):
 		return
-	_ordered_entry_ids.append(stack_entry_id)
 	selection_changed.emit()
-	if _ordered_entry_ids.size() == candidate_ids.size():
-		_emit_if_legal(OrderTriggers.new(_side, _ordered_entry_ids))
+	if _picks.is_ordering_complete(candidate_ids):
+		_emit_if_legal(OrderTriggers.new(_side, _picks.entry_ids()))
 
 
 func _enter(selection_state: SelectionState, card_id: int, piece_id: int) -> void:
@@ -230,7 +321,7 @@ func _playable_card_ids(candidates: SelectionCandidates) -> Array[int]:
 		return card_ids
 	for card: CardInstance in _player().hand:
 		var card_id := card.card_instance_id
-		if _is_awaiting(DECISION.MULLIGAN):
+		if _is_awaiting(DECISION.MULLIGAN) or _is_awaiting(DECISION.CHOOSE_DISCARD):
 			card_ids.append(card_id)
 		elif not _has_pending_decision() and candidates.is_card_playable(card_id):
 			card_ids.append(card_id)
@@ -238,13 +329,11 @@ func _playable_card_ids(candidates: SelectionCandidates) -> Array[int]:
 
 
 func _fill_board_highlights(shown: SelectionSnapshot, candidates: SelectionCandidates) -> void:
-	if _is_awaiting(DECISION.CHOOSE_TARGETS):
-		_show_targets(shown, candidates.decision_targets())
-	elif _selection_state == SelectionState.TARGET_PENDING:
-		_show_targets(shown, candidates.card_targets(_card_id))
+	if _assistant != null:
+		shown.show_targets(_assistant.get_candidates())
 	elif _is_awaiting(DECISION.ORDER_TRIGGERS):
 		for entry_id: int in _engine.get_state().pending_decision.candidate_ids:
-			if not _ordered_entry_ids.has(entry_id):
+			if not _picks.has_entry(entry_id):
 				shown.legal_stack_entry_ids.append(entry_id)
 	elif _selection_state == SelectionState.CARD_CHOSEN:
 		shown.legal_cells = candidates.deploy_cells(_card_id)
@@ -252,47 +341,37 @@ func _fill_board_highlights(shown: SelectionSnapshot, candidates: SelectionCandi
 		shown.legal_cells = candidates.move_cells(_piece_id)
 	elif not _has_pending_decision():
 		for piece: Piece in _engine.get_state().pieces:
-			if not candidates.move_cells(piece.piece_id).is_empty():
+			if candidates.has_piece_gesture(piece.piece_id):
 				shown.legal_piece_ids.append(piece.piece_id)
 
 
-func _show_targets(shown: SelectionSnapshot, targets: Array[SelectionTarget]) -> void:
-	for target: SelectionTarget in targets:
-		shown.legal_piece_ids.append_array(target.piece_ids)
-		shown.legal_cells.append_array(target.cells)
-		shown.legal_stack_entry_ids.append_array(target.stack_entry_ids)
+func _board_highlights() -> SelectionSnapshot:
+	var shown := SelectionSnapshot.new()
+	_fill_board_highlights(shown, _candidates())
+	return shown
+
+
+# Le Hero dont on choisit l'Ordre, sinon NO_ID.
+func _chosen_hero_id() -> int:
+	return _piece_id if _selection_state == SelectionState.PIECE_CHOSEN else DuelState.NO_ID
 
 
 func _can_confirm(candidates: SelectionCandidates) -> bool:
 	if not _is_awaiting(DECISION.MULLIGAN):
 		return false
-	return candidates.is_legal(ChooseMulligan.new(_side, _set_aside_card_ids.duplicate()))
+	return candidates.is_legal(ChooseMulligan.new(_side, _picks.card_ids()))
 
 
 # Décision 0023 : pendant son tour, le coût est pris dans la réserve d'Essence.
 func _candidates() -> SelectionCandidates:
-	var payment := EssencePayment.new() if _is_own_turn() else _copy_draft()
+	var payment := EssencePayment.new() if _is_own_turn() else _draft.payment()
 	return SelectionCandidates.new(_engine, _side, payment)
-
-
-# 203.2.1, 203.2.2 : le moteur dit ce que le paiement préparé laisse de Sources.
-func _shown_upright_sources() -> int:
-	return _engine.upright_sources_after_payment(_side, _draft_payment)
-
-
-func _shown_tilted_sources() -> int:
-	return _engine.tilted_sources_after_payment(_side, _draft_payment)
-
-
-func _copy_draft() -> EssencePayment:
-	return EssencePayment.new(_draft_payment.incline_count, _draft_payment.recycle_count)
 
 
 func _is_own_turn() -> bool:
 	return _engine.get_state().active_player == _side
 
 
-# 208.6.1 : le moteur accepterait que le joueur passe.
 func _is_answering() -> bool:
 	return _candidates().is_legal(PassPriority.new(_side))
 

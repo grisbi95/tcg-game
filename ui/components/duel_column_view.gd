@@ -11,6 +11,12 @@ signal end_turn_pressed
 signal pass_pressed
 signal confirm_pressed
 signal concede_pressed
+## Décision 0068 : choix de X, boutons de choix (Ordre, place de la carte regardée), abandon.
+signal x_decrease_pressed
+signal x_increase_pressed
+signal x_confirm_pressed
+signal choice_pressed(index: int)
+signal cancel_pressed
 signal stack_entry_pressed(stack_entry_id: int)
 signal stack_entry_hovered(stack_entry_id: int)
 signal stack_entry_unhovered(stack_entry_id: int)
@@ -70,6 +76,10 @@ var _dot_color: Color = DuelPalette.NEUTRAL_COLOR
 @onready var _stack_box: VBoxContainer = %StackBox
 @onready var _response_label: Label = %ResponseLabel
 @onready var _stack_view: StackView = %StackView
+@onready var _announcement_box: VBoxContainer = %AnnouncementBox
+@onready var _x_stepper: XStepperView = %XStepper
+@onready var _choices: ChoiceButtonsView = %Choices
+@onready var _cancel_button: Button = %CancelButton
 @onready var _big_button: Button = %BigButton
 @onready var _button_title: Label = %ButtonTitle
 @onready var _button_help: Label = %ButtonHelp
@@ -99,6 +109,11 @@ func _ready() -> void:
 		func() -> DuelIcons.Icon: return DuelIcons.Icon.CONCEDE,
 		func() -> Color: return _concede_ink()
 	)
+	_x_stepper.decrease_pressed.connect(x_decrease_pressed.emit)
+	_x_stepper.increase_pressed.connect(x_increase_pressed.emit)
+	_x_stepper.confirm_pressed.connect(x_confirm_pressed.emit)
+	_choices.choice_pressed.connect(choice_pressed.emit)
+	_cancel_button.pressed.connect(cancel_pressed.emit)
 	_actor_dot.draw.connect(_draw_dot)
 	_stack_area.draw.connect(_draw_empty_frame)
 	_stack_view.stack_entry_pressed.connect(stack_entry_pressed.emit)
@@ -196,6 +211,41 @@ func hide_response() -> void:
 	_set_response_display(ResponseDisplay.NONE)
 
 
+## Décision 0068 : le choix de X de l'annonce commencée, de `minimum` à `maximum`.
+func show_x_choice(value: int, minimum: int, maximum: int) -> void:
+	_x_stepper.show_value(value, minimum, maximum)
+	_x_stepper.visible = true
+	_refresh_announcement()
+
+
+## Les commandes du choix de X : bornes atteintes, annonce sans cible qui peut partir.
+func show_x_controls(can_decrease: bool, can_increase: bool, can_confirm: bool) -> void:
+	_x_stepper.show_controls(can_decrease, can_increase, can_confirm)
+
+
+func hide_x_choice() -> void:
+	_x_stepper.visible = false
+	_refresh_announcement()
+
+
+## Un bouton par texte de `labels` (Ordres du Hero, place de la carte regardée).
+func show_choices(labels: Array[String]) -> void:
+	_choices.show_choices(labels)
+	_choices.visible = true
+	_refresh_announcement()
+
+
+func hide_choices() -> void:
+	_choices.visible = false
+	_refresh_announcement()
+
+
+## Le bouton « Annuler » d'une annonce commencée.
+func show_cancel(is_available: bool) -> void:
+	_cancel_button.visible = is_available
+	_refresh_announcement()
+
+
 ## Montre le bouton « Abandonner », pour le joueur de l'écran (décision 0036).
 func show_concede() -> void:
 	_concede_button.visible = true
@@ -247,6 +297,10 @@ func _refresh_center() -> void:
 		_center_state == CenterState.STACK and _response_display == ResponseDisplay.OPEN
 	)
 	_stack_area.queue_redraw()
+
+
+func _refresh_announcement() -> void:
+	_announcement_box.visible = (_x_stepper.visible or _choices.visible or _cancel_button.visible)
 
 
 func _concede_ink() -> Color:

@@ -4,7 +4,7 @@ extends GdUnitTestSuite
 ## `LoopbackConnection`, menés comme par leurs écrans de duel.
 
 const DUEL_SEED: int = 5
-const EDITION: String = "0.55"
+const EDITION: String = "0.56"
 const TICK_MSEC: int = 100
 const UNKNOWN_CARD_ID: int = 999_999
 const OTHER_EDITION: String = "0.42"

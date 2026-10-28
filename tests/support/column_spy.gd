@@ -19,6 +19,12 @@ var choice_chooser: DuelState.PlayerSide = DuelState.PlayerSide.A
 var choice_lines: Array[StackView.StackLine] = []
 var choice_highlighted_ids: Array[int] = []
 var ended_text: String = ""
+## Appels de la zone d'annonce (décision 0068), à part de `calls`.
+var announcement_calls: Array[String] = []
+var x_shown: Array[int] = []
+var x_controls: Array[bool] = []
+var choice_labels: Array[String] = []
+var cancel_shown: bool = false
 
 
 func count_calls(call_name: String) -> int:
@@ -75,3 +81,31 @@ func show_response_open() -> void:
 
 func hide_response() -> void:
 	calls.append("hide_response")
+
+
+func show_x_choice(value: int, minimum: int, maximum: int) -> void:
+	announcement_calls.append("show_x_choice")
+	x_shown = [value, minimum, maximum]
+
+
+func show_x_controls(can_decrease: bool, can_increase: bool, can_confirm: bool) -> void:
+	announcement_calls.append("show_x_controls")
+	x_controls = [can_decrease, can_increase, can_confirm]
+
+
+func hide_x_choice() -> void:
+	announcement_calls.append("hide_x_choice")
+
+
+func show_choices(labels: Array[String]) -> void:
+	announcement_calls.append("show_choices")
+	choice_labels = labels
+
+
+func hide_choices() -> void:
+	announcement_calls.append("hide_choices")
+
+
+func show_cancel(is_available: bool) -> void:
+	announcement_calls.append("show_cancel")
+	cancel_shown = is_available

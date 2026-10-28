@@ -38,6 +38,11 @@ const SPEED_NAMES: Dictionary[CardDefinition.SpellSpeed, String] = {
 	CardDefinition.SpellSpeed.ACTION: "Action",  # 207.1.2
 	CardDefinition.SpellSpeed.REACTION: "Réaction",  # 207.1.2
 }
+const TOP_CARD_PLACE_LABELS: Dictionary[ChooseTopCardPlace.TopCardPlace, String] = {
+	ChooseTopCardPlace.TopCardPlace.ON_TOP: "Garder dessus",
+	ChooseTopCardPlace.TopCardPlace.BELOW: "Mettre dessous",
+}
+const ORDER_BUTTON_FORMAT: String = "Ordre %d · %s · coût %d"
 const SEPARATOR: String = " · "
 const HERO_TYPE_NAME: String = "Hero"
 ## Décision 0027 : nom affiché d'un jeton, qui ne correspond à aucune carte (202.4.2).
@@ -66,6 +71,40 @@ static func token_type_name(card_type: CardDefinition.CardType) -> String:
 ## « Action » ou « Réaction » pour un Spell (207.1.2) ; vide sinon.
 static func speed_name(definition: CardDefinition) -> String:
 	return SPEED_NAMES.get(definition.speed, "")
+
+
+## Texte du bouton « dessus » ou « dessous » de la carte regardée (217.1.2, 217.1.3).
+static func top_card_place_label(place: ChooseTopCardPlace.TopCardPlace) -> String:
+	return TOP_CARD_PLACE_LABELS[place]
+
+
+## Décision 0068 : « Ordre 1 · Réaction · coût 0 », le bouton de l'Ordre de rang `order_index`.
+static func order_button_text(order_index: int, order: HeroOrder) -> String:
+	var speed: String = SPEED_NAMES.get(order.speed, "")
+	return ORDER_BUTTON_FORMAT % [order_index + 1, speed, order.cost]
+
+
+## Mots-clés de `piece` d'une carte `definition` (null : jeton, Hero), Assaut et Rempart accordés
+## compris (210.4, décision 0058) : les valeurs viennent de `KeywordRules`, un jeton n'en porte que
+## s'il en reçoit (202.4.13a).
+static func granted_keywords_line(
+	state: DuelState, piece: Piece, definition: CardDefinition
+) -> String:
+	var totals: Dictionary[CardDefinition.Keyword, int] = {
+		CardDefinition.Keyword.ASSAULT: KeywordRules.assault_value(state, piece),
+		CardDefinition.Keyword.RAMPART: KeywordRules.rampart_value(state, piece),
+	}
+	var printed: Dictionary[CardDefinition.Keyword, int] = {}
+	if definition != null:
+		printed = definition.keywords
+	var parts := PackedStringArray()
+	for keyword: CardDefinition.Keyword in printed:
+		var value: int = totals.get(keyword, printed[keyword])
+		parts.append(keyword_label(keyword, value))
+	for keyword: CardDefinition.Keyword in totals:
+		if totals[keyword] > 0 and not printed.has(keyword):
+			parts.append(keyword_label(keyword, totals[keyword]))
+	return SEPARATOR.join(parts)
 
 
 ## Décision 0027 : texte en BBCode, chaque mot-clé en étiquette en tête ; le nom du mot-clé déjà

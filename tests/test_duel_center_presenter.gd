@@ -136,6 +136,17 @@ func test_205_6_pending_combat_without_card_is_a_candidate_labeled_combat() -> v
 	assert_str(_spy.choice_lines[0].label).is_equal("Combat")
 
 
+func test_decision_0057_discard_instruction_names_the_count_for_its_player_only() -> void:
+	var decision := _decision(PendingDecision.DecisionKind.CHOOSE_DISCARD)
+	decision.awaited_players.assign([A])
+	decision.required_count = 2
+	_builder.with_pending_decision(decision)
+	_show_center(A, _shown())
+	assert_str(_spy.choice_instruction).contains("2")
+	_presenter.show_center(DuelViewModel.new(_engine.get_state(), _catalog, B), _shown())
+	assert_str(_spy.choice_instruction).is_equal(DuelViewModel.WAITING_CHOICE_INSTRUCTION)
+
+
 func test_decision_0032_target_choice_shows_the_stack_without_waiting_triggers() -> void:
 	var spell_id := _builder.push_spell(_builder.make_card_instance(A, SPELL))
 	var waiting_id := _add_waiting_trigger(A, UNIT)

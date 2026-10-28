@@ -45,6 +45,7 @@ func show_center(model: DuelViewModel, shown: SelectionSnapshot) -> void:
 			_show_choice(model, shown)
 		DuelColumnView.CenterState.ENDED:
 			_column.show_ended(DuelViewModel.result_text(state.result))
+	_show_announcement(model, shown)
 
 
 ## Décision 0021 : les temps sont relus à chaque image sans événement ; une barre ne se redessine
@@ -87,5 +88,45 @@ func _show_choice(model: DuelViewModel, shown: SelectionSnapshot) -> void:
 	if decision.kind == PendingDecision.DecisionKind.ORDER_TRIGGERS:
 		ordered_candidate_ids.assign(decision.candidate_ids)
 	var lines := model.stack_lines(ordered_candidate_ids, shown.ordered_entry_ids)
-	var instruction := DuelViewModel.choice_instruction(decision.kind)
+	var instruction := _instruction_of(model, decision)
 	_column.show_choice(instruction, model.chooser_of(decision), lines, shown.legal_stack_entry_ids)
+
+
+# Décision 0068 : X, boutons de choix et abandon de l'annonce commencée, sous la pile.
+func _show_announcement(model: DuelViewModel, shown: SelectionSnapshot) -> void:
+	if shown.has_x_choice:
+		_column.show_x_choice(shown.x_value, shown.x_min, shown.x_max)
+		_column.show_x_controls(shown.can_decrease_x, shown.can_increase_x, shown.can_confirm_x)
+	else:
+		_column.hide_x_choice()
+	var labels := _choice_labels(model, shown)
+	if labels.is_empty():
+		_column.hide_choices()
+	else:
+		_column.show_choices(labels)
+	_column.show_cancel(shown.can_cancel)
+
+
+func _choice_labels(model: DuelViewModel, shown: SelectionSnapshot) -> Array[String]:
+	var labels: Array[String] = []
+	for value: int in shown.choice_values:
+		match shown.choice_kind:
+			SelectionSnapshot.ChoiceKind.ORDER:
+				var order := model.hero_definition(model.get_viewer()).orders[value]
+				labels.append(CardText.order_button_text(value, order))
+			SelectionSnapshot.ChoiceKind.TOP_CARD_PLACE:
+				var place := value as ChooseTopCardPlace.TopCardPlace
+				labels.append(CardText.top_card_place_label(place))
+	return labels
+
+
+# 217.1.5 : l'adversaire ne voit pas la carte regardée ; la décision 0068 étend ce masquage à la
+# consigne de défausse : l'autre joueur voit seulement qu'un choix est en cours.
+func _instruction_of(model: DuelViewModel, decision: PendingDecision) -> String:
+	var is_private := (
+		decision.kind == PendingDecision.DecisionKind.CHOOSE_DISCARD
+		or decision.kind == PendingDecision.DecisionKind.CHOOSE_TOP_CARD_PLACE
+	)
+	if is_private and model.chooser_of(decision) != model.get_viewer():
+		return DuelViewModel.WAITING_CHOICE_INSTRUCTION
+	return DuelViewModel.choice_instruction(decision.kind, decision.required_count)

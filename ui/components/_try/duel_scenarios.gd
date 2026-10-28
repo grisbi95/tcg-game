@@ -17,12 +17,19 @@ enum Scenario {
 	PREVIEW_PILES,
 	FATIGUE,
 	PAYMENT_PREPARED,
+	X_SPELL,
+	DISCARD,
+	LOOK,
+	HERO_ORDER,
 }
 
 const A := DuelState.PlayerSide.A
 const B := DuelState.PlayerSide.B
 ## Le Hero des deux joueurs dans tous les scénarios.
 const HERO_ID: StringName = &"capitaine"
+const ORDER_HERO_ID: StringName = &"stratege"
+## Essence produite pour pouvoir choisir X (Force du Soldat adverse, 213.1).
+const X_SPELL_ESSENCE: int = 3
 const DEV_DECK_SIZE: int = 12
 ## Deck court et main de départ réduite : les pioches vident le deck sans remplir la main (201.3.5),
 ## puis la fatigue commence (209.5).
@@ -38,7 +45,7 @@ const MAX_TURNS_TO_FATIGUE: int = 12
 ## `data/cards/` et des decks de test du ruleset, elle ne doit jamais y entrer.
 const BEACON_ID: StringName = &"essai_balise"
 const BEACON_JSON: String = """{
-	"edition": "0.55",
+	"edition": "0.56",
 	"cards": [{
 		"id": "essai_balise", "name": "Balise (essai)", "cost": 1, "type": "building", "force": 4,
 		"text": "Fin du tour : une pièce alliée ciblée a +1 Force jusqu'à la fin du tour.",
@@ -57,6 +64,10 @@ const SCENARIO_NAMES: Dictionary[Scenario, String] = {
 	Scenario.PREVIEW_PILES: "aperçu depuis la défausse et la pile",
 	Scenario.FATIGUE: "fatigue",
 	Scenario.PAYMENT_PREPARED: "paiement préparé au tour adverse",
+	Scenario.X_SPELL: "Exécution, coût X (décision 0068)",
+	Scenario.DISCARD: "défausse après Étude (décision 0068)",
+	Scenario.LOOK: "Observatoire, regard sur le deck (décision 0068)",
+	Scenario.HERO_ORDER: "Ordre du Stratège en Réaction (décision 0068)",
 }
 
 
@@ -76,6 +87,7 @@ class ScenarioSpec:
 	var copies_a: Dictionary[StringName, int] = {}
 	var copies_b: Dictionary[StringName, int] = {}
 	var first_player: DuelState.PlayerSide = DuelState.PlayerSide.A
+	var hero_a: StringName = HERO_ID
 	var deck_size: int = DEV_DECK_SIZE
 	var opening_hand_size: int = DuelConfig.new().opening_hand_size
 	var plan: Callable = Callable()
@@ -136,7 +148,7 @@ static func _make_setup(spec: ScenarioSpec, rng_seed: int) -> DuelSetup:
 	var duel_setup := DuelSetup.new()
 	duel_setup.deck_a = _deck_of(spec.copies_a, spec.deck_size)
 	duel_setup.deck_b = _deck_of(spec.copies_b, spec.deck_size)
-	duel_setup.hero_a = HERO_ID
+	duel_setup.hero_a = spec.hero_a
 	duel_setup.hero_b = HERO_ID
 	duel_setup.rng_seed = rng_seed
 	duel_setup.impose_first_player(spec.first_player)
@@ -179,6 +191,19 @@ static func _spec_of(scenario: Scenario) -> ScenarioSpec:
 		Scenario.PAYMENT_PREPARED:
 			_fill(spec, {&"recrue": DEV_DECK_SIZE}, {&"contre": DEV_DECK_SIZE}, A)
 			spec.plan = _plan_payment_prepared
+		Scenario.X_SPELL:
+			_fill(spec, {&"execution": DEV_DECK_SIZE}, {&"soldat": DEV_DECK_SIZE}, B)
+			spec.plan = _plan_x_spell
+		Scenario.DISCARD:
+			_fill(spec, {&"etude": DEV_DECK_SIZE}, {&"soldat": DEV_DECK_SIZE}, A)
+			spec.plan = _plan_discard
+		Scenario.LOOK:
+			_fill(spec, {&"observatoire": DEV_DECK_SIZE}, {&"soldat": DEV_DECK_SIZE}, A)
+			spec.plan = _plan_look
+		Scenario.HERO_ORDER:
+			_fill(spec, {&"recrue": DEV_DECK_SIZE}, {&"frappe": DEV_DECK_SIZE}, A)
+			spec.hero_a = ORDER_HERO_ID
+			spec.plan = _plan_hero_order
 	return spec
 
 
@@ -268,6 +293,56 @@ static func _plan_fatigue(recorder: ScenarioRecorder) -> bool:
 # A déploie, B peut répondre : sa fenêtre est ouverte quand l'écran lui passe l'appareil.
 static func _plan_payment_prepared(recorder: ScenarioRecorder) -> bool:
 	return recorder.deploy(A, &"recrue")
+
+
+# Un Soldat adverse en jeu et de l'Essence en réserve : Exécution se joue à la main (213.1).
+static func _plan_x_spell(recorder: ScenarioRecorder) -> bool:
+	return (
+		recorder.deploy(B, &"soldat")
+		and recorder.resolve_stack()
+		and recorder.end_turn(B)
+		and recorder.end_turn(A)
+		and recorder.end_turn(B)
+		and recorder.produce_essence(A, X_SPELL_ESSENCE)
+	)
+
+
+# Étude annoncée et résolue : A choisit la carte à défausser (212.1.3).
+static func _plan_discard(recorder: ScenarioRecorder) -> bool:
+	return (
+		recorder.announce(A, &"etude")
+		and recorder.resolve_stack()
+		and recorder.state().pending_decision != null
+	)
+
+
+# Un Observatoire déployé, deux fins de tour : A regarde son deck au début de son tour (217).
+static func _plan_look(recorder: ScenarioRecorder) -> bool:
+	return (
+		recorder.deploy(A, &"observatoire")
+		and recorder.resolve_stack()
+		and recorder.end_turn(A)
+		and recorder.end_turn(B)
+		and recorder.resolve_stack()
+		and recorder.state().pending_decision != null
+	)
+
+
+# Trois Recrues de A (deux sont adjacentes au Hero), puis un Frappe adverse laissé sur la pile : A
+# peut répondre par l'Ordre de son Hero (211).
+static func _plan_hero_order(recorder: ScenarioRecorder) -> bool:
+	return (
+		recorder.deploy(A, &"recrue")
+		and recorder.resolve_stack()
+		and recorder.deploy(A, &"recrue")
+		and recorder.resolve_stack()
+		and recorder.end_turn(A)
+		and recorder.end_turn(B)
+		and recorder.deploy(A, &"recrue")
+		and recorder.resolve_stack()
+		and recorder.end_turn(A)
+		and recorder.announce(B, &"frappe")
+	)
 
 
 static func _has_fatigue(state: DuelState) -> bool:

@@ -172,6 +172,11 @@ func _connect_gestures() -> void:
 	_column.pass_pressed.connect(_selection.press_pass)
 	_column.confirm_pressed.connect(_selection.press_confirm)
 	_column.stack_entry_pressed.connect(_selection.press_stack_entry)
+	_column.x_decrease_pressed.connect(_selection.press_x_decrease)
+	_column.x_increase_pressed.connect(_selection.press_x_increase)
+	_column.x_confirm_pressed.connect(_selection.press_x_confirm)
+	_column.choice_pressed.connect(_selection.press_choice)
+	_column.cancel_pressed.connect(_selection.press_cancel)
 	for side: DuelState.PlayerSide in DuelState.SIDES:
 		_sources[side].source_pressed.connect(_selection.press_source)
 
@@ -272,6 +277,7 @@ func _on_batch_played(events: Array[DuelEvent]) -> void:
 # Recalage sur l'état, zone par zone, après des événements ou un changement d'appareil.
 func _refresh_zones() -> void:
 	_use_viewer_model()
+	_selection.resync()
 	_refresh_zones_around(_model.hand_cards())
 
 
@@ -297,10 +303,17 @@ func _refresh_marks() -> void:
 	_hand.show_marks(shown.playable_card_ids, _chosen_card_ids(shown))
 	_zones.refresh_sources(_model, shown)
 	_center.show_center(_model, shown)
+	_show_looked_card(shown)
+
+
+# 201.4.1a, 217.1.5 : la carte regardée n'est montrée qu'à son joueur (`DuelViewModel`).
+func _show_looked_card(shown: SelectionSnapshot) -> void:
+	if shown.looked_card_id != DuelState.NO_ID:
+		_previewer.show_card(shown.looked_card_id)
 
 
 func _chosen_card_ids(shown: SelectionSnapshot) -> Array[int]:
-	var chosen_ids := shown.set_aside_card_ids.duplicate()
+	var chosen_ids := shown.picked_card_ids.duplicate()
 	if shown.chosen_card_id != DuelState.NO_ID:
 		chosen_ids.append(shown.chosen_card_id)
 	return chosen_ids

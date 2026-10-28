@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://ui/components/duel_column_view.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://ui/components/stack_view.tscn" id="3_stack"]
+
+[ext_resource type="PackedScene" path="res://ui/components/x_stepper_view.tscn" id="4_stepper"]
+[ext_resource type="PackedScene" path="res://ui/components/choice_buttons_view.tscn" id="5_choices"]
 
 [node name="DuelColumnView" type="PanelContainer"]
 custom_minimum_size = Vector2(220, 0)
@@ -117,6 +120,28 @@ horizontal_scroll_mode = 0
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="AnnouncementBox" type="VBoxContainer" parent="Column"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="XStepper" parent="Column/AnnouncementBox" instance=ExtResource("4_stepper")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="Choices" parent="Column/AnnouncementBox" instance=ExtResource("5_choices")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="CancelButton" type="Button" parent="Column/AnnouncementBox"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+focus_mode = 0
+text = "Annuler"
 
 [node name="BigButton" type="Button" parent="Column"]
 unique_name_in_owner = true
