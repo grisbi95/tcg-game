@@ -1,12 +1,15 @@
 class_name SetupScreen
 extends Control
-## Écran de préparation (décision 0036, point 3) : « Nouvelle partie », le numéro de la partie, le
-## deck de chaque joueur et le premier joueur, choisis par l'hôte (décision 0066), la graine
+## Écran de préparation (décision 0036, point 3) : « Nouvelle partie », la partie (du plan de série
+## ou libre, décision 0069), le deck de chaque joueur et le premier joueur (imposés par une partie
+## du plan, choisis par l'hôte en partie libre, décision 0066), la graine
 ## (affichée, modifiable, entier positif) et « Commencer ». Décisions 0043 et 0050 : « Créer une
 ## partie à distance » (le créateur joue A) ou « Rejoindre » par le code de la partie (B) ; le
 ## parent mène la connexion et dit où elle en est. Le parent donne les textes et reçoit la graine
 ## choisie ; aucune règle ici.
 
+## L'hôte choisit une partie : son numéro dans le plan, `DuelSeries.NO_PLAN_GAME` pour la libre.
+signal game_chosen(game_number: int)
 ## L'hôte donne au joueur `side` le deck `deck_index` de `Preparation.deck_labels`.
 signal deck_chosen(side: DuelState.PlayerSide, deck_index: int)
 ## L'hôte choisit qui commence.
@@ -22,7 +25,8 @@ signal cancel_pressed
 
 const MAX_SEED_DIGITS: int = 18
 const TITLE_TEXT: String = "Nouvelle partie"
-const GAME_FORMAT: String = "Partie %d ·"
+const GAME_TEXT: String = "Partie"
+const FREE_GAME_TEXT: String = "Partie libre"
 const FIRST_PLAYER_TEXT: String = "Commence"
 const DRAWN_TEXT: String = "Tiré au sort"
 const SEED_TEXT: String = "Graine"
@@ -35,10 +39,13 @@ const CANCEL_TEXT: String = "Annuler"
 ## Longueur d'un code de partie du relais (`tools/relay/server.js`).
 const CODE_LENGTH: int = 4
 
+var _game_number: int = DuelSeries.NO_PLAN_GAME
+
 @onready var _table: ColorRect = %Table
 @onready var _panel: PanelContainer = %Panel
 @onready var _title_label: Label = %TitleLabel
 @onready var _game_label: Label = %GameLabel
+@onready var _game_option: OptionButton = %GameOption
 @onready var _first_player_label: Label = %FirstPlayerLabel
 @onready var _first_player_option: OptionButton = %FirstPlayerOption
 @onready var _seed_title_label: Label = %SeedTitleLabel
@@ -60,11 +67,15 @@ const CODE_LENGTH: int = 4
 }
 
 
-## Ce que la préparation montre : le numéro de la partie, les decks proposés (textes déjà formés),
-## le deck choisi de chaque joueur (index dans `deck_labels`), le premier joueur et la graine.
+## Ce que la préparation montre : les parties du plan (`plan_game_numbers` et leurs `plan_labels`,
+## textes déjà formés), la partie choisie (`game_number`, `NO_PLAN_GAME` pour la libre), les decks
+## proposés, le deck choisi de chaque joueur (index dans `deck_labels`), le premier joueur et la
+## graine.
 class Preparation:
 	extends RefCounted
-	var game_number: int = 1
+	var game_number: int = DuelSeries.NO_PLAN_GAME
+	var plan_game_numbers: PackedInt32Array = PackedInt32Array()
+	var plan_labels: PackedStringArray = PackedStringArray()
 	var deck_labels: PackedStringArray = PackedStringArray()
 	var deck_indexes: Dictionary[DuelState.PlayerSide, int] = {}
 	var first_player_choice: DuelSeries.FirstPlayerChoice = DuelSeries.FirstPlayerChoice.PLAYER_A
@@ -78,7 +89,9 @@ func _ready() -> void:
 	)
 	_title_label.text = TITLE_TEXT
 	_title_label.add_theme_color_override("font_color", DuelPalette.INK_COLOR)
+	_game_label.text = GAME_TEXT
 	_game_label.add_theme_color_override("font_color", DuelPalette.MUTED_COLOR)
+	_game_option.item_selected.connect(_on_game_selected)
 	_setup_choice_controls()
 	_seed_title_label.text = SEED_TEXT
 	_seed_title_label.add_theme_color_override("font_color", DuelPalette.MUTED_COLOR)
@@ -92,13 +105,21 @@ func _ready() -> void:
 
 ## Montre la `preparation` : choix de l'hôte et graine proposée.
 func show_preparation(preparation: Preparation) -> void:
-	_game_label.text = GAME_FORMAT % preparation.game_number
+	_fill_game_option(preparation)
+	_seed_edit.text = str(preparation.rng_seed)
+	show_game(preparation)
+
+
+## Montre la partie choisie de la `preparation` : decks et premier joueur, libres ou imposés par le
+## plan (décision 0069) ; la graine ne change pas.
+func show_game(preparation: Preparation) -> void:
+	_game_number = preparation.game_number
+	_game_option.select(_game_option.get_item_index(preparation.game_number))
 	for side: DuelState.PlayerSide in DuelState.SIDES:
 		_fill_deck_option(side, preparation)
 	_first_player_option.select(
 		_first_player_option.get_item_index(preparation.first_player_choice)
 	)
-	_seed_edit.text = str(preparation.rng_seed)
 	show_idle()
 
 
@@ -115,6 +136,28 @@ func show_connecting(status: String) -> void:
 	_set_controls_enabled(false)
 	_cancel_button.visible = true
 	_show_status(status)
+
+
+## Décision 0069 : numéros des entrées du sélecteur de partie, la partie libre puis les parties du
+## plan, dans l'ordre de `game_labels`.
+static func game_numbers(preparation: Preparation) -> PackedInt32Array:
+	var numbers := PackedInt32Array([DuelSeries.NO_PLAN_GAME])
+	numbers.append_array(preparation.plan_game_numbers)
+	return numbers
+
+
+## Décision 0069 : libellés des entrées du sélecteur de partie, dans l'ordre de `game_numbers`.
+static func game_labels(preparation: Preparation) -> PackedStringArray:
+	var labels := PackedStringArray([FREE_GAME_TEXT])
+	labels.append_array(preparation.plan_labels)
+	return labels
+
+
+## Décision 0069 : decks et premier joueur ne se choisissent qu'en partie libre (`game_number`),
+## et seulement quand les choix sont ouverts (`are_controls_enabled`, rien en cours) ; une partie
+## du plan les impose.
+static func are_free_choices_enabled(game_number: int, are_controls_enabled: bool) -> bool:
+	return are_controls_enabled and game_number == DuelSeries.NO_PLAN_GAME
 
 
 static func _digits_only(text: String) -> String:
@@ -141,6 +184,14 @@ func _setup_choice_controls() -> void:
 	)
 	_first_player_option.add_item(DRAWN_TEXT, DuelSeries.FirstPlayerChoice.DRAWN)
 	_first_player_option.item_selected.connect(_on_first_player_selected)
+
+
+func _fill_game_option(preparation: Preparation) -> void:
+	_game_option.clear()
+	var numbers := game_numbers(preparation)
+	var labels := game_labels(preparation)
+	for index: int in numbers.size():
+		_game_option.add_item(labels[index], numbers[index])
 
 
 func _fill_deck_option(side: DuelState.PlayerSide, preparation: Preparation) -> void:
@@ -173,15 +224,21 @@ func _set_controls_enabled(is_enabled: bool) -> void:
 	_create_button.disabled = not (is_enabled and has_seed)
 	_join_button.disabled = not (is_enabled and _code_edit.text.length() == CODE_LENGTH)
 	_seed_edit.editable = is_enabled
-	_first_player_option.disabled = not is_enabled
+	_game_option.disabled = not is_enabled
+	var is_free := are_free_choices_enabled(_game_number, is_enabled)
+	_first_player_option.disabled = not is_free
 	for option: OptionButton in _deck_options.values():
-		option.disabled = not is_enabled
+		option.disabled = not is_free
 	_code_edit.editable = is_enabled
 
 
 func _show_status(status: String) -> void:
 	_status_label.text = status
 	_status_label.visible = not status.is_empty()
+
+
+func _on_game_selected(item_index: int) -> void:
+	game_chosen.emit(_game_option.get_item_id(item_index))
 
 
 func _on_deck_selected(deck_index: int, side: DuelState.PlayerSide) -> void:

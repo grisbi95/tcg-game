@@ -15,6 +15,10 @@ extends GdUnitTestSuite
 
 const GAME_NUMBER: int = 3
 const DATE_TEXT: String = "2026-10-21"
+const DECK_NAMES: Dictionary[DuelState.PlayerSide, String] = {
+	DuelState.PlayerSide.A: "Percée",
+	DuelState.PlayerSide.B: "Phalange",
+}
 const OPENING_HAND_SIZE: int = 4  # 204.1.15
 const CARDS_DRAWN_PER_TURN: int = 1  # 204.3.6
 const STARTING_SOURCES: int = 2  # 204.1.2
@@ -274,19 +278,19 @@ func test_decision_0160_last_row_of_a_game_ended_during_a_turn_comes_from_the_fi
 
 func _record_fixture() -> PlaytestSheet:
 	var recorder := PlaytestRecorder.new(_fixture_catalog)
-	return recorder.record(_fixture_journal, GAME_NUMBER, DATE_TEXT)
+	return recorder.record(_fixture_journal, GAME_NUMBER, DATE_TEXT, DECK_NAMES)
 
 
 # Journal construit à la main, rejoué sur le catalogue d'essai.
 func _record(journal: DuelJournal) -> PlaytestSheet:
 	var recorder := PlaytestRecorder.new(SetupSamples.catalog())
-	return recorder.record(journal, GAME_NUMBER, DATE_TEXT)
+	return recorder.record(journal, GAME_NUMBER, DATE_TEXT, DECK_NAMES)
 
 
 # Un scénario correct ne fait refuser aucune intention.
 func _sheet_of(driver: HumanDuelDriver) -> PlaytestSheet:
 	assert_int(driver.rejected_intent_count).is_equal(0)
-	return driver.record_sheet(GAME_NUMBER, DATE_TEXT)
+	return driver.record_sheet(GAME_NUMBER, DATE_TEXT, DECK_NAMES)
 
 
 func _cells(

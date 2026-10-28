@@ -78,8 +78,11 @@ func pass_priority(side: DuelState.PlayerSide) -> void:
 	play(PassPriority.new(side))
 
 
-## Fiche de relevé du journal de l'hôte, rejoué avec le catalogue et la configuration du duel.
-func record_sheet(game_number: int, date_text: String) -> PlaytestSheet:
+## Fiche de relevé du journal de l'hôte, rejoué avec le catalogue et la configuration du duel ;
+## `deck_names` par joueur (décision 0069).
+func record_sheet(
+	game_number: int, date_text: String, deck_names: Dictionary[DuelState.PlayerSide, String]
+) -> PlaytestSheet:
 	var state := engine.get_state()
 	var recorder := PlaytestRecorder.new(state.catalog, state.config)
-	return recorder.record(host.get_journal(), game_number, date_text)
+	return recorder.record(host.get_journal(), game_number, date_text, deck_names)

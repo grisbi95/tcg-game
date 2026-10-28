@@ -16,7 +16,12 @@ enum Mark {
 const NO_VALUE: int = -1
 
 const MIME_TYPE: String = "text/csv"
-const FILE_NAME_FORMAT: String = "fiche-partie-%d-%s-graine-%d.csv"
+const FILE_NAME_FORMAT: String = "fiche-partie-%s-%s-graine-%d.csv"
+## Décision 0069 : numéro d'une partie libre, hors du plan de série.
+const OFF_PLAN_GAME_NUMBER: int = 0
+## Décision 0069 : une partie libre est marquée « hors plan » sur la fiche et dans son nom.
+const OFF_PLAN_TEXT: String = "hors plan"
+const OFF_PLAN_FILE_TEXT: String = "hors-plan"
 const SEPARATOR: String = ","
 const LINE_BREAK: String = "\n"
 const QUOTE: String = '"'
@@ -26,8 +31,11 @@ const NO_WINNER_TEXT: String = "aucun"
 const NO_FATIGUE_TEXT: String = "aucun"
 const MSEC_PER_MINUTE: float = 60_000.0
 
-## « Graine » s'ajoute à l'en-tête du modèle du protocole : elle permet de rejouer la partie.
-const HEADER_LABELS: Array[String] = ["Partie n°", "Date", "Joueur A", "Joueur B", "Graine"]
+## « Deck de A », « Deck de B » (décision 0069) et « Graine » s'ajoutent à l'en-tête du modèle du
+## protocole : la graine permet de rejouer la partie.
+const HEADER_LABELS: Array[String] = [
+	"Partie n°", "Date", "Joueur A", "Joueur B", "Deck de A", "Deck de B", "Graine"
+]
 const TURN_COLUMNS: Array[String] = ["Rang du tour", "Joueur actif"]
 const PLAYER_COLUMN_FORMATS: Array[String] = [
 	"%s : Essence inutilisée",
@@ -114,17 +122,22 @@ class EndFields:
 	var first_fatigue_turn_rank: int = NO_VALUE
 
 
-var game_number: int = 0
+## Décision 0069 : numéro de la partie du plan de série, `OFF_PLAN_GAME_NUMBER` hors plan.
+var game_number: int = OFF_PLAN_GAME_NUMBER
 var date_text: String = ""
+## Décision 0069 : noms affichés des decks, par joueur ; un nom absent laisse sa cellule vide.
+var deck_names: Dictionary[DuelState.PlayerSide, String] = {}
 var rng_seed: int = 0
 var turn_rows: Array[TurnRow] = []
 var last_breath_notes: Array[LastBreathNote] = []
 var end_fields: EndFields = EndFields.new()
 
 
-## « fiche-partie-3-2026-10-21-graine-42.csv » : la graine permet de rejouer la partie.
+## « fiche-partie-3-2026-10-21-graine-42.csv », « fiche-partie-hors-plan-… » pour une partie
+## libre : la graine permet de rejouer la partie.
 func file_name() -> String:
-	return FILE_NAME_FORMAT % [game_number, date_text, rng_seed]
+	var game_text := OFF_PLAN_FILE_TEXT if _is_off_plan() else str(game_number)
+	return FILE_NAME_FORMAT % [game_text, date_text, rng_seed]
 
 
 ## Trois tableaux séparés par une ligne vide, précédés de l'en-tête de la fiche.
@@ -139,11 +152,19 @@ static func letter(side: DuelState.PlayerSide) -> String:
 
 
 func _header_table() -> String:
-	var values: Array[String] = [str(game_number), date_text, "", "", str(rng_seed)]
+	var game_text := OFF_PLAN_TEXT if _is_off_plan() else str(game_number)
+	var values: Array[String] = [game_text, date_text, "", ""]
+	for side: DuelState.PlayerSide in DuelState.SIDES:
+		values.append(deck_names.get(side, ""))
+	values.append(str(rng_seed))
 	var lines: Array[String] = []
 	for index: int in HEADER_LABELS.size():
 		lines.append(_line([HEADER_LABELS[index], values[index]]))
 	return LINE_BREAK.join(lines) + LINE_BREAK
+
+
+func _is_off_plan() -> bool:
+	return game_number == OFF_PLAN_GAME_NUMBER
 
 
 func _turn_table() -> String:

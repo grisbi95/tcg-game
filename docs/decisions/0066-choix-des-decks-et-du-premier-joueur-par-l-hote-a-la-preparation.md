@@ -1,6 +1,6 @@
 # 0066 — Choix des decks et du premier joueur par l'hôte à la préparation
 
-- Statut : acceptée
+- Statut : acceptée, modifiée par 0069
 - Date : 2026-10-27
 - Décideur : créateur du projet, en conversation
 - Périmètre : écran de préparation (`SetupScreen`), `DuelSeries`, `GameLibrary` et fabrication du `DuelSetup`, étape c.6 du jalon J2c

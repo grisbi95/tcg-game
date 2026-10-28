@@ -51,10 +51,18 @@ func _init(catalog: Catalog, config: DuelConfig = DuelConfig.new()) -> void:
 	_config = config
 
 
-## Fiche de `journal`, rejoué entièrement ; `game_number` et `date_text` viennent de l'appelant,
-## qui tient la série et l'horloge.
-func record(journal: DuelJournal, game_number: int, date_text: String) -> PlaytestSheet:
+## Fiche de `journal`, rejoué entièrement ; `game_number`, `date_text` et `deck_names` viennent de
+## l'appelant, qui tient la série et l'horloge. Décision 0069 : `game_number` est le numéro de la
+## partie du plan de série, `PlaytestSheet.OFF_PLAN_GAME_NUMBER` hors plan ; `deck_names` les noms
+## affichés des decks, par joueur.
+func record(
+	journal: DuelJournal,
+	game_number: int,
+	date_text: String,
+	deck_names: Dictionary[DuelState.PlayerSide, String]
+) -> PlaytestSheet:
 	_reset(journal, game_number, date_text)
+	_sheet.deck_names = deck_names.duplicate()
 	_engine = DuelEngine.new(_catalog, _config)
 	_before = Snapshot.new()
 	_observe(_engine.start_new_duel(journal.setup))

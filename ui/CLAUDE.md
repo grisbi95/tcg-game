@@ -1,6 +1,6 @@
 # Vue — consignes locales
 
-Complète le `CLAUDE.md` racine pour `ui/` ; décisions 0023, 0024, 0027 à 0036, 0051, 0052, 0066 et 0068 ; fiche technique de l'écran de duel : `docs/fiches/ecran-de-duel.md`. Ce que la vue contient et comment elle est câblée : `ui/README.md`.
+Complète le `CLAUDE.md` racine pour `ui/` ; décisions 0023, 0024, 0027 à 0036, 0051, 0052, 0066, 0068 et 0069 ; fiche technique de l'écran de duel : `docs/fiches/ecran-de-duel.md`. Ce que la vue contient et comment elle est câblée : `ui/README.md`.
 
 ## Règles
 
