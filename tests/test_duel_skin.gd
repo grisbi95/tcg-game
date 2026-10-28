@@ -176,6 +176,19 @@ func test_decision_0071_theme_fonts_are_the_bundled_families() -> void:
 	)
 
 
+func test_decision_0071_option_button_and_its_list_share_the_drawn_button_skin() -> void:
+	for style_name: StringName in [&"normal", &"hover", &"pressed", &"disabled"]:
+		assert_object(_theme.get_stylebox(style_name, &"OptionButton")).is_same(
+			_theme.get_stylebox(style_name, &"Button")
+		)
+	assert_object(_theme.get_stylebox(&"panel", &"PopupMenu")).is_same(
+		_theme.get_stylebox(&"panel", &"ColumnPanel")
+	)
+	assert_object(_theme.get_stylebox(&"hover", &"PopupMenu")).is_same(
+		_theme.get_stylebox(&"hover", &"Button")
+	)
+
+
 func _force_image(image_name: String) -> void:
 	DuelAssets.use_texture(_image_path(image_name), _make_texture())
 

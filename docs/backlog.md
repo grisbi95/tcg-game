@@ -57,3 +57,5 @@ Priorité : **haute** = écart au ruleset ou défaut visible en partie ; **moyen
 | La barre de temps sans texte avance par pas d'une seconde (`ClockReading.display_key`), soit environ 8 px en tour de 90 s : à lisser si l'à-coup se voit. | 0045, 0053 | basse | J3 |
 | Noms longs coupés sur les pièces et les cartes de la main (« Capitai… », « Paliss… »). | 0027, fiche E06, E11 | basse | 2b.6 |
 | Habillage non vérifié à l'écran : aperçu au survol avec bulles, états survol et enfoncé, pile non vide, pièce endormie, ratio 16:10. | 0071 | moyenne | 2b.8 |
+| La carte d'essai « Balise » de `DuelScenarios` (`ui/components/_try/duel_scenarios.gd`) garde le champ `effects` d'avant la suite d'effets (0064) : le catalogue la refuse au lancement de `try_duel_screen_scenarios.tscn` (erreur « champ effects inconnu »), et les scénarios qui en dépendent ne se jouent plus. | 0064, 208.4.6 | moyenne | avant J3 |
+| Habillage des listes déroulantes de la préparation (`OptionButton`, `PopupMenu`) vérifié fermé seulement : la liste ouverte ne paraît pas sur les captures du MCP. | 0071 | basse | 2b.7a |
