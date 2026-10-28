@@ -37,6 +37,24 @@ variation_opentype = { 2003265652: 450 }
 base_font = ExtResource("2_serif")
 variation_opentype = { 2003265652: 700 }
 
+[sub_resource type="FontVariation" id="FontVariation_7"]
+base_font = ExtResource("1_archivo")
+variation_opentype = { 2003265652: 900 }
+opentype_features = { 1953396077: 1 }
+spacing_glyph = 12
+
+[sub_resource type="FontVariation" id="FontVariation_8"]
+base_font = ExtResource("1_archivo")
+variation_opentype = { 2003265652: 500 }
+opentype_features = { 1953396077: 1 }
+spacing_glyph = 8
+
+[sub_resource type="FontVariation" id="FontVariation_9"]
+base_font = ExtResource("1_archivo")
+variation_opentype = { 2003265652: 700 }
+opentype_features = { 1953396077: 1 }
+spacing_glyph = 4
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6"]
 content_margin_left = 10.0
 content_margin_top = 6.0
@@ -446,6 +464,151 @@ corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 corner_detail = 1
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_main_normal"]
+content_margin_left = 10.0
+content_margin_top = 6.0
+content_margin_right = 10.0
+content_margin_bottom = 6.0
+bg_color = Color(0.937255, 0.898039, 0.811765, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.082353, 0.070588, 0.058824, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+corner_detail = 1
+shadow_color = Color(0.082353, 0.070588, 0.058824, 1)
+shadow_size = 1
+shadow_offset = Vector2(3.0, 3.0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_main_hover"]
+content_margin_left = 10.0
+content_margin_top = 6.0
+content_margin_right = 10.0
+content_margin_bottom = 6.0
+bg_color = Color(0.968627, 0.941176, 0.870588, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.082353, 0.070588, 0.058824, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+corner_detail = 1
+shadow_color = Color(0.082353, 0.070588, 0.058824, 1)
+shadow_size = 1
+shadow_offset = Vector2(5.0, 5.0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_main_pressed"]
+content_margin_left = 10.0
+content_margin_top = 6.0
+content_margin_right = 10.0
+content_margin_bottom = 6.0
+bg_color = Color(0.878431, 0.827451, 0.713725, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.082353, 0.070588, 0.058824, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_main_disabled"]
+content_margin_left = 10.0
+content_margin_top = 6.0
+content_margin_right = 10.0
+content_margin_bottom = 6.0
+bg_color = Color(0.360784, 0.333333, 0.294118, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.082353, 0.070588, 0.058824, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ghost_normal"]
+content_margin_left = 10.0
+content_margin_top = 6.0
+content_margin_right = 10.0
+content_margin_bottom = 6.0
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.360784, 0.333333, 0.294118, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ghost_hover"]
+content_margin_left = 10.0
+content_margin_top = 6.0
+content_margin_right = 10.0
+content_margin_bottom = 6.0
+bg_color = Color(0.184314, 0.164706, 0.141176, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.360784, 0.333333, 0.294118, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ghost_pressed"]
+content_margin_left = 10.0
+content_margin_top = 6.0
+content_margin_right = 10.0
+content_margin_bottom = 6.0
+bg_color = Color(0.121569, 0.105882, 0.090196, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.360784, 0.333333, 0.294118, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_modal_panel"]
+content_margin_left = 32.0
+content_margin_top = 32.0
+content_margin_right = 32.0
+content_margin_bottom = 32.0
+bg_color = Color(0.14902, 0.133333, 0.113725, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.082353, 0.070588, 0.058824, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+corner_detail = 1
+shadow_color = Color(0.082353, 0.070588, 0.058824, 1)
+shadow_size = 1
+shadow_offset = Vector2(6.0, 6.0)
+
 [resource]
 default_font = SubResource("FontVariation_0")
 default_font_size = 20
@@ -576,6 +739,19 @@ DeckCountLabel/font_sizes/font_size = 28
 DeckCountLabel/fonts/font = SubResource("FontVariation_1")
 EssenceChip/base_type = &"PanelContainer"
 EssenceChip/styles/panel = SubResource("StyleBoxFlat_25")
+HomeTitleBlock/base_type = &"VBoxContainer"
+HomeTitleBlock/constants/separation = 8
+HomeSubtitleLabel/base_type = &"Label"
+HomeSubtitleLabel/colors/font_color = Color(0.545098, 0.509804, 0.454902, 1)
+HomeSubtitleLabel/font_sizes/font_size = 22
+HomeSubtitleLabel/fonts/font = SubResource("FontVariation_8")
+HomeTitleLabel/base_type = &"Label"
+HomeTitleLabel/colors/font_color = Color(0.937255, 0.898039, 0.811765, 1)
+HomeTitleLabel/colors/font_shadow_color = Color(0.082353, 0.070588, 0.058824, 1)
+HomeTitleLabel/constants/shadow_offset_x = 6
+HomeTitleLabel/constants/shadow_offset_y = 6
+HomeTitleLabel/font_sizes/font_size = 120
+HomeTitleLabel/fonts/font = SubResource("FontVariation_7")
 InfoBubblePanel/base_type = &"PanelContainer"
 InfoBubblePanel/styles/panel = SubResource("StyleBoxFlat_27")
 InfoBubbleTextLabel/base_type = &"Label"
@@ -592,16 +768,44 @@ InfoTooltipsBox/base_type = &"VBoxContainer"
 InfoTooltipsBox/constants/separation = 8
 InlineRow/base_type = &"HBoxContainer"
 InlineRow/constants/separation = 6
+MainButton/base_type = &"Button"
+MainButton/colors/font_color = Color(0.082353, 0.070588, 0.058824, 1)
+MainButton/colors/font_disabled_color = Color(0.545098, 0.509804, 0.454902, 1)
+MainButton/colors/font_focus_color = Color(0.082353, 0.070588, 0.058824, 1)
+MainButton/colors/font_hover_color = Color(0.082353, 0.070588, 0.058824, 1)
+MainButton/colors/font_hover_pressed_color = Color(0.082353, 0.070588, 0.058824, 1)
+MainButton/colors/font_pressed_color = Color(0.082353, 0.070588, 0.058824, 1)
+MainButton/font_sizes/font_size = 22
+MainButton/fonts/font = SubResource("FontVariation_1")
+MainButton/styles/disabled = SubResource("StyleBoxFlat_main_disabled")
+MainButton/styles/hover = SubResource("StyleBoxFlat_main_hover")
+MainButton/styles/normal = SubResource("StyleBoxFlat_main_normal")
+MainButton/styles/pressed = SubResource("StyleBoxFlat_main_pressed")
 MiddleColumnStack/base_type = &"VBoxContainer"
 MiddleColumnStack/constants/separation = 3
 ModalBodyLabel/base_type = &"Label"
 ModalBodyLabel/font_sizes/font_size = 22
 ModalBodyLabel/fonts/font = SubResource("FontVariation_0")
+ModalFieldLabel/base_type = &"Label"
+ModalFieldLabel/colors/font_color = Color(0.545098, 0.509804, 0.454902, 1)
+ModalFieldLabel/font_sizes/font_size = 22
+ModalFieldLabel/fonts/font = SubResource("FontVariation_0")
 ModalButton/base_type = &"Button"
 ModalButton/font_sizes/font_size = 22
 ModalButton/fonts/font = SubResource("FontVariation_1")
 ModalColumn/base_type = &"VBoxContainer"
 ModalColumn/constants/separation = 18
+ModalGhostButton/base_type = &"Button"
+ModalGhostButton/colors/font_color = Color(0.803922, 0.74902, 0.65098, 1)
+ModalGhostButton/colors/font_disabled_color = Color(0.545098, 0.509804, 0.454902, 1)
+ModalGhostButton/colors/font_hover_color = Color(0.937255, 0.898039, 0.811765, 1)
+ModalGhostButton/colors/font_pressed_color = Color(0.937255, 0.898039, 0.811765, 1)
+ModalGhostButton/font_sizes/font_size = 20
+ModalGhostButton/fonts/font = SubResource("FontVariation_1")
+ModalGhostButton/styles/disabled = SubResource("StyleBoxFlat_ghost_normal")
+ModalGhostButton/styles/hover = SubResource("StyleBoxFlat_ghost_hover")
+ModalGhostButton/styles/normal = SubResource("StyleBoxFlat_ghost_normal")
+ModalGhostButton/styles/pressed = SubResource("StyleBoxFlat_ghost_pressed")
 ModalLineEdit/base_type = &"LineEdit"
 ModalLineEdit/colors/caret_color = Color(0.803922, 0.74902, 0.65098, 1)
 ModalLineEdit/colors/font_color = Color(0.803922, 0.74902, 0.65098, 1)
@@ -609,11 +813,21 @@ ModalLineEdit/font_sizes/font_size = 22
 ModalLineEdit/fonts/font = SubResource("FontVariation_0")
 ModalLineEdit/styles/focus = SubResource("StyleBoxFlat_21")
 ModalLineEdit/styles/normal = SubResource("StyleBoxFlat_20")
+ModalMutedLabel/base_type = &"Label"
+ModalMutedLabel/colors/font_color = Color(0.545098, 0.509804, 0.454902, 1)
+ModalMutedLabel/font_sizes/font_size = 18
+ModalMutedLabel/fonts/font = SubResource("FontVariation_0")
 ModalOptionButton/base_type = &"OptionButton"
 ModalOptionButton/font_sizes/font_size = 22
 ModalOptionButton/fonts/font = SubResource("FontVariation_1")
+ModalPanel/base_type = &"PanelContainer"
+ModalPanel/styles/panel = SubResource("StyleBoxFlat_modal_panel")
 ModalRow/base_type = &"HBoxContainer"
 ModalRow/constants/separation = 16
+ModalSectionLabel/base_type = &"Label"
+ModalSectionLabel/colors/font_color = Color(0.545098, 0.509804, 0.454902, 1)
+ModalSectionLabel/font_sizes/font_size = 18
+ModalSectionLabel/fonts/font = SubResource("FontVariation_9")
 ModalTitleLabel/base_type = &"Label"
 ModalTitleLabel/font_sizes/font_size = 40
 ModalTitleLabel/fonts/font = SubResource("FontVariation_1")
