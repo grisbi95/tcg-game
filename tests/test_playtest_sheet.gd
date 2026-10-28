@@ -1,7 +1,7 @@
 # gdlint: disable=max-public-methods
 
 extends GdUnitTestSuite
-## Écriture CSV de la fiche de relevé, `PlaytestSheet` (ruleset 0.37 ; décision 0042).
+## Écriture CSV de la fiche de relevé, `PlaytestSheet` (ruleset 0.37 ; décisions 0042 et 0069).
 ##
 ## Suit les décisions de design du ruleset 0155 (fiche de relevé), 0159 (compte des tours), 0161
 ## (compléments de la fiche : fatigue distincte des autres chutes à 0 PV), 0173 (cellules
@@ -10,8 +10,13 @@ extends GdUnitTestSuite
 
 const GAME_NUMBER: int = 3
 const DATE_TEXT: String = "2026-10-21"
+const DECK_NAMES: Dictionary[DuelState.PlayerSide, String] = {
+	DuelState.PlayerSide.A: "Percée",
+	DuelState.PlayerSide.B: "Phalange",
+}
 const RNG_SEED: int = 42
 const FILE_NAME: String = "fiche-partie-3-2026-10-21-graine-42.csv"
+const OFF_PLAN_FILE_NAME: String = "fiche-partie-hors-plan-2026-10-21-graine-42.csv"
 const TURN_TABLE_COLUMNS: String = (
 	"Rang du tour,Joueur actif,"
 	+ "A : Essence inutilisée,A : Essence perdue,A : Cartes en main,A : Sources en jeu,"
@@ -43,7 +48,7 @@ var _fixture_sheet: PlaytestSheet
 func before() -> void:
 	var journal := DuelJournal.from_json(ReplayFixture.read_journal_text())
 	var recorder := PlaytestRecorder.new(TestCatalog.catalog())
-	_fixture_sheet = recorder.record(journal, GAME_NUMBER, DATE_TEXT)
+	_fixture_sheet = recorder.record(journal, GAME_NUMBER, DATE_TEXT, DECK_NAMES)
 
 
 func test_decision_0042_file_name_carries_game_date_and_seed() -> void:
@@ -52,6 +57,21 @@ func test_decision_0042_file_name_carries_game_date_and_seed() -> void:
 	sheet.date_text = DATE_TEXT
 	sheet.rng_seed = RNG_SEED
 	assert_str(sheet.file_name()).is_equal(FILE_NAME)
+
+
+func test_decision_0069_header_carries_game_number_and_deck_names() -> void:
+	var header := _tables(_economy_sheet().to_csv())[0]
+	assert_str(header).contains("Partie n°,3\n")
+	assert_str(header).contains("Deck de A,Percée\nDeck de B,Phalange\n")
+
+
+func test_decision_0069_off_plan_game_is_marked_in_header_and_file_name() -> void:
+	var sheet := PlaytestSheet.new()
+	sheet.game_number = PlaytestSheet.OFF_PLAN_GAME_NUMBER
+	sheet.date_text = DATE_TEXT
+	sheet.rng_seed = RNG_SEED
+	assert_str(sheet.file_name()).is_equal(OFF_PLAN_FILE_NAME)
+	assert_str(sheet.to_csv()).starts_with("Partie n°,hors plan\n")
 
 
 func test_decision_0042_turn_table_starts_with_the_sixteen_columns_of_the_model() -> void:
@@ -106,7 +126,7 @@ func test_209_2_6_end_cause_is_conceded_in_the_csv() -> void:
 	var driver := PlaytestScenarios.fresh()
 	driver.end_turn(A)
 	driver.host.concede(B)
-	var csv := driver.record_sheet(GAME_NUMBER, DATE_TEXT).to_csv()
+	var csv := driver.record_sheet(GAME_NUMBER, DATE_TEXT, DECK_NAMES).to_csv()
 	assert_str(_line_containing(csv, "Vainqueur")).is_equal("Vainqueur,A")
 	assert_str(_line_containing(csv, "Premier joueur")).is_equal("Premier joueur,A")
 	assert_str(_line_containing(csv, "Cause de fin")).ends_with(",abandon")
@@ -149,12 +169,14 @@ func test_204_1_9_duration_is_written_in_minutes_with_a_decimal_point() -> void:
 	var driver := PlaytestScenarios.fresh()
 	driver.wait(WAIT_MSEC)
 	driver.wait(SECOND_WAIT_MSEC)
-	var csv := driver.record_sheet(GAME_NUMBER, DATE_TEXT).to_csv()
+	var csv := driver.record_sheet(GAME_NUMBER, DATE_TEXT, DECK_NAMES).to_csv()
 	assert_str(_line_containing(csv, "Durée")).is_equal("Durée (min),1.3")
 
 
 func test_209_4_9_turn_expiries_are_written_per_player() -> void:
-	var csv := PlaytestScenarios.expiring().record_sheet(GAME_NUMBER, DATE_TEXT).to_csv()
+	var csv := (
+		PlaytestScenarios.expiring().record_sheet(GAME_NUMBER, DATE_TEXT, DECK_NAMES).to_csv()
+	)
 	assert_str(_line_containing(csv, "temps de tour, A")).is_equal(
 		'"Tours terminés par l\'expiration du temps de tour, A",1'
 	)
@@ -162,7 +184,9 @@ func test_209_4_9_turn_expiries_are_written_per_player() -> void:
 
 
 func test_209_4_10_response_expiries_are_written_per_player() -> void:
-	var csv := PlaytestScenarios.expiring().record_sheet(GAME_NUMBER, DATE_TEXT).to_csv()
+	var csv := (
+		PlaytestScenarios.expiring().record_sheet(GAME_NUMBER, DATE_TEXT, DECK_NAMES).to_csv()
+	)
 	assert_str(_line_containing(csv, "temps de réponse, A")).is_equal(
 		'"Réponses passées par l\'expiration du temps de réponse, A",1'
 	)
@@ -172,7 +196,7 @@ func test_209_4_10_response_expiries_are_written_per_player() -> void:
 func test_204_2_1_mulligan_count_is_written() -> void:
 	var driver := HumanDuelDriver.new(SetupSamples.catalog())
 	driver.start(SetupSamples.setup(), [A, B])
-	var csv := driver.record_sheet(GAME_NUMBER, DATE_TEXT).to_csv()
+	var csv := driver.record_sheet(GAME_NUMBER, DATE_TEXT, DECK_NAMES).to_csv()
 	assert_str(_line_containing(csv, "Nombre de mulligans")).is_equal("Nombre de mulligans,2")
 
 
@@ -183,7 +207,7 @@ func test_209_5_2_first_fatigue_turn_is_written_or_none() -> void:
 	for round_index: int in FIRST_FATIGUE_RANK + 1:
 		driver.end_turn(A)
 		driver.end_turn(B)
-	var csv := driver.record_sheet(GAME_NUMBER, DATE_TEXT).to_csv()
+	var csv := driver.record_sheet(GAME_NUMBER, DATE_TEXT, DECK_NAMES).to_csv()
 	assert_str(_line_containing(csv, "compteur de fatigue")).ends_with(",%d" % FIRST_FATIGUE_RANK)
 
 
@@ -197,7 +221,7 @@ func test_decision_0198_free_notes_are_left_empty() -> void:
 func test_210_3_2_last_breath_table_has_one_line_per_trigger() -> void:
 	var driver := PlaytestScenarios.walk_to_attack(PlaytestScenarios.martyr_duel())
 	driver.end_turn(A)
-	var table := _tables(driver.record_sheet(GAME_NUMBER, DATE_TEXT).to_csv())[2]
+	var table := _tables(driver.record_sheet(GAME_NUMBER, DATE_TEXT, DECK_NAMES).to_csv())[2]
 	var lines := table.split("\n")
 	assert_int(lines.size()).is_equal(3)
 	# Rang 5 de A ; les deux jugements restent au joueur (décision 0175 du ruleset).
@@ -209,11 +233,11 @@ func test_210_3_2_last_breath_table_has_one_line_per_trigger() -> void:
 
 func _record(journal: DuelJournal) -> PlaytestSheet:
 	var recorder := PlaytestRecorder.new(SetupSamples.catalog())
-	return recorder.record(journal, GAME_NUMBER, DATE_TEXT)
+	return recorder.record(journal, GAME_NUMBER, DATE_TEXT, DECK_NAMES)
 
 
 func _economy_sheet() -> PlaytestSheet:
-	return PlaytestScenarios.economy().record_sheet(GAME_NUMBER, DATE_TEXT)
+	return PlaytestScenarios.economy().record_sheet(GAME_NUMBER, DATE_TEXT, DECK_NAMES)
 
 
 func _ended_sheet(result: DuelState.DuelResult, reason: DuelState.EndReason) -> PlaytestSheet:

@@ -349,11 +349,12 @@ Ces termes ne figurent pas au glossaire. Ils ne valent que pour ce protocole.
 
 ## Points à trancher avant la première série
 
-Quatre points ouverts dans [02-questions-ouvertes.md](../02-questions-ouvertes.md) :
+Cinq points ouverts dans [02-questions-ouvertes.md](../02-questions-ouvertes.md) :
 
 - Q-102 : le mulligan de la série et le rôle de chaque joueur connu d'avance, à trancher avant la première série (jalon J3) ;
 - Q-103 : le mulligan de deux humains sur un même écran, à trancher avant une série jouée à deux humains ;
 - Q-141 : les cibles, les seuils et les mesures à refixer pour des decks asymétriques, par une décision avant la première série (jalon J3, décision 0232) ;
-- Q-142 : l'ordre de jeu des 24 parties du plan de série.
+- Q-142 : l'ordre de jeu des 24 parties du plan de série ;
+- Q-163 : le champ de la fiche pour les choix tirés au sort à l'expiration du temps de réponse (209.4.13 et 209.4.14).
 
 Q-070 est tranchée le 16 octobre 2026 par la décision 0163 ; Q-071, Q-072, Q-073 et Q-074 sont tranchées le même jour par les décisions 0158 à 0162. Le Passif du Hero de test est fixé par la décision 0170 ; le pouvoir et son coût sont retirés par la décision 0208.

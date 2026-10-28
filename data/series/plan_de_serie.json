@@ -1,0 +1,29 @@
+{
+	"edition": "0.56",
+	"games": [
+		{"game": 1, "deck_a": "percee", "deck_b": "phalange", "first_player": "A"},
+		{"game": 2, "deck_a": "percee", "deck_b": "phalange", "first_player": "B"},
+		{"game": 3, "deck_a": "phalange", "deck_b": "percee", "first_player": "A"},
+		{"game": 4, "deck_a": "phalange", "deck_b": "percee", "first_player": "B"},
+		{"game": 5, "deck_a": "percee", "deck_b": "echiquier", "first_player": "A"},
+		{"game": 6, "deck_a": "percee", "deck_b": "echiquier", "first_player": "B"},
+		{"game": 7, "deck_a": "echiquier", "deck_b": "percee", "first_player": "A"},
+		{"game": 8, "deck_a": "echiquier", "deck_b": "percee", "first_player": "B"},
+		{"game": 9, "deck_a": "percee", "deck_b": "grimoire", "first_player": "A"},
+		{"game": 10, "deck_a": "percee", "deck_b": "grimoire", "first_player": "B"},
+		{"game": 11, "deck_a": "grimoire", "deck_b": "percee", "first_player": "A"},
+		{"game": 12, "deck_a": "grimoire", "deck_b": "percee", "first_player": "B"},
+		{"game": 13, "deck_a": "phalange", "deck_b": "echiquier", "first_player": "A"},
+		{"game": 14, "deck_a": "phalange", "deck_b": "echiquier", "first_player": "B"},
+		{"game": 15, "deck_a": "echiquier", "deck_b": "phalange", "first_player": "A"},
+		{"game": 16, "deck_a": "echiquier", "deck_b": "phalange", "first_player": "B"},
+		{"game": 17, "deck_a": "phalange", "deck_b": "grimoire", "first_player": "A"},
+		{"game": 18, "deck_a": "phalange", "deck_b": "grimoire", "first_player": "B"},
+		{"game": 19, "deck_a": "grimoire", "deck_b": "phalange", "first_player": "A"},
+		{"game": 20, "deck_a": "grimoire", "deck_b": "phalange", "first_player": "B"},
+		{"game": 21, "deck_a": "echiquier", "deck_b": "grimoire", "first_player": "A"},
+		{"game": 22, "deck_a": "echiquier", "deck_b": "grimoire", "first_player": "B"},
+		{"game": 23, "deck_a": "grimoire", "deck_b": "echiquier", "first_player": "A"},
+		{"game": 24, "deck_a": "grimoire", "deck_b": "echiquier", "first_player": "B"}
+	]
+}

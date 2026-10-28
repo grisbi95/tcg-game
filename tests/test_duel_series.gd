@@ -1,6 +1,7 @@
 extends GdUnitTestSuite
-## DuelSeries : numéro de partie, decks et premier joueur choisis par l'hôte, préparation du duel
-## (décisions 0036 et 0066 ; décision 0012 pour le DuelSetup).
+## DuelSeries : partie libre, decks et premier joueur choisis par l'hôte, préparation du duel
+## (décisions 0036, 0066 et 0069 ; décision 0012 pour le DuelSetup). Les parties du plan de série
+## se testent dans `test_series_plan.gd`.
 
 const A: DuelState.PlayerSide = DuelState.PlayerSide.A
 const B: DuelState.PlayerSide = DuelState.PlayerSide.B
@@ -19,14 +20,12 @@ func before() -> void:
 	_deck = loader.find_deck(TestCatalog.DECK_ID)
 
 
-func test_decision_0066_game_number_advances_and_choices_stay() -> void:
+func test_decision_0069_free_game_is_chosen_until_the_host_picks_a_plan_game() -> void:
 	var series := DuelSeries.new(_deck, _deck)
 	series.set_first_player_choice(DuelSeries.FirstPlayerChoice.PLAYER_B)
-	var numbers: Array[int] = []
-	for game: int in GAME_COUNT:
-		numbers.append(series.get_game_number())
-		series.advance_to_next_game()
-	assert_array(numbers).is_equal([1, 2, 3])
+	assert_bool(series.is_free_game()).is_true()
+	assert_int(series.get_game_number()).is_equal(DuelSeries.NO_PLAN_GAME)
+	assert_object(series.get_chosen_game()).is_null()
 	assert_int(series.get_first_player_choice()).is_equal(DuelSeries.FirstPlayerChoice.PLAYER_B)
 	assert_object(series.get_deck(A)).is_same(_deck)
 

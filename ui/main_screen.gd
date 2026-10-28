@@ -18,6 +18,8 @@ enum LobbyStep {
 const SETUP_SCENE: PackedScene = preload("res://ui/setup_screen.tscn")
 const DUEL_SCENE: PackedScene = preload("res://ui/duel_screen.tscn")
 const LOAD_ERROR_TEXT: String = "Impossible de charger le jeu : cartes ou deck de test en erreur."
+const PLAN_UNREADABLE_TEXT: String = "Plan de série illisible : parties libres seulement"
+const PLAN_LABEL_FORMAT: String = "Partie %d — %s contre %s (%s commence)"
 const DECK_LABEL_FORMAT: String = "%s — %s"
 const BACK_TEXT: String = "Retour"
 const SETUP_ERROR_FORMAT: String = "Partie impossible : %s"
@@ -39,6 +41,8 @@ var _connection: RelayConnection
 ## Graine choisie par le créateur d'une partie à distance, jusqu'à l'arrivée de l'autre joueur.
 var _remote_seed: int = 0
 var _guest_session: RemoteGuestSession
+## Statut de la préparation quand rien d'autre n'est à dire : plan de série illisible (0069).
+var _setup_default_status: String = ""
 
 @onready var _table: ColorRect = %Table
 @onready var _error_box: Control = %ErrorBox
@@ -61,6 +65,11 @@ func _ready() -> void:
 		_show_load_error()
 		return
 	_series = DuelSeries.new(_decks[test_deck_index], _decks[test_deck_index])
+	var plan := GameLibrary.load_series_plan(_catalog, _decks)
+	if plan == null:
+		_setup_default_status = PLAN_UNREADABLE_TEXT
+	else:
+		_series.set_plan(plan, _decks)
 	_show_setup()
 
 
@@ -81,21 +90,42 @@ func _show_setup(status: String = "") -> void:
 	setup_screen.join_pressed.connect(_on_join_pressed)
 	setup_screen.cancel_pressed.connect(_on_cancel_pressed)
 	setup_screen.deck_chosen.connect(_on_deck_chosen)
+	setup_screen.game_chosen.connect(_on_game_chosen)
 	setup_screen.first_player_chosen.connect(_series.set_first_player_choice)
 	setup_screen.show_preparation(_make_preparation())
-	setup_screen.show_idle(status)
+	setup_screen.show_idle(_setup_default_status if status.is_empty() else status)
 
 
 func _make_preparation() -> SetupScreen.Preparation:
 	var preparation := SetupScreen.Preparation.new()
 	preparation.game_number = _series.get_game_number()
+	for game: SeriesPlanGame in _series.get_plan_games():
+		preparation.plan_game_numbers.append(game.game_number)
+		preparation.plan_labels.append(_plan_label(game))
 	for deck: DeckList in _decks:
 		preparation.deck_labels.append(DECK_LABEL_FORMAT % [deck.deck_name, _hero_name(deck)])
 	for side: DuelState.PlayerSide in DuelState.SIDES:
 		preparation.deck_indexes[side] = _decks.find(_series.get_deck(side))
-	preparation.first_player_choice = _series.get_first_player_choice()
+	preparation.first_player_choice = _series.get_chosen_first_player_choice()
 	preparation.rng_seed = DuelSeries.draw_seed()
 	return preparation
+
+
+func _plan_label(game: SeriesPlanGame) -> String:
+	return (
+		PLAN_LABEL_FORMAT
+		% [
+			game.game_number,
+			_deck_name(game.deck_id_a),
+			_deck_name(game.deck_id_b),
+			PlayerNames.letter(game.first_player),
+		]
+	)
+
+
+func _deck_name(deck_id: StringName) -> String:
+	var deck_index := _find_deck_index(deck_id)
+	return String(deck_id) if deck_index < 0 else _decks[deck_index].deck_name
 
 
 func _hero_name(deck: DeckList) -> String:
@@ -108,6 +138,14 @@ func _find_deck_index(deck_id: StringName) -> int:
 		if _decks[deck_index].deck_id == deck_id:
 			return deck_index
 	return -1
+
+
+func _on_game_chosen(game_number: int) -> void:
+	if game_number == DuelSeries.NO_PLAN_GAME:
+		_series.choose_free_game()
+	else:
+		_series.choose_plan_game(game_number)
+	_setup_screen().show_game(_make_preparation())
 
 
 func _on_deck_chosen(side: DuelState.PlayerSide, deck_index: int) -> void:
@@ -224,23 +262,21 @@ func _advance_guest_session() -> void:
 
 
 func _on_connection_lost(reason: String) -> void:
-	_series.advance_to_next_game()
 	_show_setup(DISCONNECTED_FORMAT % reason)
 
 
-# Décisions 0036 et 0066 : decks et premier joueur restent ceux de l'hôte, la graine est tirée de
-# nouveau ; décision 0050 : en duel à distance, retour à la préparation.
+# Décisions 0036, 0050, 0066 et 0069 : `DuelSeries.rematch_returns_to_setup` ; sinon, decks et
+# premier joueur de la partie libre restent ceux de l'hôte, la graine est tirée de nouveau.
 func _on_rematch_requested() -> void:
 	var duel_screen := _screen as DuelScreen
-	if duel_screen != null and duel_screen.is_remote():
+	var is_remote := duel_screen != null and duel_screen.is_remote()
+	if _series.rematch_returns_to_setup(is_remote):
 		_on_setup_requested()
 		return
-	_series.advance_to_next_game()
 	_start_duel(DuelSeries.draw_seed())
 
 
 func _on_setup_requested() -> void:
-	_series.advance_to_next_game()
 	_show_setup()
 
 
@@ -251,7 +287,9 @@ func _on_sheet_requested() -> void:
 		return
 	var recorder := PlaytestRecorder.new(_catalog, _config)
 	var date_text := Time.get_date_string_from_system()
-	var sheet := recorder.record(duel_screen.get_journal(), _series.get_game_number(), date_text)
+	var sheet := recorder.record(
+		duel_screen.get_journal(), _series.get_game_number(), date_text, _series.get_deck_names()
+	)
 	var saved_path := FileDownload.save_text(
 		sheet.file_name(), sheet.to_csv(), PlaytestSheet.MIME_TYPE
 	)

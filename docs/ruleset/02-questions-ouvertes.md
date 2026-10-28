@@ -189,6 +189,13 @@ Que vaut la Force de la pièce source partie du plateau quand un effet la lit, e
 Le Hero n'a pas de Force (202.3.9) : une pièce source qui est un Hero ne peut donc pas être lue, lien avec Q-097 sur la Force du Hero, à trancher en cohérence.
 Manque pour trancher : le choix du créateur. Aucune carte de `50-cartes/` ne l'emploie au 27 octobre 2026. Origine : étape c.5e du code (décision de code 0065, valeur du jeu partagée), le code n'a rien tranché ; le catalogue refuse ce cas en attendant la réponse.
 
+**Q-163 · Champ de fiche pour les choix tirés au sort à l'expiration du temps de réponse** · `70-playtest/protocole.md`, chapitre 209 · ouverte le 28 octobre 2026
+Faut-il un champ de fin de partie pour les choix tirés au sort à l'expiration du temps de réponse, compté pour A et pour B, et doit-il couvrir le regard sur le dessus du deck (209.4.14) seul ou aussi la défausse (209.4.13), alors que la décision 0242 mesure le nombre de choix faits par tirage au sort lors d'un regard sur le dessus du deck, que la décision 0219 mesure le nombre de défausses tirées au sort (ligne de Q-141), et que la fiche de relevé (« Relevé de fin de partie » et « Modèle de fiche ») n'a que deux champs d'expiration, « Tours terminés par l'expiration du temps de tour » (209.4.9) et « Réponses passées par l'expiration du temps de réponse » (209.4.10) ?
+- Option A : un seul champ commun, « Choix tirés au sort par l'expiration du temps de réponse », A et B, qui compte les cas de 209.4.13 et de 209.4.14 ; compromis : un seul champ à relever, mais les deux mesures de 0219 et de 0242 ne se distinguent plus.
+- Option B : deux champs distincts, « Défausses tirées au sort » (209.4.13) et « Regards sur le dessus du deck tirés au sort » (209.4.14), A et B ; compromis : chaque mesure se lit seule, au prix de deux champs de plus sur une fiche déjà longue.
+- Option C : aucun champ, et la mesure de la décision 0242 est retirée par une nouvelle décision qui la remplace ; compromis : une fiche inchangée, mais plus aucune mesure de ces choix, et la mesure de 0219 reste sans champ si elle n'est pas retirée aussi.
+Manque pour trancher : le choix du créateur, et la décision qui fixe, avec Q-141, la cible, le seuil et le niveau de relevé de ces mesures. Origine : le code de la fiche CSV ne peut pas compter ces choix sans savoir où les relever.
+
 ## Tranchées
 
 | Question | Décision |
