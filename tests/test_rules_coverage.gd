@@ -135,13 +135,10 @@ const RULES_WITHOUT_OWN_TEST: Dictionary[String, String] = {
 	),
 }
 
-## Règles consignées par les éditions 0.45 à 0.55 du ruleset et pas encore codées, avec l'étape du
+## Règles consignées par les éditions 0.45 à 0.56 du ruleset et pas encore codées, avec l'étape du
 ## jalon J2c qui les code (décision 0054) : chaque étape retire ses lignes en écrivant leurs tests,
 ## la liste est vide à la sortie de c.8.
-const RULES_AWAITING_IMPLEMENTATION: Dictionary[String, String] = {
-	"201.4.1a": "c.7",
-	"217.1.5": "c.7",
-}
+const RULES_AWAITING_IMPLEMENTATION: Dictionary[String, String] = {}
 
 var _rule_ids: PackedStringArray
 var _test_names: PackedStringArray

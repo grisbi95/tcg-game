@@ -1,6 +1,6 @@
 # Ruleset du TCG tactique
 
-> Dossier de conception des règles, intégré au dépôt du jeu `tcg-game`, dans `docs/ruleset/` (décision 0014 du projet). Édition courante : **0.55** (condition « si », suite d'effets, Endormir, portée du regard sur le deck, destructions simultanées, ensemble touché par un effet qui ne cible pas, « une fois par tour » par effet, lecture de la condition « si » dans la suite des effets, coût dépensé quand elle est fausse, ensemble figé, 27 octobre 2026). Historique dans [90-changelog.md](90-changelog.md).
+> Dossier de conception des règles, intégré au dépôt du jeu `tcg-game`, dans `docs/ruleset/` (décision 0014 du projet). Édition courante : **0.56** (expiration du temps pendant le choix des cibles d'un Ordre, condition « si », suite d'effets, Endormir, portée du regard sur le deck, destructions simultanées, ensemble touché par un effet qui ne cible pas, « une fois par tour » par effet, lecture de la condition « si » dans la suite des effets, coût dépensé quand elle est fausse, ensemble figé, 27 octobre 2026). Historique dans [90-changelog.md](90-changelog.md).
 
 ## Quel document pour quel lecteur
 

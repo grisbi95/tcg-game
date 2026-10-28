@@ -210,7 +210,7 @@ func test_decision_0024_mulligan_toggles_cards_then_confirms() -> void:
 	_selection.press_card(first_id)
 	_selection.press_card(second_id)
 	_selection.press_card(first_id)
-	assert_array(_selection.snapshot().set_aside_card_ids).contains_exactly([second_id])
+	assert_array(_selection.snapshot().picked_card_ids).contains_exactly([second_id])
 	_selection.press_confirm()
 	assert_array((_emitted[0] as ChooseMulligan).set_aside_card_ids).contains_exactly([second_id])
 

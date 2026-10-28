@@ -3,7 +3,7 @@ extends GdUnitTestSuite
 ## Socle des suites du catalogue de playtest (ruleset 0.55, docs/ruleset/50-cartes/, étape c.6) :
 ## charge data/cards/ une fois et fournit les contrôles de forme d'une carte.
 
-const EDITION: String = "0.55"  # docs/ruleset/README.md, édition courante
+const EDITION: String = "0.56"  # docs/ruleset/README.md, édition courante
 const TYPE := CardDefinition.CardType
 const SPEED := CardDefinition.SpellSpeed
 const KEYWORD := CardDefinition.Keyword

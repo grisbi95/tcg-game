@@ -24,6 +24,8 @@ Aucun Invariant.
 
 **211.2.2** [ACTÉ] Le Hero s'endort dès l'annonce de son Ordre, même si cet Ordre n'a pas lieu (décision 0211 ; voir 205.4.7 et 205.5.5).
 
+**211.2.2a** [ACTÉ] Le Hero reste éveillé quand l'annonce de son Ordre est abandonnée selon 209.4.11 (décision 0254 ; voir 211.2.2 et 209.4.11).
+
 **211.2.3** [ACTÉ] Endormir le Hero selon 211.2.2 n'est pas un coût (décision 0211 ; voir 203.0.1 et 211.1.3).
 
 **211.2.4** [ACTÉ] Un joueur n'annonce un Ordre de vitesse Action que pendant sa phase principale (décision 0211 ; voir 207.1.3 et 208.1.12).

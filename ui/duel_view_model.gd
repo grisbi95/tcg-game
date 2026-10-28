@@ -28,6 +28,11 @@ const ACTION_HELP_KIND: String = "Action"
 const HELP_FORMAT: String = "%s · %s"
 const ORDER_INSTRUCTION: String = "Ordre des effets : clique-les dans l'ordre d'ajout à la pile"
 const TARGET_INSTRUCTION: String = "Choisis la cible de l'effet"
+const DISCARD_INSTRUCTION_FORMAT: String = "Défausse %d carte(s) : clique-les dans ta main"
+const LOOK_INSTRUCTION: String = "Carte du dessus de ton deck : garde-la dessus ou mets-la dessous"
+const WAITING_CHOICE_INSTRUCTION: String = "Choix en cours"
+const ORDER_LABEL: String = "Ordre"
+const X_HELP_FORMAT: String = "%s · X = %d"
 const ENDED_TEXT: String = "Duel terminé"
 const RESULT_TEXTS: Dictionary[DuelState.DuelResult, String] = {
 	DuelState.DuelResult.NONE: ENDED_TEXT,
@@ -63,10 +68,18 @@ static func center_state_of(state: DuelState) -> DuelColumnView.CenterState:
 	return DuelColumnView.CenterState.TURN
 
 
-## Consigne d'un choix demandé par le moteur (hors mulligan, que la colonne annonce elle-même).
-static func choice_instruction(kind: PendingDecision.DecisionKind) -> String:
-	if kind == PendingDecision.DecisionKind.ORDER_TRIGGERS:
-		return ORDER_INSTRUCTION
+## Consigne d'un choix demandé par le moteur (hors mulligan, que la colonne annonce elle-même) ;
+## `required_count` est le nombre de cartes à défausser (212.1.7).
+static func choice_instruction(
+	kind: PendingDecision.DecisionKind, required_count: int = 0
+) -> String:
+	match kind:
+		PendingDecision.DecisionKind.ORDER_TRIGGERS:
+			return ORDER_INSTRUCTION
+		PendingDecision.DecisionKind.CHOOSE_DISCARD:
+			return DISCARD_INSTRUCTION_FORMAT % required_count
+		PendingDecision.DecisionKind.CHOOSE_TOP_CARD_PLACE:
+			return LOOK_INSTRUCTION
 	return TARGET_INSTRUCTION
 
 
@@ -138,8 +151,12 @@ func discard_top(side: DuelState.PlayerSide) -> HandView.HandCard:
 
 
 ## Définition de la carte `card_instance_id` si le joueur qui a l'appareil peut la voir (sa main,
-## une défausse), sinon null : une carte adverse en main, en deck ou à l'Écart reste cachée.
+## une défausse, la carte du dessus de son deck qu'il regarde, 201.4.1a), sinon null : une carte
+## adverse en main, en deck ou à l'Écart reste cachée.
 func visible_definition(card_instance_id: int) -> CardDefinition:
+	var looked := _looked_card()
+	if looked != null and looked.card_instance_id == card_instance_id:
+		return _catalog.get_card(looked.definition_id)
 	var own_hand := _state.get_player(_viewer).hand
 	for side: DuelState.PlayerSide in DuelState.SIDES:
 		var visible_cards: Array[CardInstance] = _state.get_player(side).discard.duplicate()
@@ -211,13 +228,16 @@ func gear_definition(piece: Piece) -> CardDefinition:
 	return _catalog.get_card(piece.attached_gear.definition_id)
 
 
-## Lignes de la pile (201.4.7), de la base au sommet. Les effets déclenchés en attente de
+## Lignes de la pile (201.4.7), de la base au sommet, l'entrée dont la résolution attend un choix
+## (décision 0057) au sommet. Les effets déclenchés en attente de
 ## `extra_entry_ids` s'ajoutent au sommet (ordre à choisir) ; le rang d'une entrée de `ordered_ids`
 ## est son indice + 1, NO_ORDER si elle n'y est pas.
 func stack_lines(
 	extra_entry_ids: Array[int] = [], ordered_ids: Array[int] = []
 ) -> Array[StackView.StackLine]:
 	var entries: Array[StackEntry] = _state.stack.duplicate()
+	if _state.resolving_entry != null:
+		entries.append(_state.resolving_entry)
 	for entry: StackEntry in _state.waiting_triggers:
 		if extra_entry_ids.has(entry.stack_entry_id):
 			entries.append(entry)
@@ -231,13 +251,25 @@ func stack_lines(
 
 
 ## Carte que montre l'aperçu d'une entrée de pile : celle qu'elle annonce, ou la carte source d'un
-## effet déclenché ; null sans carte (action normale).
+## effet déclenché ; null sans carte (action normale, Ordre du Hero : `order_hero`).
 func entry_definition(entry: StackEntry) -> CardDefinition:
+	if entry.kind == StackEntry.StackEntryKind.ORDER:
+		return null
 	if entry.card != null:
 		return _catalog.get_card(entry.card.definition_id)
 	if _catalog.has_definition(entry.source_definition_id):
 		return _catalog.get_card(entry.source_definition_id)
 	return null
+
+
+## 217.1.1 : carte du dessus du deck que `side` regarde dans `state` (le moteur attend son choix de
+## place), sinon NO_ID.
+static func looked_card_id(state: DuelState, side: DuelState.PlayerSide) -> int:
+	var decision := state.pending_decision
+	var kind := PendingDecision.DecisionKind.CHOOSE_TOP_CARD_PLACE
+	if decision == null or decision.kind != kind or not decision.awaited_players.has(side):
+		return DuelState.NO_ID
+	return decision.candidate_ids[0]
 
 
 ## Entrée `stack_entry_id` de la pile ou des effets déclenchés en attente, ou null.
@@ -251,6 +283,15 @@ func find_entry(stack_entry_id: int) -> StackEntry:
 	return null
 
 
+# 217.1.1, 201.4.1a : la carte du dessus que le joueur de l'appareil regarde ; null sinon.
+func _looked_card() -> CardInstance:
+	var looked_id := looked_card_id(_state, _viewer)
+	for card: CardInstance in _state.get_player(_viewer).deck:
+		if card.card_instance_id == looked_id:
+			return card
+	return null
+
+
 func _to_hand_card(card: CardInstance) -> HandView.HandCard:
 	return HandView.HandCard.new(card.card_instance_id, _catalog.get_card(card.definition_id))
 
@@ -258,9 +299,15 @@ func _to_hand_card(card: CardInstance) -> HandView.HandCard:
 func _stack_line(entry: StackEntry) -> StackView.StackLine:
 	var definition := entry_definition(entry)
 	var line := StackView.StackLine.new(
-		entry.stack_entry_id, _stack_label(entry, definition), _stack_tint(definition), entry.owner
+		entry.stack_entry_id,
+		_stack_label(entry, definition),
+		_stack_tint(entry, definition),
+		entry.owner
 	)
-	return line.with_help(HELP_FORMAT % [_stack_help_kind(entry, definition), _owner_name(entry)])
+	var help := HELP_FORMAT % [_stack_help_kind(entry, definition), _owner_name(entry)]
+	if entry.x_value > 0:
+		help = X_HELP_FORMAT % [help, entry.x_value]
+	return line.with_help(help)
 
 
 # Le type de la carte annoncée, ou le genre de l'entrée quand elle n'en a pas.
@@ -272,7 +319,14 @@ func _stack_help_kind(entry: StackEntry, definition: CardDefinition) -> String:
 			return PENDING_COMBAT_LABEL
 		StackEntry.StackEntryKind.TRIGGERED_EFFECT:
 			return TRIGGERED_EFFECT_LABEL
+		StackEntry.StackEntryKind.ORDER:
+			return ORDER_LABEL
 	return CardText.type_name(definition.card_type)
+
+
+# Le Hero qui porte l'Ordre d'une entrée ORDER (211.2.8).
+func _order_hero(entry: StackEntry) -> HeroDefinition:
+	return _catalog.get_hero(entry.source_definition_id)
 
 
 func _owner_name(entry: StackEntry) -> String:
@@ -287,6 +341,8 @@ func _stack_label(entry: StackEntry, definition: CardDefinition) -> String:
 			return PENDING_COMBAT_LABEL
 		StackEntry.StackEntryKind.TRIGGERED_EFFECT:
 			return _triggered_label(definition)
+		StackEntry.StackEntryKind.ORDER:
+			return _order_hero(entry).hero_name
 	return definition.card_name
 
 
@@ -297,7 +353,9 @@ func _triggered_label(definition: CardDefinition) -> String:
 
 
 # La teinte de la carte annoncée ; celle d'un Spell à défaut.
-func _stack_tint(definition: CardDefinition) -> DuelPalette.Tint:
+func _stack_tint(entry: StackEntry, definition: CardDefinition) -> DuelPalette.Tint:
+	if entry.kind == StackEntry.StackEntryKind.ORDER:
+		return DuelPalette.Tint.HERO
 	if definition == null:
 		return DuelPalette.Tint.SPELL
 	return DuelPalette.tint_of(definition.card_type)

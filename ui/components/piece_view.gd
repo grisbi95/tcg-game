@@ -71,7 +71,7 @@ func show_card_piece(piece_id: int, definition: CardDefinition, side: DuelState.
 	_show(piece_id, side, DuelPalette.tint_of(definition.card_type), definition.card_name)
 	DuelAssets.show_card_art(_art_image, _art_icon, definition.id)
 	_type_label.text = CardText.type_name(definition.card_type)
-	_show_keywords(CardText.keywords_line(definition))
+	show_keywords(CardText.keywords_line(definition))
 
 
 ## Jeton (202.4) Unit ou Building, nommé « Jeton », sans mot-clé (décision 0137 du ruleset) ; sa
@@ -82,7 +82,7 @@ func show_token(
 	_show(piece_id, side, DuelPalette.tint_of(card_type), CardText.TOKEN_NAME)
 	DuelAssets.show_no_art(_art_image, _art_icon)
 	_type_label.text = CardText.token_type_name(card_type)
-	_show_keywords("")
+	show_keywords("")
 
 
 ## Hero (202.3) ; ses PV suivent par `show_health`.
@@ -90,7 +90,7 @@ func show_hero(piece_id: int, hero: HeroDefinition, side: DuelState.PlayerSide) 
 	_show(piece_id, side, DuelPalette.Tint.HERO, hero.hero_name)
 	DuelAssets.show_card_art(_art_image, _art_icon, hero.id)
 	_type_label.text = CardText.HERO_TYPE_NAME
-	_show_keywords("")
+	show_keywords("")
 
 
 ## Décision 0027 : `force` actuelle (209.1, lue par `DuelEngine.current_force`) sur un losange ;
@@ -141,7 +141,9 @@ func _show(
 	_refresh_frame()
 
 
-func _show_keywords(keywords: String) -> void:
+## Mots-clés montrés, Assaut et Rempart accordés compris (210.4, décision 0058) ; remplace ceux
+## que `show_*` a posés.
+func show_keywords(keywords: String) -> void:
 	_keyword_label.text = keywords
 	_keyword_chip.visible = not keywords.is_empty()
 

@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://cmarsrqay6xoo"]
 
-[ext_resource type="Script" path="res://ui/components/_try/try_duel_screen_scenarios.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://cy3huu5scd0l5" path="res://ui/components/_try/try_duel_screen_scenarios.gd" id="1_script"]
 
-[node name="TryDuelScreenScenarios" type="Control"]
+[node name="TryDuelScreenScenarios" type="Control" unique_id=353239059]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

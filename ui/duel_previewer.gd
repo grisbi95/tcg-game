@@ -52,6 +52,10 @@ func show_stack_entry(stack_entry_id: int) -> void:
 	var entry := _model.find_entry(stack_entry_id)
 	if entry == null:
 		return
+	if entry.kind == StackEntry.StackEntryKind.ORDER:
+		_preview.show_hero(_model.hero_definition(entry.owner), null)
+		_show_bubbles(null, null, false)
+		return
 	var definition := _model.entry_definition(entry)
 	if definition != null:
 		_preview.show_card(definition)

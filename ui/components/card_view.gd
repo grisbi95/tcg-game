@@ -15,6 +15,8 @@ signal card_unhovered(card_instance_id: int)
 ## Décision 0028 : carte de la main et de la défausse, au format 63:88 ; l'aperçu l'agrandit.
 const CARD_SIZE := Vector2(158, 220)
 const CARD_MARGIN: float = 7.0
+## 213.1 : un coût X s'écrit « X » sur la carte, pas 0.
+const X_COST_TEXT: String = "X"
 
 var _card_instance_id: int = DuelState.NO_ID
 var _tint: DuelPalette.Tint = DuelPalette.Tint.UNIT
@@ -67,7 +69,7 @@ func show_card(card_instance_id: int, definition: CardDefinition) -> void:
 	_show_face(DuelPalette.tint_of(definition.card_type), definition.card_name)
 	DuelAssets.show_card_art(_art_image, _art_icon, definition.id)
 	_cost_badge.visible = true
-	_cost_label.text = str(definition.cost)
+	_cost_label.text = X_COST_TEXT if definition.has_x_cost else str(definition.cost)
 	if definition.force != CardDefinition.NO_FORCE:
 		_show_force(definition.force)
 	else:

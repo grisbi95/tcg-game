@@ -102,11 +102,13 @@ Aucun Invariant.
 
 **209.4.10** [ACTÉ] Quand le temps de réponse d'un joueur qui peut répondre ou passer atteint 0 seconde, ce joueur passe (décision 0205 ; voir 208.3.1 et 208.6.2).
 
-**209.4.11** [ACTÉ] Quand le temps de tour ou le temps de réponse d'un joueur atteint 0 seconde pendant qu'il choisit les cibles d'une entrée de la pile qui lui appartient, l'annonce est abandonnée : rien n'est payé, rien ne s'ajoute à la pile et la carte reste où elle était (décision 0206 ; voir 207.5.1, 209.4.4d et 209.4.7).
+**209.4.11** [ACTÉ] Quand le temps de tour ou le temps de réponse d'un joueur atteint 0 seconde pendant qu'il choisit les cibles d'une entrée de la pile qui lui appartient, l'annonce est abandonnée : rien n'est payé, rien ne s'ajoute à la pile (décisions 0206 et 0254 ; voir 207.5.1, 209.4.4d, 209.4.7, 209.4.11c et 211.2.2a).
 
 **209.4.11a** [ACTÉ] Quand le temps de tour ou le temps de réponse d'un joueur atteint 0 seconde pendant qu'il choisit les cibles d'un effet déclenché, cet effet ne s'ajoute pas à la pile (décision 0206 ; voir 209.4.11 et 207.3.2).
 
 **209.4.11b** [ACTÉ] Quand le temps de tour ou le temps de réponse d'un joueur atteint 0 seconde pendant qu'il choisit la valeur de X d'un Spell qu'il annonce, l'annonce est abandonnée : rien n'est payé, rien ne s'ajoute à la pile et la carte reste où elle était (décision 0226 ; voir 209.4.4h, 209.4.7, 209.4.11 et 213.1.9).
+
+**209.4.11c** [ACTÉ] Quand l'annonce d'un Spell est abandonnée selon 209.4.11, la carte de ce Spell reste où elle était (décision 0254 ; voir 209.4.11 et 209.4.11b).
 
 **209.4.12** [ACTÉ] Quand le temps de tour ou le temps de réponse d'un joueur atteint 0 seconde pendant qu'il choisit l'ordre de ses effets déclenchés, ces effets s'ajoutent à la pile dans l'ordre où ils se sont déclenchés (décision 0206 ; voir 208.4.6, 208.4.7, 209.4.4c et 209.4.7b).
 
