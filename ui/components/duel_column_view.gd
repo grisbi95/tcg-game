@@ -2,10 +2,10 @@ class_name DuelColumnView
 extends PanelContainer
 ## Colonne de duel (décisions 0030, 0032 et 0053, fiche E16 à E20c), trois parties fixes de haut en
 ## bas : l'en-tête (le tour ou la taille de la pile, le joueur qui doit agir, l'abandon), la pile
-## qui s'étend (« Pile vide » en pointillé quand elle n'a aucune entrée), et le grand bouton, ancré
-## en bas, qui reste en place grisé quand il ne sert pas. Le parent choisit l'état du centre
-## (`show_turn`, `show_stack`, `show_mulligan`, `show_choice`, `show_ended`) ; la colonne ne calcule
-## rien et n'a aucune règle. Les temps sont dans `TurnTimerBar`, au bord du plateau.
+## qui s'étend (« Pile vide » dans une alvéole creusée quand elle n'a aucune entrée), et le grand
+## bouton, ancré en bas, qui reste en place grisé quand il ne sert pas. Le parent choisit l'état du
+## centre (`show_turn`, `show_stack`, `show_mulligan`, `show_choice`, `show_ended`) ; la colonne ne
+## calcule rien et n'a aucune règle. Les temps sont dans `TurnTimerBar`, au bord du plateau.
 
 signal end_turn_pressed
 signal pass_pressed
@@ -59,6 +59,8 @@ const ENDED_BUTTON_TEXT: String = "Duel terminé"
 const NO_HELP: String = ""
 const DOT_SIZE: float = 10.0
 const DOT_LINE_HEIGHT: float = 20.0
+const DOT_BORDER_WIDTH: int = 2
+const DOT_CUT: int = 2
 
 var _center_state: CenterState = CenterState.TURN
 var _has_stack: bool = false
@@ -115,7 +117,6 @@ func _ready() -> void:
 	_choices.choice_pressed.connect(choice_pressed.emit)
 	_cancel_button.pressed.connect(cancel_pressed.emit)
 	_actor_dot.draw.connect(_draw_dot)
-	_stack_area.draw.connect(_draw_empty_frame)
 	_stack_view.stack_entry_pressed.connect(stack_entry_pressed.emit)
 	_stack_view.stack_entry_hovered.connect(stack_entry_hovered.emit)
 	_stack_view.stack_entry_unhovered.connect(stack_entry_unhovered.emit)
@@ -304,17 +305,14 @@ func _refresh_announcement() -> void:
 
 
 func _concede_ink() -> Color:
-	return DuelPalette.INK_COLOR if _concede_button.is_hovered() else DuelPalette.MUTED_COLOR
+	return DuelPalette.TEXT_COLOR if _concede_button.is_hovered() else DuelPalette.MUTED_COLOR
 
 
 func _draw_dot() -> void:
-	var radius := DOT_SIZE / 2.0
-	_actor_dot.draw_circle(Vector2(radius, DOT_LINE_HEIGHT / 2.0), radius, _dot_color)
-
-
-func _draw_empty_frame() -> void:
-	if not _has_stack:
-		DashedOutline.draw(_stack_area, _stack_area.size)
+	var dot := DuelPalette.framed_style(_dot_color, DuelPalette.INK_COLOR, DOT_BORDER_WIDTH, 0.0)
+	dot.set_corner_radius_all(DOT_CUT)
+	var top := (DOT_LINE_HEIGHT - DOT_SIZE) / 2.0
+	_actor_dot.draw_style_box(dot, Rect2(Vector2(0.0, top), Vector2.ONE * DOT_SIZE))
 
 
 func _on_big_button_pressed() -> void:

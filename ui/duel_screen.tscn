@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="Script" path="res://ui/duel_screen.gd" id="1_script"]
 [ext_resource type="Theme" path="res://ui/theme/duel_theme.tres" id="2_theme"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" path="res://ui/components/turn_timer_bar.tscn" id="13_timer_bar"]
 [ext_resource type="PackedScene" path="res://ui/components/column_letters_view.tscn" id="14_letters"]
 [ext_resource type="PackedScene" path="res://ui/components/info_tooltips.tscn" id="15_tooltips"]
+[ext_resource type="PackedScene" path="res://ui/components/arena_floor.tscn" id="16_arena"]
 [ext_resource type="Script" path="res://ui/event_player.gd" id="11_event_player"]
 [ext_resource type="PackedScene" path="res://ui/duel_overlays.tscn" id="12_overlays"]
 
@@ -46,6 +47,23 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+
+[node name="TableImage" type="TextureRect" parent="BackgroundLayer/Background"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Arena" parent="BackgroundLayer/Background" instance=ExtResource("16_arena")]
+unique_name_in_owner = true
+layout_mode = 1
 
 [node name="PlayLayer" type="CanvasLayer" parent="."]
 layer = 1

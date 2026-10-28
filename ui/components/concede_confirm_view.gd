@@ -33,7 +33,7 @@ func show_confirm(side: DuelState.PlayerSide) -> void:
 	_panel.add_theme_stylebox_override(
 		"panel", DuelPalette.modal_style(DuelPalette.player_color(side))
 	)
-	_question_label.add_theme_color_override("font_color", DuelPalette.INK_COLOR)
+	_question_label.add_theme_color_override("font_color", DuelPalette.TEXT_COLOR)
 	DuelPalette.apply_player_button(_yes_button, side)
 	visible = true
 

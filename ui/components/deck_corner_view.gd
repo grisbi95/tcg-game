@@ -2,7 +2,7 @@ class_name DeckCornerView
 extends VBoxContainer
 ## Coin deck et défausse d'un joueur (201.4.1, 201.4.3 ; décisions 0030 et 0032) : deux
 ## emplacements de la taille d'une carte de main, écart de 10 px ; le deck face cachée avec son
-## nombre de cartes, la défausse avec sa carte du dessus (emplacement vide en pointillé sans
+## nombre de cartes, la défausse avec sa carte du dessus (alvéole creusée sans
 ## carte). Le libellé est du côté du plateau ; à partir d'une fatigue de 1 (209.5), il l'annonce.
 ## Le survol de la défausse est relayé pour que le parent montre l'aperçu de sa carte du dessus.
 ## Le parent ancre le coin à sa marge droite.
@@ -68,7 +68,7 @@ func show_discard(card_instance_id: int, definition: CardDefinition) -> void:
 	_set_discard_card_shown(true)
 
 
-## Défausse vide : emplacement en pointillé.
+## Défausse vide : alvéole creusée.
 func show_empty_discard() -> void:
 	_set_discard_card_shown(false)
 
@@ -81,7 +81,12 @@ func _set_discard_card_shown(has_card: bool) -> void:
 
 func _draw_discard_slot() -> void:
 	if not _has_discard_card:
-		DashedOutline.draw(_discard_slot, _discard_slot.size)
+		var hole := DuelAssets.ui_style(
+			DuelAssets.STACK_EMPTY_IMAGE,
+			DuelPalette.hole_style(0.0),
+			DuelAssets.STACK_EMPTY_IMAGE_MARGIN
+		)
+		_discard_slot.draw_style_box(hole, Rect2(Vector2.ZERO, _discard_slot.size))
 		return
 	var ring := DuelPalette.framed_style(
 		Color.TRANSPARENT, DuelPalette.player_color(_player), DISCARD_RING_WIDTH, 0.0

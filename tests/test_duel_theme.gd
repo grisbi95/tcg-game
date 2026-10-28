@@ -26,48 +26,55 @@ func test_decision_0053_board_coordinate_label_uses_the_muted_color() -> void:
 	_assert_color(&"BoardCoordinateLabel", FONT_COLOR, DuelPalette.MUTED_COLOR)
 
 
-func test_decision_0027_turn_number_label_uses_the_muted_color() -> void:
-	_assert_color(&"TurnNumberLabel", FONT_COLOR, DuelPalette.MUTED_COLOR)
+func test_decision_0071_turn_number_label_is_the_light_text_color_faded() -> void:
+	var color := _theme.get_color(FONT_COLOR, &"TurnNumberLabel")
+	assert_bool(Color(color, 1.0).is_equal_approx(DuelPalette.TEXT_COLOR)).is_true()
+	assert_float(color.a).is_less(1.0)
 
 
-func test_decision_0053_big_button_labels_use_the_ink_color() -> void:
-	_assert_color(&"BigButtonLabel", FONT_COLOR, DuelPalette.INK_COLOR)
-	_assert_color(&"BigButtonHelpLabel", FONT_COLOR, DuelPalette.INK_COLOR)
+func test_decision_0071_big_button_labels_are_white() -> void:
+	_assert_color(&"BigButtonLabel", FONT_COLOR, DuelPalette.BUTTON_TEXT_COLOR)
+	var help := _theme.get_color(FONT_COLOR, &"BigButtonHelpLabel")
+	assert_bool(Color(help, 1.0).is_equal_approx(DuelPalette.BUTTON_TEXT_COLOR)).is_true()
 
 
 func test_decision_0053_stack_caption_uses_the_muted_color() -> void:
 	_assert_color(&"StackCaptionLabel", FONT_COLOR, DuelPalette.MUTED_COLOR)
 
 
-func test_decision_0053_column_rule_uses_the_cell_line_color() -> void:
-	_assert_style_fill(&"ColumnRule", &"separator", DuelPalette.CELL_LINE_COLOR)
+func test_decision_0071_column_rule_is_a_faint_line_of_the_light_text_color() -> void:
+	var rule := _flat_style(&"ColumnRule", &"separator")
+	var expected := Color(DuelPalette.TEXT_COLOR, rule.bg_color.a)
+	assert_bool(rule.bg_color.is_equal_approx(expected)).is_true()
+	assert_float(rule.bg_color.a).is_less(0.5)
 
 
-func test_decision_0053_stack_area_uses_the_hint_color() -> void:
-	_assert_style_fill(&"StackArea", &"panel", DuelPalette.HINT_COLOR)
+func test_decision_0071_stack_area_is_a_hole_with_an_inner_shadow() -> void:
+	_assert_style_fill(&"StackArea", &"panel", DuelPalette.HOLE_COLOR)
+	_assert_style_border(&"StackArea", &"panel", DuelPalette.HOLE_SHADOW_COLOR)
+	assert_int(_flat_style(&"StackArea", &"panel").border_width_top).is_greater(0)
 
 
 func test_decision_0027_countdown_label_uses_the_ink_color() -> void:
-	_assert_color(&"CountdownLabel", FONT_COLOR, DuelPalette.INK_COLOR)
+	_assert_color(&"CountdownLabel", FONT_COLOR, DuelPalette.TEXT_COLOR)
 
 
 func test_decision_0027_concede_button_texts_use_muted_then_ink_colors() -> void:
 	_assert_color(&"ConcedeButton", FONT_COLOR, DuelPalette.MUTED_COLOR)
-	_assert_color(&"ConcedeButton", FONT_HOVER_COLOR, DuelPalette.INK_COLOR)
-	_assert_color(&"ConcedeButton", FONT_PRESSED_COLOR, DuelPalette.INK_COLOR)
+	_assert_color(&"ConcedeButton", FONT_HOVER_COLOR, DuelPalette.TEXT_COLOR)
+	_assert_color(&"ConcedeButton", FONT_PRESSED_COLOR, DuelPalette.TEXT_COLOR)
 
 
-func test_decision_0027_concede_button_frame_uses_the_cell_line_color() -> void:
-	_assert_style_border(&"ConcedeButton", &"normal", DuelPalette.CELL_LINE_COLOR)
-	_assert_style_border(&"ConcedeButton", &"hover", DuelPalette.CELL_LINE_COLOR)
-	_assert_style_border(&"ConcedeButton", &"pressed", DuelPalette.CELL_LINE_COLOR)
+func test_decision_0071_concede_button_frame_uses_the_light_text_color() -> void:
+	_assert_style_border(&"ConcedeButton", &"normal", DuelPalette.TEXT_COLOR)
+	_assert_style_border(&"ConcedeButton", &"hover", DuelPalette.TEXT_COLOR)
+	_assert_style_border(&"ConcedeButton", &"pressed", DuelPalette.TEXT_COLOR)
 
 
-func test_decision_0027_concede_button_background_is_clear_then_darker_when_used() -> void:
-	var normal := _flat_style(&"ConcedeButton", &"normal")
-	assert_float(normal.bg_color.a).is_equal(0.0)
-	_assert_style_fill(&"ConcedeButton", &"hover", DuelPalette.HINT_COLOR)
-	_assert_style_fill(&"ConcedeButton", &"pressed", DuelPalette.TABLE_COLOR)
+func test_decision_0071_concede_button_background_goes_from_panel_to_socket_to_hole() -> void:
+	_assert_style_fill(&"ConcedeButton", &"normal", DuelPalette.PANEL_COLOR)
+	_assert_style_fill(&"ConcedeButton", &"hover", DuelPalette.SOCKET_COLOR)
+	_assert_style_fill(&"ConcedeButton", &"pressed", DuelPalette.HOLE_COLOR)
 
 
 func test_decision_0027_countdown_bar_track_uses_the_bar_track_color() -> void:
@@ -85,22 +92,18 @@ func test_decision_0053_timer_bar_tracks_use_the_bar_track_color() -> void:
 		_assert_style_fill(variation, &"background", DuelPalette.BAR_TRACK_COLOR)
 
 
-func test_decision_0053_timer_seconds_turn_orange_under_the_alert() -> void:
-	_assert_color(&"TimerSecondsAlertLabel", FONT_COLOR, DuelPalette.ALERT_COLOR)
-	_assert_color(&"TimerSecondsLabel", FONT_COLOR, DuelPalette.INK_COLOR)
-	_assert_color(&"TimerPausedLabel", FONT_COLOR, DuelPalette.MUTED_COLOR)
-
-
-func test_decision_0027_column_panel_uses_the_panel_color_and_cell_line() -> void:
+func test_decision_0071_column_panel_uses_the_panel_color_and_an_ink_line() -> void:
 	_assert_style_fill(&"ColumnPanel", &"panel", DuelPalette.PANEL_COLOR)
-	_assert_style_border(&"ColumnPanel", &"panel", DuelPalette.CELL_LINE_COLOR)
+	_assert_style_border(&"ColumnPanel", &"panel", DuelPalette.INK_COLOR)
 
 
-func test_decision_0053_info_bubble_uses_the_card_colors() -> void:
+func test_decision_0071_info_bubble_is_paper_with_an_ink_line_and_a_flat_shadow() -> void:
 	_assert_style_fill(&"InfoBubblePanel", &"panel", DuelPalette.BUBBLE_BACKGROUND)
 	_assert_style_border(&"InfoBubblePanel", &"panel", DuelPalette.BUBBLE_BORDER_COLOR)
 	var panel := _flat_style(&"InfoBubblePanel", &"panel")
 	assert_bool(panel.shadow_color.is_equal_approx(DuelPalette.BUBBLE_SHADOW_COLOR)).is_true()
+	assert_int(panel.shadow_size).is_equal(DuelPalette.SHADOW_SIZE)
+	assert_vector(panel.shadow_offset).is_equal(Vector2.ONE * DuelPalette.SHADOW_OFFSET)
 	_assert_color(&"InfoBubbleTitleLabel", FONT_COLOR, DuelPalette.CARD_TEXT_COLOR)
 	_assert_color(&"InfoBubbleTextLabel", FONT_COLOR, DuelPalette.CARD_TEXT_COLOR)
 

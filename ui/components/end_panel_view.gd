@@ -25,7 +25,7 @@ const SHEET_TEXT: String = "Fiche CSV"
 
 func _ready() -> void:
 	_scrim.color = DuelPalette.SCRIM_COLOR
-	_reason_label.add_theme_color_override("font_color", DuelPalette.INK_COLOR)
+	_reason_label.add_theme_color_override("font_color", DuelPalette.TEXT_COLOR)
 	_details_label.add_theme_color_override("font_color", DuelPalette.MUTED_COLOR)
 	_rematch_button.text = REMATCH_TEXT
 	_setup_button.text = SETUP_TEXT

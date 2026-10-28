@@ -2,8 +2,8 @@ extends Control
 ## Essai de DuelColumnView (décisions 0029, 0030, 0032 et 0053) : six colonnes de 711 de haut côte à
 ## côte, une par situation : Tour de A (bouton actif, abandon visible), Tour de B vu par A (bouton
 ## grisé « Tour de B »), Pile à trois entrées (réponse de B, fenêtre ouverte), Mulligan (Confirmer
-## grisé), Choix d'une cible et Fin. Le Tour de B est aussi la pile vide en pointillé. Les nombres
-## sont factices : un clic ne fait qu'écrire dans la sortie.
+## grisé), Choix d'une cible et Fin. Le Tour de B est aussi la pile vide, une alvéole creusée. Les
+## nombres sont factices : un clic ne fait qu'écrire dans la sortie.
 
 const COLUMN_SCENE: PackedScene = preload("res://ui/components/duel_column_view.tscn")
 const TURN_NUMBER: int = 7

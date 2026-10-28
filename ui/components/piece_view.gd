@@ -24,9 +24,12 @@ const ART_ICON_SIZE: float = 30.0
 const BAND_ICON_SIZE: float = 12.0
 const CARD_PADDING: float = 4.0
 const GEAR_PADDING: float = 4.0
-const ART_RADIUS: int = 5
-const CHIP_RADIUS: int = 4
+const ART_CUT: int = 4
+const CHIP_CUT: int = 2
 const CHIP_PADDING: float = 2.0
+const GEAR_CUT: int = 4
+## Trait d'encre autour de la pièce, hors de son liseré de camp, et ombre en aplat.
+const OUTLINE_WIDTH: int = 2
 const GRAYSCALE_SHADER: Shader = preload("res://ui/theme/grayscale.gdshader")
 
 var _piece_id: int = DuelState.NO_ID
@@ -63,6 +66,7 @@ func _ready() -> void:
 
 
 func _draw() -> void:
+	_draw_outline()
 	_marks.draw()
 
 
@@ -112,6 +116,7 @@ func show_gear(gear_name: String) -> void:
 	_gear_panel.visible = has_gear
 	_gear_label.text = gear_name
 	_mini_card.offset_top = GEAR_PEEK_HEIGHT if has_gear else 0.0
+	queue_redraw()
 
 
 ## 201.4.11 : une pièce endormie montre son illustration (ou l'icône du type) en gris ; liseré,
@@ -166,19 +171,19 @@ func _size_parts() -> void:
 
 func _style_fixed_parts() -> void:
 	_art.add_theme_stylebox_override(
-		"panel", DuelPalette.fill_style(DuelPalette.ART_COLOR, ART_RADIUS, 0.0)
+		"panel", DuelPalette.art_style(ART_CUT, float(DuelPalette.BORDER_WIDTH))
 	)
 	_keyword_chip.add_theme_stylebox_override(
-		"panel", DuelPalette.fill_style(DuelPalette.KEYWORD_BACKGROUND, CHIP_RADIUS, CHIP_PADDING)
+		"panel", DuelPalette.fill_style(DuelPalette.KEYWORD_BACKGROUND, CHIP_CUT, CHIP_PADDING)
 	)
 	_keyword_label.add_theme_color_override("font_color", DuelPalette.KEYWORD_INK)
 	var gear_ink := DuelPalette.TINT_INKS[DuelPalette.Tint.GEAR]
-	_gear_panel.add_theme_stylebox_override(
-		"panel",
-		DuelPalette.tinted_style(
-			DuelPalette.Tint.GEAR, gear_ink, DuelPalette.BORDER_WIDTH, GEAR_PADDING
-		)
+	var gear_style := DuelPalette.fill_style(
+		DuelPalette.TINT_BACKGROUNDS[DuelPalette.Tint.GEAR], GEAR_CUT, GEAR_PADDING
 	)
+	gear_style.border_color = gear_ink
+	gear_style.set_border_width_all(DuelPalette.BORDER_WIDTH)
+	_gear_panel.add_theme_stylebox_override("panel", gear_style)
 	_gear_label.add_theme_color_override("font_color", gear_ink)
 
 
@@ -195,3 +200,12 @@ func _refresh_frame() -> void:
 	_mini_card.add_theme_stylebox_override(
 		"panel", DuelPalette.tinted_style(_tint, _owner_color, width, width + CARD_PADDING)
 	)
+
+
+# Bible : trait d'encre autour de la mini-carte et ombre en aplat, sous le liseré du camp.
+func _draw_outline() -> void:
+	var outline := DuelPalette.framed_style(
+		DuelPalette.INK_COLOR, DuelPalette.INK_COLOR, OUTLINE_WIDTH, 0.0
+	)
+	var rect := _mini_card.get_rect().grow(OUTLINE_WIDTH)
+	draw_style_box(DuelPalette.with_shadow(outline, DuelPalette.SHADOW_OFFSET), rect)

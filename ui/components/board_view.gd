@@ -22,13 +22,35 @@ const COORDINATE_MARGIN: float = COORDINATE_SIZE + CELL_GAP
 
 const CELL_SCENE: PackedScene = preload("res://ui/components/cell_view.tscn")
 
+## Cadre de la grille : un fond d'encre à coins coupés et son ombre, sous les cases ; image
+## `board_frame.png` (marge de 20 px autour de la grille) quand elle existe (décision 0071).
+const FRAME_STYLE: StringName = &"BoardGrid"
+
 var _cell_views: Dictionary[Vector2i, CellView] = {}
 
 
 func _ready() -> void:
+	# Le cadre image déborde de la grille : il passe sous les barres de temps voisines.
+	z_index = -1
+	sort_children.connect(queue_redraw)
 	add_theme_constant_override("h_separation", CELL_GAP)
 	add_theme_constant_override("v_separation", CELL_GAP)
 	_build(DuelState.PlayerSide.A)
+
+
+func _draw() -> void:
+	if _cell_views.is_empty():
+		return
+	var grid := Rect2()
+	var is_first := true
+	for cell_view: CellView in _cell_views.values():
+		var cell_rect := cell_view.get_rect()
+		grid = cell_rect if is_first else grid.merge(cell_rect)
+		is_first = false
+	var style := get_theme_stylebox(&"panel", FRAME_STYLE)
+	if style is StyleBoxTexture:
+		grid = grid.grow(DuelAssets.BOARD_FRAME_IMAGE_MARGIN)
+	draw_style_box(style, grid)
 
 
 ## Décision 0050 : redessine la grille vue du côté de `bottom_side`, avant de poser les pièces.

@@ -3,7 +3,7 @@ extends VBoxContainer
 ## Sources d'un joueur (203 ; décisions 0023, 0028 et 0053, fiche E13 à E15) : un emplacement par
 ## Source du joueur (203.5.7), en rangées de cinq, chacun dans l'un de quatre états, remplis dans
 ## cet ordre : en jeu redressée, en jeu inclinée (estompée, sans pivoter, 201.4.4), en réserve
-## (contour pointillé, 201.4.5) et dans la Fonte (barrée d'une croix, estompée, 201.4.6). Un clic
+## (alvéole creusée, 201.4.5) et dans la Fonte (barrée d'une croix, estompée, 201.4.6). Un clic
 ## sur une Source redressée la presse ; au survol d'une Source inclinée, un bouton « Recycler +1 »
 ## la presse. Un seul compteur : l'Essence (la réserve du joueur, publique, 203.6 ; ou son paiement
 ## préparé pendant le tour adverse, décision 0032). Aucun « Annuler » : un coup joué est définitif.
@@ -27,22 +27,28 @@ enum CounterPlacement {
 
 const SLOT_SIZE := Vector2(74, 106)
 const SOURCE_ICON_SIZE: float = 30.0
-const SLOT_RADIUS: int = 7
 const SLOT_BORDER_WIDTH: int = 2
+const CAMP_BORDER_WIDTH: int = 3
+const CAMP_BORDER_ALPHA: float = 0.9
+const SLOT_LIT_SHADOW_OFFSET: float = 5.0
+const SLOT_IMAGE_PREFIX: String = "source_"
+const SLOT_IMAGE_NAMES: Dictionary[SlotState, String] = {
+	SlotState.UPRIGHT: "upright",
+	SlotState.TILTED: "tilted",
+	SlotState.RESERVE: "reserve",
+	SlotState.FONTE: "fonte",
+}
 const RECYCLE_TEXT: String = "Recycler +1"
 const RECYCLE_MARGIN: float = 4.0
 const RECYCLE_HEIGHT: float = 26.0
 const CROSS_MARGIN: float = 22.0
-const CHIP_PADDING: float = 6.0
 
 var _player: DuelState.PlayerSide = DuelState.PlayerSide.A
 var _is_interactive: bool = true
 var _slots: Array[SourceSlot] = []
 
 @onready var _counters: HBoxContainer = %Counters
-@onready var _essence_chip: PanelContainer = %EssenceChip
 @onready var _essence_icon: Control = %EssenceIcon
-@onready var _essence_label: Label = %EssenceLabel
 @onready var _essence_value: Label = %EssenceValue
 @onready var _slot_grid: GridContainer = %SlotGrid
 
@@ -77,17 +83,6 @@ func _ready() -> void:
 		func() -> DuelIcons.Icon: return DuelIcons.Icon.ESSENCE,
 		func() -> Color: return DuelPalette.ESSENCE_COLOR
 	)
-	_essence_chip.add_theme_stylebox_override(
-		"panel",
-		DuelPalette.framed_style(
-			DuelPalette.ESSENCE_BACKGROUND,
-			DuelPalette.ESSENCE_COLOR,
-			DuelPalette.LINE_WIDTH,
-			CHIP_PADDING
-		)
-	)
-	for label: Label in [_essence_label, _essence_value]:
-		label.add_theme_color_override("font_color", DuelPalette.ESSENCE_COLOR)
 
 
 ## Sources du joueur `player`, compteurs à `counter_placement` du bloc ; `slot_count` : Sources
@@ -170,7 +165,7 @@ func _make_source_icon() -> Control:
 	DuelIcons.bind(
 		icon,
 		func() -> DuelIcons.Icon: return DuelIcons.Icon.SOURCE,
-		func() -> Color: return DuelPalette.player_ink(_player)
+		func() -> Color: return DuelPalette.player_color(_player)
 	)
 	return icon
 
@@ -187,12 +182,6 @@ func _make_recycle_button() -> Button:
 	button.offset_right = -RECYCLE_MARGIN
 	button.offset_top = -RECYCLE_MARGIN - RECYCLE_HEIGHT
 	button.offset_bottom = -RECYCLE_MARGIN
-	for state: String in ["normal", "hover", "pressed", "focus"]:
-		button.add_theme_stylebox_override(
-			state, DuelPalette.fill_style(DuelPalette.INK_COLOR, SLOT_RADIUS, 0.0)
-		)
-	for color: String in ["font_color", "font_hover_color", "font_pressed_color"]:
-		button.add_theme_color_override(color, DuelPalette.CARD_TEXT_COLOR)
 	button.focus_mode = Control.FOCUS_NONE
 	button.pressed.connect(func() -> void: source_pressed.emit(true))
 	return button
@@ -219,53 +208,57 @@ func _refresh_slot(index: int, is_hovered: bool) -> void:
 
 func _apply_slot_style(slot: PanelContainer, state: SlotState, is_lit: bool) -> void:
 	slot.modulate.a = 1.0
+	if state == SlotState.FONTE or (state == SlotState.TILTED and not is_lit):
+		slot.modulate.a = DuelPalette.DIMMED_ALPHA
+	slot.add_theme_stylebox_override(
+		"panel",
+		DuelAssets.ui_style(SLOT_IMAGE_PREFIX + SLOT_IMAGE_NAMES[state], _slot_style(state, is_lit))
+	)
+
+
+# Bible : une Source redressée est un papier à l'ombre en aplat, une inclinée un papier sombre posé
+# à plat, une réserve ou une Fonte une alvéole creusée, jamais un pointillé.
+func _slot_style(state: SlotState, is_lit: bool) -> StyleBoxFlat:
 	match state:
 		SlotState.UPRIGHT:
-			var background := DuelPalette.SOURCE_HOVER_COLOR if is_lit else DuelPalette.SOURCE_COLOR
-			slot.add_theme_stylebox_override("panel", _slot_style(background, _player_border()))
+			var fill := DuelPalette.PAPER_LIT_COLOR if is_lit else DuelPalette.PAPER_COLOR
+			var offset := SLOT_LIT_SHADOW_OFFSET if is_lit else DuelPalette.SHADOW_OFFSET
+			return DuelPalette.with_shadow(_paper_style(fill), offset)
 		SlotState.TILTED:
-			if not is_lit:
-				slot.modulate.a = DuelPalette.DIMMED_ALPHA
-			slot.add_theme_stylebox_override(
-				"panel", _slot_style(DuelPalette.PANEL_COLOR, DuelPalette.SOURCE_TILTED_LINE_COLOR)
-			)
-		SlotState.RESERVE:
-			slot.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
-		SlotState.FONTE:
-			slot.modulate.a = DuelPalette.DIMMED_ALPHA
-			slot.add_theme_stylebox_override(
-				"panel", _slot_style(DuelPalette.PANEL_COLOR, DuelPalette.CELL_LINE_COLOR)
-			)
+			return _paper_style(DuelPalette.PAPER_DARK_COLOR)
+	return DuelPalette.hole_style(0.0)
 
 
-func _slot_style(background: Color, border: Color) -> StyleBoxFlat:
-	var style := DuelPalette.framed_style(background, border, SLOT_BORDER_WIDTH, 0.0)
-	style.set_corner_radius_all(SLOT_RADIUS)
-	return style
+func _paper_style(fill: Color) -> StyleBoxFlat:
+	return DuelPalette.framed_style(fill, DuelPalette.INK_COLOR, SLOT_BORDER_WIDTH, 0.0)
 
 
 func _draw_slot_marks(index: int) -> void:
 	var slot := _slots[index]
 	match slot.state:
-		SlotState.RESERVE:
-			DashedOutline.draw(slot.panel, slot.panel.size)
+		SlotState.UPRIGHT, SlotState.TILTED:
+			_draw_camp_border(slot.panel)
 		SlotState.FONTE:
 			_draw_cross(slot.panel)
+
+
+# Décision 0030 : le camp reste lisible sur la Source, redressée ou inclinée.
+func _draw_camp_border(canvas: Control) -> void:
+	var color := Color(DuelPalette.player_color(_player), CAMP_BORDER_ALPHA)
+	var border := DuelPalette.outline_style(color, CAMP_BORDER_WIDTH)
+	var inset := float(SLOT_BORDER_WIDTH)
+	canvas.draw_style_box(border, Rect2(Vector2.ZERO, canvas.size).grow(-inset))
 
 
 func _draw_cross(canvas: Control) -> void:
 	var corner := Vector2.ONE * CROSS_MARGIN
 	var far := canvas.size - corner
-	canvas.draw_line(corner, far, DuelPalette.MUTED_COLOR, DuelPalette.BORDER_WIDTH, true)
+	canvas.draw_line(corner, far, DuelPalette.NEUTRAL_COLOR, DuelPalette.PLAYER_BORDER_WIDTH, true)
 	var other_start := Vector2(far.x, corner.y)
 	var other_end := Vector2(corner.x, far.y)
 	canvas.draw_line(
-		other_start, other_end, DuelPalette.MUTED_COLOR, DuelPalette.BORDER_WIDTH, true
+		other_start, other_end, DuelPalette.NEUTRAL_COLOR, DuelPalette.PLAYER_BORDER_WIDTH, true
 	)
-
-
-func _player_border() -> Color:
-	return DuelPalette.player_color(_player)
 
 
 # Godot signale la sortie quand le pointeur passe sur le bouton enfant : rester survolé tant qu'il

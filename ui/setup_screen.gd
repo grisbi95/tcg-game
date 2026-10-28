@@ -84,11 +84,9 @@ class Preparation:
 
 func _ready() -> void:
 	_table.color = DuelPalette.TABLE_COLOR
-	_panel.add_theme_stylebox_override(
-		"panel", DuelPalette.modal_style(DuelPalette.CELL_LINE_COLOR)
-	)
+	_panel.add_theme_stylebox_override("panel", DuelPalette.modal_style(DuelPalette.INK_COLOR))
 	_title_label.text = TITLE_TEXT
-	_title_label.add_theme_color_override("font_color", DuelPalette.INK_COLOR)
+	_title_label.add_theme_color_override("font_color", DuelPalette.TEXT_COLOR)
 	_game_label.text = GAME_TEXT
 	_game_label.add_theme_color_override("font_color", DuelPalette.MUTED_COLOR)
 	_game_option.item_selected.connect(_on_game_selected)
@@ -210,7 +208,7 @@ func _setup_remote_controls() -> void:
 	_cancel_button.text = CANCEL_TEXT
 	_code_edit.placeholder_text = CODE_PLACEHOLDER
 	_code_edit.max_length = CODE_LENGTH
-	_status_label.add_theme_color_override("font_color", DuelPalette.INK_COLOR)
+	_status_label.add_theme_color_override("font_color", DuelPalette.TEXT_COLOR)
 	_create_button.pressed.connect(_on_create_pressed)
 	_join_button.pressed.connect(_on_join_pressed)
 	_code_edit.text_changed.connect(_on_code_text_changed)
